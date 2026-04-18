@@ -1,0 +1,2662 @@
+.payroll-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.header-section {
+  margin-bottom: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  min-width: 140px;
+  height: 40px;
+  padding: 8px 16px !important;
+  white-space: nowrap;
+}
+
+.filters-section {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.filters-section mat-form-field {
+  width: 200px;
+}
+
+.loading-state {
+  padding: 40px 20px;
+  font-size: 1.1em;
+}
+
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4em;
+  width: 4em;
+  height: 4em;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+/* Employee Autocomplete */
+.employee-option {
+  width: 100%;
+}
+
+.employee-name {
+  flex: 1;
+  font-weight: 500;
+  color: var(--gold);
+}
+
+.employee-code {
+  font-size: 0.9em;
+  color: #999;
+}
+
+/* Dark Mode Autocomplete and Select Styling */
+body.dark-mode .mat-mdc-autocomplete-panel {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option {
+  background: #2a2a2a !important;
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option:hover {
+  background: rgba(241, 196, 15, 0.15) !important;
+}
+
+body.dark-mode .mat-mdc-option:not(.mat-mdc-option-disabled).mdc-list-item--selected,
+body.dark-mode .mat-mdc-option:not(.mat-mdc-option-disabled).mdc-list-item--activated {
+  background: rgba(241, 196, 15, 0.25) !important;
+  color: var(--gold) !important;
+}
+
+/* Dark Mode Select Panel */
+body.dark-mode .mat-mdc-select-panel {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-select-panel .mat-mdc-option {
+  background: #2a2a2a !important;
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-select-panel .mat-mdc-option:hover {
+  background: rgba(241, 196, 15, 0.15) !important;
+}
+
+/* Dark Mode Mat Option Text */
+body.dark-mode .mdc-list-item__primary-text {
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-option-disabled {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+/* Dark Mode Autocomplete Label and Input */
+body.dark-mode .mat-mdc-autocomplete-panel .employee-name {
+  color: var(--gold) !important;
+  font-weight: 600 !important;
+}
+
+body.dark-mode .mat-mdc-autocomplete-panel .employee-code {
+  color: rgba(241, 196, 15, 0.7) !important;
+}
+
+/* Dark Mode Select Trigger Text */
+body.dark-mode .mat-mdc-select-value,
+body.dark-mode .mat-mdc-select-trigger {
+  color: var(--gold) !important;
+}
+
+/* Dark Mode Form Field in Dark Mode */
+body.dark-mode .mat-mdc-form-field-label {
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-form-field-focus-overlay {
+  background: rgba(241, 196, 15, 0.1) !important;
+}
+
+/* Dark Mode Autocomplete No Results Text */
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option:disabled {
+  color: var(--gold) !important;
+}
+
+/* Dark Mode Spinner Text in Autocomplete */
+body.dark-mode .mat-mdc-autocomplete-panel .d-flex {
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-spinner circle {
+  stroke: var(--gold) !important;
+}
+
+.me-2 {
+  margin-right: 8px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.text-muted {
+  color: #999;
+}
+
+/* Summary Cards */
+.summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.summary-card {
+  border-radius: 6px;
+  padding: 0;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.summary-card-small {
+  min-width: 110px;
+  max-width: 130px;
+}
+
+.summary-card-small .summary-item {
+  padding: 10px 8px;
+}
+
+.summary-card-small .summary-item .label {
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.summary-card-small .summary-item .value {
+  font-size: 1.25em;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.summary-card-large {
+  min-width: 150px;
+  max-width: 180px;
+}
+
+.summary-card-large .summary-item {
+  padding: 12px 10px;
+}
+
+.summary-card-large .summary-item .label {
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.summary-card-large .summary-item .value {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+@media (max-width: 1024px) {
+  .summary-card-small {
+    min-width: 100px;
+    max-width: 120px;
+  }
+  
+  .summary-card-large {
+    min-width: 130px;
+    max-width: 150px;
+  }
+}
+
+.summary-card mat-card-header {
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.8) 100%);
+  padding: 10px;
+  border-radius: 6px 6px 0 0;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.summary-item .label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.summary-item .value {
+  font-size: 1.5em;
+  font-weight: 700;
+}
+
+/* Card Styles */
+mat-card {
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+mat-card-header {
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.8) 100%);
+  padding: 16px;
+  border-radius: 8px 8px 0 0;
+}
+
+mat-card-title {
+  color: white;
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+mat-card-content {
+  padding: 20px;
+}
+
+/* Tab Styles */
+.payroll-tabs {
+  margin-bottom: 20px;
+}
+
+.tab-label {
+  margin-right: 8px;
+}
+
+::ng-deep .payroll-tabs .mat-mdc-tab-list {
+  border-bottom: 2px solid var(--gold);
+}
+
+::ng-deep .payroll-tabs .mat-mdc-tab {
+  color: #666;
+}
+
+::ng-deep .payroll-tabs .mat-mdc-tab.mat-mdc-tab-active {
+  color: var(--gold);
+}
+
+/* Form Styles */
+.generate-form,
+.bulk-form,
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 12px;
+  /* margin-bottom: 12px; */
+  padding-top: 5px;
+  flex-wrap: nowrap;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-field-spacer {
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.filter-actions-centered {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+  width: 100%;
+}
+
+/* Table Styles */
+.payroll-table,
+.details-table {
+  width: 100%;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 30px 70px 110px 70px 90px 90px 90px 90px 90px 80px 90px 70px;
+  gap: 6px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  align-items: center;
+}
+
+.table-row.header-row {
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.8) 100%);
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 6px 6px 0 0;
+  border-bottom: 2px solid var(--gold);
+}
+
+.table-cell {
+  padding: 8px;
+  overflow-wrap: break-word;
+  text-align: right;
+}
+
+.table-cell.checkbox-cell {
+  text-align: center;
+}
+
+.table-cell.primary {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.table-cell.success {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.table-cell.danger {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.table-cell.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-width: 200px;
+  align-items: center;
+}
+
+.table-cell.actions button {
+  padding: 8px 14px;
+  min-width: 90px;
+  font-size: 0.8em;
+  height: 36px;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.action-btn-primary {
+  background-color: var(--gold) !important;
+  color: #000 !important;
+  font-weight: 600;
+}
+
+.action-btn-primary:hover {
+  background-color: #d4a017 !important;
+}
+
+.action-btn-secondary {
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+.action-btn-secondary:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+  color: white;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-align: center;
+  min-width: 100px;
+}
+
+/* Status Colors based on PayrollStatus enum */
+.status-badge[style*="rgb(255, 193, 7)"],
+.status-badge[style*="ffc107"] {
+  /* Created = 1 - Yellow */
+}
+
+.status-badge[style*="rgb(76, 175, 80)"],
+.status-badge[style*="4caf50"] {
+  /* Approved = 2 - Green */
+}
+
+.status-badge[style*="rgb(33, 150, 243)"],
+.status-badge[style*="2196f3"] {
+  /* Paid = 3 - Blue */
+}
+
+.status-badge[style*="rgb(244, 67, 54)"],
+.status-badge[style*="f44336"] {
+  /* Rejected = 4 - Red */
+}
+
+.status-badge[style*="rgb(156, 39, 176)"],
+.status-badge[style*="9c27b0"] {
+  /* Cancelled = 5 - Purple */
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.badge.success {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.badge.danger {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.badge.warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* Pagination */
+  .badge.badge-success {
+    background: #4caf50;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    display: inline-block;
+  }
+
+  .badge.badge-warning {
+    background: #ff9800;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    display: inline-block;
+  }
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+}
+
+.pagination button {
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not([disabled]) {
+  background: rgba(241, 196, 15, 0.1);
+  color: var(--gold);
+}
+
+.pagination button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-weight: 600;
+  color: var(--text-color);
+  min-width: 150px;
+  text-align: center;
+}
+
+/* Selection Actions */
+.selection-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(241, 196, 15, 0.05);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.selection-info {
+  color: #666;
+  font-size: 0.85em;
+}
+
+/* Bulk Actions */
+.bulk-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(241, 196, 15, 0.05);
+  border-radius: 6px;
+}
+
+/* Details Grid */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border-right: 3px solid var(--gold);
+}
+
+.detail-item .label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.detail-item .value {
+  color: #666;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.detail-item .value.primary {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.detail-item .value.success {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.detail-item .value.danger {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.detail-item .value.bold {
+  font-weight: 700;
+}
+
+/* Result Grid */
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+}
+
+.result-item .label {
+  font-weight: 600;
+  color: #666;
+}
+
+.result-item .value {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.result-item .value.success {
+  color: #4caf50;
+}
+
+.result-item .value.danger {
+  color: #f44336;
+}
+
+.result-item .value.primary {
+  color: var(--gold);
+}
+
+/* Accounting Info */
+.accounting-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+}
+
+.info-item mat-card-header {
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.8) 100%);
+}
+
+.info-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+}
+
+.info-value .number {
+  font-size: 2.5em;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.info-value .label {
+  color: #666;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+/* Instructions */
+.instructions {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  border-right: 4px solid var(--gold);
+}
+
+.instructions h3 {
+  color: var(--text-color);
+  margin: 0 0 15px 0;
+  font-size: 1.1em;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-right: 20px;
+  color: #666;
+  line-height: 1.8;
+}
+
+.instructions li {
+  margin-bottom: 10px;
+}
+
+/* Divider */
+.divider {
+  margin: 20px 0 !important;
+}
+
+/* Details Panel */
+.details-panel {
+  margin-top: 20px;
+}
+
+.bulk-result {
+  margin-top: 30px;
+}
+
+.result-summary {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Value Classes */
+.value {
+  color: #666;
+  font-weight: 500;
+}
+
+.value.primary {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.value.success {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.value.danger {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.value.info {
+  color: #2196f3;
+  font-weight: 600;
+}
+
+.value.warning {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Dark Mode */
+:host-context(body.dark-mode) mat-card {
+  background: #1e1e1e;
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) mat-card-content {
+  background: #121212;
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .summary-card {
+  background: #1e1e1e !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+:host-context(body.dark-mode) .summary-item {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #ddd !important;
+}
+
+:host-context(body.dark-mode) .summary-item .label {
+  color: #bbb !important;
+}
+
+:host-context(body.dark-mode) .summary-item .value {
+  color: #fff !important;
+}
+
+:host-context(body.dark-mode) .label {
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .value {
+  color: #aaa;
+}
+
+:host-context(body.dark-mode) .table-cell {
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .instructions {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .instructions h3 {
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .instructions ol {
+  color: #aaa;
+}
+
+:host-context(body.dark-mode) .page-info {
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .selection-info {
+  color: #aaa;
+}
+
+/* Dark Mode Form Fields - Always visible borders like loan/leave dialogs */
+:host-context(body.dark-mode) mat-form-field {
+  width: 100%;
+}
+
+:host-context(body.dark-mode) .mat-form-field .mat-input-element,
+:host-context(body.dark-mode) .mat-form-field .mat-mdc-input-element,
+:host-context(body.dark-mode) .mdc-text-field__input {
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline:hover .mat-form-field-outline {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline {
+  border-color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-label {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field.mat-focused .mat-form-field-label {
+  color: var(--gold) !important;
+}
+
+/* Dark Mode Select Fields */
+:host-context(body.dark-mode) .mat-mdc-select {
+  color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-select-disabled {
+  color: rgba(255, 255, 255, 0.38) !important;
+}
+
+/* Dark Mode Preview Dialog - Similar to loan-dialog styling */
+:host-context(body.dark-mode) .payroll-preview-overlay {
+  z-index: 1000 !important;
+}
+
+:host-context(body.dark-mode) .payroll-preview-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-mode .cdk-overlay-container .payroll-preview-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+  width: 850px !important;
+  max-width: calc(100% - 32px) !important;
+}
+
+:host-context(body.dark-mode) .payroll-preview-dialog mat-card-header {
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.9) 100%) !important;
+  color: white !important;
+  padding: 25px 30px !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+:host-context(body.dark-mode) .payroll-preview-dialog mat-card-title {
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: 1.4em !important;
+}
+
+:host-context(body.dark-mode) .payroll-preview-dialog .close-btn {
+  color: white !important;
+  opacity: 0.9 !important;
+}
+
+:host-context(body.dark-mode) .payroll-preview-dialog .close-btn:hover {
+  opacity: 1 !important;
+}
+
+:host-context(body.dark-mode) .payroll-preview-dialog mat-card-content {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  padding: 30px !important;
+}
+
+:host-context(body.dark-mode) .preview-content {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) .preview-section {
+  background: rgba(241, 196, 15, 0.06) !important;
+  border: 1px solid rgba(241, 196, 15, 0.2) !important;
+  border-right: 4px solid rgba(241, 196, 15, 0.5) !important;
+  color: #ddd !important;
+  padding: 20px !important;
+  border-radius: 8px !important;
+}
+
+:host-context(body.dark-mode) .preview-section h3,
+:host-context(body.dark-mode) .preview-section h4 {
+  color: var(--gold) !important;
+  border-bottom-color: rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Dark Mode Action Buttons */
+:host-context(body.dark-mode) .action-btn-primary {
+  background-color: var(--gold) !important;
+  color: #000 !important;
+}
+
+:host-context(body.dark-mode) .action-btn-primary:hover {
+  background-color: #d4a017 !important;
+}
+
+:host-context(body.dark-mode) .action-btn-secondary {
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .action-btn-secondary:hover {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+
+/* Grid Styles for Dark Mode */
+:host-context(body.dark-mode) .info-grid,
+:host-context(body.dark-mode) .salary-grid,
+:host-context(body.dark-mode) .deductions-grid {
+  gap: 15px !important;
+}
+
+:host-context(body.dark-mode) .info-item,
+:host-context(body.dark-mode) .salary-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(241, 196, 15, 0.2) !important;
+  border-right: 3px solid rgba(241, 196, 15, 0.6) !important;
+  color: #ddd !important;
+  padding: 14px 12px !important;
+  border-radius: 6px !important;
+}
+
+:host-context(body.dark-mode) .info-item .label,
+:host-context(body.dark-mode) .salary-item .label {
+  color: #aaa !important;
+  font-size: 0.8em !important;
+  margin-bottom: 6px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+}
+
+:host-context(body.dark-mode) .info-item .value,
+:host-context(body.dark-mode) .salary-item .value {
+  color: #e8e8e8 !important;
+  font-size: 1.15em !important;
+  font-weight: 700 !important;
+}
+
+:host-context(body.dark-mode) .deduction-item {
+  background: rgba(244, 67, 54, 0.12) !important;
+  border: 1px solid rgba(244, 67, 54, 0.3) !important;
+  border-right: 3px solid rgba(244, 67, 54, 0.6) !important;
+  padding: 14px 12px !important;
+  border-radius: 6px !important;
+}
+
+:host-context(body.dark-mode) .deduction-item.border-top {
+  border-top: 2px solid rgba(244, 67, 54, 0.6) !important;
+  margin-top: 10px !important;
+  background: rgba(244, 67, 54, 0.15) !important;
+}
+
+:host-context(body.dark-mode) .deduction-item .label {
+  color: #ff9999 !important;
+  font-size: 0.8em !important;
+  margin-bottom: 6px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+}
+
+:host-context(body.dark-mode) .deduction-item .value {
+  color: #ff9999 !important;
+  font-size: 1.15em !important;
+  font-weight: 700 !important;
+}
+
+/* Loan Section */
+:host-context(body.dark-mode) .loan-section {
+  background: rgba(100, 150, 255, 0.1) !important;
+  border: 1px solid rgba(100, 150, 255, 0.25) !important;
+  border-right: 4px solid rgba(100, 150, 255, 0.5) !important;
+  color: #ddd !important;
+  padding: 20px !important;
+}
+
+:host-context(body.dark-mode) .loan-section h3 {
+  color: #64b5f6 !important;
+}
+
+:host-context(body.dark-mode) .loan-info {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(100, 150, 255, 0.2) !important;
+  padding: 18px !important;
+  border-radius: 6px !important;
+  margin-bottom: 18px !important;
+}
+
+:host-context(body.dark-mode) .loan-item {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(100, 150, 255, 0.2) !important;
+  border-right: 3px solid rgba(100, 150, 255, 0.5) !important;
+  padding: 14px !important;
+  border-radius: 6px !important;
+}
+
+:host-context(body.dark-mode) .loan-item .label {
+  color: #aaa !important;
+}
+
+:host-context(body.dark-mode) .loan-item .value {
+  color: #64b5f6 !important;
+}
+
+:host-context(body.dark-mode) .loan-checkbox {
+  background: rgba(241, 196, 15, 0.08) !important;
+  border: 2px solid var(--gold) !important;
+  padding: 18px 16px !important;
+  border-radius: 8px !important;
+  margin-top: 18px !important;
+}
+
+:host-context(body.dark-mode) .loan-checkbox:hover {
+  background: rgba(241, 196, 15, 0.12) !important;
+}
+
+:host-context(body.dark-mode) .loan-checkbox span {
+  color: var(--gold) !important;
+  font-weight: 600 !important;
+}
+
+body.dark-mode .loan-checkbox {
+  background: rgba(241, 196, 15, 0.08) !important;
+  border: 2px solid var(--gold) !important;
+  padding: 18px 16px !important;
+  border-radius: 8px !important;
+  margin-top: 18px !important;
+}
+
+body.dark-mode .loan-checkbox:hover {
+  background: rgba(241, 196, 15, 0.12) !important;
+}
+
+body.dark-mode .loan-checkbox span {
+  color: var(--gold) !important;
+  font-weight: 600 !important;
+}
+
+/* Dark Mode Material Checkbox styling - using body.dark-mode for better specificity */
+body.dark-mode mat-checkbox {
+  --mdc-checkbox-selected-checkmark-color: #000 !important;
+  --mdc-checkbox-selected-focus-icon-color: var(--gold) !important;
+  --mdc-checkbox-selected-hover-icon-color: var(--gold) !important;
+  --mdc-checkbox-selected-icon-color: var(--gold) !important;
+}
+
+body.dark-mode .loan-checkbox mat-checkbox {
+  --mdc-checkbox-selected-checkmark-color: #000 !important;
+  --mdc-checkbox-selected-focus-icon-color: var(--gold) !important;
+  --mdc-checkbox-selected-hover-icon-color: var(--gold) !important;
+  --mdc-checkbox-selected-icon-color: var(--gold) !important;
+}
+
+/* Material Checkbox Deep Styling for Dark Mode */
+body.dark-mode ::ng-deep .mdc-checkbox--checked .mdc-checkbox__background {
+  border-color: var(--gold) !important;
+  background-color: var(--gold) !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox__native-control:checked ~ .mdc-checkbox__background {
+  border-color: var(--gold) !important;
+  background-color: var(--gold) !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox__native-control:checked {
+  accent-color: var(--gold) !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox__surface {
+  background-color: transparent !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox--checked .mdc-checkbox__surface {
+  background-color: var(--gold) !important;
+}
+
+/* Applied to our loan-checkbox specifically */
+body.dark-mode .loan-checkbox ::ng-deep .mdc-checkbox--checked .mdc-checkbox__background {
+  border-color: var(--gold) !important;
+  background-color: var(--gold) !important;
+}
+
+body.dark-mode .loan-checkbox ::ng-deep .mdc-checkbox__checkmark {
+  color: #000 !important;
+}
+
+body.dark-mode .loan-checkbox ::ng-deep .mdc-checkbox__checkmark-path {
+  stroke: #000 !important;
+}
+
+/* Ensure checkbox label and text in dark mode */
+body.dark-mode .loan-checkbox ::ng-deep .mdc-checkbox__native-control:checked {
+  accent-color: var(--gold) !important;
+}
+
+/* Net Salary Section */
+:host-context(body.dark-mode) .net-salary-section {
+  background: linear-gradient(135deg, rgba(241, 196, 15, 0.12) 0%, rgba(241, 196, 15, 0.06) 100%) !important;
+  border: 1px solid rgba(241, 196, 15, 0.25) !important;
+  border-right: 4px solid rgba(241, 196, 15, 0.5) !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+:host-context(body.dark-mode) .net-item {
+  border-bottom: 1px solid rgba(241, 196, 15, 0.15) !important;
+  color: #e8e8e8 !important;
+  padding: 18px 25px !important;
+}
+
+:host-context(body.dark-mode) .net-item.final {
+  background: transparent !important;
+  color: #ffd700 !important;
+  border-bottom: none !important;
+  font-weight: 800 !important;
+  font-size: 1.25em !important;
+}
+
+:host-context(body.dark-mode) .net-item .label {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 600 !important;
+}
+
+:host-context(body.dark-mode) .net-item .value {
+  color: #ffd700 !important;
+  font-weight: 800 !important;
+}
+
+:host-context(body.dark-mode) .net-item.final .value {
+  color: #ffd700 !important;
+  font-size: 1.4em !important;
+}
+
+/* Dialog Actions */
+:host-context(body.dark-mode) .payroll-preview-dialog mat-card-actions {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 20px 30px !important;
+  display: flex !important;
+  gap: 12px !important;
+  justify-content: flex-end !important;
+  border-radius: 0 0 12px 12px !important;
+}
+
+:host-context(body.dark-mode) .payroll-preview-dialog mat-card-actions button {
+  min-width: 130px !important;
+  font-weight: 600 !important;
+  color: #e8e8e8 !important;
+}
+
+/* Dark Mode Checkbox Label - for bulk preview */
+:host-context(body.dark-mode) .checkbox-label {
+  color: var(--gold) !important;
+  font-weight: 600 !important;
+}
+
+body.dark-mode .checkbox-label {
+  color: var(--gold) !important;
+  font-weight: 600 !important;
+}
+
+/* Dark Mode Loan Checkbox Section */
+:host-context(body.dark-mode) .loan-checkbox-section {
+  margin-top: 18px !important;
+  padding: 15px !important;
+  background: rgba(241, 196, 15, 0.08) !important;
+  border: 2px solid var(--gold) !important;
+  border-radius: 8px !important;
+}
+
+body.dark-mode .loan-checkbox-section {
+  margin-top: 18px !important;
+  padding: 15px !important;
+  background: rgba(241, 196, 15, 0.08) !important;
+  border: 2px solid var(--gold) !important;
+  border-radius: 8px !important;
+}
+
+:host-context(body.dark-mode) .loan-checkbox-section .loan-checkbox {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+}
+
+body.dark-mode .loan-checkbox-section .loan-checkbox {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+}
+
+:host-context(body.dark-mode) .loan-checkbox-section .loan-checkbox:hover {
+  background: transparent !important;
+}
+
+body.dark-mode .loan-checkbox-section .loan-checkbox:hover {
+  background: transparent !important;
+}
+
+:host-context(body.dark-mode) .loan-checkbox-section .loan-checkbox span {
+  color: var(--gold) !important;
+  font-weight: 600 !important;
+}
+
+body.dark-mode .loan-checkbox-section .loan-checkbox span {
+  color: var(--gold) !important;
+  font-weight: 600 !important;
+}
+
+/* Light Mode */
+:host-context(body.light-mode) .detail-item,
+:host-context(body.light-mode) .result-item,
+:host-context(body.light-mode) .summary-item {
+  background: #f5f5f5;
+  color: #333;
+}
+
+:host-context(body.light-mode) .label {
+  color: #333;
+}
+
+:host-context(body.light-mode) .value {
+  color: #666;
+}
+
+:host-context(body.light-mode) .table-cell {
+  color: #333;
+}
+
+:host-context(body.light-mode) .instructions {
+  background: #f5f5f5;
+  color: #333;
+}
+
+:host-context(body.light-mode) .instructions h3 {
+  color: #333;
+}
+
+:host-context(body.light-mode) .instructions ol {
+  color: #666;
+}
+
+/* Bulk Payroll Preview Styles */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid rgba(241, 196, 15, 0.3);
+  border-right: 3px solid var(--gold);
+}
+
+.summary-stat .label {
+  font-size: 0.8em;
+  color: #888;
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.summary-stat .value {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Payroll Items List */
+.payroll-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payroll-item-card {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid rgba(241, 196, 15, 0.2);
+  border-right: 3px solid var(--gold);
+}
+
+.payroll-item-card.error {
+  border-color: rgba(244, 67, 54, 0.2);
+  border-right-color: #f44336;
+  background: rgba(244, 67, 54, 0.05);
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+.employee-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95em;
+}
+
+.employee-code {
+  font-size: 0.85em;
+  color: #999;
+}
+
+.item-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail .label {
+  font-size: 0.75em;
+  color: #999;
+  margin-bottom: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.detail .value {
+  font-size: 0.95em;
+  font-weight: 600;
+  color: #333;
+}
+
+.item-error {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.error-status {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #ff9999;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.error-message {
+  font-size: 0.9em;
+  color: #ff6666;
+  font-weight: 500;
+}
+
+/* Dark Mode Bulk Preview */
+:host-context(body.dark-mode) .summary-stat {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(241, 196, 15, 0.2) !important;
+  border-right-color: rgba(241, 196, 15, 0.6) !important;
+}
+
+:host-context(body.dark-mode) .summary-stat .label {
+  color: #aaa !important;
+}
+
+:host-context(body.dark-mode) .summary-stat .value {
+  color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) .payroll-item-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(241, 196, 15, 0.2) !important;
+  border-right-color: rgba(241, 196, 15, 0.6) !important;
+}
+
+:host-context(body.dark-mode) .payroll-item-card.error {
+  background: rgba(244, 67, 54, 0.12) !important;
+  border-color: rgba(244, 67, 54, 0.3) !important;
+  border-right-color: rgba(244, 67, 54, 0.6) !important;
+}
+
+:host-context(body.dark-mode) .item-header {
+  border-bottom-color: rgba(241, 196, 15, 0.15) !important;
+}
+
+:host-context(body.dark-mode) .employee-name {
+  color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) .employee-code {
+  color: #aaa !important;
+}
+
+:host-context(body.dark-mode) .detail .label {
+  color: #aaa !important;
+}
+
+:host-context(body.dark-mode) .detail .value {
+  color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) .error-status {
+  background: rgba(244, 67, 54, 0.4) !important;
+  color: #ff9999 !important;
+}
+
+:host-context(body.dark-mode) .error-message {
+  color: #ff9999 !important;
+}
+
+/* Print Styles */
+@media print {
+  .action-buttons,
+  .filters-section,
+  .filter-actions,
+  .bulk-actions,
+  .selection-actions,
+  .pagination {
+    display: none;
+  }
+
+  .payroll-container {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  mat-card {
+    page-break-inside: avoid;
+    border: 1px solid #ccc;
+  }
+
+  body {
+    background: white;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .header-section h2 {
+    font-size: 1.3em;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+
+  .filters-section {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .filters-section mat-form-field {
+    width: 100%;
+  }
+
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row,
+  .filter-row,
+  .result-grid,
+  .details-grid,
+  .accounting-info {
+    grid-template-columns: 1fr;
+  }
+
+  .table-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+
+  .bulk-actions {
+    flex-direction: column;
+  }
+
+  .table-row.header-row {
+    display: none;
+  }
+
+  .table-row {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    padding: 10px;
+    display: block;
+  }
+
+  .table-cell::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 5px;
+  }
+
+  .table-cell.checkbox-cell::before {
+    content: "";
+  }
+}
+
+/* Text Utilities */
+.d-flex {
+  display: flex;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* List Count */
+.list-count {
+  color: #999;
+  font-size: 0.9em;
+  font-weight: normal;
+  margin-right: 10px;
+}
+
+h2 {
+  color: var(--gold);
+  margin: 0;
+}
+
+h3 {
+  color: var(--text-color);
+}
+
+ol {
+  margin: 0;
+  padding-right: 20px;
+}
+
+/* Payroll Preview Dialog Styles */
+.payroll-overlay-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+/* Dark Mode Overlay */
+:host-context(body.dark-mode) .payroll-overlay-bg {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.payroll-preview-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 100%;
+  max-width: 850px;
+  max-height: 85vh;
+  display: flex;
+}
+
+.payroll-preview-dialog {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+.payroll-preview-dialog mat-card-header {
+  position: relative;
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.9) 100%);
+  padding: 25px 30px;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.payroll-preview-dialog mat-card-title {
+  color: white;
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: 700;
+  flex: 1;
+}
+
+.close-btn {
+  color: white;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
+
+.preview-content {
+  padding: 30px;
+  direction: rtl;
+  overflow-y: auto;
+  flex: 1;
+  background: white;
+}
+
+.preview-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, rgba(241, 196, 15, 0.02) 100%);
+  border-radius: 8px;
+  border-right: 4px solid var(--gold);
+  border: 1px solid rgba(241, 196, 15, 0.15);
+  color: #333;
+}
+
+.preview-section h3,
+.preview-section h4 {
+  color: var(--gold);
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 0 0 18px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(241, 196, 15, 0.4);
+}
+
+.preview-section:last-child {
+  border-bottom: none;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.salary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.deductions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.info-item,
+.salary-item {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid rgba(241, 196, 15, 0.3);
+  border-right: 3px solid var(--gold);
+}
+
+.deduction-item {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-right: 3px solid #f44336;
+}
+
+.deduction-item.border-top {
+  border-top: 2px solid #f44336;
+  margin-top: 10px;
+  background: rgba(244, 67, 54, 0.05);
+}
+
+.info-item .label,
+.salary-item .label,
+.deduction-item .label {
+  font-size: 0.8em;
+  color: #888;
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.info-item .value,
+.salary-item .value,
+.deduction-item .value {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #222;
+}
+
+.value.primary {
+  color: var(--gold);
+}
+
+.value.success {
+  color: #4caf50;
+}
+
+.value.danger {
+  color: #f44336;
+}
+
+.value.font-weight-bold {
+  font-weight: 700 !important;
+}
+
+.label.font-weight-bold {
+  font-weight: 700 !important;
+}
+
+/* Loan Section */
+.loan-section {
+  background: rgba(241, 196, 15, 0.08) !important;
+  padding: 20px !important;
+  border-radius: 8px;
+  border-right: 4px solid var(--gold) !important;
+}
+
+.loan-info {
+  background: white;
+  padding: 18px;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(241, 196, 15, 0.3);
+}
+
+.loan-items {
+  display: grid;
+  gap: 12px;
+}
+
+.loan-item {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 14px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid rgba(241, 196, 15, 0.3);
+  border-right: 3px solid var(--gold);
+}
+
+.loan-item > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-item .label {
+  font-size: 0.75em;
+  color: #999;
+  margin-bottom: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.loan-item .value {
+  font-size: 1em;
+  font-weight: 700;
+  color: #222;
+}
+
+.loan-checkbox {
+  display: flex;
+  align-items: center;
+  padding: 18px 16px;
+  background: rgba(241, 196, 15, 0.08);
+  border-radius: 8px;
+  border: 2px solid var(--gold);
+  margin-top: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.loan-checkbox:hover {
+  background: rgba(241, 196, 15, 0.12);
+}
+
+.loan-checkbox ::ng-deep .mdc-checkbox {
+  margin-right: 12px;
+}
+
+.loan-checkbox span {
+  font-size: 1.05em;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* Light Mode Checkbox Color Override */
+.loan-checkbox ::ng-deep .mdc-checkbox--checked {
+  color: var(--gold);
+}
+
+.loan-checkbox ::ng-deep .mdc-checkbox--checked .mdc-checkbox__background {
+  border-color: var(--gold) !important;
+  background-color: var(--gold) !important;
+}
+
+.loan-checkbox ::ng-deep .mdc-checkbox__native-control:checked ~ .mdc-checkbox__background {
+  border-color: var(--gold) !important;
+  background-color: var(--gold) !important;
+}
+
+.loan-checkbox ::ng-deep .mdc-checkbox__checkmark {
+  color: #000 !important;
+}
+
+.loan-checkbox ::ng-deep .mdc-checkbox__checkmark-path {
+  stroke: #000 !important;
+}
+
+/* Light Mode Checkbox */
+mat-checkbox {
+  --mdc-checkbox-selected-checkmark-color: #000 !important;
+  --mdc-checkbox-selected-focus-icon-color: var(--gold) !important;
+  --mdc-checkbox-selected-hover-icon-color: var(--gold) !important;
+  --mdc-checkbox-selected-icon-color: var(--gold) !important;
+}
+
+/* Material Checkbox Deep Styling for Light Mode */
+::ng-deep .mdc-checkbox--checked .mdc-checkbox__background {
+  border-color: var(--gold) !important;
+  background-color: var(--gold) !important;
+}
+
+::ng-deep .mdc-checkbox__native-control:checked ~ .mdc-checkbox__background {
+  border-color: var(--gold) !important;
+  background-color: var(--gold) !important;
+}
+
+/* Loan Checkbox Section */
+.loan-checkbox-section {
+  margin-top: 18px;
+  padding: 15px;
+  background: rgba(241, 196, 15, 0.08);
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+}
+
+.loan-checkbox-section .loan-checkbox {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-top: 0;
+}
+
+.loan-checkbox-section .loan-checkbox:hover {
+  background: transparent;
+}
+
+.loan-checkbox-section .loan-checkbox span {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* Checkbox Label for Bulk Preview */
+.checkbox-label {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* Net Salary Section */
+.net-salary-section {
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.9) 100%);
+  padding: 0 !important;
+  border-right: none !important;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.net-salary-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.net-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.net-item.final {
+  background: transparent;
+  color: white;
+  border-bottom: none;
+  font-weight: 800;
+  font-size: 1.25em;
+  border-radius: 0;
+}
+
+.net-item .label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95em;
+}
+
+.net-item.final .label {
+  color: white;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.net-item .value {
+  font-size: 1.25em;
+  font-weight: 800;
+  color: white;
+}
+
+.net-item.final .value {
+  color: white;
+  font-size: 1.4em;
+}
+
+/* Dialog Actions */
+.payroll-preview-dialog mat-card-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.payroll-preview-dialog mat-card-actions {
+  padding: 20px 30px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background: white;
+  flex-shrink: 0;
+  border-radius: 0 0 12px 12px;
+}
+
+.payroll-preview-dialog mat-card-actions button {
+  min-width: 130px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .payroll-preview-overlay {
+    max-width: 95vw;
+    max-height: 90vh;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .salary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .payroll-overlay-bg {
+    padding: 10px;
+  }
+
+  .payroll-preview-overlay {
+    max-width: 100vw;
+    max-height: 95vh;
+  }
+
+  .payroll-preview-dialog {
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .payroll-preview-dialog mat-card-header {
+    padding: 18px 15px;
+  }
+
+  .payroll-preview-dialog mat-card-title {
+    font-size: 1.1em;
+  }
+
+  .preview-content {
+    padding: 18px;
+  }
+
+  .preview-section {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .info-grid,
+  .salary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .deductions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .loan-item {
+    grid-template-columns: 1fr;
+  }
+
+  .net-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .net-item .label,
+  .net-item .value {
+    width: 100%;
+  }
+
+  .payroll-preview-dialog mat-card-actions {
+    padding: 15px;
+    flex-direction: column;
+  }
+
+  .payroll-preview-dialog mat-card-actions button {
+    width: 100%;
+  }
+}
+
+/* ===== BULK PREVIEW EXPANDABLE LIST ===== */
+.employees-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.employee-row-container {
+  border: 1px solid rgba(241, 196, 15, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.employee-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+.employee-row:hover {
+  background-color: rgba(241, 196, 15, 0.08);
+}
+
+.employee-row.expanded {
+  background-color: rgba(241, 196, 15, 0.1);
+}
+
+.row-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  width: 100%;
+}
+
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  flex: 0 0 150px;
+}
+
+.employee-name {
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 2px;
+}
+
+.employee-code {
+  font-size: 0.85em;
+  color: #999;
+}
+
+.row-content .department {
+  min-width: 100px;
+  flex: 0 0 100px;
+  color: #ccc;
+  font-size: 0.95em;
+}
+
+.row-content .net-salary {
+  min-width: 120px;
+  flex: 0 0 120px;
+  font-weight: 600;
+  color: #4caf50;
+  text-align: left;
+}
+
+.row-content .loan-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 60px;
+  flex: 0 0 60px;
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.loan-icon {
+  font-size: 1em;
+  width: 1em;
+  height: 1em;
+}
+
+.row-content .no-loan {
+  min-width: 60px;
+  flex: 0 0 60px;
+  color: #666;
+}
+
+.expand-icon {
+  transition: transform 0.3s ease;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.expand-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* Expanded Details */
+.expanded-details {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(241, 196, 15, 0.3);
+  padding: 16px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 2000px;
+  }
+}
+
+.details-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section {
+  border-left: 3px solid var(--gold);
+  padding-left: 16px;
+}
+
+.section h4 {
+  margin: 0 0 12px 0;
+  color: var(--gold);
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.row-3col,
+.row-2col {
+  display: grid;
+  gap: 12px;
+}
+
+.row-3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.row-2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.col-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+}
+
+.col-item .label {
+  color: #aaa;
+  font-size: 0.9em;
+}
+
+.col-item .value {
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.col-item .value.success {
+  color: #4caf50;
+}
+
+.col-item .value.danger {
+  color: #f44336;
+}
+
+/* Loans List */
+.loan-section {
+  border-color: #ff9800;
+}
+
+.loans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.loan-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 10px;
+  background-color: rgba(255, 152, 0, 0.08);
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.loan-number {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.loan-amount {
+  color: #ff9800;
+  text-align: center;
+}
+
+.loan-date {
+  color: #999;
+  text-align: right;
+}
+
+.loan-checkbox-section {
+  padding: 12px;
+  background-color: rgba(255, 152, 0, 0.1);
+  border-radius: 3px;
+  margin-top: 8px;
+}
+
+.loan-checkbox {
+  width: 100%;
+}
+
+.checkbox-label {
+  color: #ddd;
+  font-size: 0.95em;
+}
+
+/* Net Salary Calculation */
+.net-section {
+  background-color: rgba(76, 175, 80, 0.08);
+  padding: 12px;
+  border-radius: 3px;
+}
+
+.net-calc-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.net-calc-item .label {
+  color: #aaa;
+  font-size: 0.9em;
+}
+
+.net-calc-item .value {
+  font-weight: 600;
+  color: #4caf50;
+}
+
+.net-calc-item .value.danger {
+  color: #f44336;
+}
+
+.net-calc-item.final {
+  border-top: 2px solid var(--gold);
+  padding-top: 12px;
+  margin-top: 8px;
+}
+
+.net-calc-item.final .label {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.net-calc-item.final .value.final {
+  color: var(--gold);
+  font-size: 1.1em;
+}
+
+/* Failed Items */
+.failed-section h3 {
+  color: #f44336;
+}
+
+.failed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.failed-item {
+  padding: 12px;
+  background-color: rgba(244, 67, 54, 0.1);
+  border-left: 3px solid #f44336;
+  border-radius: 3px;
+}
+
+.failed-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.failed-header .name {
+  color: #fff;
+  font-weight: 500;
+}
+
+.failed-header .status {
+  color: #f44336;
+  font-weight: 600;
+  font-size: 0.85em;
+}
+
+.failed-message {
+  color: #ff9e80;
+  font-size: 0.9em;
+}
+
+/* Dark Mode for Expandable List */
+:host-context(body.dark-mode) .employee-row {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(241, 196, 15, 0.2);
+}
+
+:host-context(body.dark-mode) .employee-row:hover {
+  background-color: rgba(241, 196, 15, 0.1);
+}
+
+:host-context(body.dark-mode) .employee-row.expanded {
+  background-color: rgba(241, 196, 15, 0.12);
+}
+
+:host-context(body.dark-mode) .expanded-details {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-color: rgba(241, 196, 15, 0.3);
+}
+
+:host-context(body.dark-mode) .section {
+  border-color: var(--gold);
+}
+
+:host-context(body.dark-mode) .col-item {
+  border-color: rgba(241, 196, 15, 0.1);
+}
+
+:host-context(body.dark-mode) .col-item .label {
+  color: #aaa;
+}
+
+:host-context(body.dark-mode) .col-item .value {
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .loan-row {
+  background-color: rgba(255, 152, 0, 0.1);
+  border-color: rgba(255, 152, 0, 0.2);
+}
+
+:host-context(body.dark-mode) .loan-number,
+:host-context(body.dark-mode) .loan-amount {
+  color: #ff9800;
+}
+
+:host-context(body.dark-mode) .loan-date {
+  color: #999;
+}
+
+:host-context(body.dark-mode) .loan-checkbox-section {
+  background-color: rgba(255, 152, 0, 0.08);
+  border: 1px solid rgba(255, 152, 0, 0.2);
+}
+
+:host-context(body.dark-mode) .checkbox-label {
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .net-section {
+  background-color: rgba(76, 175, 80, 0.08);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+:host-context(body.dark-mode) .net-calc-item .label {
+  color: #aaa;
+}
+
+:host-context(body.dark-mode) .net-calc-item .value {
+  color: #4caf50;
+}
+
+:host-context(body.dark-mode) .net-calc-item.final {
+  border-color: var(--gold);
+}
+
+:host-context(body.dark-mode) .net-calc-item.final .label {
+  color: var(--gold);
+}
+
+/* Dark Mode for Pagination */
+:host-context(body.dark-mode) .pagination {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+:host-context(body.dark-mode) .pagination button {
+  border-color: rgba(241, 196, 15, 0.3);
+  background: transparent;
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .pagination button:hover:not([disabled]) {
+  background: rgba(241, 196, 15, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+:host-context(body.dark-mode) .page-info {
+  color: #e8e8e8;
+}
+
+/* Dark Mode for Selection Actions */
+:host-context(body.dark-mode) .selection-actions {
+  background: rgba(241, 196, 15, 0.08);
+  border: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+:host-context(body.dark-mode) .selection-info {
+  color: #aaa;
+}
+
+/* Dark Mode for Status Badges */
+:host-context(body.dark-mode) .status-badge {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-mode) .net-calc-item.final .value.final {
+  color: var(--gold);
+}
+
+:host-context(body.dark-mode) .failed-item {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+:host-context(body.dark-mode) .failed-header .name {
+  color: #e8e8e8;
+}
+
+/* Paginator Styles */
+.paginator-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+:host-context(body.dark-mode) .paginator-container ::ng-deep .mat-mdc-paginator {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
+}
+
+:host-context(body.dark-mode) .paginator-container ::ng-deep .mat-mdc-paginator-container {
+  color: #e0e0e0;
+}
+
+:host-context(body.light-mode) .paginator-container {
+  background-color: #f5f5f5;
+}
+
+:host-context(body.dark-mode) .failed-header .status {
+  color: #ff7043;
+}
+
+:host-context(body.dark-mode) .failed-message {
+  color: #ff9e80;
+}

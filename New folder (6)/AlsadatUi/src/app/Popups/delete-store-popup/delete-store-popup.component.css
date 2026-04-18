@@ -1,0 +1,130 @@
+.role-dialog { padding: 12px; min-width: 300px; }
+.w-100 { width: 100%; }
+
+:host-context(body.dark-mode) .role-dialog { color: #e8e8e8; }
+
+/* Improve contrast for dark mode: ensure form field background and input text are visible */
+:host-context(body.dark-mode) .mat-form-field-infix,
+:host-context(body.dark-mode) .mat-input-element {
+	color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline .mat-form-field-outline {
+	color: rgba(255,255,255,0.06);
+}
+
+:host-context(body.dark-mode) .role-dialog button {
+	color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .role-dialog {
+		background: transparent;
+}
+
+/* Ensure MDC form fields inside this dialog are visible */
+:host-context(body.dark-mode) .role-dialog .mat-mdc-form-field,
+:host-context(body.dark-mode) .role-dialog .mat-form-field-appearance-outline,
+:host-context(body.dark-mode) .role-dialog .mat-mdc-form-field .mdc-notched-outline {
+	color: #e8e8e8 !important;
+	border-color: rgba(255,255,255,0.08) !important;
+}
+
+:host-context(body.dark-mode) .role-dialog .mat-mdc-input-element,
+:host-context(body.dark-mode) .role-dialog .mat-input-element,
+:host-context(body.dark-mode) .role-dialog .mat-mdc-text-field__input {
+	color: #e8e8e8 !important;
+	background: transparent !important;
+}
+
+:host-context(body.dark-mode) .role-dialog .mat-mdc-select-value-text,
+:host-context(body.dark-mode) .role-dialog .mat-select-trigger {
+	color: #e8e8e8 !important;
+}
+
+/* Make mat-select / options visible in dark mode inside dialog */
+:host-context(body.dark-mode) .mat-select-trigger,
+:host-context(body.dark-mode) .mat-select-value-text,
+:host-context(body.dark-mode) .mat-option-text {
+	color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline .mat-form-field-outline {
+	border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Stroked buttons should show border and text in dark mode */
+:host-context(body.dark-mode) .role-dialog .mat-stroked-button {
+	color: #e8e8e8 !important;
+	border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* Primary/warn colored stroked buttons get slightly different accents */
+:host-context(body.dark-mode) .role-dialog .mat-stroked-button.mat-primary {
+	color: #ffd54f !important;
+	border-color: rgba(255, 213, 79, 0.18) !important;
+}
+:host-context(body.dark-mode) .role-dialog .mat-stroked-button.mat-warn {
+	color: #ff8a80 !important;
+	border-color: rgba(255, 138, 128, 0.12) !important;
+}
+
+/* Ensure placeholder/labels are visible */
+:host-context(body.dark-mode) .mat-form-field-label {
+	color: rgba(255,255,255,0.7) !important;
+}
+
+/* --- Match Employee Edit dialog styles (light + dark) --- */
+.role-dialog {
+	max-width: 520px;
+	margin: 0 auto;
+	/* border-radius: 8px; */
+	background: var(--input-bg, #fff);
+	color: var(--input-text, #222);
+	box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+:host-context(body.dark-mode) .role-dialog {
+	background: #1e1e1e !important;
+	color: #e8e8e8 !important;
+	box-shadow: 0 12px 36px rgba(0,0,0,0.6) !important;
+}
+
+.role-dialog h3 {
+	margin: 0 0 12px 0;
+	color: var(--gold);
+	text-align: center;
+	font-weight: 700;
+}
+
+.role-dialog .w-100 .mat-mdc-input-element,
+.role-dialog .w-100 .mat-input-element {
+	background-color: var(--input-bg) !important;
+	color: var(--input-text) !important;
+	padding: 10px 8px !important;
+	border-radius: 6px;
+}
+
+.role-dialog .w-100 .mdc-notched-outline__leading,
+.role-dialog .w-100 .mdc-notched-outline__trailing,
+.role-dialog .w-100 .mdc-notched-outline__notch {
+	border-color: var(--input-border, #ccc) !important;
+}
+
+:host-context(body.dark-mode) .role-dialog .w-100 .mdc-notched-outline__leading,
+:host-context(body.dark-mode) .role-dialog .w-100 .mdc-notched-outline__trailing,
+:host-context(body.dark-mode) .role-dialog .w-100 .mdc-notched-outline__notch {
+	border-color: rgba(255,255,255,0.06) !important;
+}
+
+.role-dialog .d-flex {
+	display: flex;
+}
+.role-dialog .justify-content-end {
+	justify-content: flex-end;
+}
+
+/* Small responsive tweak similar to employee edit */
+@media (max-width: 480px) {
+	.role-dialog { padding: 10px; min-width: 260px; }
+	.role-dialog .d-flex { flex-direction: column-reverse; gap: 8px; }
+}

@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>منتجات التحويل</h2>
+
+<div mat-dialog-content>
+  <table mat-table [dataSource]="products" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="productName">
+      <th mat-header-cell *matHeaderCellDef> اسم المنتج </th>
+      <td mat-cell *matCellDef="let element"> {{ element.productName }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef> الكمية </th>
+      <td mat-cell *matCellDef="let element"> {{ element.quantity }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['productName', 'quantity']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['productName', 'quantity']"></tr>
+  </table>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">إغلاق</button>
+</div>

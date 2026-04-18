@@ -1,0 +1,608 @@
+<div class="salary-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>كشف الراتب - {{ salaryData?.employeeName }}</h2>
+      <div class="action-buttons">
+        <button mat-stroked-button color="primary" (click)="printSalary()" class="action-btn mx-2">
+          <mat-icon>print</mat-icon>
+          طباعة
+        </button>
+        <button mat-stroked-button color="accent" (click)="downloadPDF()" class="action-btn mx-2">
+          <mat-icon>download</mat-icon>
+          تحميل PDF
+        </button>
+        <button mat-stroked-button color="warn" (click)="goBack()" class="action-btn mx-2">
+          <mat-icon>arrow_back</mat-icon>
+          رجوع
+        </button>
+      </div>
+    </div>
+
+    <div style="margin-left: 34%" class="filters-section" dir="rtl">
+      <mat-form-field appearance="outline" class="custom-input-theme">
+        <mat-label>الشهر</mat-label>
+        <mat-select [(ngModel)]="selectedMonth" (selectionChange)="onMonthChange()">
+          <mat-option *ngFor="let month of months" [value]="month.id">
+            {{ month.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme">
+        <mat-label>السنة</mat-label>
+        <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()">
+          <mat-option *ngFor="let year of years" [value]="year">
+            {{ year }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <hr style="border-color: var(--gold); opacity: 0.5; margin: 20px 0;">
+
+  <div *ngIf="isLoading" class="text-center loading-state">
+    <span style="color: var(--gold);">جاري التحميل...</span>
+  </div>
+
+  <div *ngIf="!isLoading && salaryData" class="salary-details">
+    <!-- Tabs Navigation -->
+    <mat-tab-group dir="rtl" class="salary-tabs">
+      <!-- Tab 1: Basic Salary Details -->
+      <mat-tab label="بيانات الراتب">
+        <ng-template mat-tab-label>
+          <mat-icon>assignment</mat-icon>
+          <span class="tab-label">بيانات الراتب</span>
+        </ng-template>
+
+        <!-- Employee Info Card -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <mat-card-title>بيانات الموظف</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="info-grid" dir="rtl">
+              <div class="info-item">
+                <span class="label">كود الموظف:</span>
+                <span class="value">{{ salaryData.employeeCode }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">اسم الموظف:</span>
+                <span class="value">{{ salaryData.employeeName }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">القسم:</span>
+                <span class="value">{{ salaryData.departmentName ?? '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">الفترة:</span>
+                <span class="value">{{ getMonthName(selectedMonth) }}/{{ selectedYear }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Attendance Card -->
+        <mat-card class="attendance-card">
+          <mat-card-header>
+            <mat-card-title>سجل الحضور</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="attendance-grid" dir="rtl">
+              <div class="attendance-item">
+                <span class="label">إجمالي أيام العمل:</span>
+                <span class="value primary">{{ salaryData.totalWorkingDays }}</span>
+              </div>
+              <div class="attendance-item">
+                <span class="label">أيام الحضور:</span>
+                <span class="value success">{{ salaryData.presentDays }}</span>
+              </div>
+              <div class="attendance-item">
+                <span class="label">أيام الغياب:</span>
+                <span class="value danger">{{ salaryData.absentDays }}</span>
+              </div>
+              <div class="attendance-item">
+                <span class="label">أيام إجازة مدفوعة:</span>
+                <span class="value info">{{ salaryData.paidLeaveDays }}</span>
+              </div>
+              <div class="attendance-item">
+                <span class="label">أيام إجازة بدون أجر:</span>
+                <span class="value warning">{{ salaryData.unpaidLeaveDays }}</span>
+              </div>
+              <div class="attendance-item">
+                <span class="label">تأخيرات:</span>
+                <span class="value danger">{{ salaryData.lateDays }}</span>
+              </div>
+              <div class="attendance-item">
+                <span class="label">خروج مبكر:</span>
+                <span class="value danger">{{ salaryData.earlyLeaveDays }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Salary Calculation Card -->
+        <mat-card class="salary-calc-card">
+          <mat-card-header>
+            <mat-card-title>حساب الراتب - التفاصيل الكاملة</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="salary-table" dir="rtl">
+              <div class="salary-row">
+                <span class="label">الراتب الأساسي:</span>
+                <span class="value">{{ formatCurrency(salaryData.basicSalary) }}</span>
+              </div>
+              
+              <div class="salary-row">
+                <span class="label">الراتب اليومي:</span>
+                <span class="value">{{ formatCurrency(salaryData.salaryPerDay) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">الراتب بالساعة:</span>
+                <span class="value">{{ formatCurrency(salaryData.salaryPerHour) }}</span>
+              </div>
+
+              <hr style="margin: 12px 0; opacity: 0.3;">
+              
+              <div class="salary-row section-title">
+                <span class="label"><strong>الإضافات:</strong></span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">ساعات الإضافة:</span>
+                <span class="value">{{ salaryData.overtimeHours.toFixed(2) }} ساعة</span>
+              </div>
+              
+              <div class="salary-row">
+                <span class="label">معدل الإضافة (للساعة):</span>
+                <span class="value">{{ salaryData.overtimeRatePerHour }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">مكافأة الإضافة:</span>
+                <span class="value success">+{{ formatCurrency(salaryData.totalOvertimePay) }}</span>
+              </div>
+
+              <hr style="margin: 12px 0; opacity: 0.3;">
+
+              <div class="salary-row section-title">
+                <span class="label"><strong>الخصومات التفصيلية:</strong></span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">ساعات الخصم:</span>
+                <span class="value">{{ salaryData.deductionHours.toFixed(2) }} ساعة</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">معدل الخصم (للساعة):</span>
+                <span class="value">{{ salaryData.deductionRatePerHour }}</span>
+              </div>
+              
+              <div class="salary-row">
+                <span class="label">خصم الساعات:</span>
+                <span class="value danger">-{{ formatCurrency(salaryData.timeDeductionAmount) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">خصم الغياب:</span>
+                <span class="value danger">-{{ formatCurrency(salaryData.absentDeduction) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">خصم الإجازة بدون أجر:</span>
+                <span class="value danger">-{{ formatCurrency(salaryData.unpaidLeaveDeduction) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">خصم التأخير:</span>
+                <span class="value danger">-{{ formatCurrency(salaryData.lateDeduction) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">خصم الخروج المبكر:</span>
+                <span class="value danger">-{{ formatCurrency(salaryData.earlyLeaveDeduction) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">خصم القروض:</span>
+                <span class="value danger">-{{ formatCurrency(salaryData.loanDeduction) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">عدد أقساط القروض:</span>
+                <span class="value">{{ salaryData.loanInstallmentsCount }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">العقوبات والخصومات الأخرى:</span>
+                <span class="value danger">-{{ formatCurrency(salaryData.sanctionAmount) }}</span>
+              </div>
+
+              <div class="salary-row">
+                <span class="label">عدد العقوبات:</span>
+                <span class="value">{{ salaryData.sanctionsCount }}</span>
+              </div>
+
+              <hr style="margin: 12px 0; opacity: 0.3;">
+
+              <div class="salary-row totals">
+                <span class="label"><strong>إجمالي الإضافات:</strong></span>
+                <span class="value success"><strong>+{{ formatCurrency(salaryData.totalAdditions) }}</strong></span>
+              </div>
+
+              <div class="salary-row totals">
+                <span class="label"><strong>إجمالي الخصومات:</strong></span>
+                <span class="value danger"><strong>-{{ formatCurrency(salaryData.totalDeductions) }}</strong></span>
+              </div>
+
+              <div class="salary-row net-salary">
+                <span class="label"><strong>الراتب النهائي:</strong></span>
+                <span class="value"><strong style="color: var(--gold); font-size: 1.2em;">{{ formatCurrency(salaryData.netSalary) }}</strong></span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 2: Attendance Details -->
+      <mat-tab label="تفاصيل الحضور">
+        <ng-template mat-tab-label>
+          <mat-icon>calendar_today</mat-icon>
+          <span class="tab-label">تفاصيل الحضور</span>
+        </ng-template>
+
+        <mat-card class="details-card" *ngIf="salaryData.attendanceDetails && salaryData.attendanceDetails.length > 0">
+          <mat-card-header>
+            <mat-card-title>سجل الحضور اليومي</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="attendance-table" dir="rtl">
+              <div class="table-row header-row">
+                <div class="table-cell">التاريخ</div>
+                <div class="table-cell">الوقت (دخول)</div>
+                <div class="table-cell">الوقت (خروج)</div>
+                <div class="table-cell">الحالة</div>
+                <div class="table-cell">ساعات العمل</div>
+                <div class="table-cell">إضافي</div>
+                <div class="table-cell">خصم</div>
+              </div>
+              <div class="table-row" *ngFor="let attendance of salaryData.attendanceDetails">
+                <div class="table-cell">{{ attendance.date }}</div>
+                <div class="table-cell">{{ attendance.checkIn || '-' }}</div>
+                <div class="table-cell">{{ attendance.checkOut || '-' }}</div>
+                <div class="table-cell">
+                  <span class="status-badge" 
+                    [ngClass]="attendance.status === 'Present' ? 'present' : 
+                               attendance.status === 'Late' ? 'late' : 
+                               attendance.status === 'EarlyLeave' ? 'early' : 'absent'">
+                    {{ attendance.status }}
+                  </span>
+                </div>
+                <div class="table-cell">{{ attendance.workHours.toFixed(2) }}</div>
+                <div class="table-cell success">{{ attendance.overtimeHours.toFixed(2) }}</div>
+                <div class="table-cell danger">{{ attendance.deductionHours.toFixed(2) }}</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 3: Monthly Summary & Analysis -->
+      <mat-tab label="التقرير التحليلي" *ngIf="summaryData">
+        <ng-template mat-tab-label>
+          <mat-icon>analytics</mat-icon>
+          <span class="tab-label">التقرير التحليلي</span>
+        </ng-template>
+
+        <!-- Financial Analysis -->
+        <mat-card class="analysis-card">
+          <mat-card-header>
+            <mat-card-title>التحليل المالي</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="analysis-grid" dir="rtl">
+              <div class="analysis-item">
+                <span class="label">الراتب الأساسي:</span>
+                <span class="value">{{ formatCurrency(summaryData.financialAnalysis.basicSalary) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">إجمالي الإضافات:</span>
+                <span class="value success">{{ formatCurrency(summaryData.financialAnalysis.totalAdditions) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">إجمالي الخصومات:</span>
+                <span class="value danger">{{ formatCurrency(summaryData.financialAnalysis.totalDeductions) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">الراتب النهائي:</span>
+                <span class="value primary">{{ formatCurrency(summaryData.financialAnalysis.netSalary) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">نسبة الراتب الأساسي:</span>
+                <span class="value">{{ formatPercentage(summaryData.financialAnalysis.basicSalaryPercentage) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">نسبة الإضافات:</span>
+                <span class="value success">{{ formatPercentage(summaryData.financialAnalysis.overtimePercentage) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">نسبة الخصومات:</span>
+                <span class="value danger">{{ formatPercentage(summaryData.financialAnalysis.deductionPercentage) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">نسبة الراتب النهائي للأساسي:</span>
+                <span class="value">{{ formatPercentage(summaryData.financialAnalysis.netSalaryToBasicRatio) }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Time Analysis -->
+        <mat-card class="analysis-card">
+          <mat-card-header>
+            <mat-card-title>تحليل الوقت</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="analysis-grid" dir="rtl">
+              <div class="analysis-item">
+                <span class="label">إجمالي أيام العمل:</span>
+                <span class="value">{{ summaryData.timeAnalysis.totalWorkingDays }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">أيام الحضور:</span>
+                <span class="value success">{{ summaryData.timeAnalysis.presentDays }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">أيام الغياب:</span>
+                <span class="value danger">{{ summaryData.timeAnalysis.absentDays }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">نسبة الحضور:</span>
+                <span class="value success">{{ formatPercentage(summaryData.timeAnalysis.attendanceRate) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">نسبة الغياب:</span>
+                <span class="value danger">{{ formatPercentage(summaryData.timeAnalysis.absenceRate) }}</span>
+              </div>
+              <div class="analysis-item">
+                <span class="label">نسبة الإجازات:</span>
+                <span class="value">{{ formatPercentage(summaryData.timeAnalysis.leaveRate) }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Performance Analysis -->
+        <mat-card class="analysis-card" *ngIf="summaryData.performanceAnalysis">
+          <mat-card-header>
+            <mat-card-title>تحليل الأداء</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="performance-grid" dir="rtl">
+              <div class="performance-item">
+                <span class="label">مستوى الأداء:</span>
+                <span class="value" [style.color]="getPerformanceColor(summaryData.performanceAnalysis.performanceLevel)">
+                  {{ summaryData.performanceAnalysis.performanceLevel }}
+                </span>
+              </div>
+              <div class="performance-item">
+                <span class="label">درجة الالتزام:</span>
+                <span class="value">{{ summaryData.performanceAnalysis.punctualityScore.toFixed(2) }}/100</span>
+              </div>
+              <div class="performance-item">
+                <span class="label">درجة الحضور:</span>
+                <span class="value">{{ summaryData.performanceAnalysis.attendanceScore.toFixed(2) }}/100</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 4: Monthly Statistics -->
+      <mat-tab label="الإحصائيات" *ngIf="statisticsData">
+        <ng-template mat-tab-label>
+          <mat-icon>show_chart</mat-icon>
+          <span class="tab-label">الإحصائيات</span>
+        </ng-template>
+
+        <!-- Salary Statistics -->
+        <mat-card class="stats-card">
+          <mat-card-header>
+            <mat-card-title>إحصائيات الراتب</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stats-grid" dir="rtl">
+              <div class="stat-item">
+                <span class="label">الراتب اليومي المتوسط:</span>
+                <span class="value">{{ formatCurrency(statisticsData.salaryStats.averageDailySalary) }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">الراتب بالساعة المتوسط:</span>
+                <span class="value">{{ formatCurrency(statisticsData.salaryStats.averageHourlySalary) }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">نسبة نمو الراتب:</span>
+                <span class="value" [ngClass]="statisticsData.salaryStats.salaryGrowthRate > 0 ? 'success' : 'danger'">
+                  {{ formatPercentage(statisticsData.salaryStats.salaryGrowthRate) }}
+                </span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Attendance Statistics -->
+        <mat-card class="stats-card">
+          <mat-card-header>
+            <mat-card-title>إحصائيات الحضور</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stats-grid" dir="rtl">
+              <div class="stat-item">
+                <span class="label">إجمالي أيام العمل:</span>
+                <span class="value">{{ statisticsData.attendanceStats.totalScheduledDays }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">أيام العمل الفعلية:</span>
+                <span class="value success">{{ statisticsData.attendanceStats.actualWorkingDays }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">درجة الحضور:</span>
+                <span class="value" [style.color]="getStatusColor(statisticsData.attendanceStats.attendanceGrade)">
+                  {{ statisticsData.attendanceStats.attendanceGrade }}
+                </span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Overtime Statistics -->
+        <mat-card class="stats-card">
+          <mat-card-header>
+            <mat-card-title>إحصائيات الوقت الإضافي</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stats-grid" dir="rtl">
+              <div class="stat-item">
+                <span class="label">إجمالي ساعات الإضافي:</span>
+                <span class="value">{{ statisticsData.overtimeStats.totalOvertimeHours.toFixed(2) }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">متوسط الإضافي اليومي:</span>
+                <span class="value">{{ statisticsData.overtimeStats.averageDailyOvertime.toFixed(2) }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">تكلفة الإضافي:</span>
+                <span class="value">{{ formatCurrency(statisticsData.overtimeStats.overtimeCost) }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 5: Salary History -->
+      <mat-tab label="السجل السنوي" *ngIf="historyData">
+        <ng-template mat-tab-label>
+          <mat-icon>history</mat-icon>
+          <span class="tab-label">السجل السنوي</span>
+        </ng-template>
+
+        <!-- Yearly Summary -->
+        <mat-card class="summary-card">
+          <mat-card-header>
+            <mat-card-title>ملخص السنة {{ historyData.year }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="summary-grid" dir="rtl">
+              <div class="summary-item">
+                <span class="label">إجمالي الرواتب السنوية:</span>
+                <span class="value primary">{{ formatCurrency(historyData.yearlySummary.totalNetSalary) }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">متوسط الراتب الشهري:</span>
+                <span class="value">{{ formatCurrency(historyData.yearlySummary.averageMonthlySalary) }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">إجمالي أيام الحضور:</span>
+                <span class="value success">{{ historyData.yearlySummary.totalPresentDays }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">إجمالي أيام الغياب:</span>
+                <span class="value danger">{{ historyData.yearlySummary.totalAbsentDays }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">إجمالي ساعات الإضافي:</span>
+                <span class="value">{{ historyData.yearlySummary.totalOvertimeHours.toFixed(2) }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">أفضل شهر:</span>
+                <span class="value success">{{ historyData.yearlySummary.bestPerformanceMonth }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 6: Salary Comparison -->
+      <mat-tab label="مقارنة الرواتب">
+        <ng-template mat-tab-label>
+          <mat-icon>compare</mat-icon>
+          <span class="tab-label">مقارنة الرواتب</span>
+        </ng-template>
+
+        <mat-card class="comparison-controls">
+          <mat-card-content dir="rtl">
+            <div class="comparison-filters">
+              <div class="filter-group">
+                <label>مقارنة مع:</label>
+                <div class="select-group">
+                  <mat-form-field appearance="outline" class="custom-input-theme">
+                    <mat-label>الشهر</mat-label>
+                    <mat-select [(ngModel)]="compareMonth">
+                      <mat-option *ngFor="let month of months" [value]="month.id">
+                        {{ month.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="custom-input-theme">
+                    <mat-label>السنة</mat-label>
+                    <mat-select [(ngModel)]="compareYear">
+                      <mat-option *ngFor="let year of years" [value]="year">
+                        {{ year }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <button style="margin-bottom: 23px;" mat-raised-button color="primary" (click)="loadComparison()" class="compare-btn">
+                <mat-icon>compare_arrows</mat-icon>
+                قارن الآن
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Comparison Results -->
+        <mat-card class="comparison-card" *ngIf="comparisonData">
+          <mat-card-header>
+            <mat-card-title>نتائج المقارنة</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="comparison-summary" dir="rtl">
+              <h4>الاتجاه العام: <span [style.color]="getStatusColor(comparisonData.comparison.overallTrend)">{{ comparisonData.comparison.overallTrend }}</span></h4>
+              <p class="comparison-text">{{ comparisonData.comparison.summary }}</p>
+            </div>
+
+            <!-- Metric Changes Table -->
+            <div class="metrics-comparison" *ngIf="comparisonData.metricChanges.length > 0">
+              <div class="table-row header-row">
+                <div class="table-cell">المقياس</div>
+                <div class="table-cell">القيمة الأساسية</div>
+                <div class="table-cell">القيمة المقارنة</div>
+                <div class="table-cell">نسبة التغير</div>
+                <div class="table-cell">الحالة</div>
+              </div>
+              <div class="table-row" *ngFor="let metric of comparisonData.metricChanges">
+                <div class="table-cell">{{ metric.metricName }}</div>
+                <div class="table-cell">{{ metric.baseValue.toFixed(2) }}</div>
+                <div class="table-cell">{{ metric.compareValue.toFixed(2) }}</div>
+                <div class="table-cell" [ngClass]="metric.isImprovement ? 'success' : 'danger'">
+                  {{ metric.changePercentage > 0 ? '+' : '' }}{{ metric.changePercentage.toFixed(2) }}%
+                </div>
+                <div class="table-cell">{{ metric.status }}</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div *ngIf="!isLoading && !salaryData" class="text-center empty-state">
+    <mat-icon class="empty-icon">assignment</mat-icon>
+    <p>لا توجد بيانات متوفرة</p>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+/* Container العام */
+.invoice-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 15px;
+  background-color: var(--bg-color);
+  color: var(--text-color) !important;
+}
+
+/* البطاقة لكل فاتورة ومنتج */
+.invoice-card, .product-card, .invoice-card *, .product-card * {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+}
+
+/* عناوين البطاقة */
+.mat-card-title, .mat-card-subtitle {
+  color: var(--text-color) !important;
+}
+
+/* جدول السحب */
+.stock-table, .stock-table *, .stock-table th, .stock-table td {
+  color: var(--text-color) !important;
+  background-color: var(--input-bg) !important;
+}
+
+/* رؤوس الجدول */
+.stock-table th {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-color) !important;
+}
+
+/* الصفوف المحذوفة */
+.deleted-row {
+  background-color: var(--color-deleted) !important;
+  color: var(--text-deleted) !important;
+}

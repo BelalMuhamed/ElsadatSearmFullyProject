@@ -1,0 +1,315 @@
+/* ===== Tree Accounts Container ===== */
+.tree-accounts-container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 24px;
+  border-radius: 12px;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* ===== Header ===== */
+.tree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--gold);
+}
+
+.tree-header h2 {
+  margin: 0;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* ===== Tree Content ===== */
+.tree-content {
+  background-color: var(--bg-color);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* ===== Table Header ===== */
+.tree-table-header {
+  display: flex;
+  align-items: center;
+  background-color: var(--sidenav-bg);
+  color: var(--gold);
+  font-weight: 600;
+  padding: 16px;
+  border-bottom: 2px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* ===== Column Sizing ===== */
+.col-account {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.col-debit,
+.col-credit,
+.col-balance {
+  flex: 0 0 120px;
+  text-align: center;
+}
+
+.col-actions {
+  flex: 0 0 180px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* ===== Tree Rows ===== */
+.tree-rows {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.tree-row {
+  display: none;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.tree-row.visible {
+  display: block;
+}
+
+.tree-row:hover {
+  background-color: var(--hover-bg);
+}
+
+.tree-row.has-children {
+  font-weight: 500;
+}
+
+.row-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: var(--text-color);
+}
+
+/* ===== Expand/Collapse Button ===== */
+.expand-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  color: var(--gold);
+  margin-left: 4px;
+}
+
+.expand-btn:hover {
+  background-color: var(--hover-bg);
+  transform: scale(1.1);
+}
+
+.expand-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.expand-btn.expanded mat-icon {
+  transform: rotate(0deg);
+}
+
+/* ===== Account Icon ===== */
+.account-icon {
+  display: flex;
+  align-items: center;
+  color: var(--gold);
+}
+
+.account-icon.parent mat-icon {
+  color: #f39c12;
+}
+
+.account-icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== Account Name ===== */
+.account-name {
+  font-size: 1rem;
+  margin-right: 8px;
+}
+
+/* ===== Balance Colors ===== */
+.balance-debit {
+  color: #27ae60;
+  font-weight: 600;
+}
+
+.balance-credit {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.balance-zero {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+/* ===== Action Icon Buttons ===== */
+.action-icon-btn {
+  color: var(--gold) !important;
+  transition: all 0.3s ease;
+}
+
+.action-icon-btn:hover {
+  background-color: var(--hover-bg) !important;
+  transform: scale(1.1);
+}
+
+.action-icon-btn.add-child {
+  color: #27ae60 !important;
+}
+
+.action-icon-btn.delete {
+  color: #e74c3c !important;
+}
+
+.action-icon-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== Loading State ===== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--gold);
+}
+
+.loading-container .spinner {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  margin-top: 16px;
+  font-size: 1.1rem;
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--text-color);
+}
+
+.empty-state mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: var(--gold);
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  color: var(--gold);
+  margin: 8px 0;
+  font-size: 1.5rem;
+}
+
+.empty-state p {
+  opacity: 0.7;
+  margin-bottom: 24px;
+}
+
+/* ===== Scrollbar Styling ===== */
+.tree-rows::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tree-rows::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+.tree-rows::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 4px;
+}
+
+.tree-rows::-webkit-scrollbar-thumb:hover {
+  background: var(--active-bg);
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .tree-table-header,
+  .row-content {
+    font-size: 0.9rem;
+  }
+
+  .col-debit,
+  .col-credit,
+  .col-balance {
+    flex: 0 0 80px;
+  }
+
+  .col-actions {
+    flex: 0 0 140px;
+  }
+
+  .tree-row[style*="padding-right"] {
+    padding-right: calc(var(--level, 0) * 20px + 12px) !important;
+  }
+}
+
+/* ===== Dark Mode Enhancements ===== */
+body.dark-mode .tree-row {
+  border-bottom-color: rgba(212, 175, 55, 0.15);
+}
+
+body.dark-mode .tree-content {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== Light Mode Adjustments ===== */
+body.light-mode .tree-row {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .tree-content {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}

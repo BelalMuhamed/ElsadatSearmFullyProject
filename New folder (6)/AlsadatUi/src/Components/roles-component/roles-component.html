@@ -1,0 +1,71 @@
+<div class="salary-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>الأدوار</h2>
+      <div class="action-buttons">
+        <button mat-stroked-button color="primary" (click)="openAdd()" class="action-btn mx-2">
+          <mat-icon>add</mat-icon>
+          إضافة دور
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading" class="text-center">جاري التحميل...</div>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z1" dir="rtl" *ngIf="!isLoading">
+        <!-- Role Name -->
+        <ng-container matColumnDef="roleName">
+          <th mat-header-cell *matHeaderCellDef>اسم الدور</th>
+          <td mat-cell *matCellDef="let r">{{ r.roleName }}</td>
+        </ng-container>
+
+        <!-- Created At -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>تاريخ الإنشاء</th>
+          <td mat-cell *matCellDef="let r">{{ r.createdAt ? (r.createdAt | date:'dd/MM/yyyy') : '-' }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>إجراءات</th>
+          <td mat-cell *matCellDef="let r">
+            <button mat-icon-button color="primary" (click)="openEdit(r)" title="تعديل">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <!-- <button mat-icon-button color="warn" (click)="softDelete(r)" title="تعطيل">
+              <mat-icon>block</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" (click)="restore(r)" title="استعادة">
+              <mat-icon>restore</mat-icon>
+            </button> -->
+            <button mat-icon-button (click)="hardDelete(r)" title="حذف نهائي">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+      <!-- Status column (toggle) -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>الحالة</th>
+        <td mat-cell *matCellDef="let r" style="text-align:center">
+          <mat-slide-toggle [checked]="!r.isDeleted" (change)="toggleRoleStatus(r)" matTooltip="تفعيل/تعطيل"></mat-slide-toggle>
+        </td>
+      </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator *ngIf="roles && roles.length" [length]="roles.length" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSizeOptions[1]" [showFirstLastButtons]="true" aria-label="جدول الأدوار"></mat-paginator>
+  </div>
+
+      <div *ngIf="!isLoading && (!roles || roles.length === 0)" class="empty-state text-center">
+        لا توجد أدوار متاحة
+      </div>
+</div>

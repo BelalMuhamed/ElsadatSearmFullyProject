@@ -1,0 +1,54 @@
+<div class="invoice-details-container" *ngIf="invoiceId">
+
+  <!-- Invoice Header -->
+<mat-card class="invoice-card">
+  <mat-card-title>فاتورة رقم: {{ invoice.invoiceNumber }}</mat-card-title>
+ <mat-card-subtitle>
+  الموزع: {{ invoice.distributorName ?? '0' }} <br>
+  تاريخ الإنشاء: {{ invoice.createdAt ? (invoice.createdAt | date:'medium') : '0' }}<br>
+  نقاط: {{ invoice.totalPoints ?? 0 }}<br>
+  خصم أول: {{ invoice.firstDiscount ?? 0 | number:'1.2-2' }}<br>
+  خصم ثاني: {{ invoice.secondDiscount ?? 0 | number:'1.2-2' }}<br>
+  خصم ثالت: {{ invoice.thirdDiscount ?? 0 | number:'1.2-2' }}<br>
+  ضريبة: {{ invoice.taxValue ?? 0 | number:'1.2-2' }}<br>
+  المجموع الصافي: {{ invoice.totalNetAmount ?? 0 | number:'1.2-2' }}
+</mat-card-subtitle>
+</mat-card>
+
+  <!-- Products Table -->
+  <div *ngFor="let item of invoice.withdrwanStock" class="product-card mat-elevation-z2">
+    <mat-card>
+      <mat-card-title>{{ item.productName }} (ID: {{ item.productID }})</mat-card-title>
+      <mat-card-subtitle>
+        السعر: {{ item.sellingPrice | number:'1.2-2' }} |
+        الكمية: {{ item.quantity }} |
+        إجمال الخصم : {{ item.totalRivalValue | number:'1.2-2' }} |
+        صافي المنتج: {{ item.totalNetAmount | number:'1.2-2' }}
+      </mat-card-subtitle>
+
+      <!-- Withdrawn Stock per Store -->
+      <table class="stock-table mat-elevation-z1">
+        <thead>
+          <tr>
+            <th>المخزن</th>
+            <th>الكمية المسحوبة</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of item.withdrwanStock" [ngClass]="{'deleted-row': s.isStoreDeleted}">
+            <td>{{ s.storeName }}</td>
+            <td>{{ s.withdrawnQuantity }}</td>
+
+          </tr>
+        </tbody>
+      </table>
+    </mat-card>
+  </div>
+
+</div>
+
+<!-- Loading / Error -->
+<div *ngIf="!invoiceId" class="text-center">
+  <p>لا توجد فاتورة للعرض.</p>
+</div>

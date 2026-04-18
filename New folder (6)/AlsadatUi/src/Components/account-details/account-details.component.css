@@ -1,0 +1,322 @@
+/* Paginator container styling */
+body.dark-mode .mat-calendar-body-selected,
+body.dark-mode .mat-calendar-body-active {
+  background: var(--gold) !important;
+  color: #222 !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .mat-calendar-body-cell-content {
+  color: #fff !important;
+}
+
+body.dark-mode .mat-calendar-arrow {
+  color: #fff !important;
+}
+
+:root {
+  --topbar-height: 70px;
+    --danger-color: #d32f2f;
+  --gold: #d4af37;
+
+   --color-low: #f8d7da;       /* أحمر فاتح */
+  --color-high: #d1ecf1;      /* أزرق فاتح */
+  --color-safe: #d4edda;      /* أخضر فاتح */
+  --color-deleted: red;   /* رمادي فاتح */
+
+  --text-low: #721c24;
+  --text-high: #0c5460;
+  --text-safe: #155724;
+  --text-deleted: white;
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #fff;
+  --topbar-bg: #0c0c0c;
+  --sidenav-bg: #0c0c0c;
+  --gold: #d4af37;
+  --hover-bg: rgba(212, 175, 55, 0.15);
+  --active-bg: rgba(212, 175, 55, 0.25);
+  --input-bg: #1a1a1a;
+  --input-text: #ffffff;
+  --danger-color: #ff6b6b;
+  --input-label: #cccccc;
+  --input-placeholder: #777;
+  --input-border: #555;
+   --color-low: #5c1d21;
+  --color-high: #15424b;
+  --color-safe: #1d4d2c;
+  --color-deleted: red;
+
+  --text-low: #ffb3b8;
+  --text-high: #a6e7f0;
+  --text-safe: #b7f5cb;
+  --text-deleted: white;
+}
+.deleted-row
+{
+  background-color: red;
+}
+body.light-mode {
+  --bg-color: #ffffff;
+  --text-color: #000;
+  --topbar-bg: #f9f9f9;
+  --sidenav-bg: #f5f5f5;
+  --gold: #b8860b;
+  --hover-bg: rgba(184, 134, 11, 0.1);
+  --active-bg: rgba(184, 134, 11, 0.2);
+  --input-bg: #ffffff;
+  --input-text: #000000;
+  --input-label: #333;
+  --input-placeholder: #888;
+  --input-border: #999;
+}
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  direction: rtl;
+}
+.gold
+{
+  color: #b8860b !important;
+}
+:host-context(body.dark-mode) .paginator-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--gold);
+}
+
+:host-context(body.light-mode) .paginator-container {
+  background: rgba(241, 196, 15, 0.05);
+  border-color: var(--gold);
+}
+
+/* ===== NUCLEAR: Force ALL paginator elements visible in Dark Mode ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator svg {
+  stroke: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+/* ===== DISABLED BUTTONS: Make them appear faded/lighter ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button:disabled,
+:host-context(body.dark-mode) button.mat-mdc-icon-button[disabled] {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled .mat-icon,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] .mat-icon {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled svg,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] svg {
+  opacity: 0.35 !important;
+}
+
+/* Container */
+body.dark-mode .mat-datepicker-content {
+  background-color: #1e1e1e !important;
+  color: #ffffff !important;
+  border-radius: 12px;
+}
+
+/* Header */
+body.dark-mode .mat-calendar-header {
+  background-color: #0c0c0c !important;
+  color: var(--gold) !important;
+}
+
+/* Week days */
+body.dark-mode .mat-calendar-table-header th {
+  color: #bbb !important;
+}
+
+/* Normal day */
+body.dark-mode .mat-calendar-body-cell-content {
+  color: #fff !important;
+  border-radius: 6px;
+}
+
+/* Hover day */
+body.dark-mode .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+  background-color: var(--hover-bg) !important;
+}
+
+/* Today */
+body.dark-mode .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border-color: var(--gold) !important;
+}
+
+/* Selected day */
+body.dark-mode .mat-calendar-body-selected {
+  background-color: var(--gold) !important;
+  color: #121212 !important;
+}
+
+/* Disabled day */
+body.dark-mode .mat-calendar-body-disabled .mat-calendar-body-cell-content {
+  color: #666 !important;
+}
+
+/* Arrow + icons */
+body.dark-mode .mat-calendar-arrow,
+body.dark-mode .mat-datepicker-toggle-default-icon {
+  color: #fff !important;
+}
+/* Use the same styling as the product component */
+:host {
+  display: block;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.me-auto {
+  margin-right: auto;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+.my-3 {
+  margin: 1rem 0;
+}
+
+.ms-2 {
+  margin-right: 0.5rem;
+}
+
+.m-0 {
+  margin: 0;
+}
+
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.d-block {
+  display: block;
+}
+
+.border-0 {
+  border: 0;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+.popup-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.delete-toggle {
+  margin: 0;
+}
+/* ===== Add Coupon Button Styling ===== */
+.add-coupon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid var(--gold);
+  background: transparent;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* icon color */
+.add-coupon-btn mat-icon {
+  font-size: 22px;
+
+  margin: 0;
+  padding: 0;
+}
+
+/* Hover effect */
+.add-coupon-btn:hover {
+  background: var(--hover-bg);
+
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Light & Dark mode smooth transition */
+.add-coupon-btn,
+.add-coupon-btn mat-icon {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+:host-context(body.dark-mode) .add-coupon-btn {
+  background-color: #1a1a1a !important;
+  color: var(--gold) !important;
+  border-color: var(--gold);
+}
+
+:host-context(body.dark-mode) .add-coupon-btn mat-icon {
+  color: var(--gold) !important;
+}
+.account-info .label {
+  color: var(--gold) !important;
+}
+
+.account-info p {
+  color: var(--text-color);
+}

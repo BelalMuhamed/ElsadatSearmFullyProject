@@ -1,0 +1,106 @@
+
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center">تسجيل الحضور والانصراف</h2>
+</div>
+
+
+  <div class="w-100 me-auto  d-flex justify-content-end">
+  <button mat-stroked-button color="primary" class="action-btn mx-2" (click)="fileInput.click()">   <mat-icon>upload</mat-icon>
+إدراج ملف  (Excel)</button>
+  <input #fileInput type="file" accept=".xls,.xlsx,.pdf" style="display:none" (change)="onFileSelected($event)" />
+
+
+  </div>
+<div class="w-100 d-flex justify-content-center" dir="rtl">
+  <mat-form-field appearance="outline" class="custom-input-theme ms-2">
+    <mat-label>كود الموظف</mat-label>
+    <input matInput [(ngModel)]="employeeCode" name="employeeCode" placeholder="أدخل كود الموظف" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme ms-2">
+    <mat-label>تاريخ</mat-label>
+    <input matInput [matDatepicker]="recordDatePicker" [(ngModel)]="selectedDateObj" name="selectedDateObj" placeholder="اختر تاريخ" />
+    <mat-datepicker-toggle matSuffix [for]="recordDatePicker"></mat-datepicker-toggle>
+    <mat-datepicker #recordDatePicker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme ms-2">
+    <mat-label>الوقت</mat-label>
+    <input matInput type="time" [(ngModel)]="selectedTime" name="selectedTime" #timeInput />
+    <mat-icon matSuffix (click)="openTimePicker()" style="cursor: pointer;">schedule</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>نوع التسجيل</mat-label>
+    <mat-select [(ngModel)]="selectedType" name="selectedType">
+      <mat-option value="checkin">حضور</mat-option>
+      <mat-option value="checkout">انصراف</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class=" container   d-flex justify-content-center align-items-center ">
+
+<div>
+  <button mat-raised-button color="primary" (click)="onManualRecord()" [disabled]="isProcessing" class="action-btn">
+    <mat-icon>{{ selectedType === 'checkin' ? 'login' : 'logout' }}</mat-icon>
+    {{ selectedType === 'checkin' ? 'تسجيل دخول' : 'تسجيل انصراف' }}
+  </button>
+  <button mat-stroked-button (click)="onReset()" class="action-btn mx-3" [disabled]="isProcessing">
+    إعادة تعيين
+  </button>
+</div>
+</div>
+
+<div *ngIf="isProcessing" class="text-center mt-3">
+  <span style="color:var(--gold)">جارٍ المعالجة...</span>
+</div>
+
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+
+<div class="page-content">
+  <h3 class="text-center" style="color:var(--gold)">تسجيلات اليوم</h3>
+  <div *ngIf="isLoadingToday" class="text-center" style="color: var(--gold);">جاري التحميل...</div>
+  <div *ngIf="!isLoadingToday && todayRecords.length === 0" class="text-center" style="color: var(--gold);">لا توجد تسجيلات اليوم</div>
+  <div *ngIf="!isLoadingToday && todayRecords.length > 0" class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="employeeCode">
+        <th mat-header-cell *matHeaderCellDef>كود الموظف</th>
+        <td mat-cell *matCellDef="let element">{{ element.employeeCode }}</td>
+      </ng-container>
+      <ng-container matColumnDef="employeeName">
+        <th mat-header-cell *matHeaderCellDef>اسم الموظف</th>
+        <td mat-cell *matCellDef="let element">{{ element.employeeName }}</td>
+      </ng-container>
+      <ng-container matColumnDef="attendanceDate">
+        <th mat-header-cell *matHeaderCellDef>التاريخ</th>
+        <td mat-cell *matCellDef="let element">{{ element.attendanceDate | date:'dd-MM-yyyy' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="checkInTime">
+        <th mat-header-cell *matHeaderCellDef>دخول</th>
+        <td mat-cell *matCellDef="let element">{{ formatTimeToArabicLabel(element.checkInTime) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="checkOutTime">
+        <th mat-header-cell *matHeaderCellDef>انصراف</th>
+        <td mat-cell *matCellDef="let element">{{ formatTimeToArabicLabel(element.checkOutTime) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="attendanceStatus">
+        <th mat-header-cell *matHeaderCellDef>الحالة</th>
+        <td mat-cell *matCellDef="let element">{{ getStatusText(element.attendanceStatus) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>تغيير الحالة</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="accent" (click)="openStatusDialog(element)">
+            <mat-icon>sync_alt</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['employeeCode','employeeName','attendanceDate','checkInTime','checkOutTime','attendanceStatus','actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['employeeCode','employeeName','attendanceDate','checkInTime','checkOutTime','attendanceStatus','actions']"></tr>
+    </table>
+    <div dir="rtl" class="paginator-container">
+    <mat-paginator class="paginator-container" [length]="todayRecords.length" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSizeOptions[1]" [showFirstLastButtons]="true" aria-label="سجل الحضور اليومي"></mat-paginator>
+    </div>
+  </div>
+</div>

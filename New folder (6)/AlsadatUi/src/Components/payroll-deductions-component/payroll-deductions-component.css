@@ -1,0 +1,172 @@
+.salary-container { 
+  padding: 16px; 
+}
+
+.header-section { 
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-title { 
+  margin: 0;
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.filters { 
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.filter-form {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Slide toggle styling */
+:host ::ng-deep .mat-mdc-slide-toggle {
+  display: inline-flex !important;
+  margin: 0 !important;
+}
+
+:host ::ng-deep .mat-mdc-slide-toggle-label {
+  margin-left: 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Switch track and thumb styling */
+:host ::ng-deep .mdc-switch {
+  height: 28px;
+  width: 48px;
+}
+
+:host ::ng-deep .mdc-switch--checked .mdc-switch__track {
+  background-color: rgba(241, 196, 15, 0.3) !important;
+}
+
+:host ::ng-deep .mdc-switch--checked .mdc-switch__thumb {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) :host ::ng-deep .mat-mdc-slide-toggle {
+  color: #e8e8e8 !important;
+}
+
+:host-context(body.dark-mode) :host ::ng-deep .mdc-switch--checked .mdc-switch__track {
+  background-color: rgba(241, 196, 15, 0.4) !important;
+}
+
+:host-context(body.light-mode) :host ::ng-deep .mat-mdc-slide-toggle {
+  color: #333 !important;
+}
+
+.action-btn { 
+  min-width: 120px;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.paginator-container { 
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+table { 
+  width: 100%;
+}
+
+/* Card styling */
+:host ::ng-deep .mat-mdc-card {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+:host-context(body.dark-mode) .mat-mdc-card {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Table styling */
+.mat-mdc-table {
+  background-color: transparent !important;
+}
+
+.mat-mdc-header-cell {
+  color: var(--gold) !important;
+  font-weight: 600;
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 2px solid rgba(241, 196, 15, 0.2);
+}
+
+.mat-mdc-cell {
+  text-align: center;
+  padding: 12px 8px;
+  color: inherit;
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell {
+  color: #ddd;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:host-context(body.light-mode) .mat-mdc-cell {
+  color: #333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Checkbox styling */
+:host ::ng-deep .mat-mdc-checkbox {
+  display: inline-flex !important;
+}
+
+:host ::ng-deep .mat-mdc-checkbox-label {
+  color: inherit !important;
+  margin-left: 8px;
+}
+
+/* Disabled rows */
+.mat-mdc-row:has(.isDeleted) {
+  opacity: 0.6;
+}
+
+/* Button group styling */
+.button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 18px;
+  }
+  
+  .filter-form {
+    flex-direction: column;
+  }
+  
+  .mat-mdc-form-field {
+    width: 100% !important;
+  }
+}
+
+/* Focus states */
+:host ::ng-deep .mat-mdc-button:focus,
+:host ::ng-deep .mat-icon-button:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+

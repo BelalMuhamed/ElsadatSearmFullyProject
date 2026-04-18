@@ -1,0 +1,183 @@
+.salary-container { 
+  padding: 16px; 
+}
+
+.header-section { 
+  margin-bottom: 16px;
+}
+
+.page-title { 
+  margin: 0 0 16px 0;
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 24px;
+}
+
+/* Filters Section */
+.filters-section {
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.custom-input-theme {
+  width: 100%;
+}
+
+.employee-option {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+.employee-name {
+  font-weight: 500;
+  flex: 1;
+}
+
+.employee-code {
+  font-size: 12px;
+  min-width: 80px;
+  text-align: left;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.me-2 {
+  margin-right: 8px;
+}
+
+.text-muted {
+  color: #999;
+}
+
+.py-2 {
+  padding: 8px 0;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.summary-row { 
+  display: flex; 
+  gap: 100px; 
+  align-items: center;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.summary-row strong {
+  color: var(--gold);
+  min-width: 120px;
+  
+}
+
+.mat-mdc-card {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+:host-context(body.dark-mode) .mat-mdc-card {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Table styling */
+.mat-mdc-table {
+  background-color: transparent !important;
+}
+
+.mat-mdc-header-cell {
+  color: var(--gold) !important;
+  font-weight: 600;
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 2px solid rgba(241, 196, 15, 0.2);
+}
+
+.mat-mdc-cell {
+  text-align: center;
+  padding: 12px 8px;
+  color: inherit;
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell {
+  color: #ddd;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:host-context(body.light-mode) .mat-mdc-cell {
+  color: #333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  opacity: 0.4;
+}
+
+/* Form field styling in filters */
+:host ::ng-deep .custom-input-theme .mat-mdc-form-field-focus-overlay {
+  background-color: rgba(241, 196, 15, 0.04);
+}
+
+/* Dark mode */
+:host-context(body.dark-mode) .filters-section {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+:host-context(body.dark-mode) .filter-form {
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .summary-row {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #e8e8e8;
+}
+
+/* Light mode */
+:host-context(body.light-mode) .filters-section {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+:host-context(body.light-mode) .summary-row {
+  background-color: rgba(0, 0, 0, 0.02);
+  color: #333;
+}
+

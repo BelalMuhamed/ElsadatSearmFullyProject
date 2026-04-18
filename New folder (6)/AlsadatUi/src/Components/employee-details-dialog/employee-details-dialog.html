@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>تفاصيل الموظف</mat-card-title>
+  </mat-card-header>
+  <mat-card-content dir="rtl">
+    <div class="detail-grid">
+      <div class="detail-item"><span>كود الموظف</span><strong>{{ data.employee.employeeCode }}</strong></div>
+      <div class="detail-item"><span>الاسم</span><strong>{{ data.employee.fullName }}</strong></div>
+      <div class="detail-item"><span>البريد</span><strong>{{ data.employee.email }}</strong></div>
+      <div class="detail-item"><span>الهاتف</span><strong>{{ data.employee.phoneNumber ?? '-' }}</strong></div>
+      <div class="detail-item"><span>القسم</span><strong>{{ data.employee.departmentName ?? '-' }}</strong></div>
+      <div class="detail-item"><span>المدينة</span><strong>{{ data.employee.cityName ?? '-' }}</strong></div>
+      <div class="detail-item"><span>الراتب</span><strong>{{ data.employee.salary | number:'1.0-2' }}</strong></div>
+      <div class="detail-item"><span>تاريخ التعيين</span><strong>{{ data.employee.hireDate | date:'dd-MM-yyyy' }}</strong></div>
+      <div class="detail-item"><span>وقت الحضور</span><strong>{{ data.employee.timeIn }}</strong></div>
+      <div class="detail-item"><span>وقت الانصراف</span><strong>{{ data.employee.timeOut }}</strong></div>
+      <div class="detail-item"><span>الحالة</span><strong>{{ data.employee.isDeleted ? 'غير نشط' : 'نشيط' }}</strong></div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="actions-center">
+      <button mat-stroked-button color="primary" (click)="close()">حسناً</button>
+    </div>
+  </mat-card-actions>
+</mat-card>

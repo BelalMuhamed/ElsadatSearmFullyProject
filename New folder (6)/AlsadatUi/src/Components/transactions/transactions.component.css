@@ -1,0 +1,57 @@
+/* Paginator container styling */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  direction: rtl;
+}
+
+:host-context(body.dark-mode) .paginator-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--gold);
+}
+
+:host-context(body.light-mode) .paginator-container {
+  background: rgba(241, 196, 15, 0.05);
+  border-color: var(--gold);
+}
+
+/* ===== NUCLEAR: Force ALL paginator elements visible in Dark Mode ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator svg {
+  stroke: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+/* ===== DISABLED BUTTONS: Make them appear faded/lighter ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button:disabled,
+:host-context(body.dark-mode) button.mat-mdc-icon-button[disabled] {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled .mat-icon,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] .mat-icon {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled svg,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] svg {
+  opacity: 0.35 !important;
+}

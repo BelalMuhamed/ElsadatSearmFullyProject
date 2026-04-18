@@ -1,0 +1,33 @@
+
+ <h2 class="popup-title py-3 ">
+  {{ isEditMode ? "تعديل مدينة" : "إضافة مدينة" }}
+</h2>
+
+<form [formGroup]="form" class="popup-form p-5">
+  <mat-form-field appearance="outline" class="full-width input-text">
+    <mat-label class="mdc-floating-label m-2">اسم المدينة </mat-label>
+    <input class="input-text" matInput formControlName="cityName" />
+    <mat-error *ngIf="form.get('name')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width input-text mt-3">
+    <mat-label>اختر المحافظة</mat-label>
+
+    <mat-select formControlName="governrateId">
+      <mat-option *ngFor="let gov of governrates" [value]="gov.id">
+        {{ gov.name }}
+      </mat-option>
+    </mat-select>
+
+    <mat-error *ngIf="form.get('governrateId')?.hasError('required')">
+      حقل مطلوب
+    </mat-error>
+  </mat-form-field>
+</form>
+
+<div class="popup-actions">
+  <button mat-dialog-close class="popup-btn-cancel" (click)="close()">إلغاء</button>
+  <button class="popup-btn-save" (click)="submit()" [disabled]="form.invalid" >
+   {{ isEditMode ? "تحديث" : "إضافة" }}
+  </button>
+</div>
+

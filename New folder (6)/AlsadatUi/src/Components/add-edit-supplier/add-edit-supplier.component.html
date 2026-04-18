@@ -1,0 +1,197 @@
+<mat-card class="edit-card">
+  <mat-card-header>
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <div>
+        <mat-card-title>إضافة مورد جديد</mat-card-title>
+        <mat-card-subtitle>إنشاء مورد جديد في النظام</mat-card-subtitle>
+      </div>
+      <button mat-icon-button  matTooltip="رجوع">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+  <mat-card-content dir="rtl" class="content-scroll">
+    <form [formGroup]="form" class="mt-2" autocomplete="off" (ngSubmit)="submit()">
+
+      <!-- Personal Info -->
+      <div class="section">
+        <h3 class="section-title">المعلومات الشخصية</h3>
+        <div class="grid-form">
+         <mat-form-field appearance="outline" class="custom-input-theme">
+  <mat-label>الاسم الكامل *</mat-label>
+  <input matInput formControlName="name" />
+
+  <mat-error *ngIf="form.get('name')?.hasError('required')">
+    الاسم مطلوب
+  </mat-error>
+</mat-form-field>
+
+
+
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="section">
+        <h3 class="section-title">بيانات الاتصال</h3>
+        <div class="grid-form">
+
+         <mat-form-field appearance="outline" class="custom-input-theme">
+  <mat-label>رقم الهاتف *</mat-label>
+  <input matInput formControlName="phoneNumbers" />
+
+  <mat-error *ngIf="form.get('phoneNumbers')?.hasError('required')">
+    رقم الهاتف مطلوب
+  </mat-error>
+</mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-input-theme">
+  <mat-label>العنوان</mat-label>
+  <input matInput formControlName="address" />
+</mat-form-field>
+
+ <mat-form-field appearance="outline">
+  <mat-label>المدينة *</mat-label>
+
+  <mat-select formControlName="cityId">
+    <mat-option value="" disabled>اختر المدينة</mat-option>
+
+    <mat-option *ngFor="let city of cities" [value]="city.id">
+      {{ city.cityName }} - {{ city.governrateName }}
+    </mat-option>
+  </mat-select>
+
+  <mat-error *ngIf="form.get('cityId')?.hasError('required')">
+    المدينة مطلوبة
+  </mat-error>
+</mat-form-field>
+
+
+        </div>
+      </div>
+
+
+<div class="section" formArrayName="products">
+  <h3 class="section-title">
+    المنتجات
+    <button
+      mat-icon-button
+      type="button"
+      color="primary"
+      (click)="addProduct()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </h3>
+
+ <div
+  *ngFor="let product of products.controls; let i = index"
+  [formGroupName]="i"
+  [ngClass]="{'deleted-product': product.get('isDeleted')?.value}"
+  class="d-flex align-items-center gap-2"
+>
+
+    <div class="flex-grow-1">
+
+  <!-- ✅ Existing product (Edit mode) -->
+  <ng-container *ngIf="product.get('isExisting')?.value; else selectProduct">
+
+    <span
+      [ngClass]="{
+        'text-danger': product.get('isDeleted')?.value
+      }"
+      class="fw-bold">
+     {{ product.get('productName')?.value }}
+
+    </span>
+
+  </ng-container>
+
+  <!-- ✅ New product (dropdown) -->
+  <ng-template #selectProduct>
+    <mat-form-field appearance="outline" class="w-100 custom-input-theme">
+      <mat-label>المنتج *</mat-label>
+
+      <mat-select formControlName="productId">
+
+        <!-- Search -->
+        <mat-option>
+          <input
+            matInput
+            placeholder="بحث باسم المنتج"
+            [value]="productSearchText[i]"
+            (input)="onProductSearch(i, $event)"
+            (click)="$event.stopPropagation()"
+            (keydown)="$event.stopPropagation()" />
+        </mat-option>
+
+        <mat-option
+          *ngFor="let p of getFilteredProducts(i)"
+          [value]="p.productId">
+          {{ p.productName }}
+        </mat-option>
+
+      </mat-select>
+
+      <mat-error *ngIf="product.get('productId')?.hasError('required')">
+        المنتج مطلوب
+      </mat-error>
+    </mat-form-field>
+  </ng-template>
+
+</div>
+
+
+    <button
+      mat-icon-button
+      type="button"
+      color="warn"
+      (click)="removeProduct(i)">
+      <mat-icon>delete</mat-icon>
+    </button>
+
+  </div>
+
+  @if (products.length === 0) {
+    <p class="text-muted mt-2">
+      لا توجد منتجات مضافة
+    </p>
+  }
+</div>
+
+
+
+
+
+    </form>
+  </mat-card-content>
+  <mat-card-actions class="d-flex justify-content-center ">
+    <!-- <button mat-stroked-button color="primary" type="submit" (click)="submit()" class="mx-2 w-25" [disabled]="form.invalid" >حفظ</button>
+   <button
+  mat-stroked-button
+  color="warn"
+  class="mx-2 w-25"
+  type="button"
+  (click)="cancel()">
+  إلغاء
+</button> -->
+<button
+  mat-stroked-button
+  (click)="submit()"
+  color="primary"
+  class="mx-2 w-25 gold-hover"
+  type="submit"
+  [disabled]="form.invalid">
+  حفظ
+</button>
+
+<button
+  mat-stroked-button
+  color="warn"
+  class="mx-2 w-25 gold-hover"
+  type="button"
+  (click)="cancel()">
+  إلغاء
+</button>
+
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,144 @@
+
+  @if (!isLoaded)
+  {
+    <p class="text-center" style="color: var(--gold);">جاري التحميل...</p>
+  }
+  @else {
+
+  <div class="w-100 d-flex justify-content-center align-items-center">
+    <h2 class="w-25 text-center">تأكيد الفاتورة</h2>
+  </div>
+  <hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+  <div class="invoice-header mb-3 p-3 rounded" style="background-color: var(--input-bg); color: var(--text-color); border: 1px solid var(--input-border);">
+    <div class="d-flex justify-content-between flex-wrap">
+      <div><strong>رقم الفاتورة:</strong> {{ invoiceData?.invoiceNumber }}</div>
+      <div><strong>اسم العميل:</strong> {{ invoiceData?.distributorName }}</div>
+      <div><strong>عدد النقاط:</strong> {{ invoiceData?.totalPoints }}</div>
+      <div><strong>تاريخ الإنشاء:</strong> {{ invoiceData?.createdAt | date:'dd/MM/yyyy' }}</div>
+      <div><strong>صافي الفاتورة:</strong> {{ invoiceData?.totalNetAmount | number:'1.2-2' }}</div>
+    </div>
+  </div>
+  <!-- <mat-accordion multi="true" class="swagger-accordion">
+
+  <mat-expansion-panel
+    *ngFor="let item of itemsList; let i = index"
+    class="swagger-panel"
+    (opened)="GetProductStock(item.productID)"
+  >
+    <mat-expansion-panel-header>
+      <div class="panel-title mx-2">
+        {{ item.productName }}
+      </div>
+      <div class="panel-description mx-2">
+        Qty: {{ item.quantity }}
+      </div>
+    </mat-expansion-panel-header>
+
+  <div *ngIf="deletedProducts[item.productID]; else showForm">
+    <p class="text-danger">{{ deletedProducts[item.productID] }}</p>
+  </div>
+
+  <ng-template #showForm>
+    <div *ngIf="stockForms[item.productID]">
+      <form [formGroup]="stockForms[item.productID]">
+        <div formArrayName="stocks">
+          <div *ngFor="let stock of getStocksForm(item.productID).controls; let j = index" [formGroupName]="j" class="stock-row">
+            <p><strong>{{ stock.get('storeName')?.value }}</strong></p>
+            <div class="d-flex gap-2">
+              <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+            <mat-label>المتاح  </mat-label>
+            <input matInput  formControlName="avaliableQuantity">
+          </mat-form-field>
+              <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+            <mat-label>المسحوب  </mat-label>
+            <input matInput formControlName="withdrawnQuantity">
+          </mat-form-field>
+          <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+    <mat-label>المسحوب</mat-label>
+    <input matInput formControlName="withdrawnQuantity" type="number">
+    <mat-error *ngIf="stock.get('withdrawnQuantity')?.hasError('exceedAvailable')">
+      لا يمكن أن تتجاوز الكمية المتاحة
+    </mat-error>
+  </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3 text-end">
+
+  </div>
+      </form>
+
+    </div>
+
+  </ng-template>
+
+  </mat-expansion-panel>
+
+  </mat-accordion> -->
+<mat-accordion multi="true" class="swagger-accordion">
+  <mat-expansion-panel
+    *ngFor="let item of itemsList; let i = index"
+    class="swagger-panel"
+    (opened)="GetProductStock(item.productID)"
+  >
+    <mat-expansion-panel-header>
+      <div class="panel-title mx-2">
+        {{ item.productName }}
+      </div>
+      <div class="panel-description mx-2">
+        Qty: {{ item.quantity }}
+      </div>
+    </mat-expansion-panel-header>
+
+    <div *ngIf="deletedProducts[item.productID]; else showForm">
+      <p class="text-danger">{{ deletedProducts[item.productID] }}</p>
+    </div>
+
+    <ng-template #showForm>
+      <div *ngIf="stockForms[item.productID]">
+        <form [formGroup]="stockForms[item.productID]">
+          <div formArrayName="stocks">
+            <div *ngFor="let stock of getStocksForm(item.productID).controls; let j = index" [formGroupName]="j" class="stock-row">
+              <p><strong>{{ stock.get('storeName')?.value }}</strong></p>
+              <div class="d-flex gap-2">
+                <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+                  <mat-label>المتاح</mat-label>
+                  <input matInput formControlName="avaliableQuantity" readonly>
+                </mat-form-field>
+                <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+                  <mat-label>المسحوب</mat-label>
+                  <input matInput formControlName="withdrawnQuantity" type="number">
+                  <mat-error *ngIf="stock.get('withdrawnQuantity')?.hasError('exceedAvailable')">
+                    لا يمكن أن تتجاوز الكمية المتاحة
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+             <!-- رسالة الخطأ على مستوى العنصر -->
+      <mat-error *ngIf="!canSubmit(item.productID)">
+        مجموع الكميات المسحوبة يجب أن يكون <= {{ item.quantity }}
+      </mat-error>
+        </form>
+      </div>
+
+    </ng-template>
+
+  </mat-expansion-panel>
+
+</mat-accordion>
+
+<!-- زرار Submit عام -->
+<div class="mt-3 text-end">
+
+ <button
+  mat-raised-button
+  class="gold-outline-btn"
+  [disabled]="!canSubmitAll()"
+  (click)="submitAllStocks()"
+>
+  <mat-icon class="me-1">check_circle</mat-icon>
+  حفظ  
+</button>
+</div>
+}

@@ -1,0 +1,1791 @@
+
+  .dark-theme
+  body.dark-mode
+  .mat-datepicker-content,
+body.dark-mode .mat-calendar,
+body.dark-mode .mat-calendar-table,
+body.dark-mode .mat-calendar-body-cell-content,
+body.dark-mode .mat-calendar-body-label {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+/* Time Picker Styling - Dark Mode */
+body.dark-mode input[type="time"],
+body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+body.dark-mode input[type="time"]::-webkit-outer-spin-button,
+body.dark-mode input[type="time"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+/* Time Picker Container - Dark Mode */
+body.dark-mode .mat-mdc-form-field-focus-overlay {
+  background: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Light Mode Time Picker */
+body.light-mode input[type="time"],
+body.light-mode input[type="time"]::-webkit-calendar-picker-indicator {
+  color: #000 !important;
+  background: transparent !important;
+}
+
+.dark-theme,
+.dark-theme * {
+    color: var(--text-color) !important;
+}
+
+
+     .dark-theme body *:not(.swal2-container):not(.swal2-container *) {
+  color: var(--text-color);
+}
+
+.dark-theme .Indicators span,
+.dark-theme .Indicators label,
+.dark-theme .Indicators div {
+    color: var(--text-color) !important;
+}
+
+
+/* Selected / active day: gold background, rectangular like light mode */
+body.dark-mode .mat-calendar-body-selected,
+body.dark-mode .mat-calendar-body-active {
+  background: var(--gold) !important;
+  color: #222 !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .mat-calendar-body-cell-content {
+  color: #fff !important;
+}
+
+body.dark-mode .mat-calendar-arrow {
+  color: #fff !important;
+}
+
+:root {
+  --topbar-height: 70px;
+    --danger-color: #d32f2f;
+  --gold: #d4af37;
+
+   --color-low: #f8d7da;       /* أحمر فاتح */
+  --color-high: #d1ecf1;      /* أزرق فاتح */
+  --color-safe: #d4edda;      /* أخضر فاتح */
+  --color-deleted: red;   /* رمادي فاتح */
+
+  --text-low: #721c24;
+  --text-high: #0c5460;
+  --text-safe: #155724;
+  --text-deleted: white;
+
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --primary: #1565c0;
+  --primary-contrast: #ffffff;
+  --accent: #d81b60;
+  --danger: #d32f2f;
+  --border: #e5e7eb;
+  --card-shadow: 0 1px 3px rgba(16,24,40,0.06);
+  --radius: 8px;
+  --table-row-hover: rgba(21,101,192,0.06);
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #fff;
+  --topbar-bg: #0c0c0c;
+  --sidenav-bg: #0c0c0c;
+  --gold: #d4af37;
+  --hover-bg: rgba(212, 175, 55, 0.15);
+  --active-bg: rgba(212, 175, 55, 0.25);
+  --input-bg: #1a1a1a;
+  --input-text: #ffffff;
+  --danger-color: #ff6b6b;
+  --input-label: #cccccc;
+  --input-placeholder: #777;
+  --input-border: #555;
+   --color-low: #5c1d21;
+  --color-high: #15424b;
+  --color-safe: #1d4d2c;
+  --color-deleted: red;
+
+  --text-low: #ffb3b8;
+  --text-high: #a6e7f0;
+  --text-safe: #b7f5cb;
+  --text-deleted: white;
+}
+.deleted-row
+{
+  background-color: red;
+}
+body.light-mode {
+  --bg-color: #ffffff;
+  --text-color: #000;
+  --topbar-bg: #f9f9f9;
+  --sidenav-bg: #f5f5f5;
+  --gold: #b8860b;
+  --hover-bg: rgba(184, 134, 11, 0.1);
+  --active-bg: rgba(184, 134, 11, 0.2);
+  --input-bg: #ffffff;
+  --input-text: #000000;
+  --input-label: #333;
+  --input-placeholder: #888;
+  --input-border: #999;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--topbar-height);
+  background-color: var(--topbar-bg);
+  color: var(--text-color);
+  padding: 0 16px;
+  z-index: 2000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  border-bottom: 2px solid var(--gold);
+  direction: rtl;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.logo {
+  width: 90px;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: auto;
+  overflow: visible !important;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.sidenav {
+  width: 250px;
+  padding: 25px;
+  background-color: var(--sidenav-bg);
+  border-left: 2px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  direction: rtl;
+}
+
+.sidenav h3 {
+  color: var(--gold);
+  text-align: center;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 8px;
+}
+h2 {
+  color: var(--gold);
+  text-align: center;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 8px;
+}
+.sidenav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidenav ul li a {
+  display: block;
+  color: var(--text-color);
+  padding: 12px 20px;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.sidenav ul li a:hover {
+  background-color: var(--hover-bg);
+  color: var(--gold);
+  padding-right: 25px;
+}
+
+.sidenav ul li a.active,
+a.router-link-active {
+  background-color: var(--active-bg);
+  color: var(--gold);
+  font-weight: bold;
+  border-right: 4px solid var(--gold);
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--topbar-height));
+  background: var(--bg-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 24px;
+}
+
+.mat-icon.text-white {
+  color: var(--gold) !important;
+}
+.page-footer {
+  text-align: center;
+  padding: 16px 8px;
+  border-top: 1px solid var(--gold);
+  font-size: 0.9rem;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.page-footer p {
+  margin: 4px 0;
+}
+
+.page-footer a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.page-footer a:hover {
+  text-decoration: underline;
+  color: var(--text-color);
+}
+
+.page-footer .contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.page-footer .contact-info a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* أيقونات */
+.page-footer .contact-info i {
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .page-footer .contact-info {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+/* ===== Table Container ===== */
+/* .table-container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.4s ease, color 0.4s ease;
+} */
+.table-container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.4s ease, color 0.4s ease;
+
+  /* scroll addition */
+  overflow-x: auto;       /* تمكين التمرير الأفقي */
+  overflow-y: hidden;     /* منع التمرير العمودي إن لزم */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling على الموبايل */
+}
+
+/* ===== Material Table ===== */
+table.mat-mdc-table {
+  background-color: transparent !important;
+  color: var(--text-color);
+  width: 100%;
+  min-width: 80%;
+}
+
+/* ===== Header Styling ===== */
+.mat-mdc-header-row {
+  background-color: var(--sidenav-bg) !important;
+  color: var(--gold) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--gold);
+}
+
+/* ===== Cell Styling ===== */
+.mat-mdc-row {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  transition: background-color 0.3s ease;
+}
+
+/* ===== Hover Effect ===== */
+.mat-mdc-row:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+/* ===== Paginator ===== */
+.mat-mdc-paginator {
+  background-color: var(--sidenav-bg);
+  color: var(--text-color);
+  border-top: 1px solid var(--gold);
+}
+
+/* ===== Icons inside table ===== */
+.mat-icon {
+  color: var(--gold);
+}
+/* 🔹 Paginator container */
+.mat-mdc-paginator {
+  background-color: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border-top: 1px solid var(--gold);
+  border-radius: 0 0 8px 8px;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  padding: 8px 16px;
+}
+
+/* 🔹 النصوص داخل الـ paginator */
+.mat-mdc-paginator-range-label,
+.mat-mdc-paginator-page-size-label {
+  color: var(--text-color) !important;
+}
+
+/* 🔹 الـ select box بتاع حجم الصفحة */
+.mat-mdc-select-value,
+.mat-mdc-select-arrow {
+  color: var(--gold) !important;
+}
+
+/* 🔹 الأيقونات (السهم يمين/شمال) */
+.mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  transition: color 0.3s ease;
+}
+.mat-mdc-paginator-icon:hover {
+  color: var(--text-color) !important;
+}
+
+/* 🔹 الأزرار */
+.mat-mdc-icon-button {
+  color: var(--gold) !important;
+}
+.mat-mdc-icon-button[disabled] {
+  opacity: 0.4;
+}
+
+/* 🔹 select dropdown عند الفتح */
+.mat-mdc-select-panel {
+  background-color: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold);
+}
+
+/* 🔹 خيارات القائمة */
+.mat-mdc-option {
+  color: var(--text-color) !important;
+}
+.mat-mdc-option:hover,
+.mat-mdc-option.mdc-list-item--selected {
+  background-color: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+.paginator-arabic {
+  direction: rtl;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border-top: 1px solid gold;
+}
+
+/* === UNIFIED PAGINATOR STYLING === */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  direction: rtl;
+}
+
+:host-context(body.light-mode) .paginator-container {
+  background: rgba(241, 196, 15, 0.05);
+  border-color: var(--gold);
+}
+
+:host-context(body.dark-mode) .paginator-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--gold);
+}
+
+/* Force paginator text, icons, and labels to be gold in all themes */
+.mat-mdc-paginator {
+  direction: rtl;
+}
+
+.mat-mdc-paginator .mat-mdc-paginator-range-label,
+.mat-mdc-paginator .mat-mdc-paginator-page-size-label {
+  color: var(--gold) !important;
+  font-weight: 600;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button,
+.mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button:hover {
+  color: var(--gold) !important;
+  background: rgba(241, 196, 15, 0.1) !important;
+}
+
+.mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+/* Dark mode specific paginator fixes */
+:host-context(body.dark-mode) .mat-mdc-paginator {
+  background: transparent;
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-range-label,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-page-size-label {
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value,
+:host-context(body.dark-mode) .mat-mdc-paginator .mdc-select__anchor {
+  color: var(--gold) !important;
+}
+
+/* Ensure paginator buttons show gold on hover too */
+.mat-mdc-paginator .mat-mdc-icon-button:hover,
+.mat-mdc-paginator .mat-mdc-paginator-icon:hover {
+  color: var(--gold) !important;
+}
+
+/* ===== CRITICAL: Force ALL paginator navigation elements to be GOLD and VISIBLE ===== */
+/* This overrides Material's default black colors */
+:host-context(body.dark-mode) .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-button--icon {
+  color: var(--gold) !important;
+}
+
+/* Force Material SVG icons inside paginator to be gold */
+:host-context(body.dark-mode) .mat-mdc-paginator svg {
+  fill: var(--gold) !important;
+  stroke: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mdc-icon-button__icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+}
+
+/* Force dark backgrounds behind paginator buttons for contrast */
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  visibility: visible !important;
+  display: flex !important;
+  opacity: 1 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button:hover {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: var(--gold) !important;
+}
+
+/* ===== NUCLEAR OPTION: Override ALL Material pagination visibility ===== */
+/* This directly targets Material's paginator structure */
+body.dark-mode .mat-mdc-paginator button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+}
+
+body.dark-mode .mat-mdc-paginator-icon {
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-icon-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Target the actual SVG icon elements that Material uses */
+body.dark-mode .mat-mdc-paginator .mat-mdc-icon-button .mat-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-paginator .mat-mdc-icon-button svg {
+  stroke: var(--gold) !important;
+  fill: var(--gold) !important;
+}
+
+/* Force Material's internal icon display */
+body.dark-mode .mdc-icon-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+body.dark-mode .mdc-icon-button__icon {
+  color: var(--gold) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Directly style the button state */
+body.dark-mode button.mat-mdc-icon-button {
+  color: var(--gold) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Override any Material CSS that hides buttons */
+body.dark-mode .mdc-button--icon-trailing::before,
+body.dark-mode .mdc-button--icon-leading::before {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ===== DISABLED BUTTONS: Make them appear lighter/faded ===== */
+/* Target disabled buttons specifically */
+body.dark-mode .mat-mdc-paginator button:disabled,
+body.dark-mode .mat-mdc-paginator button[disabled] {
+  opacity: 0.4 !important;
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-paginator button:disabled .mat-icon,
+body.dark-mode .mat-mdc-paginator button[disabled] .mat-icon {
+  opacity: 0.4 !important;
+  color: var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-paginator button:disabled svg,
+body.dark-mode .mat-mdc-paginator button[disabled] svg {
+  opacity: 0.4 !important;
+  fill: var(--gold) !important;
+  stroke: var(--gold) !important;
+}
+
+/* Make sure the page size select arrow/value is readable */
+.mat-mdc-paginator .mat-mdc-select-arrow,
+.mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+::ng-deep .mat-mdc-paginator-range-label {
+  font-family: "Cairo", sans-serif;
+}
+.filter-form {
+  padding-top: 5%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.filters-form {
+  display: flex;
+}
+/* الوضع الفاتح */
+:host-context(body.light-mode) .filter-form {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+/* الوضع الداكن */
+:host-context(body.dark-mode) .filter-form {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.filter-form mat-form-field {
+  width: 220px;
+}
+
+button[mat-raised-button],
+button[mat-stroked-button] {
+  height: 56px;
+}
+/* 🔹 تصميم الأزرار الموحدة */
+.action-btn {
+  width: 120px; /* نفس العرض */
+  height: 56px; /* نفس الارتفاع */
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid var(--gold) !important;
+  color: var(--gold) !important;
+  background-color: transparent !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔹 تأثير hover */
+.action-btn:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-color) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 🔹 زر مرفوع (mat-raised-button) */
+button.mat-mdc-raised-button.action-btn {
+  background-color: var(--gold) !important;
+  color: var(--bg-color) !important;
+  border: none !important;
+}
+
+button.mat-mdc-raised-button.action-btn:hover {
+  background-color: var(--active-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* 🔹 زر محاط (mat-stroked-button) */
+button.mat-mdc-outlined-button.action-btn {
+  background-color: transparent !important;
+  color: var(--gold) !important;
+}
+
+button.mat-mdc-outlined-button.action-btn:hover {
+  background-color: var(--hover-bg) !important;
+}
+/* Center text in all Material table cells */
+.mat-mdc-header-cell {
+  text-align: center !important;
+  align-items: center !important;
+   white-space: nowrap !important;     /* prevent wrapping */
+  word-break: normal !important;
+}
+.mat-mdc-cell {
+ white-space: nowrap !important;     /* prevent wrapping */
+  word-break: normal !important;      /* don't break words */
+  text-align: center !important;
+  justify-content: center !important; /* For flex layout */
+  align-items: center !important;
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  transition: background-color 0.3s ease;
+}
+/* ===== Add Coupon Button Styling ===== */
+.add-coupon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* icon color */
+.add-coupon-btn mat-icon {
+  font-size: 22px;
+  color: var(--gold);
+  margin: 0;
+  padding: 0;
+}
+
+/* Hover effect */
+.add-coupon-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Light & Dark mode smooth transition */
+.add-coupon-btn,
+.add-coupon-btn mat-icon {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-input-theme .mat-form-field-outline {
+  color: var(--input-border) !important;
+}
+
+.custom-input-theme .mat-form-field-outline-thick {
+  color: var(--gold) !important; /* عند focus */
+}
+
+.custom-input-theme .mat-form-field-label {
+  color: var(--input-label) !important;
+}
+
+.custom-input-theme .mat-input-element {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+/* ✅ مخصص فقط لمكان الإدخال اللي عليه الكلاس */
+.custom-input-theme .mdc-notched-outline__leading,
+.custom-input-theme .mdc-notched-outline__trailing,
+.custom-input-theme .mdc-notched-outline__notch {
+  border-color: var(--input-border) !important;
+}
+
+/* Dark-mode styling for custom select panels (overlay) */
+body.dark-mode .custom-select-panel {
+  background: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold) !important;
+}
+body.dark-mode .custom-select-panel .mat-mdc-list .mat-mdc-list-item {
+  color: var(--text-color) !important;
+}
+body.dark-mode .custom-select-panel .mat-mdc-list .mat-mdc-list-item:hover {
+  background: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* Force paginator controls to be visible in dark mode (gold icons/text) */
+:host-context(body.dark-mode) .mat-paginator-button,
+:host-context(body.dark-mode) .mat-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value,
+:host-context(body.dark-mode) .mat-paginator .mat-mdc-select-arrow,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-arrow {
+  color: var(--gold) !important;
+}
+
+/* Ensure the paginator labels are readable in dark mode */
+:host-context(body.dark-mode) .mat-mdc-paginator-range-label,
+:host-context(body.dark-mode) .mat-mdc-paginator-page-size-label {
+  color: var(--gold) !important;
+}
+
+/* Additional selectors to ensure next/prev icons visible in dark mode */
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-arrow {
+  color: var(--gold) !important;
+}
+
+/* Make paginator centered globally and ensure arrows visible */
+.mat-mdc-paginator,
+.mat-paginator {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-navigation-next,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-navigation-previous,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon,
+:host-context(body.dark-mode) .mat-paginator .mat-icon {
+  color: var(--gold) !important;
+}
+
+/* Autocomplete / select panel dark-mode visibility */
+:host-context(body.dark-mode) .mat-autocomplete-panel,
+:host-context(body.dark-mode) .mat-mdc-autocomplete-panel,
+:host-context(body.dark-mode) .mat-mdc-autocomplete-panel .mat-mdc-option,
+:host-context(body.dark-mode) .mat-autocomplete-panel .mat-option,
+:host-context(body.dark-mode) .mat-mdc-select-panel {
+  background: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold) !important;
+}
+:host-context(body.dark-mode) .mat-autocomplete-panel .mat-option:hover,
+:host-context(body.dark-mode) .mat-mdc-autocomplete-panel .mat-mdc-option:hover {
+  background: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* Overlay-level fixes: panels live under body > .cdk-overlay-container so :host-context won't reach them.
+   Use body.dark-mode selectors to force dark theme on overlay panels (autocomplete, select, dialog). */
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel,
+body.dark-mode .cdk-overlay-container .mat-mdc-autocomplete-panel,
+body.dark-mode .cdk-overlay-container .mat-select-panel,
+body.dark-mode .cdk-overlay-container .mat-mdc-select-panel {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-option,
+body.dark-mode .cdk-overlay-container .mat-mdc-option {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-option:hover,
+body.dark-mode .cdk-overlay-container .mat-mdc-option:hover,
+body.dark-mode .cdk-overlay-container .mat-option.mat-active,
+body.dark-mode .cdk-overlay-container .mat-mdc-option.mdc-list-item--selected {
+  background: rgba(212,175,55,0.14) !important;
+  color: #fff !important;
+}
+
+/* Dialog containers opened from overlay (payments dialog) */
+body.dark-mode .cdk-overlay-container .mat-dialog-container {
+  background: transparent !important; /* keep dialog component styles, but ensure body behind is dark */
+  color: #e8e8e8 !important;
+}
+
+/* Prevent overlay panes from showing default white backgrounds in dark mode */
+body.dark-mode .cdk-overlay-pane {
+  background: transparent !important;
+}
+
+/* Remove extra padding in dialog container so the dialog card fully controls background */
+body.dark-mode .mat-dialog-container {
+  padding: 0 !important;
+}
+
+/* Ensure dialog card content (payments, loan dialogs) use dark surfaces inside overlay */
+body.dark-mode .cdk-overlay-container .mat-card,
+body.dark-mode .cdk-overlay-container .payments-card,
+body.dark-mode .cdk-overlay-container .loan-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+/* Form field inputs inside overlays */
+body.dark-mode .cdk-overlay-container .mat-form-field .mat-input-element,
+body.dark-mode .cdk-overlay-container .mat-form-field .mat-mdc-input-element,
+body.dark-mode .cdk-overlay-container input.mat-input-element,
+body.dark-mode .cdk-overlay-container input.mat-mdc-input-element {
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-form-field-appearance-outline .mat-form-field-outline,
+body.dark-mode .cdk-overlay-container .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Scrollbars for overlay panels */
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-select-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-mdc-autocomplete-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-mdc-select-panel::-webkit-scrollbar {
+  width: 10px;
+}
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel::-webkit-scrollbar-thumb,
+body.dark-mode .cdk-overlay-container .mat-select-panel::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+}
+
+/* Also ensure select panel uses readable colors in light mode */
+body.light-mode .custom-select-panel { background: var(--sidenav-bg); color: var(--text-color); }
+
+/* ✅ عند الـ focus */
+.custom-input-theme.mdc-text-field--focused .mdc-notched-outline__leading,
+.custom-input-theme.mdc-text-field--focused .mdc-notched-outline__trailing,
+.custom-input-theme.mdc-text-field--focused .mdc-notched-outline__notch {
+  border-color: var(--gold) !important;
+}
+
+/* ✅ النص */
+.custom-input-theme .mat-mdc-input-element {
+  color: var(--input-text) !important;
+}
+
+/* ✅ خلفية */
+.custom-input-theme .mdc-text-field__input {
+  background-color: var(--input-bg) !important;
+  border-radius: 6px !important;
+}
+
+/* ✅ اللابل */
+.custom-input-theme .mdc-floating-label {
+  color: var(--input-label) !important;
+}
+
+/* ✅ placeholder */
+.custom-input-theme .mat-mdc-input-element::placeholder {
+  color: var(--input-placeholder) !important;
+}
+/* ✅ الحاوية الرئيسية للبند */
+.dropdown-container {
+  margin-top: 10px;
+}
+
+/* ✅ الهيدر اللي بيظهر قبل الفتح */
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: transparent;
+  color: var(--text-color);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.dropdown-header:hover {
+  background: var(--hover-bg);
+  color: var(--gold);
+}
+
+.dropdown-icon {
+  color: var(--gold);
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 10px 25px;
+  color: var(--text-color);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+.dropdown-menu {
+  list-style: none;
+  margin: 0;
+  margin-right: 10px;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  border-right: 2px solid transparent;
+}
+
+.dropdown-menu.open {
+  max-height: 300px;
+  border-right: 2px solid var(--gold);
+}
+
+.dropdown-menu li a:hover {
+  background: var(--hover-bg);
+  color: var(--gold);
+}
+
+.dropdown-menu li a.active {
+  background: var(--active-bg);
+  color: var(--gold);
+  font-weight: bold;
+  border-right: 3px solid var(--gold);
+}
+.mat-sidenav,
+.layout-container {
+  overflow: visible !important;
+}
+/* ✅ اجبار اللون الأساسي للشريط */
+/* ✅ Slide Toggle bar (background) */
+::ng-deep .delete-toggle .mat-slide-toggle-bar {
+  background-color: var(--input-border) !important;
+  transition: background-color 0.3s ease;
+}
+
+/* ✅ Slide Toggle bar when checked (ON) */
+::ng-deep .delete-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: var(--gold) !important;
+}
+
+/* ✅ Toggle thumb (the circle) */
+::ng-deep .delete-toggle .mat-slide-toggle-thumb {
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--gold) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ✅ Toggle thumb when checked (ON) */
+::ng-deep .delete-toggle.mat-checked .mat-slide-toggle-thumb {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ✅ The label/text color */
+::ng-deep .delete-toggle .mat-slide-toggle-content {
+  color: var(--text-color) !important;
+}
+
+/* ✅ Focus & hover effects */
+::ng-deep .delete-toggle.mat-mdc-focused .mat-slide-toggle-thumb {
+  border-color: var(--gold) !important;
+}
+::ng-deep .delete-toggle:hover .mat-slide-toggle-bar {
+  background-color: var(--hover-bg) !important;
+}
+/* ✅ تحسين وضوح أزرار الـ Pagination في الوضعين */
+::ng-deep .mat-mdc-paginator-navigation-next,
+::ng-deep .mat-mdc-paginator-navigation-previous,
+::ng-deep .mat-mdc-paginator-navigation-first,
+::ng-deep .mat-mdc-paginator-navigation-last {
+  color: var(--gold) !important; /* نفس اللون الذهبي */
+  opacity: 1 !important; /* إزالة الشفافية الافتراضية */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+::ng-deep .mat-mdc-paginator-navigation-next:hover,
+::ng-deep .mat-mdc-paginator-navigation-previous:hover,
+::ng-deep .mat-mdc-paginator-navigation-first:hover,
+::ng-deep .mat-mdc-paginator-navigation-last:hover {
+  color: var(--text-color) !important; /* عند hover يتحول للون النص */
+  transform: scale(1.2); /* تأثير بسيط عند المرور */
+}
+
+/* ✅ الزر المعطل يكون باهت بوضوح */
+::ng-deep .mat-mdc-paginator-navigation-disabled {
+  color: var(--input-border) !important;
+  opacity: 0.5 !important;
+}
+/* 🎯 إجبار لون أيقونات الـ Pagination يكون واضح في كل الثيمات */
+::ng-deep .mat-mdc-paginator-navigation-button svg,
+::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: var(--gold) !important; /* لون الأيقونة نفسه */
+  opacity: 1 !important;
+  transition: fill 0.3s ease, transform 0.2s ease;
+}
+
+/* 🟡 عند hover */
+::ng-deep .mat-mdc-paginator-navigation-button:hover svg path {
+  fill: var(--text-color) !important; /* يتغير إلى لون النص */
+  transform: scale(1.1);
+}
+
+/* ⚫ للأزرار المعطلة */
+::ng-deep .mat-mdc-paginator-navigation-button[disabled] svg path {
+  fill: var(--input-border) !important; /* لون باهت */
+  opacity: 0.5 !important;
+}
+/* 🎯 التحكم الكامل في لون أسهم الـ paginator */
+::ng-deep .mat-mdc-paginator-navigation-button svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--gold) !important; /* اللون الذهبي الأساسي */
+  transition: fill 0.3s ease, transform 0.2s ease;
+}
+
+/* عند المرور بالماوس */
+::ng-deep .mat-mdc-paginator-navigation-button:hover svg {
+  fill: var(--text-color) !important; /* يتحول إلى لون النص */
+  transform: scale(1.15);
+}
+
+/* الزر المعطل */
+::ng-deep .mat-mdc-paginator-navigation-button[disabled] svg {
+  fill: var(--input-border) !important; /* لون باهت */
+  opacity: 0.4 !important;
+  transform: none !important;
+}
+
+/* في الوضع الغامق */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button svg {
+  fill: var(--gold) !important;
+}
+
+/* في الوضع الفاتح */
+body.light-mode ::ng-deep .mat-mdc-paginator-navigation-button svg {
+  fill: var(--gold) !important;
+}
+/* ✅ تحسين ظهور الأسهم في الوضع الغامق */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button svg {
+  fill: #ffd700 !important; /* ذهبي لامع وواضح */
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.8)); /* ظل خفيف مضيء */
+  transition: fill 0.3s ease, filter 0.3s ease;
+}
+
+/* عند المرور */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button:hover svg {
+  fill: #fff !important; /* أبيض عند المرور */
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+}
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50%;
+}
+/* === تحسين التباين في الوضع الداكن === */
+body.dark-mode th,
+body.dark-mode td,
+body.dark-mode span:not(.text-danger):not(.deleted-product),
+body.dark-mode h2,
+body.dark-mode label,
+body.dark-mode input,
+body.dark-mode .mat-mdc-input-element,
+body.dark-mode .mat-mdc-header-cell,
+body.dark-mode .mat-mdc-cell {
+  color: #ffffff !important; /* نص أبيض واضح */
+}
+
+body.dark-mode .mat-mdc-header-row {
+  background-color: #1a1a1a !important; /* خلفية أفتح قليلاً من الأسود */
+  color: #ffd700 !important; /* ذهبي لامع للعناوين */
+}
+
+body.dark-mode .table-container {
+  background-color: #181818 !important; /* لون مميز عن الخلفية */
+  border-color: #d4af37 !important;
+}
+
+body.dark-mode mat-icon {
+  color: #ffd700 !important;
+}
+
+body.dark-mode .mat-slide-toggle-thumb {
+  background-color: #ffd700 !important;
+}
+::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: var(--gold, #d4af37) !important;
+  opacity: 1 !important;
+  transition: fill 0.3s ease;
+}
+
+body.light-mode ::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: #333 !important;
+}
+
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: #ffd700 !important;
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
+
+/* ✅ عند hover */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button:hover svg path {
+  fill: #ffffff !important; /* أبيض عند المرور */
+}
+/* فاصل بين كل ريكورد وريكورد */
+.mat-mdc-row {
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+/* الوضع الفاتح */
+body.light-mode .mat-mdc-row::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1); /* خط فاتح */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* الوضع الداكن */
+body.dark-mode .mat-mdc-row::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background-color: rgba(255, 215, 55, 0.3); /* خط ذهبي خفيف */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+.my-swal-popup {
+  background-color: var(--sidenav-bg) !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 16px !important;
+  color: var(--gold) !important;
+}
+
+.my-swal-title {
+  color: var(--gold) !important;
+}
+
+.my-swal-text {
+  color: var(--gold) !important;
+}
+
+/* زر OK */
+.my-swal-btn {
+  background-color: var(--gold) !important;
+  color: black !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+}
+
+.my-swal-btn:hover {
+  background-color: var(--active-bg) !important;
+  color: var(--gold) !important;
+}
+
+.swal2-popup .swal2-html-container {
+  color: var(--gold) !important;
+}
+.swal2-popup .swal2-title {
+  color: var(--gold) !important;
+}
+body.dark-mode .swal2-popup {
+  background: #1e1e1e !important;
+  color: black !important;
+  border: 1px solid var(--gold);
+}
+
+body.dark-mode .swal2-title {
+  color: var(--gold) !important;
+}
+
+body.dark-mode .swal2-html-container {
+  color: black !important;
+}
+
+
+.mat-mdc-dialog-container {
+  background-color: var(--sidenav-bg) !important;
+  color: var(--text-color);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.mat-mdc-dialog-title,
+.mat-dialog-title {
+  color: var(--gold) !important;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 20px 24px;
+  border-bottom: 2px solid var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================
+   Dialog + select global dark-mode fixes
+   Ensure mat-dialog and overlayed select panels are readable in dark mode
+   ========================== */
+body.dark-mode .mat-dialog-container {
+  background: #1e1e1e !important;
+  color: #e8e8e8 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-mode .mat-dialog-container .mat-form-field-infix,
+body.dark-mode .mat-dialog-container .mat-input-element,
+body.dark-mode .mat-dialog-container .mat-select-trigger,
+body.dark-mode .mat-dialog-container .mat-select-value-text {
+  color: #e8e8e8 !important;
+}
+
+/* Select panel (overlay) */
+body.dark-mode .mat-select-panel,
+body.dark-mode .mat-select-panel .mat-mdc-list {
+  background: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold) !important;
+}
+
+body.dark-mode .mat-option {
+  color: var(--text-color) !important;
+  background: transparent !important;
+}
+
+body.dark-mode .mat-option.mat-selected,
+body.dark-mode .mat-option.mat-active {
+  background: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* Improve visibility of stroked buttons inside dialogs */
+body.dark-mode .mat-dialog-container button.mat-stroked-button {
+  color: #e8e8e8 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* MDC-based dialog/select fixes: cover new class names used by Material MDC */
+body.dark-mode .mat-mdc-dialog-container {
+  background: #1e1e1e !important;
+  color: #e8e8e8 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-form-field-infix,
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-input-element,
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-select-trigger,
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-select-value-text {
+  color: #e8e8e8 !important;
+}
+
+/* Select panel used by MDC */
+body.dark-mode .mat-mdc-select-panel,
+body.dark-mode .mat-mdc-select-panel .mat-mdc-list {
+  background: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-option,
+body.dark-mode .mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--text-color) !important;
+  background: transparent !important;
+}
+
+body.dark-mode .mat-mdc-option.mdc-list-item--selected,
+body.dark-mode .mat-mdc-option.mdc-list-item--activated {
+  background: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* Ensure stroked buttons inside MDC dialogs remain readable */
+body.dark-mode .mat-mdc-dialog-container button.mat-stroked-button,
+body.dark-mode .mat-mdc-dialog-container .mat-stroked-button {
+  color: #e8e8e8 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* Global Material Checkbox Styling for Dark Mode */
+body.dark-mode mat-checkbox {
+  --mdc-checkbox-selected-checkmark-color: #000 !important;
+  --mdc-checkbox-selected-focus-icon-color: var(--gold, #f1c40f) !important;
+  --mdc-checkbox-selected-hover-icon-color: var(--gold, #f1c40f) !important;
+  --mdc-checkbox-selected-icon-color: var(--gold, #f1c40f) !important;
+  --mdc-theme-primary: var(--gold, #f1c40f) !important;
+}
+
+/* Override MDC Checkbox background colors in Dark Mode */
+body.dark-mode ::ng-deep .mdc-checkbox__background {
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox--checked .mdc-checkbox__background {
+  background-color: var(--gold, #f1c40f) !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox--checked .mdc-checkbox__checkmark {
+  color: #000 !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox__checkmark-path {
+  stroke: #000 !important;
+}
+
+/* Checkbox native control (hidden) in dark mode */
+body.dark-mode ::ng-deep .mdc-checkbox__native-control:checked {
+  accent-color: var(--gold, #f1c40f) !important;
+}
+
+/* Global Autocomplete and Select Styling for Dark Mode */
+body.dark-mode .mat-mdc-autocomplete-panel {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option,
+body.dark-mode .mat-mdc-select-panel .mat-mdc-option {
+  background: #2a2a2a !important;
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option:hover,
+body.dark-mode .mat-mdc-select-panel .mat-mdc-option:hover {
+  background: rgba(241, 196, 15, 0.15) !important;
+}
+
+body.dark-mode .mat-mdc-option:not(.mat-mdc-option-disabled).mdc-list-item--selected,
+body.dark-mode .mat-mdc-option:not(.mat-mdc-option-disabled).mdc-list-item--activated {
+  background: rgba(241, 196, 15, 0.25) !important;
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mdc-list-item__primary-text {
+  color: var(--gold, #f1c40f) !important;
+  font-weight: 500 !important;
+}
+
+body.dark-mode .mat-mdc-option-disabled {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+body.dark-mode .mat-mdc-select-panel {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-select-value,
+body.dark-mode .mat-mdc-select-trigger {
+  color: var(--gold, #f1c40f) !important;
+  font-weight: 500 !important;
+}
+
+/* Dark Mode Form Field */
+body.dark-mode .mat-mdc-form-field-label {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field-focus-overlay {
+  background: rgba(241, 196, 15, 0.1) !important;
+}
+
+/* Dark Mode Input Text Color */
+body.dark-mode .mdc-text-field__input {
+  color: var(--gold, #f1c40f) !important;
+  caret-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-input-element {
+  color: var(--gold, #f1c40f) !important;
+  caret-color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Autocomplete Disabled Option */
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option:disabled,
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option.mat-mdc-option-disabled {
+  color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Spinner in Autocomplete Loading */
+body.dark-mode .mat-spinner circle {
+  stroke: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Form Field Outline - Appearance Outline */
+body.dark-mode .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: var(--gold, #f1c40f) !important;
+  --mdc-text-field-filled-label-text-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mdc-notched-outline__leading,
+body.dark-mode .mdc-notched-outline__notch,
+body.dark-mode .mdc-notched-outline__trailing {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__leading,
+body.dark-mode .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__notch,
+body.dark-mode .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__trailing {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__leading,
+body.dark-mode .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__notch,
+body.dark-mode .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Placeholder */
+body.dark-mode .mdc-text-field__input::placeholder {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+body.dark-mode .mat-mdc-input-element::placeholder {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+/* Dark Mode Select Dropdown Arrow */
+body.dark-mode .mat-mdc-select-arrow {
+  color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Datepicker Icon */
+body.dark-mode .mat-mdc-form-field-hint-wrapper {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+/* Dark Mode Button Toggle Group - Employee/Representative Selector */
+body.dark-mode .mat-button-toggle-group {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .mat-button-toggle {
+  color: var(--gold, #f1c40f) !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-button-toggle:not(.mat-button-toggle-checked) {
+  color: var(--gold, #f1c40f) !important;
+  background-color: transparent !important;
+  border-right: 1px solid var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-button-toggle.mat-button-toggle-checked {
+  background-color: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-mode .mat-button-toggle:hover:not(.mat-button-toggle-checked) {
+  background-color: rgba(241, 196, 15, 0.15) !important;
+}
+
+body.dark-mode .mat-button-toggle-disabled {
+  color: rgba(241, 196, 15, 0.5) !important;
+}
+
+/* Light Mode Button Toggle Group */
+.mat-button-toggle-group {
+  border: 2px solid var(--gold, #f1c40f) !important;
+}
+
+.mat-button-toggle {
+  color: var(--gold, #f1c40f) !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+.mat-button-toggle.mat-button-toggle-checked {
+  background-color: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}
+
+/* ===== SweetAlert (Swal) Dark Mode Styling ===== */
+body.dark-mode .swal2-popup {
+  background: #2a2a2a !important;
+  color: #e8e8e8 !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+  box-shadow: 0 0 20px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Swal Title */
+body.dark-mode .swal2-title {
+  color: var(--gold, #f1c40f) !important;
+  font-weight: 600 !important;
+}
+
+/* Swal HTML Content */
+body.dark-mode .swal2-html-container {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .swal2-html-container p {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .swal2-html-container strong {
+  color: #fff !important;
+}
+
+/* Swal Input */
+body.dark-mode .swal2-input {
+  background: #1e1e1e !important;
+  color: var(--gold, #f1c40f) !important;
+  border: 1px solid var(--gold, #f1c40f) !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-input::placeholder {
+  color: rgba(241, 196, 15, 0.5) !important;
+}
+
+body.dark-mode .swal2-input:focus {
+  border-color: var(--gold, #f1c40f) !important;
+  box-shadow: 0 0 5px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Swal Checkbox */
+body.dark-mode .swal2-checkbox {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .swal2-checkbox input[type="checkbox"] {
+  accent-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-checkbox label {
+  color: #e8e8e8 !important;
+}
+
+/* Swal Confirm Button */
+body.dark-mode .swal2-confirm {
+  background: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-confirm:hover {
+  background: #e8b907 !important;
+  box-shadow: 0 0 10px rgba(241, 196, 15, 0.5) !important;
+}
+
+body.dark-mode .swal2-confirm:focus {
+  outline: none !important;
+  box-shadow: 0 0 10px rgba(241, 196, 15, 0.5) !important;
+}
+
+/* Swal Cancel Button */
+body.dark-mode .swal2-cancel {
+  background: #555555 !important;
+  color: #e8e8e8 !important;
+  border: 1px solid var(--gold, #f1c40f) !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-cancel:hover {
+  background: #666666 !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-cancel:focus {
+  outline: none !important;
+  box-shadow: 0 0 5px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Swal Deny Button */
+body.dark-mode .swal2-deny {
+  background: #f44336 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-deny:hover {
+  background: #da190b !important;
+}
+
+/* Swal Icon */
+body.dark-mode .swal2-icon {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-warning {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-warning [class*='swal2-icon-content'] {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-error {
+  border-color: #f44336 !important;
+}
+
+body.dark-mode .swal2-icon.swal2-success {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-info {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-question {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+/* Light Mode Swal (keep defaults clean) */
+.swal2-popup {
+  border: 1px solid #ddd !important;
+}
+
+.swal2-title {
+  color: var(--gold, #f1c40f) !important;
+}
+
+.swal2-confirm {
+  background: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}
+
+.swal2-confirm:hover {
+  background: #e8b907 !important;
+}
+
+
+
+
+
+}
+/* SweetAlert custom styling */
+.custom-swal-popup {
+  border-radius: 12px !important;
+  border: 1px solid var(--gold);
+}
+
+/* Dark mode */
+body.dark-mode .custom-swal-popup {
+  background: #1a1a1a !important;
+  color: #fff !important;
+}
+
+/* Light mode */
+body.light-mode .custom-swal-popup {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+/* Buttons */
+.swal2-confirm {
+  background-color: var(--gold) !important;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+.swal2-cancel {
+  background-color: #6b7280 !important;
+}

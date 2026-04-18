@@ -1,0 +1,157 @@
+<mat-card class="p-3 deduction-dialog">
+  <h4 class="mb-4 text-center">{{data?.id ? 'تعديل خصم' : 'إنشاء خصم جديد'}}</h4>
+
+  <form [formGroup]="form" class="deduction-form" (ngSubmit)="submit()">
+    
+    <!-- حقل الموظف -->
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>الموظف / المندوب</mat-label>
+        
+        <!-- حالة التعديل: عرض فقط -->
+        <ng-container *ngIf="data?.id; else newEmployeeField">
+          <input 
+            matInput 
+            [value]="employeeFilter"
+            disabled>
+        </ng-container>
+
+        <!-- حالة الإنشاء: حقل بحث مع autocomplete -->
+        <ng-template #newEmployeeField>
+          <input 
+            type="text"
+            matInput 
+            placeholder="ابحث بالاسم أو الكود" 
+            [(ngModel)]="employeeFilter" 
+            (ngModelChange)="onEmployeeFilterChange($event)" 
+            [matAutocomplete]="auto" 
+            [disabled]="isViewMode"
+            formControlName="employeeCode"
+            name="employee"
+            required>
+          
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+            <!-- حالة التحميل -->
+            <mat-option *ngIf="employeesLoading" disabled class="py-2">
+              <div class="d-flex align-items-center justify-content-center">
+                <mat-spinner diameter="20" class="me-2"></mat-spinner>
+                <span class="text-muted">جاري التحميل...</span>
+              </div>
+            </mat-option>
+            
+            <!-- عرض الموظفين -->
+            <mat-option *ngFor="let employee of filteredEmployees"
+              [value]="employee.code">
+              <div class="d-flex align-items-center w-100 employee-option">
+                <span class="employee-name">
+                  {{ employee.fullName || employee.name || 'بدون اسم' }}
+                </span>
+                <span class="employee-code text-muted">
+                    {{ employee.code }}
+                </span>
+              </div>
+            </mat-option>
+
+            <!-- حالة عدم وجود نتائج مع نص بحث -->
+            <mat-option *ngIf="!employeesLoading && filteredEmployees.length === 0 && employeeFilter && employeeFilter.length >= 1" disabled>
+              <div class="text-center text-muted py-2">
+                لا توجد نتائج لـ "{{employeeFilter}}"
+              </div>
+            </mat-option>
+            
+            <!-- حالة عدم وجود موظفين مطلقاً -->
+            <mat-option *ngIf="!employeesLoading && employees.length === 0 && !employeeFilter" disabled>
+              <div class="text-center text-muted py-2">
+                لا توجد بيانات موظفين
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+        </ng-template>
+        
+        <!-- رسالة الخطأ -->
+        <mat-error *ngIf="form.get('employeeCode')?.hasError('required')">
+          يجب اختيار موظف أو مندوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- تاريخ الخصم -->
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>تاريخ الخصم</mat-label>
+        <input 
+          matInput 
+          [matDatepicker]="picker" 
+          formControlName="deductionDate"
+          [disabled]="isViewMode"
+          required
+        >
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="form.get('deductionDate')?.hasError('required')">
+          تاريخ الخصم مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- عدد ساعات الخصم -->
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>عدد ساعات الخصم</mat-label>
+        <input 
+          matInput 
+          type="number" 
+          formControlName="deductionAmount"
+          [disabled]="isViewMode"
+          placeholder="0.00"
+          required
+        >
+        <mat-error *ngIf="form.get('deductionAmount')?.hasError('required')">
+          عدد الساعات مطلوب
+        </mat-error>
+        <mat-error *ngIf="form.get('deductionAmount')?.hasError('min')">
+          يجب أن تكون القيمة أكبر من صفر
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- سبب الخصم -->
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>سبب الخصم</mat-label>
+        <textarea 
+          matInput 
+          rows="3" 
+          formControlName="deductionReason"
+          [disabled]="isViewMode"
+          placeholder="أدخل سبب الخصم"
+          required
+        ></textarea>
+        <mat-error *ngIf="form.get('deductionReason')?.hasError('required')">
+          سبب الخصم مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- الأزرار -->
+    <div class="dialog-actions">
+      <button 
+        mat-stroked-button 
+        type="button"
+        (click)="close()"
+        class="action-btn"
+      >
+        إلغاء
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary"
+        type="submit" 
+        [disabled]="form.invalid"
+        class="action-btn"
+      >
+        {{ data?.id ? 'تحديث' : 'حفظ' }}
+      </button>
+    </div>
+  </form>
+</mat-card>

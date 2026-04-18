@@ -1,0 +1,170 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center"> الموزعين والتجار </h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+@if (isLoading) {
+    <p  class="text-center" style="color: var(--gold);">Loading...</p>
+}
+@else  {
+  <div class="w-100 me-auto  d-flex justify-content-end">
+       <button class="add-coupon-btn  " (click)="openAddPopup()">
+    <mat-icon>add</mat-icon>
+    إضافة تاجر/موزع/وكيل جديد
+  </button>
+  </div>
+
+ <div class="d-flex justify-content-between align-items-center gap-3 my-3">
+
+
+  <div class="d-flex justify-content-between  w-100 ">
+
+<form [formGroup]="Searchform" class="popup-form d-flex flex-wrap gap-3 container d-flex justify-content-center align-items-center">
+  <mat-form-field class="flex-grow-1" appearance="outline"class=" custom-input-theme">
+    <mat-label>الاسم </mat-label>
+    <input matInput formControlName="fullName">
+  </mat-form-field>
+ <mat-form-field class="flex-grow-1" appearance="outline"class=" custom-input-theme">
+    <mat-label>رقم الهاتف </mat-label>
+    <input matInput formControlName="phoneNumber">
+  </mat-form-field>
+  <mat-form-field class="flex-grow-1" appearance="outline"class=" custom-input-theme">
+    <mat-label>المدينة  </mat-label>
+    <input matInput formControlName="cityName">
+  </mat-form-field>
+  <mat-form-field appearance="outline" >
+  <mat-label>النوع</mat-label>
+
+  <mat-select formControlName="type">
+    <mat-option [value]="1">تاجر</mat-option>
+    <mat-option [value]="0">موزع</mat-option>
+    <mat-option [value]="2">وكيل</mat-option>
+
+  </mat-select>
+</mat-form-field>
+  <mat-slide-toggle formControlName="isDeleted">عرض الموزعين/التجار/الوكلاء المحظورين</mat-slide-toggle>
+
+
+
+
+  <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+(click)="onSearch()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >search</mat-icon>
+
+   ابحث
+  </button>
+
+
+   <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+(click)="ReAsign()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >refresh </mat-icon>
+
+   إعادة تعيين
+  </button>
+</form>
+
+</div>
+
+</div>
+
+
+  <div class="table-container mat-elevation-z8">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+   @for (col of columns; track col.key) {
+  <ng-container [matColumnDef]="col.key">
+    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+    <td mat-cell *matCellDef="let element">
+      @switch (col.type) {
+
+
+
+
+  @case ('boolean') {
+  <mat-slide-toggle
+      [checked]="!element[col.key]"
+      (change)="ToggleCategoryStatus(element, $event.checked)"
+      class="delete-toggle"
+  >
+  </mat-slide-toggle>
+}
+@case('date') {
+  <span>
+    {{ element[col.key] | date:'fullDate' }} - {{ element[col.key] | date:'shortTime' }}
+  </span>
+}
+@case('DisOrMecrhant')
+{
+  <span>
+    {{
+      element[col.key] === 0 ? 'موزع' :
+      element[col.key] === 1 ? 'تاجر' :
+      element[col.key] === 2 ? 'وكيل' :
+      ''
+    }}
+  </span>
+}
+
+    @case ('actions') {
+    <div class="action-buttons">
+
+<!-- داخل الجدول -->
+<button
+  matTooltip="   تعديل"
+  matTooltipPosition="above"
+  matTooltipShowDelay="200"
+   mat-icon-button color="primary" class="border-0 bg-transparent"(click)="openEditPopup(element)" >
+  <mat-icon>edit</mat-icon>
+</button>
+<button
+  mat-icon-button
+  color="primary"
+  class="border-0 bg-transparent"
+    matTooltip="عرض رصيد  المحافظ"
+  matTooltipPosition="above"
+  matTooltipShowDelay="200"
+  (click)="GetDisDetailsByUserId(element.userId)"
+>
+  <mat-icon>visibility</mat-icon>
+</button>
+
+    </div>
+  }
+
+        @default {
+
+            <span>{{ element[col.key] ?? '-'}}</span>
+
+        }
+      }
+    </td>
+  </ng-container>
+}
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+  </table>
+   <div dir="rtl" class="paginator-arabic">
+  <mat-paginator
+    [length]="totalCount"
+   [pageSize]="filters.pageSize ?? 10"
+[pageIndex]="(filters.page ?? 1) - 1"
+    [pageSizeOptions]="[5, 10, 20,30,50,70,100]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+
+</div>
+<ng-template #loading>
+    <div class="flex justify-center p-4">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+
+}

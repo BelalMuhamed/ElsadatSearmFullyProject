@@ -1,0 +1,158 @@
+<!-- <h2 class="popup-title py-5">
+  {{ isEditMode ? 'تعديل الفئة' : 'إضافة  منتج' }}
+</h2>
+
+<form [formGroup]="form" class="popup-form p-2">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>اسم المنتج</mat-label>
+    <input matInput formControlName="name" />
+    <mat-error *ngIf="form.get('name')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+   <mat-form-field appearance="outline" class="full-width">
+    <mat-label>كود المنتج </mat-label>
+    <input matInput formControlName="productCode" />
+    <mat-error *ngIf="form.get('productCode')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>سعر البيع </mat-label>
+    <input matInput formControlName="sellingPrice" type="number"/>
+    <mat-error *ngIf="form.get('sellingPrice')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>عدد النقاط مقابل القطعة  </mat-label>
+    <input matInput formControlName="pointPerUnit" />
+    <mat-error *ngIf="form.get('pointPerUnit')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+   <mat-form-field appearance="outline" class="full-width">
+    <mat-label>أقل كمية ممكنه </mat-label>
+    <input matInput formControlName="theSmallestPossibleQuantity" type="number" />
+    <mat-error *ngIf="form.get('theSmallestPossibleQuantity')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+
+
+
+</form>
+
+<div class="popup-actions">
+  <button mat-dialog-close class="popup-btn-cancel" (click)="close()">إلغاء</button>
+  <button class="popup-btn-save" [disabled]="form.invalid" (click)="  save()" >
+    حفظ
+  </button>
+</div> -->
+<mat-card class="p-3 deduction-dialog">
+  <h4 class="mb-4 text-center">{{ isEditMode ? 'تعديل الفئة' : 'إضافة  منتج' }}</h4>
+
+  <form [formGroup]="form" class="deduction-form" (ngSubmit)="save()">
+
+
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label> اسم المنتج </mat-label>
+
+          <input
+            type="text"
+            matInput
+
+
+            formControlName="name"
+            name="name"
+            required>
+
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          اسم المنتج مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+ <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label> كود المنتج  </mat-label>
+
+          <input
+            type="text"
+            matInput
+
+            formControlName="productCode"
+            name="productCode"
+            required>
+       
+        <mat-error *ngIf="form.get('productCode')?.hasError('required')">
+          كود المنتج مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+
+ <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label> سعر البيع </mat-label>
+
+          <input
+            type="text"
+            matInput
+
+            formControlName="sellingPrice"
+            name="sellingPrice"
+            required>
+       
+        <mat-error *ngIf="form.get('sellingPrice')?.hasError('required')">
+          سعر البيع مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label> عدد النقاط مقابل القطعة  </mat-label>
+
+          <input
+            type="text"
+            matInput
+
+            formControlName="pointPerUnit"
+            name="pointPerUnit"
+            required>
+       
+        <mat-error *ngIf="form.get('pointPerUnit')?.hasError('required')">
+          عدد النقاط مقابل القطعة مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+     <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label> أصغر كمية ممكنة </mat-label>
+
+          <input
+            type="text"
+            matInput
+
+            formControlName="theSmallestPossibleQuantity"
+            name="theSmallestPossibleQuantity"
+            required>
+       
+        <mat-error *ngIf="form.get('theSmallestPossibleQuantity')?.hasError('required')">
+          أصغر كمية ممكنة مطلوبة
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <!-- الأزرار -->
+    <div class="dialog-actions">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="close()"
+        class="action-btn"
+      >
+        إلغاء
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid"
+        class="action-btn"
+      >
+        {{ data?.id ? 'تحديث' : 'حفظ' }}
+      </button>
+    </div>
+  </form>
+</mat-card>

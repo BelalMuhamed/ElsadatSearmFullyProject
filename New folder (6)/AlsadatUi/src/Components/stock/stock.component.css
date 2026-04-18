@@ -1,0 +1,212 @@
+/* ------------------------
+   LEGEND + COLOR BOXES
+-------------------------*/
+.legend {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color-box {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.color-box.low { background-color: var(--color-low); }
+.color-box.high { background-color: var(--color-high); }
+.color-box.safe { background-color: var(--color-safe); }
+.color-box.deleted { background-color: var(--color-deleted); }
+
+.legend-item.low    { color: var(--text-low) !important; }
+.legend-item.high   { color: var(--text-high) !important; }
+.legend-item.safe   { color: var(--text-safe) !important; }
+.legend-item.deleted{ color: rgb(223, 12, 12) !important; }
+
+/* ------------------------
+   TABLE COLORS
+-------------------------*/
+
+/* صف المخزن المحذوف */
+.deleted-row {
+  background-color: red !important;
+  color: white !important;
+  font-weight: 600;
+}
+/* صف المخزن المحذوف */
+.deleted-row td {
+  background-color: var(--color-deleted) !important; /* لون المحذوف */
+  color: var(--text-deleted) !important;             /* لون النص */
+  font-weight: 600;
+}
+
+/* دعم الوضع الفاتح */
+body.light-mode .deleted-row td {
+  background-color: var(--color-deleted) !important;
+  color: black !important;
+}
+
+/* دعم الوضع الداكن */
+body.dark-mode .deleted-row td {
+  background-color: var(--color-deleted) !important;
+  color: var(--text-deleted) !important;
+}
+
+/* لون الكمية حسب الحالة */
+.low-stock {
+  background-color: var(--color-low) !important;
+  color: var(--text-low) !important;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.high-stock {
+  background-color: var(--color-high) !important;
+  color: var(--text-high) !important;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.safe-stock {
+  background-color: var(--color-safe) !important;
+  color: var(--text-safe) !important;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.deleted-product {
+  background-color: var(--color-deleted) !important;
+  color: var(--text-deleted) !important;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ------------------------
+   FIX WRAPPING
+-------------------------*/
+.mat-mdc-cell,
+.mat-mdc-header-cell {
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+  .branches-stock-container{
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+body.dark-mode ::ng-deep .legend-item {
+  color: black !important;
+}
+.SpecialTextBlue
+{
+color: #0f85d3;
+}
+.gold-divider {
+  width: 60%;
+  height: 2px;
+  background-color: #d4af37;;
+  border: none;
+  margin: 60px auto;
+
+}
+/* =========================
+   GOLD CARD (THEME AWARE)
+========================= */
+.gold-card {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+
+  border: 2px solid var(--gold);
+  border-radius: 14px;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Card title */
+.gold-card mat-card-title {
+  color: var(--gold) !important;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Card content text */
+.gold-card mat-card-content,
+.gold-card mat-card-content div,
+.gold-card mat-card-content span {
+  color: var(--text-color) !important;
+}
+
+/* Product name */
+.gold-card .fw-bold {
+  color: var(--text-color) !important;
+}
+
+/* Quantity in source stock */
+.gold-card .text-center {
+  font-weight: 600;
+  color: var(--text-color) !important;
+}
+
+/* =========================
+   INPUT STYLING
+========================= */
+.gold-card .form-control {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+}
+
+.gold-card .form-control:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 0.15rem var(--hover-bg);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+/* Placeholder */
+.gold-card .form-control::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* =========================
+   ROW SEPARATOR (OPTIONAL)
+========================= */
+.gold-card .row {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.gold-card .row:last-child {
+  border-bottom: none;
+}
+
+.gold-card:hover {
+  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.35);
+}
+.btn-gold {
+  background-color: var(--gold);
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-gold:hover {
+  background-color: rgba(212, 175, 55, 0.8);
+}
+

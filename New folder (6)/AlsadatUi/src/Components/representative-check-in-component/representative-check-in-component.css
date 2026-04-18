@@ -1,0 +1,147 @@
+.filter-form {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.w60 {
+  width: 63%;
+}
+
+:host { display: block; }
+
+.action-btn { min-width: 140px; }
+
+.text-center { text-align: center; }
+
+/* Time Input Styling */
+:host-context(body.dark-mode) input[type="time"],
+:host-context(body.dark-mode) input[type="time"]::-webkit-calendar-picker-indicator {
+  color: var(--gold) !important;
+  background: transparent !important;
+}
+
+:host-context(body.light-mode) input[type="time"],
+:host-context(body.light-mode) input[type="time"]::-webkit-calendar-picker-indicator {
+  color: #1565c0 !important;
+  background: transparent !important;
+}
+
+@media (max-width: 600px) {
+  .filter-form { flex-direction: column; gap: 0.6rem; }
+}
+
+/* Dark-mode support for record page */
+:host-context(body.dark-mode) .table-container {
+  background: #0f0f0f;
+  color: #e9e9e9;
+  border-radius: 6px;
+}
+
+:host-context(body.dark-mode) table.mat-mdc-table {
+  background: transparent;
+}
+
+:host-context(body.dark-mode) .mat-mdc-header-cell {
+  color: var(--gold);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell {
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .action-btn {
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+}
+
+/* Light-mode small polish */
+:host-context(body.light-mode) .table-container {
+  background: #fff;
+  color: #222;
+  border-radius: 6px;
+}
+
+/* Paginator icons and dropdown visibility for both themes */
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1;
+}
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1;
+}
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+/* Paginator container styling */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  direction: rtl;
+}
+
+:host-context(body.dark-mode) .paginator-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--gold);
+}
+
+:host-context(body.light-mode) .paginator-container {
+  background: rgba(241, 196, 15, 0.05);
+  border-color: var(--gold);
+}
+
+/* ===== NUCLEAR: Force ALL paginator elements visible in Dark Mode ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator svg {
+  stroke: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+/* ===== DISABLED BUTTONS: Make them appear faded/lighter ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button:disabled,
+:host-context(body.dark-mode) button.mat-mdc-icon-button[disabled] {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled .mat-icon,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] .mat-icon {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled svg,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] svg {
+  opacity: 0.35 !important;
+}
+
+h2 {
+  color: var(--gold);
+}

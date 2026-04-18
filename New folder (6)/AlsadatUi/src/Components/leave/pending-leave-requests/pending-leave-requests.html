@@ -1,0 +1,60 @@
+<div class="salary-container">
+  <div class="header-section">
+    <h2 class="page-title">الطلبات المعلقة</h2>
+  </div>
+
+  <mat-card *ngIf="items.length > 0" class="table-container">
+    <table mat-table [dataSource]="items" class="mat-elevation-z1" dir="rtl">
+      <ng-container matColumnDef="employeeName">
+        <th mat-header-cell *matHeaderCellDef>الموظف</th>
+        <td mat-cell *matCellDef="let e">{{e.employeeName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="leaveTypeName">
+        <th mat-header-cell *matHeaderCellDef>النوع</th>
+        <td mat-cell *matCellDef="let e">{{e.leaveTypeName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fromDate">
+        <th mat-header-cell *matHeaderCellDef>من</th>
+        <td mat-cell *matCellDef="let e">{{e.fromDate | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="toDate">
+        <th mat-header-cell *matHeaderCellDef>إلى</th>
+        <td mat-cell *matCellDef="let e">{{e.toDate | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>إجراءات</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="button-group">
+            <button mat-icon-button color="primary" (click)="approve(e)" matTooltip="موافقة" title="موافقة">
+              <mat-icon>check</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="reject(e)" matTooltip="رفض" title="رفض">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['employeeName','leaveTypeName','fromDate','toDate','actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['employeeName','leaveTypeName','fromDate','toDate','actions']"></tr>
+    </table>
+  </mat-card>
+
+  <div class="empty-state" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>جاري التحميل...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && items.length === 0">
+    <mat-icon>inbox</mat-icon>
+    <p>لا توجد طلبات معلقة</p>
+  </div>
+
+  <div class="paginator-container" *ngIf="items.length > 0" dir="rtl">
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)"></mat-paginator>
+  </div>
+</div>

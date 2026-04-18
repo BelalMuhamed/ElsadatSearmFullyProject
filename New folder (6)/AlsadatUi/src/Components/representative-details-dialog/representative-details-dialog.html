@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>تفاصيل المندوب</mat-card-title>
+  </mat-card-header>
+  <mat-card-content dir="rtl">
+    <div class="detail-grid">
+      <div class="detail-item"><span>كود المندوب</span><strong>{{ data.representative.representativeCode }}</strong></div>
+      <div class="detail-item"><span>الاسم</span><strong>{{ data.representative.fullName }}</strong></div>
+      <div class="detail-item"><span>البريد</span><strong>{{ data.representative.email }}</strong></div>
+      <div class="detail-item"><span>الهاتف</span><strong>{{ data.representative.phoneNumber ?? '-' }}</strong></div>
+      <div class="detail-item"><span>المدينة</span><strong>{{ data.representative.cityName ?? '-' }}</strong></div>
+      <div class="detail-item"><span>الراتب</span><strong>{{ data.representative.salary | number:'1.0-2' }}</strong></div>
+      <div class="detail-item"><span>تاريخ التعيين</span><strong>{{ data.representative.hireDate | date:'dd-MM-yyyy' }}</strong></div>
+      <div class="detail-item"><span>وقت الحضور</span><strong>{{ data.representative.timeIn }}</strong></div>
+      <div class="detail-item"><span>وقت الانصراف</span><strong>{{ data.representative.timeOut }}</strong></div>
+      <div class="detail-item"><span>رصيد النقاط</span><strong>{{ data.representative.pointsWallet }}</strong></div>
+      <div class="detail-item"><span>الإيداع المالي</span><strong>{{ data.representative.moneyDeposit | number:'1.0-2' }}</strong></div>
+      <div class="detail-item"><span>الحالة</span><strong>{{ data.representative.isDeleted ? 'غير نشط' : 'نشيط' }}</strong></div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="actions-center">
+      <button mat-stroked-button color="primary" (click)="close()">حسناً</button>
+    </div>
+  </mat-card-actions>
+</mat-card>

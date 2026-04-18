@@ -1,0 +1,21 @@
+.account-form-container {
+  background: var(--bg-color);
+  color: var(--text-color);
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+button {
+  border-radius: 8px;
+}

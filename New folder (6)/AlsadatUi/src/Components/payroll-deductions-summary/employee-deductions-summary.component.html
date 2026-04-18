@@ -1,0 +1,155 @@
+<div class="salary-container">
+  <div class="header-section">
+    <h2 class="page-title">تفاصيل خصومات الموظف</h2>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filter-form" dir="rtl">
+      <!-- Employee Selection -->
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width: 280px;">
+        <mat-label>الموظف</mat-label>
+        <input 
+          type="text"
+          matInput 
+          placeholder="ابحث بالاسم أو الكود" 
+          [(ngModel)]="employeeFilter" 
+          (ngModelChange)="onEmployeeFilterChange($event)" 
+          [matAutocomplete]="auto"
+          name="employee"
+        >
+        
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+          <!-- Loading state -->
+          <mat-option *ngIf="employeesLoading" disabled class="py-2">
+            <div class="d-flex align-items-center justify-content-center">
+              <mat-spinner diameter="20" class="me-2"></mat-spinner>
+              <span class="text-muted">جاري التحميل...</span>
+            </div>
+          </mat-option>
+          
+          <!-- Employee list -->
+          <mat-option *ngFor="let employee of filteredEmployees" [value]="employee.code">
+            <div class="d-flex align-items-center w-100 employee-option">
+              <span class="employee-name">{{ employee.fullName || employee.name || 'بدون اسم' }}</span>
+              <span class="employee-code text-muted">{{ employee.code }}</span>
+            </div>
+          </mat-option>
+
+          <!-- No results -->
+          <mat-option *ngIf="!employeesLoading && filteredEmployees.length === 0 && employeeFilter && employeeFilter.length >= 1" disabled>
+            <div class="text-center text-muted py-2">
+              لا توجد نتائج لـ "{{employeeFilter}}"
+            </div>
+          </mat-option>
+          
+          <!-- No employees -->
+          <mat-option *ngIf="!employeesLoading && employees.length === 0 && !employeeFilter" disabled>
+            <div class="text-center text-muted py-2">
+              لا توجد بيانات موظفين
+            </div>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <!-- Month Selection -->
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width: 160px;">
+        <mat-label>الشهر</mat-label>
+        <mat-select [(ngModel)]="selectedMonth" name="month" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">الكل</mat-option>
+          <mat-option *ngFor="let month of months" [value]="month.value">
+            {{month.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Year Selection -->
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width: 140px;">
+        <mat-label>السنة</mat-label>
+        <mat-select [(ngModel)]="selectedYear" name="year" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">الكل</mat-option>
+          <mat-option *ngFor="let year of availableYears" [value]="year">
+            {{year}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Search Button -->
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="loadSummary()" 
+        [disabled]="!empCode"
+        style="height: 56px; min-width: 120px;">
+        <mat-icon>search</mat-icon>
+        بحث
+      </button>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading" style="padding: 40px; text-align: center; color: var(--gold);">
+        <mat-spinner diameter="50" style="margin: 0 auto;"></mat-spinner>
+        <p>جاري التحميل...</p>
+      </div>
+
+      <div *ngIf="!isLoading && !empCode" class="empty-state">
+        <mat-icon class="empty-state-icon">person_search</mat-icon>
+        <p style="font-size: 16px;">يرجى اختيار موظف لعرض تفاصيل خصوماته</p>
+        <p style="font-size: 14px; color: #777;">اختر موظفاً من القائمة أعلاه</p>
+      </div>
+
+      <div *ngIf="!isLoading && empCode && items.length === 0" class="empty-state">
+        <mat-icon class="empty-state-icon">inbox</mat-icon>
+        <p style="font-size: 16px;">لا توجد خصومات لهذا الموظف</p>
+      </div>
+
+      <div *ngIf="!isLoading && empCode && items.length > 0">
+        <div class="summary-row">
+          <div>
+            <strong>الموظف:</strong>
+            <span style="margin-inline-start: 10px;">{{employeeName}}</span>
+          </div>
+          <div>
+            <strong>عدد الخصومات:</strong>
+            <span style="margin-inline-start: 10px;">{{totals?.totalRecords ?? items.length}}</span>
+          </div>
+          <div>
+            <strong>مجموع الساعات:</strong>
+            <span style="margin-inline-start: 10px;">{{totals?.totalDeductionHours ?? '-'}}</span>
+          </div>
+          <div>
+            <strong>مجموع المبلغ:</strong>
+            <span style="margin-inline-start: 10px;">{{totals?.totalMoneyAmount | number:'1.2-2'}} ج.م</span>
+          </div>
+        </div>
+
+        <table mat-table [dataSource]="items" class="mat-elevation-z1" dir="rtl">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>التاريخ</th>
+            <td mat-cell *matCellDef="let e">{{e.deductionDate | date:'yyyy-MM-dd'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="hours">
+            <th mat-header-cell *matHeaderCellDef>الساعات</th>
+            <td mat-cell *matCellDef="let e">{{e.deductionAmount}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="money">
+            <th mat-header-cell *matHeaderCellDef>المبلغ</th>
+            <td mat-cell *matCellDef="let e">{{e.monayAmount | number:'1.2-2'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="reason">
+            <th mat-header-cell *matHeaderCellDef>السبب</th>
+            <td mat-cell *matCellDef="let e">{{e.deductionReason}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['date','hours','money','reason']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['date','hours','money','reason']; let i = index;" [class.isDeleted]="row.isDeleted"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

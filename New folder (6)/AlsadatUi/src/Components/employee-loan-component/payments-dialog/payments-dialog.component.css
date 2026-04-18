@@ -1,0 +1,48 @@
+h3 { color: var(--gold); text-align:center; margin-bottom:8px; }
+.payment-dialog {
+  background: var(--surface);
+  color: var(--text);
+  padding: 16px;
+  border-radius: 8px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+.payment-dialog .mat-form-field { width: 100%; }
+.payment-dialog .dialog-actions { display:flex; gap:12px; justify-content:center; margin-top:12px; }
+.w-100 { width: 100%; }
+
+/* Dark mode appearance: match payments card and loan dialog */
+:host-context(body.dark-mode) .payment-dialog,
+body.dark-mode .cdk-overlay-container .payment-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+/* Ensure dialog card fills overlay width and avoids white gutters */
+:host-context(body.dark-mode) .mat-dialog-container .payment-dialog,
+body.dark-mode .cdk-overlay-container .mat-dialog-container .payment-dialog {
+  width: 520px !important;
+  max-width: calc(100% - 32px) !important;
+}
+
+/* Inputs inside overlay/dialog */
+:host-context(body.dark-mode) .payment-dialog .mat-form-field .mat-input-element,
+body.dark-mode .cdk-overlay-container .payment-dialog .mat-form-field .mat-input-element {
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+
+:host-context(body.dark-mode) .payment-dialog .mat-form-field-appearance-outline .mat-form-field-outline,
+body.dark-mode .cdk-overlay-container .payment-dialog .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Buttons inside payment dialog */
+:host-context(body.dark-mode) .payment-dialog .dialog-actions .action-btn,
+body.dark-mode .cdk-overlay-container .payment-dialog .dialog-actions .action-btn {
+  color: #e8e8e8 !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}

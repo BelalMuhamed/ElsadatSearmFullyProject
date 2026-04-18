@@ -1,0 +1,115 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center">الكوبونات </h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+@if (isLoading) {
+    <p  class="text-center" style="color: var(--gold);">Loading...</p>
+}
+@else  {
+ <div class="d-flex justify-content-between align-items-center gap-3 my-3">
+
+
+ <form
+  class="filters-form d-flex justify-content-center gap-3 flex-nowrap"
+  [formGroup]="cityForm"
+  (ngSubmit)="submitSearchForm()">
+
+  <!-- المدينه -->
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>المدينة</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="اسم المدينة"
+      formControlName="cityName"
+    />
+  </mat-form-field>
+
+  <!-- المحافظة -->
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>المحافظة</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="اسم المحافظة"
+      formControlName="governrateName"
+    />
+  </mat-form-field>
+
+  <!-- زر البحث -->
+  <button mat-raised-button type="submit" class="add-coupon-btn">
+    <mat-icon>search</mat-icon>
+    بحث
+  </button>
+</form>
+
+  <button class="add-coupon-btn" (click)="openAddPopup()">
+  <mat-icon>add</mat-icon>
+    إضافة مدينة
+  </button>
+</div>
+
+
+  <div class="table-container mat-elevation-z8">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+   @for (col of columns; track col.key) {
+  <ng-container [matColumnDef]="col.key">
+    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+    <td mat-cell *matCellDef="let element">
+      @switch (col.type) {
+
+
+
+
+
+
+    @case ('actions') {
+    <div class="action-buttons">
+
+
+    <button
+  mat-icon-button
+  color="accent"
+  class="bg-transparent border-0"
+(click)="openEditPopup(element)"
+>
+  <mat-icon>edit</mat-icon>
+</button>
+
+    </div>
+  }
+
+        @default {
+
+            <span>{{ element[col.key] }}</span>
+
+        }
+      }
+    </td>
+  </ng-container>
+}
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+  </table>
+  <div dir="rtl" class="paginator-container">
+   <mat-paginator
+    [length]="totalCount"
+    [pageSize]="cityFilters.pageSize"
+    [pageIndex]="(cityFilters.page ?? 1) - 1"
+    [pageSizeOptions]="[5, 10, 20,50,70,100]"
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+    aria-label="جدول المدن">
+  </mat-paginator>
+</div>
+
+</div>
+<ng-template #loading>
+    <div class="flex justify-center p-4">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+}

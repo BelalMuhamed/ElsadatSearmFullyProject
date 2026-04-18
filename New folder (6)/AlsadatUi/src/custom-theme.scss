@@ -1,0 +1,22 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// 🎨 Define your custom palettes
+$AlsadatUi-primary: mat.define-palette(mat.$amber-palette); // gold
+$AlsadatUi-accent: mat.define-palette(mat.$amber-palette);
+$AlsadatUi-warn: mat.define-palette(mat.$red-palette);
+
+// 🧱 Create the theme (light mode)
+$AlsadatUi-theme: mat.define-light-theme((
+  color: (
+    primary: $AlsadatUi-primary,
+    accent: $AlsadatUi-accent,
+    warn: $AlsadatUi-warn,
+  ),
+  typography: mat.define-typography-config(),
+  density: 0
+));
+
+// ✅ Include all component themes once
+@include mat.all-component-themes($AlsadatUi-theme);

@@ -1,0 +1,40 @@
+<mat-card class="leave-dialog p-3">
+  <div class="dialog-header">
+    <h4>طلب إجازة جديد</h4>
+  </div>
+
+  <mat-card-content>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>نوع الإجازة</mat-label>
+      <mat-select [(ngModel)]="dto.leaveTypeId" name="leaveType">
+        <mat-option *ngFor="let t of leaveTypes" [value]="t.id">{{t.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="dates">
+      <mat-form-field appearance="outline" class="w-100 custom-input-theme ms-2 full-width">
+        <mat-label>من</mat-label>
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="dto.fromDate" name="fromDate" placeholder="اختر تاريخ" (focus)="picker1.open()" (click)="picker1.open()">
+        <mat-datepicker-toggle matSuffix [for]="picker1" (click)="picker1.open()"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100 custom-input-theme ms-2 full-width">
+        <mat-label>إلى</mat-label>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="dto.toDate" name="toDate" placeholder="اختر تاريخ" (focus)="picker2.open()" (click)="picker2.open()">
+        <mat-datepicker-toggle matSuffix [for]="picker2" (click)="picker2.open()"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>ملاحظات</mat-label>
+      <textarea matInput rows="4" [(ngModel)]="dto.notes" name="notes"></textarea>
+    </mat-form-field>
+  </mat-card-content>
+
+  <mat-card-actions class="dialog-actions">
+    <button mat-stroked-button class="action-btn" (click)="dialogRef?.close()">إلغاء</button>
+    <button mat-raised-button color="primary" class="action-btn" (click)="submit()">إرسال</button>
+  </mat-card-actions>
+</mat-card>

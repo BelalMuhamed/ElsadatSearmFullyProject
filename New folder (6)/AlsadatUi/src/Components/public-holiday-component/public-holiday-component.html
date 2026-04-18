@@ -1,0 +1,68 @@
+<div class="w-100 d-flex justify-content-between align-items-center mb-3">
+  <h2 class="w-25 text-center page-title">الإجازات الثانوية</h2>
+  <div class="action-buttons">
+        <button mat-stroked-button color="primary" (click)="openAdd()" class="action-btn mx-2">
+          <mat-icon>add</mat-icon>
+          إضافة عطلة
+        </button>
+      </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading" class="text-center">جاري التحميل...</div>
+
+      <table mat-table [dataSource]="holidays" class="mat-elevation-z1" dir="rtl" *ngIf="!isLoading">
+        <!-- Holiday Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>اسم العطلة</th>
+          <td mat-cell *matCellDef="let h">{{ h.name }}</td>
+        </ng-container>
+
+        <!-- Date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>التاريخ</th>
+          <td mat-cell *matCellDef="let h">{{ h.date ? (h.date | date:'dd/MM/yyyy') : '-' }}</td>
+        </ng-container>
+
+        <!-- Created At -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>تاريخ الإنشاء</th>
+          <td mat-cell *matCellDef="let h">{{ h.createdAt ? (h.createdAt | date:'dd/MM/yyyy') : '-' }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>إجراءات</th>
+          <td mat-cell *matCellDef="let h">
+            <button mat-icon-button color="primary" (click)="openEdit(h)" title="تعديل">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="hardDelete(h)" title="حذف نهائي">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Status column (toggle) -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>الحالة</th>
+          <td mat-cell *matCellDef="let h" style="text-align:center">
+            <mat-slide-toggle [checked]="!h.isDeleted" (change)="toggleHolidayStatus(h)" matTooltip="تفعيل/تعطيل"></mat-slide-toggle>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['name','date','createdAt','status','actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name','date','createdAt','status','actions'];"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[5,10,25,50]" (page)="onPageChange($event)" [showFirstLastButtons]="true" aria-label="جدول الإجازات الثانوية"></mat-paginator>
+  </div>
+
+  <div *ngIf="!isLoading && (!holidays || holidays.length === 0)" class="empty-state text-center">
+    لا توجد عطل متاحة
+  </div>
+

@@ -1,0 +1,17 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+out/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.vspscc
+*.vssscc
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+TestResults/

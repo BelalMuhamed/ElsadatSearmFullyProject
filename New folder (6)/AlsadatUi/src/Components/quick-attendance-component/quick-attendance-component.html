@@ -1,0 +1,83 @@
+<div class="attendance-container">
+  <mat-card class="attendance-card">
+    <mat-card-header>
+      <mat-card-title>التسجيل السريع للحضور والانصراف</mat-card-title>
+      <mat-card-subtitle>سجل دخولك أو خروجك بسهولة</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content dir="rtl">
+      <!-- معلومات الوقت والتاريخ -->
+      <div class="info-section">
+        <div class="info-item">
+          <span class="info-label">التاريخ:</span>
+          <span class="info-value">{{ currentDate }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">الوقت:</span>
+          <span class="info-value time-value">{{ currentTime }}</span>
+        </div>
+      </div>
+
+      <hr style="border-color: var(--gold); opacity: 0.5; margin: 20px 0;">
+
+      <!-- اختيار نوع التسجيل -->
+      <div class="selection-section">
+        <label class="selection-label">اختر نوع التسجيل:</label>
+        
+        <div class="radio-group">
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="attendanceType" 
+              value="checkIn" 
+              [(ngModel)]="attendanceType" 
+              class="radio-input"
+            />
+            <span class="radio-label">
+              <mat-icon class="radio-icon">login</mat-icon>
+              حضور (Check-In)
+            </span>
+          </label>
+
+          <label class="radio-option">
+            <input 
+              type="radio" 
+              name="attendanceType" 
+              value="checkOut" 
+              [(ngModel)]="attendanceType" 
+              class="radio-input"
+            />
+            <span class="radio-label">
+              <mat-icon class="radio-icon">logout</mat-icon>
+              انصراف (Check-Out)
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <hr style="border-color: var(--gold); opacity: 0.5; margin: 20px 0;">
+
+      <!-- عرض الاختيار الحالي -->
+      <div class="current-selection">
+        <mat-icon class="selection-icon">
+          {{ attendanceType === 'checkIn' ? 'login' : 'logout' }}
+        </mat-icon>
+        <span class="selection-text">{{ getAttendanceTypeLabel() }}</span>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="actions-section">
+      <button 
+        mat-raised-button 
+        [color]="getSubmitButtonColor()" 
+        (click)="submitAttendance()"
+        [disabled]="isSubmitting"
+        class="submit-button"
+      >
+        <mat-icon *ngIf="!isSubmitting">check_circle</mat-icon>
+        <mat-icon *ngIf="isSubmitting" class="spinner">hourglass_empty</mat-icon>
+        {{ getSubmitButtonLabel() }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

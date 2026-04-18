@@ -1,0 +1,20 @@
+
+ <h2 class="popup-title py-3 ">
+  {{ isEditMode ? "تعديل محافظة" : "إضافة محافظة" }}
+</h2>
+
+<form [formGroup]="form" class="popup-form p-5">
+  <mat-form-field appearance="outline" class="full-width input-text">
+    <mat-label class="mdc-floating-label m-2">اسم المحافظة </mat-label>
+    <input class="input-text" matInput formControlName="name" />
+    <mat-error *ngIf="form.get('name')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+</form>
+
+<div class="popup-actions">
+  <button mat-dialog-close class="popup-btn-cancel" (click)="close()">إلغاء</button>
+  <button class="popup-btn-save" [disabled]="form.invalid" (click)="submit()">
+   {{ isEditMode ? "تحديث" : "إضافة" }}
+  </button>
+</div>
+

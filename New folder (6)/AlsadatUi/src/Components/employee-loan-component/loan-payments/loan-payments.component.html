@@ -1,0 +1,52 @@
+<mat-card class="p-3 payments-card">
+  <h3 class="text-center" style="color:var(--gold); margin-bottom:12px;">دفعات القرض الخاصة بـ {{ loanInfo?.employeeName || loanInfo?.employee?.fullName || loanInfo?.employeeCode || loanInfo?.employee?.code || loanInfo?.loanNumber }}</h3>
+
+  <div *ngIf="isLoading" class="text-center">جاري التحميل...</div>
+
+  <table mat-table [dataSource]="payments" class="w-100" *ngIf="!isLoading && payments.length">
+    <ng-container matColumnDef="paymentDate">
+      <th mat-header-cell *matHeaderCellDef>تاريخ</th>
+      <td mat-cell *matCellDef="let p">{{ p.paymentDate | date:'dd-MM-yyyy' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="paymentAmount">
+      <th mat-header-cell *matHeaderCellDef>المبلغ</th>
+      <td mat-cell *matCellDef="let p">{{ p.paymentAmount | number:'1.2-2' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="remainingAmount">
+      <th mat-header-cell *matHeaderCellDef>المتبقي بعد الدفع</th>
+      <td mat-cell *matCellDef="let p">{{ p.remainingAmount | number:'1.2-2' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="notes">
+      <th mat-header-cell *matHeaderCellDef>ملاحظات</th>
+      <td mat-cell *matCellDef="let p">{{ p.notes }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="details">
+      <th mat-header-cell *matHeaderCellDef>تفاصيل</th>
+      <td mat-cell *matCellDef="let p; let i = index">
+        <button mat-button (click)="toggleDetails(i)">عرض التفاصيل</button>
+        <div *ngIf="detailsOpen[i]" class="payment-json">
+          <pre>{{ p | json }}</pre>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['paymentDate','paymentAmount','remainingAmount','notes','details']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['paymentDate','paymentAmount','remainingAmount','notes','details'];"></tr>
+  </table>
+
+  <div *ngIf="!isLoading && (!payments || payments.length === 0)" class="text-center text-muted">لا توجد دفعات حتى الآن</div>
+
+  <div class="total-row">
+    <span>المجموع المسدد:</span>
+    <strong class="ms-2">{{ totalPaid | number:'1.2-2' }}</strong>
+  </div>
+
+  <div class="action-row">
+    <button mat-stroked-button class="action-btn" (click)="close()">إغلاق</button>
+    <button *ngIf="isActiveLoan()" mat-raised-button color="primary" class="action-btn ms-2" (click)="openAddPayment()">تسجيل دفعة</button>
+  </div>
+</mat-card>

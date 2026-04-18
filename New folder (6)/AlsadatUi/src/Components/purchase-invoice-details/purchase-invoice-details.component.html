@@ -1,0 +1,121 @@
+<div id="invoiceContent" class="invoice-details-container" *ngIf="invoice">
+
+  <!-- Header Card -->
+  <mat-card class="invoice-card">
+    <mat-card-title>
+      فاتورة شراء رقم {{ invoice.invoiceNumber }}
+    </mat-card-title>
+
+    <div class="invoice-meta">
+
+  <div class="meta-row">
+    <span class="label">المورد:</span>
+    <span>{{ invoice.supplierName }}</span>
+  </div>
+
+  <div class="meta-row">
+    <span class="label">تاريخ الإنشاء:</span>
+    <span>{{ invoice.createdAt | date:'medium' }}</span>
+  </div>
+
+
+  <div class="meta-row">
+    <span class="label"> مخزن التسكين:</span>
+    <span>{{ invoice.settledStoreName }}</span>
+  </div>
+</div>
+  </mat-card>
+
+  <!-- Summary Card -->
+ <mat-card class="invoice-card summary-card" *ngIf="!isPrintMode">
+
+    <div class="summary-grid">
+
+      <div>
+        <label>إجمالي قبل الخصم:</label>
+        <span>{{ invoice.totalGrowthAmount | number:'1.2-2' }}</span>
+      </div>
+
+      <div>
+        <label>نسبة الخصم:</label>
+        <span>{{ invoice.precentageRival || 0 }} %</span>
+      </div>
+
+      <div>
+        <label>قيمة الخصم:</label>
+        <span>{{ invoice.totalRivalValue | number:'1.2-2' }}</span>
+      </div>
+
+      <div>
+        <label>الضريبة:</label>
+        <span>{{ invoice.taxValue | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="net-amount">
+        <label>الإجمالي النهائي:</label>
+        <span>{{ invoice.totalNetAmount | number:'1.2-2' }}</span>
+      </div>
+
+    </div>
+
+  </mat-card>
+
+  <!-- Items Table -->
+  <mat-card class="invoice-card">
+    <mat-card-title>الأصناف</mat-card-title>
+
+    <div class="table-wrapper">
+
+      <table mat-table [dataSource]="invoice.items" class="mat-elevation-z2">
+
+        <!-- Product -->
+        <ng-container matColumnDef="product">
+          <th mat-header-cell *matHeaderCellDef> الصنف </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.productName }}
+          </td>
+        </ng-container>
+
+        <!-- Quantity -->
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef> الكمية </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.quantity }}
+          </td>
+        </ng-container>
+
+        <!-- Price -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef> سعر الوحدة </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.buyingPricePerUnit | number:'1.2-2' }}
+          </td>
+        </ng-container>
+ <!-- Total -->
+        <ng-container matColumnDef="discount">
+          <th mat-header-cell *matHeaderCellDef> الخصم </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.totalRivalValue | number:'1.2-2' }}
+          </td>
+        </ng-container>
+        <!-- Total -->
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef> الإجمالي </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.totalNetAmount | number:'1.2-2' }}
+          </td>
+        </ng-container>
+
+       <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+<tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+
+      </table>
+
+    </div>
+
+  </mat-card>
+<div class="actions">
+  <button (click)="generateFullPDF()">تحميل PDF كامل</button>
+  <button (click)="generateSimplePDF()">تحميل PDF مبسط</button>
+</div>
+</div>

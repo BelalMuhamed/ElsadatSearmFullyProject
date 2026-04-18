@@ -1,0 +1,147 @@
+<div class="salary-container">
+  <div class="header-section d-flex justify-content-between align-items-center">
+    
+      <div>
+        <h2 class="page-title" style="white-space: nowrap;">قروض الموظفين</h2>
+      </div>
+      
+<div>
+        <button mat-raised-button color="primary" (click)="openAdd()" class="action-btn">
+        <mat-icon>add</mat-icon>
+        إضافة قرض
+      </button>
+</div>
+   
+  </div>
+
+  <div class="filters">
+    <div class="filter-form w-100 d-flex gap-2 align-items-center" dir="rtl">
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width: 220px;">
+        <mat-label>بحث عام</mat-label>
+        <input matInput [(ngModel)]="filters.q" placeholder="اسم أو كود الموظف" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width: 160px;">
+        <mat-label>الحالة</mat-label>
+        <mat-select [(ngModel)]="filters.status">
+          <mat-option value="">الكل</mat-option>
+          <mat-option value="0">قيد الموافقة</mat-option>
+          <mat-option value="1">نشط</mat-option>
+          <mat-option value="2">مسدد</mat-option>
+          <mat-option value="3">مرفوض</mat-option>
+          <mat-option value="4">متأخر</mat-option>
+          <mat-option value="5">متعثر</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width: 160px;">
+        <mat-label>من تاريخ</mat-label>
+        <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filters.fromDate" />
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width: 160px;">
+        <mat-label>إلى تاريخ</mat-label>
+        <input matInput [matDatepicker]="toPicker" [(ngModel)]="filters.toDate" />
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="w-100 d-flex justify-content-center mt-3 gap-2">
+      <button mat-raised-button color="primary" (click)="applyFilters()" class="action-btn">
+        <mat-icon>search</mat-icon>
+        بحث
+      </button>
+      <button mat-stroked-button (click)="clearFilters()" class="action-btn">
+        <mat-icon>restart_alt</mat-icon>
+        إعادة تعيين
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="mt-3">
+    <mat-card-content>
+      <div *ngIf="isLoading" class="text-center" style="padding: 40px; color: var(--gold);">
+        <mat-spinner diameter="50" style="margin: 0 auto;"></mat-spinner>
+        <p>جاري التحميل...</p>
+      </div>
+
+      <div *ngIf="!isLoading && (!loans || loans.length === 0)" class="text-center" style="padding: 40px; color: #999;">
+        <mat-icon style="font-size: 48px; width: 48px; height: 48px; margin: 0 auto 16px; opacity: 0.5;">inbox</mat-icon>
+        <p>لا توجد قروض</p>
+      </div>
+
+      <div *ngIf="!isLoading && loans && loans.length > 0" class="table-container">
+        <table mat-table [dataSource]="loans" class="mat-elevation-z1" dir="rtl">
+
+          <ng-container matColumnDef="loanNumber">
+            <th mat-header-cell *matHeaderCellDef>رقم القرض</th>
+            <td mat-cell *matCellDef="let l">{{ l.loanNumber }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="employeeName">
+            <th mat-header-cell *matHeaderCellDef>الموظف</th>
+            <td mat-cell *matCellDef="let l">
+              <button mat-button color="primary" (click)="openSummary(l.employeeCode ?? l.representativeCode ?? l.representativeId ?? l.employeeId)">{{ l.employeeName }}</button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="loanAmount">
+            <th mat-header-cell *matHeaderCellDef>قيمة القرض</th>
+            <td mat-cell *matCellDef="let l">{{ l.loanAmount | number:'1.2-2' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="remaining">
+            <th mat-header-cell *matHeaderCellDef>المتبقي</th>
+            <td mat-cell *matCellDef="let l">{{ l.remainingAmount | number:'1.2-2' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="installment">
+            <th mat-header-cell *matHeaderCellDef>قيمة القسط</th>
+            <td mat-cell *matCellDef="let l">{{ l.installmentAmount | number:'1.2-2' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>الحالة</th>
+            <td mat-cell *matCellDef="let l">{{ getStatusText(l) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+            <td mat-cell *matCellDef="let l">
+              <div class="button-group">
+                <button mat-icon-button color="primary" *ngIf="getStatusCode(l) !== 1 && getStatusCode(l) !== 2 && getStatusCode(l) !== 3" (click)="openEdit(l)" matTooltip="تعديل">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" (click)="openPayments(l)" matTooltip="مدفوعات" *ngIf="getStatusCode(l) === 1">
+                  <mat-icon>payments</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" *ngIf="getStatusCode(l) === 0" (click)="approveLoan(l)" matTooltip="موافقة">
+                  <mat-icon>check</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" *ngIf="getStatusCode(l) === 0" (click)="rejectLoan(l)" matTooltip="رفض">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['loanNumber','employeeName','loanAmount','remaining','installment','status','actions']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['loanNumber','employeeName','loanAmount','remaining','installment','status','actions'];"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator 
+      [length]="totalCount" 
+      [pageSize]="pageSize" 
+      [pageSizeOptions]="[5,10,25,50]" 
+      (page)="onPageChange($event)" 
+      [showFirstLastButtons]="true">
+    </mat-paginator>
+  </div>
+</div>

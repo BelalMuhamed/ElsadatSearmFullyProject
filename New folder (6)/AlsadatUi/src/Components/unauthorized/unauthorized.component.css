@@ -1,0 +1,121 @@
+/* ===== CONTAINER ===== */
+.unauth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-color);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== BACKGROUND ===== */
+.unauth-container::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255,0,0,0.2), transparent 60%);
+  top: -200px;
+  left: -200px;
+  filter: blur(80px);
+  animation: floatGlow 8s ease-in-out infinite;
+}
+
+.unauth-container::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 60%);
+  bottom: -200px;
+  right: -200px;
+  filter: blur(90px);
+  animation: floatGlow 10s ease-in-out infinite reverse;
+}
+
+/* ===== CARD ===== */
+.unauth-card {
+  width: 420px;
+  padding: 40px;
+  border-radius: 18px;
+  text-align: center;
+
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 80, 80, 0.3);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+
+  animation: fadeIn 0.6s ease;
+}
+
+/* LIGHT MODE */
+body.light-mode .unauth-card {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* ===== ICON ===== */
+.icon {
+  font-size: 70px;
+  font-weight: bold;
+  color: #ff4d4d;
+  margin-bottom: 10px;
+  text-shadow: 0 0 20px rgba(255,0,0,0.6);
+  animation: glowRed 2s infinite alternate;
+}
+
+/* ===== TEXT ===== */
+.unauth-card h2 {
+  color: var(--text-color);
+  margin-bottom: 10px;
+}
+
+.unauth-card p {
+  color: var(--text-color);
+  opacity: 0.7;
+  margin-bottom: 25px;
+}
+
+/* ===== BUTTONS ===== */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* PRIMARY */
+.actions button:first-child {
+  background: linear-gradient(135deg, #d4af37, #f5d76e);
+  color: #111;
+}
+
+/* SECONDARY */
+.actions .secondary {
+  background: transparent;
+  border: 1px solid var(--input-border);
+  color: var(--text-color);
+}
+
+.actions button:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== ANIMATION ===== */
+@keyframes glowRed {
+  from { text-shadow: 0 0 5px rgba(255,0,0,0.3); }
+  to { text-shadow: 0 0 25px rgba(255,0,0,0.9); }
+}

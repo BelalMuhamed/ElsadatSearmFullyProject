@@ -1,0 +1,107 @@
+.invoice-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.invoice-card {
+  padding: 20px;
+  border-radius: 12px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.summary-grid div {
+  background: var(--hover-bg);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.summary-grid label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.net-amount {
+  background: var(--gold);
+  color: #222 !important;
+  font-weight: bold;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+th {
+  background: var(--active-bg);
+  font-weight: bold;
+}
+
+.status-settled {
+  color: var(--text-safe);
+  font-weight: bold;
+}
+
+.status-pending {
+  color: var(--danger-color);
+  font-weight: bold;
+}
+.invoice-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--text-color);
+}
+
+.meta-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Badge Style */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* مسددة */
+.badge-settled {
+  background-color: var(--color-safe);
+  color: var(--text-safe);
+}
+
+/* غير مسددة */
+.badge-pending {
+  background-color: var(--color-low);
+  color: var(--text-low);
+}
+.invoice-card {
+  border: 1px solid var(--hover-bg);
+}

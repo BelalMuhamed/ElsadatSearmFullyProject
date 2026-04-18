@@ -1,0 +1,233 @@
+<mat-card class="edit-card">
+  <mat-card-header>
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <div>
+        <mat-card-title>إضافة مندوب جديد</mat-card-title>
+        <mat-card-subtitle>إنشاء مندوب جديد في النظام</mat-card-subtitle>
+      </div>
+      <button mat-icon-button (click)="goBack()" matTooltip="رجوع">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+  <mat-card-content dir="rtl" class="content-scroll">
+    <form #f="ngForm" class="mt-2" autocomplete="off">
+      <!-- Personal Info -->
+      <div class="section">
+        <h3 class="section-title">المعلومات الشخصية</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الاسم الكامل *</mat-label>
+            <input matInput name="fullName" [(ngModel)]="model.fullName" autocomplete="off" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>النوع</mat-label>
+            <mat-select name="gender" [(ngModel)]="model.gender">
+              <mat-option [value]="0">ذكر</mat-option>
+              <mat-option [value]="1">أنثى</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الرقم القومي (SNO) *</mat-label>
+            <input matInput name="sno" [(ngModel)]="model.sno" autocomplete="off" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>تاريخ الميلاد</mat-label>
+            <input matInput [matDatepicker]="bdPicker" name="birthDate" [(ngModel)]="model.birthDate" required autocomplete="off" />
+            <mat-datepicker-toggle matSuffix [for]="bdPicker"></mat-datepicker-toggle>
+            <mat-datepicker #bdPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="section">
+        <h3 class="section-title">بيانات الاتصال</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الهاتف</mat-label>
+            <input matInput name="phoneNumber" [(ngModel)]="model.phoneNumber" autocomplete="tel" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>العنوان</mat-label>
+            <input matInput name="address" [(ngModel)]="model.address" autocomplete="street-address" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Representative Info -->
+      <div class="section">
+        <h3 class="section-title">بيانات المندوب</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>كود المندوب</mat-label>
+            <input matInput name="representativeCode" [(ngModel)]="model.representativeCode" autocomplete="off" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>نوع المندوب</mat-label>
+            <mat-select name="representiveType" [(ngModel)]="model.representiveType">
+              <mat-option [value]="1">معاينات</mat-option>
+              <mat-option [value]="2">تحصيل</mat-option>
+              <mat-option [value]="3">مختلط</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>المدينة</mat-label>
+            <input matInput name="cityName" [(ngModel)]="model.cityName" [matAutocomplete]="cityAuto" autocomplete="off" (input)="filterCities($any($event.target).value || '')" />
+            <button mat-icon-button matSuffix type="button" aria-label="فتح قائمة المدن" (click)="openCityPanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+            <mat-autocomplete #cityAuto="matAutocomplete" (optionSelected)="onCitySelected($event.option.value)">
+              <mat-option *ngFor="let c of filteredCities" [value]="c.cityName">{{ c.cityName }}</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>تاريخ التعيين</mat-label>
+            <input matInput [matDatepicker]="hdPicker" name="hireDate" [(ngModel)]="model.hireDate" required autocomplete="off" />
+            <mat-datepicker-toggle matSuffix [for]="hdPicker"></mat-datepicker-toggle>
+            <mat-datepicker #hdPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Payroll & Schedule -->
+      <div class="section">
+        <h3 class="section-title">الراتب والدوام</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الراتب</mat-label>
+            <input matInput type="number" name="salary" [(ngModel)]="model.salary" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>وقت الحضور (HH:mm:ss)</mat-label>
+            <input matInput name="timeIn" [(ngModel)]="model.timeIn" placeholder="09:00:00" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>وقت الانصراف (HH:mm:ss)</mat-label>
+            <input matInput name="timeOut" [(ngModel)]="model.timeOut" placeholder="17:00:00" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>سعر ساعة الإضافة</mat-label>
+            <input matInput type="number" name="overtimeRatePerHour" [(ngModel)]="model.overtimeRatePerHour" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>يوم الإجازة الأول</mat-label>
+            <mat-select name="weekHoliday1" [(ngModel)]="model.weekHoliday1">
+              <mat-option *ngFor="let day of weekDays" [value]="day.id">{{ day.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>يوم الإجازة الثاني (اختياري)</mat-label>
+            <mat-select name="weekHoliday2" [(ngModel)]="model.weekHoliday2">
+              <mat-option [value]="null">بدون</mat-option>
+              <mat-option *ngFor="let day of weekDays" [value]="day.id">{{ day.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Wallet & Deposit -->
+      <div class="section">
+        <h3 class="section-title">المحفظة والإيداع</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>رصيد النقاط</mat-label>
+            <input matInput type="number" name="pointsWallet" [(ngModel)]="model.pointsWallet" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الإيداع المالي</mat-label>
+            <input matInput type="number" name="moneyDeposit" [(ngModel)]="model.moneyDeposit" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Account & Role -->
+      <div class="section">
+        <h3 class="section-title">حساب الدخول والدور</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>البريد الإلكتروني *</mat-label>
+            <input matInput type="email" name="email" [(ngModel)]="model.email" autocomplete="off" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>كلمة المرور</mat-label>
+            <input matInput name="password" [(ngModel)]="model.password" [type]="showPassword ? 'text' : 'password'" autocomplete="new-password" />
+            <button mat-icon-button matSuffix type="button" (click)="toggleShowPassword()" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme" *ngIf="roles.length">
+            <mat-label>الدور</mat-label>
+            <input matInput name="roleName" [(ngModel)]="model.roleName" [matAutocomplete]="roleAuto" autocomplete="off" (input)="filterRoles($any($event.target).value || '')" />
+            <button mat-icon-button matSuffix type="button" aria-label="فتح قائمة الادوار" (click)="openRolePanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+            <mat-autocomplete #roleAuto="matAutocomplete" (optionSelected)="onRoleSelected($event.option.value)">
+              <mat-option *ngFor="let r of filteredRoles" [value]="r">{{ r }}</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Special Cities -->
+      <div class="section">
+        <h3 class="section-title">المدن الخاصة بالمندوب</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>إضافة مدينة خاصة</mat-label>
+            <input matInput name="specialCityFilter" [(ngModel)]="specialCityFilter" [matAutocomplete]="specialCityAuto" autocomplete="off" (input)="filterSpecialCities($any($event.target).value || '')" />
+            <button mat-icon-button matSuffix type="button" aria-label="فتح قائمة المدن" (click)="openSpecialCityPanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+            <mat-autocomplete #specialCityAuto="matAutocomplete" (optionSelected)="onSpecialCitySelected($event.option.value)">
+              <mat-option *ngFor="let c of filteredSpecialCities" [value]="c.cityName">{{ c.cityName }}</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <button mat-raised-button color="accent" type="button" (click)="addSpecialCity()" [disabled]="!specialCitySelectedId">
+            <mat-icon>add</mat-icon>
+            إضافة مدينة
+          </button>
+        </div>
+
+        <!-- Special Cities Table -->
+        <div *ngIf="model.specialRepresentiveCities && model.specialRepresentiveCities.length > 0" class="special-cities-table">
+          <table>
+            <thead>
+              <tr>
+                <th>اسم المدينة</th>
+                <th>الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let city of model.specialRepresentiveCities; let i = index">
+                <td>{{ city.cityName }}</td>
+                <td>
+                  <button mat-icon-button color="warn" type="button" (click)="removeSpecialCity(i)" matTooltip="حذف">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="!model.specialRepresentiveCities || model.specialRepresentiveCities.length === 0" class="empty-cities">
+          لم يتم إضافة أي مدن خاصة
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions class="d-flex justify-content-center">
+    <button mat-stroked-button color="primary" class="mx-2 w-25" (click)="save()" [disabled]="isSaving">حفظ</button>
+    <button mat-stroked-button color="warn" class="mx-2 w-25" (click)="cancel()" [disabled]="isSaving">إلغاء</button>
+  </mat-card-actions>
+</mat-card>

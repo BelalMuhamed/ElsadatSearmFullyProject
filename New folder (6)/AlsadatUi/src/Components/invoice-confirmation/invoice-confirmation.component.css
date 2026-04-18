@@ -1,0 +1,179 @@
+.swagger-accordion {
+  width: 100%;
+}
+
+/* Panel */
+.swagger-panel {
+  margin-bottom: 12px;
+  border-radius: 8px !important;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  transition: 0.3s ease;
+}
+
+/* Remove default shadow */
+.mat-expansion-panel {
+  box-shadow: none !important;
+}
+
+/* Hover */
+.swagger-panel:hover {
+  border-color: var(--gold);
+}
+
+/* Body */
+.swagger-body {
+  padding: 15px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+/* Dark mode body text */
+body.dark-mode .swagger-body {
+  color: #fff !important;
+}
+
+/* Header text */
+body.dark-mode .swagger-panel .mat-mdc-expansion-panel-header,
+body.dark-mode .swagger-panel .mat-mdc-expansion-panel-header *,
+body.dark-mode .swagger-panel .mat-mdc-expansion-panel-header span,
+body.dark-mode .swagger-panel .mat-mdc-expansion-panel-header strong {
+    color: #fff !important;
+}
+
+/* Specific title & description */
+body.dark-mode .swagger-panel .mat-mdc-expansion-panel-header-title,
+body.dark-mode .swagger-panel .mat-mdc-expansion-panel-header-description {
+    color: #fff !important;
+}
+
+/* Arrow icon */
+body.dark-mode .swagger-panel .mat-expansion-indicator::after,
+body.dark-mode .swagger-panel .mat-mdc-expansion-panel-header .mat-expansion-indicator::after {
+    color: #fff !important;
+}
+/* Dark mode header title & description */
+body.dark-mode .mat-mdc-expansion-panel-header .mat-mdc-expansion-panel-header-title,
+body.dark-mode .mat-mdc-expansion-panel-header .mat-mdc-expansion-panel-header-description,
+body.dark-mode .mat-mdc-expansion-panel-header mat-panel-title,
+body.dark-mode .mat-mdc-expansion-panel-header mat-panel-description {
+    color: #fff !important;
+}
+
+/* Catch inner spans inside title & description */
+body.dark-mode .mat-mdc-expansion-panel-header mat-panel-title span,
+body.dark-mode .mat-mdc-expansion-panel-header mat-panel-description span {
+    color: #fff !important;
+}
+/* Dark mode for all text inside expansion panel header */
+body.dark-mode .mat-mdc-expansion-panel-header,
+body.dark-mode .mat-mdc-expansion-panel-header * {
+    color: #fff !important;
+}
+
+/* Specific catches for Angular tags */
+body.dark-mode mat-panel-title,
+body.dark-mode mat-panel-description,
+body.dark-mode mat-panel-title *,
+body.dark-mode mat-panel-description * {
+    color: #fff !important;
+}
+body.dark-mode .panel-title,
+body.dark-mode .panel-description {
+  color: #fff !important;
+  font-weight: 500; /* لو تحب تشبه mat-panel-title */
+}
+
+
+
+
+
+/* button */
+/* Smooth animation */
+.mat-mdc-stroked-button {
+  transition: all 0.25s ease-in-out;
+}
+
+/* Hover → Gold (Primary + Warn) */
+.mat-mdc-stroked-button:hover {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  background-color: rgba(241, 196, 15, 0.08);
+}
+
+/* Dark mode enhancement */
+:host-context(body.dark-mode)
+.mat-mdc-stroked-button:hover {
+  background-color: rgba(241, 196, 15, 0.12);
+}
+/* Smooth transition */
+.mat-mdc-stroked-button {
+  transition: all 0.25s ease-in-out;
+}
+
+/* Border */
+.mat-mdc-stroked-button:hover .mdc-button__outline {
+  border-color: var(--gold) !important;
+}
+
+/* Text */
+.mat-mdc-stroked-button:hover .mdc-button__label {
+  color: var(--gold) !important;
+}
+
+/* Background */
+.mat-mdc-stroked-button:hover {
+  background-color: rgba(212, 175, 55, 0.08) !important;
+}
+:host-context(body.dark-mode)
+.mat-mdc-stroked-button:hover {
+  background-color: rgba(212, 175, 55, 0.15) !important;
+}
+.gold-hover {
+  transition: all 0.25s ease-in-out;
+}
+
+/* Border */
+.gold-hover:hover .mdc-button__outline {
+  border-color: var(--gold) !important;
+}
+
+/* Text */
+.gold-hover:hover .mdc-button__label {
+  color: var(--gold) !important;
+}
+
+/* Background */
+.gold-hover:hover {
+  background-color: rgba(212, 175, 55, 0.08) !important;
+}
+
+/* Dark mode */
+:host-context(body.dark-mode) .gold-hover:hover {
+  background-color: rgba(212, 175, 55, 0.15) !important;
+}
+.gold-outline-btn {
+  background-color: transparent !important;
+  color: var(--gold) !important;
+  border: 2px solid var(--gold) !important;
+  border-radius: 12px !important; /* curve */
+  transition: all 0.3s ease;
+  box-shadow: none !important; /* يشيل shadow بتاع raised */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hover effect */
+.gold-outline-btn:hover {
+  background-color: rgba(212, 175, 55, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+/* Disabled state */
+.gold-outline-btn:disabled {
+  opacity: 0.5;
+  border-color: #999 !important;
+  color: #999 !important;
+}

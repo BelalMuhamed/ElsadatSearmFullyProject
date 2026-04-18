@@ -1,0 +1,56 @@
+<div class="w-100 d-flex justify-content-between align-items-center mb-3">
+  <h2 class="w-25 text-center page-title">إنشاء طلب إجازة (HR)</h2>
+     <mat-button-toggle-group name="userType" [(ngModel)]="userType" appearance="legacy" style="margin-left: 45%;">
+          <mat-button-toggle value="employee">موظف</mat-button-toggle>
+          <mat-button-toggle value="representative">مندوب</mat-button-toggle>
+      </mat-button-toggle-group>
+</div>
+
+<mat-card class="p-3 hr-leave-card">
+    <mat-card-content>
+      <div class="grid-form mb-3">
+     
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ userType === 'employee' ? 'اختر الموظف' : 'اختر المندوب' }}</mat-label>
+          <input type="text" matInput [(ngModel)]="employeeFilter" (ngModelChange)="onEmployeeFilterChange($event)" [matAutocomplete]="auto" placeholder="ابحث بالاسم أو الكود" />
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+            <mat-option *ngFor="let e of filteredEmployees" [value]="(e.employeeCode || e.code || e.userId || e.id)">{{ formatPerson(e) }}</mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>نوع الإجازة</mat-label>
+          <mat-select [(ngModel)]="dto.leaveTypeId" name="leaveType">
+            <mat-option *ngFor="let t of leaveTypes" [value]="t.id">{{t.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="dates">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>من</mat-label>
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="dto.fromDate" name="fromDate" placeholder="اختر تاريخ" />
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>إلى</mat-label>
+          <input matInput [matDatepicker]="picker2" [(ngModel)]="dto.toDate" name="toDate" placeholder="اختر تاريخ" />
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width mt-3">
+        <mat-label>ملاحظات</mat-label>
+        <textarea matInput rows="4" [(ngModel)]="dto.notes" name="notes"></textarea>
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions class="d-flex justify-content-center mt-3">
+        <button mat-stroked-button color="warn" class="me-2" (click)="resetDto()">إلغاء</button>
+        <button mat-raised-button color="primary" (click)="submit()">إنشاء</button>
+    </mat-card-actions>
+  </mat-card>

@@ -1,0 +1,170 @@
+<mat-card class="p-3 loan-dialog">
+  <h4 class="mb-4 text-center">{{model.id ? 'تعديل قرض' : 'إنشاء قرض'}}</h4>
+
+  <form (ngSubmit)="save()" #loanForm="ngForm">
+    <!-- حقل الموظف -->
+    <div class="mb-3">
+      <div class="mb-2 d-flex justify-content-center">
+        <mat-button-toggle-group name="userType" [(ngModel)]="userType" appearance="legacy">
+          <mat-button-toggle value="employee">موظف</mat-button-toggle>
+          <mat-button-toggle value="representative">مندوب</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ userType === 'employee' ? 'الموظف' : 'المندوب' }}</mat-label>
+        
+        <!-- حالة التعديل: عرض فقط -->
+        <ng-container *ngIf="model.id; else newEmployeeField">
+          <input 
+            matInput 
+            [value]="employeeFilter"
+            disabled>
+        </ng-container>
+
+        <!-- حالة الإنشاء: حقل بحث مع autocomplete -->
+        <ng-template #newEmployeeField>
+          <input 
+            type="text"
+            matInput 
+            placeholder="ابحث بالاسم أو الكود" 
+            [(ngModel)]="employeeFilter" 
+            (ngModelChange)="onEmployeeFilterChange($event)" 
+            [matAutocomplete]="auto" 
+            [disabled]="isViewMode"
+            name="employee"
+            required>
+          
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+            <!-- حالة التحميل -->
+            <mat-option *ngIf="employeesLoading" disabled class="py-2">
+              <div class="d-flex align-items-center justify-content-center">
+                <mat-spinner diameter="20" class="me-2"></mat-spinner>
+                <span class="text-muted">جاري التحميل...</span>
+              </div>
+            </mat-option>
+            
+            <!-- عرض الموظفين -->
+            <mat-option *ngFor="let employee of filteredEmployees"
+            [value]="(employee.employeeCode || employee.code || employee.representativeCode || employee.representativeCode)">
+              <div class="d-flex align-items-center w-100 employee-option">
+                <span class="employee-name">
+                  {{ employee.fullName || employee.name || 'بدون اسم' }}
+                </span>
+                <span class="employee-code text-muted">
+                  {{ employee.employeeCode || employee.code || employee.representativeCode || employee.representativeCode }}
+                </span>
+              </div>
+          </mat-option>
+
+            <!-- حالة عدم وجود نتائج مع نص بحث -->
+            <mat-option *ngIf="!employeesLoading && filteredEmployees.length === 0 && employeeFilter && employeeFilter.length >= 1" disabled>
+              <div class="text-center text-muted py-2">
+                لا توجد نتائج لـ "{{employeeFilter}}"
+              </div>
+            </mat-option>
+            
+            <!-- حالة عدم وجود موظفين مطلقاً -->
+            <mat-option *ngIf="!employeesLoading && employees.length === 0 && !employeeFilter" disabled>
+              <div class="text-center text-muted py-2">
+                لا توجد بيانات موظفين
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+        </ng-template>
+        
+        <!-- رسالة الخطأ إذا لم يتم اختيار موظف -->
+        <mat-error *ngIf="loanForm.submitted && !model.employeeCode && !model.representativeCode && !model.id">
+          يجب اختيار موظف/مندوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- باقي الحقول بدون تغيير -->
+    <!-- مبلغ القرض -->
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>مبلغ القرض</mat-label>
+        <input 
+          matInput 
+          type="number" 
+          min="0"
+          [(ngModel)]="model.loanAmount" 
+          [disabled]="isViewMode"
+          name="loanAmount"
+          required>
+        <mat-error *ngIf="loanForm.submitted && (!model.loanAmount || model.loanAmount <= 0)">
+          مبلغ القرض مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- عدد الأقساط -->
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>عدد الأقساط</mat-label>
+        <input 
+          matInput 
+          type="number" 
+          min="1"
+          [(ngModel)]="model.installmentsCount" 
+          [disabled]="isViewMode"
+          name="installmentsCount"
+          required>
+        <mat-error *ngIf="loanForm.submitted && (!model.installmentsCount || model.installmentsCount <= 0)">
+          عدد الأقساط مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- تاريخ أول قسط -->
+    <div class="mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>تاريخ أول قسط</mat-label>
+        <input 
+          matInput 
+          [matDatepicker]="picker" 
+          [(ngModel)]="model.firstInstallmentDate" 
+          [disabled]="isViewMode"
+          name="firstInstallmentDate"
+          required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="loanForm.submitted && !model.firstInstallmentDate">
+          تاريخ أول قسط مطلوب
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- الغرض / الملاحظات -->
+    <div class="mb-4">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>الهدف / ملاحظات</mat-label>
+        <textarea 
+          matInput 
+          rows="3"
+          [(ngModel)]="model.purpose" 
+          [disabled]="isViewMode"
+          name="purpose"></textarea>
+      </mat-form-field>
+    </div>
+
+    <!-- أزرار الإجراءات -->
+    <div class="d-flex justify-content-center gap-2 mt-4">
+      <button type="button" mat-stroked-button class="action-btn" (click)="close()" [disabled]="isSaving">
+        إلغاء
+      </button>
+      <button 
+        type="submit" 
+        mat-raised-button 
+        color="primary" 
+        class="action-btn mx-3"
+        [disabled]="isSaving || isViewMode">
+        <span *ngIf="!isSaving">{{model.id ? 'تحديث' : 'حفظ'}}</span>
+        <span *ngIf="isSaving" class="d-flex align-items-center">
+          <mat-spinner diameter="20" class="me-2"></mat-spinner>
+          جاري {{model.id ? 'التحديث' : 'الحفظ'}}...
+        </span>
+      </button>
+    </div>
+  </form>
+</mat-card>

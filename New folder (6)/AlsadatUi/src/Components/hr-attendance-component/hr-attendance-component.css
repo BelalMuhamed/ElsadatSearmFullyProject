@@ -1,0 +1,191 @@
+.dark-datepicker .mat-datepicker-content {
+  background: #222 !important;
+  color: #fff !important;
+}
+.dark-datepicker .mat-calendar {
+  background: #222 !important;
+  color: #fff !important;
+}
+.dark-datepicker .mat-calendar-table {
+  background: #222 !important;
+  color: #fff !important;
+}
+.dark-datepicker .mat-calendar-body-cell-content {
+  color: #fff !important;
+}
+.filter-form{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 12px 0;
+}
+.action-btn{
+  min-width: 120px;
+}
+.table-container{
+  overflow-x: auto;
+  padding: 8px;
+}
+.action-buttons button{
+  margin-left: 6px;
+}
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Keep consistent colors with the rest of the app */
+h2{ color: var(--gold); }
+
+/* Dark mode tweaks scoped to this component */
+:host-context(body.dark-mode) .table-container {
+  background: #121212;
+  color: #e8e8e8;
+  border-radius: 6px;
+}
+
+:host-context(body.dark-mode) table.mat-mdc-table {
+  background: transparent;
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .mat-mdc-header-cell {
+  color: #f1c40f;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell {
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .paginator-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--gold);
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator {
+  background: transparent;
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .action-btn {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+
+/* Light mode small polish */
+:host-context(body.light-mode) .table-container {
+  background: #fff;
+  color: #222;
+  border-radius: 6px;
+}
+
+:host-context(body.light-mode) .mat-mdc-header-cell {
+  color: var(--gold);
+}
+
+/* Ensure paginator icons (prev/next) and page-size dropdown are visible in both themes */
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-icon::after,
+:host-context(body.dark-mode) .mat-mdc-paginator-range-label,
+:host-context(body.dark-mode) .mat-mdc-paginator-page-size-label {
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mdc-select__anchor {
+  color: var(--gold) !important;
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1;
+}
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+/* Small hover contrast */
+.mat-mdc-paginator .mat-mdc-icon-button:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+/* ===== CRITICAL: Force navigation arrows to be GOLD in Dark Mode ===== */
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button:hover {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: var(--gold) !important;
+}
+
+/* Force Material SVG icons and internal paginator icons */
+:host-context(body.dark-mode) .mat-mdc-paginator svg {
+  fill: var(--gold) !important;
+  stroke: var(--gold) !important;
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mdc-icon-button__icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+}
+
+/* ===== NUCLEAR: Force ALL paginator elements visible in Dark Mode ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator svg {
+  stroke: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+/* ===== DISABLED BUTTONS: Make them appear faded/lighter ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button:disabled,
+:host-context(body.dark-mode) button.mat-mdc-icon-button[disabled] {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled .mat-icon,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] .mat-icon {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled svg,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] svg {
+  opacity: 0.35 !important;
+}

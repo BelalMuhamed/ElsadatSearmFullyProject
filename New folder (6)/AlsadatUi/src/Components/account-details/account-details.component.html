@@ -1,0 +1,76 @@
+<div class="account-details-container" *ngIf="!isLoaded && !msgerror">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="msgerror" class="error-message">
+  {{ msgerror }}
+</div>
+
+<div *ngIf="isLoaded && !msgerror" class="account-details-content">
+  <!-- Filters -->
+  <form [formGroup]="form" class="filters-form" (ngSubmit)="applyFilters()">
+    <mat-form-field appearance="outline">
+      <mat-label>رقم القيد</mat-label>
+      <input matInput type="number" formControlName="entryId" placeholder="ادخل رقم القيد">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="mx-3">
+      <mat-label>تاريخ القيد</mat-label>
+      <input matInput type="date" formControlName="entryDate">
+    </mat-form-field>
+     <div class="d-flex justify-content-center mx-3">
+        <button
+          mat-raised-button
+          class="add-coupon-btn px-3 ms-2 m-0 gold"
+
+         type="submit"
+        >
+          <mat-icon aria-hidden="false" aria-label="Search icon">search</mat-icon>
+          ابحث
+        </button>
+        <button
+          mat-raised-button
+          class="add-coupon-btn px-3 m-0 gold"
+          (click)="resetFilters()"
+          type="button"
+        >
+          <mat-icon aria-hidden="false" aria-label="Reset icon">refresh</mat-icon>
+          إعادة تعيين
+        </button>
+      </div>
+
+
+  </form>
+
+  <!-- Account Info -->
+<div class="account-info" *ngIf="account">
+  <p><strong class="label">اسم الحساب:</strong> {{ account.accountName }}</p>
+  <p><strong class="label">كود الحساب:</strong> {{ account.accountCode }}</p>
+</div>
+
+  <!-- Movements Table -->
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <!-- Columns -->
+      <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
+        <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+        <td mat-cell *matCellDef="let element">
+          {{ col.type === 'date' ? (element[col.key] | date: 'dd/MM/yyyy') : element[col.key] }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys;"></tr>
+    </table>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      showFirstLastButtons
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+</div>

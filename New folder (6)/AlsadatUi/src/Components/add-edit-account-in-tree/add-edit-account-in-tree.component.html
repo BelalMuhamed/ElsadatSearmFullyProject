@@ -1,0 +1,57 @@
+<div class="account-form-container">
+
+  <h2>
+    <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'تعديل حساب' : 'إضافة حساب جديد' }}
+  </h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>كود الحساب</mat-label>
+      <input matInput formControlName="accountCode">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>اسم الحساب</mat-label>
+      <input matInput formControlName="accountName">
+    </mat-form-field>
+
+    <mat-form-field  hidden="!isEditMode" appearance="outline" class="full-width">
+      <mat-label>المستخدم</mat-label>
+      <input matInput formControlName="userId">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>نوع الحساب</mat-label>
+      <mat-select formControlName="type">
+        <mat-option [value]="0">الاصول</mat-option>
+        <mat-option [value]="1">الخصوم</mat-option>
+        <mat-option [value]="2">حقوق الملكية</mat-option>
+        <mat-option [value]="3">الايرادات</mat-option>
+        <mat-option [value]="4">المصاريف</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+<mat-form-field appearance="outline">
+  <mat-label>الحساب الأب</mat-label>
+  <mat-select formControlName="parentAccountId" (selectionChange)="onselectparent($event.value)">
+    <mat-option *ngFor="let item of ParentAccounts" [value]="item.id">
+      {{ item.accountName }} , {{ item.accountCode }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+    <mat-checkbox formControlName="isLeaf" >حساب نهائي</mat-checkbox>
+    <mat-checkbox formControlName="isActive" hidden>نشط</mat-checkbox>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" type="submit">
+        {{ isEditMode ? 'حفظ التعديل' : 'إضافة الحساب' }}
+      </button>
+
+
+    </div>
+
+  </form>
+</div>

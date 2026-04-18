@@ -1,0 +1,21 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+out/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.vspscc
+*.vssscc
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+TestResults/
+/AlSadat-Seram-Project/AlSadat-Seram/AlSadat-Seram.Api/appsettings.json
+/AlSadat-Seram-Project/AlSadat-Seram/AlSadat-Seram.Api/appsettings.json
+/AlSadat-Seram-Project/AlSadat-Seram/Infrastructure/Migrations/20251130140443_new.cs
+/AlSadat-Seram-Project/AlSadat-Seram/Infrastructure/Migrations

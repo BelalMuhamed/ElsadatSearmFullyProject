@@ -1,0 +1,60 @@
+<div class="w-100 d-flex justify-content-between align-items-center mb-3">
+  <h2 class="w-25 text-center page-title">طلبات الإجازات</h2>
+  <button mat-raised-button color="primary" (click)="openCreateDialog()" class="action-btn">
+    <mat-icon>add</mat-icon>
+    طلب جديد
+  </button>
+</div>
+
+<div class="page-content">
+  <div *ngIf="isLoading" class="text-center" style="color: var(--gold);">جاري التحميل...</div>
+
+  <div *ngIf="!isLoading" class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" dir="rtl">
+
+      <ng-container matColumnDef="leaveTypeName">
+        <th mat-header-cell *matHeaderCellDef>النوع</th>
+        <td mat-cell *matCellDef="let el">{{el.leaveTypeName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fromDate">
+        <th mat-header-cell *matHeaderCellDef>من</th>
+        <td mat-cell *matCellDef="let el">{{el.fromDate | date:'shortDate'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="toDate">
+        <th mat-header-cell *matHeaderCellDef>إلى</th>
+        <td mat-cell *matCellDef="let el">{{el.toDate | date:'shortDate'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="daysRequested">
+        <th mat-header-cell *matHeaderCellDef>عدد الأيام</th>
+        <td mat-cell *matCellDef="let el">{{el.daysRequested}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="statusName">
+        <th mat-header-cell *matHeaderCellDef>الحالة</th>
+        <td mat-cell *matCellDef="let el">{{el.statusName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>إجراءات</th>
+        <td mat-cell *matCellDef="let el">
+          <button mat-icon-button color="primary" matTooltip="عرض">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" matTooltip="إلغاء" (click)="cancel(el)">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
+
+  <div dir="rtl" class="paginator-container" *ngIf="!isLoading && dataSource.data.length > 0">
+    <mat-paginator [length]="totalCount" [pageSize]="paginationParams.pageSize" [pageSizeOptions]="[5,10,20]" (page)="onPageChange($event)" [showFirstLastButtons]="true"></mat-paginator>
+  </div>
+</div>

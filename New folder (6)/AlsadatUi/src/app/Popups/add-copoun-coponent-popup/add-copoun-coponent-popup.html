@@ -1,0 +1,44 @@
+<h2 class="popup-title py-3">إضافة كوبون جديد</h2>
+
+<form [formGroup]="form" class="popup-form p-5">
+
+  <!-- وصف -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>وصف الكوبون</mat-label>
+    <input matInput formControlName="copounDesc" />
+    <mat-error>حقل مطلوب</mat-error>
+  </mat-form-field>
+
+  <!-- النوع -->
+  <mat-form-field appearance="outline">
+    <mat-label>نوع الكوبون</mat-label>
+    <mat-select formControlName="copounPaiedType">
+      <mat-option [value]="0">كاش</mat-option>
+      <mat-option [value]="1">هدايا</mat-option>
+      <mat-option [value]="2">كاش + هدايا</mat-option>
+    </mat-select>
+    <mat-error>حقل مطلوب</mat-error>
+  </mat-form-field>
+
+ 
+
+  <!-- النجوم -->
+  <mat-form-field appearance="outline">
+    <mat-label>عدد النجوم</mat-label>
+    <input matInput type="number" formControlName="stars" />
+  </mat-form-field>
+
+  <!-- الكاش -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>المبلغ الكاش</mat-label>
+    <input matInput type="number" formControlName="paiedCash" />
+  </mat-form-field>
+
+</form>
+
+<div class="popup-actions">
+  <button class="popup-btn-cancel" mat-dialog-close>إلغاء</button>
+  <button class="popup-btn-save" [disabled]="form.invalid" (click)="submit()">
+    حفظ
+  </button>
+</div>

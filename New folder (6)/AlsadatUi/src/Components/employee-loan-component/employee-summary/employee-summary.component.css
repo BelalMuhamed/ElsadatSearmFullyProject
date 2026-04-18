@@ -1,0 +1,8 @@
+mat-card { max-width: 900px; margin: 0 auto; background: var(--surface); }
+.action-btn { min-width: 120px; height: 38px; border-radius: 8px; }
+.text-center { text-align: center; }
+
+/* Dark mode fixes for employee summary dialog */
+:host-context(body.dark-mode) mat-card { background: #1e1e1e; color: #e8e8e8; border: 1px solid rgba(255,255,255,0.04); }
+:host-context(body.dark-mode) .action-btn { color: #e8e8e8; border-color: rgba(255,255,255,0.08); }
+:host-context(body.dark-mode) table, :host-context(body.dark-mode) th, :host-context(body.dark-mode) td { color: #e8e8e8; }

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AlSadat-Seram.Api/AlSadat-Seram.Api.csproj" />
+  <Project Path="Application/Application.csproj" />
+  <Project Path="Domain/Domain.csproj" />
+  <Project Path="Infrastructure/Infrastructure.csproj" />
+</Solution>

@@ -1,0 +1,125 @@
+<div class="journal-container">
+
+ <h2 class="title">
+  {{
+    isEditMode ? 'تعديل قيد يومي' :
+    isConfirmMode ? 'تأكيد قيد يومي' :
+    isViewMode ? 'عرض قيد يومي' :
+    'إضافة قيد يومي'
+  }}
+</h2>
+
+  <form [formGroup]="form">
+
+    <div class="header-section">
+
+      <mat-form-field appearance="outline">
+        <mat-label>تاريخ القيد</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="entryDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>رقم المرجع</mat-label>
+        <input matInput formControlName="referenceNo">
+      </mat-form-field>
+      <mat-form-field appearance="outline" >
+  <mat-label> نوع المرجع </mat-label>
+
+  <mat-select formControlName="referenceType">
+    <mat-option  [value]="null">الكل</mat-option>
+    <mat-option  [value]="1">فاتورة شراء </mat-option>
+    <mat-option  [value]="2">فاتورة بيع </mat-option>
+    <mat-option  [value]="3">مدفوعات  </mat-option>
+    <mat-option  [value]="4">استلام</mat-option>
+    <mat-option  [value]="5">تسوية</mat-option>
+  </mat-select>
+        </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>الوصف</mat-label>
+        <input matInput formControlName="desc">
+      </mat-form-field>
+
+    </div>
+
+    <!-- Details Table -->
+    <div formArrayName="entryDetails" class="details-table">
+
+      <div class="details-header">
+        <div>الحساب</div>
+        <div>مدين</div>
+        <div>دائن</div>
+        <div></div>
+      </div>
+
+      <div *ngFor="let row of details.controls; let i = index"
+           [formGroupName]="i"
+           class="details-row">
+
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="accountId">
+            <mat-option *ngFor="let acc of LeafAccounts"
+                        [value]="acc.id">
+              {{acc.accountCode}} - {{acc.accountName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <input matInput type="number" formControlName="debit">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <input matInput type="number" formControlName="credit">
+        </mat-form-field>
+
+    <button *ngIf="!isConfirmMode && !isViewMode"
+        mat-icon-button
+        color="warn"
+        type="button"
+        (click)="removeDetailRow(i)">
+  <mat-icon>delete</mat-icon>
+</button>
+
+      </div>
+    </div>
+
+  <button *ngIf="!isConfirmMode && !isViewMode"
+        mat-stroked-button
+        type="button"
+        (click)="addDetailRow()">
+  <mat-icon>add</mat-icon>
+  إضافة سطر
+</button>
+
+    <div class="totals">
+      <span>إجمالي المدين: {{totalDebit}}</span>
+      <span>إجمالي الدائن: {{totalCredit}}</span>
+    </div>
+
+<div class="actions">
+
+  <!-- Add / Edit -->
+  <button *ngIf="!isConfirmMode && !isViewMode"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="save()">
+    حفظ
+  </button>
+
+  <!-- Confirm -->
+  <button *ngIf="isConfirmMode"
+          mat-raised-button
+          color="accent"
+          type="button"
+          (click)="confirmEntry()">
+    تأكيد القيد
+  </button>
+
+</div>
+
+  </form>
+</div>

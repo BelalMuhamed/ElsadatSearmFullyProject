@@ -1,0 +1,83 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center">سجل الحضور والانصراف</h2>
+</div>
+
+
+
+<div class="filter-form" dir="rtl">
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>كود الموظف</mat-label>
+    <input matInput [(ngModel)]="filters.employeeCode" name="employeeCode" placeholder="أدخل كود الموظف" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>اسم الموظف</mat-label>
+    <input matInput [(ngModel)]="filters.employeeName" name="employeeName" placeholder="أدخل اسم الموظف" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>اسم القسم</mat-label>
+    <input matInput [(ngModel)]="filters.departmentName" name="departmentName" placeholder="أدخل اسم القسم" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="dark-datepicker custom-input-theme">
+    <mat-label>تاريخ محدد</mat-label>
+    <input matInput [matDatepicker]="singleDatePicker" [(ngModel)]="selectedDateObj" name="selectedDateObj" placeholder="اختر تاريخ" />
+    <mat-datepicker-toggle matSuffix [for]="singleDatePicker"></mat-datepicker-toggle>
+    <mat-datepicker #singleDatePicker></mat-datepicker>
+  </mat-form-field>
+</div>
+
+<div class="container d-flex justify-content-center align-items-center">
+  <button mat-raised-button color="primary" (click)="onFilter()" class="action-btn mx-4">بحث</button>
+  <button mat-stroked-button color="warn" (click)="onReset()" class="action-btn">إعادة تعيين</button>
+</div>
+
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+
+<div class="page-content">
+  <div *ngIf="isLoading" class="text-center" style="color: var(--gold);">Loading...</div>
+
+  <div *ngIf="!isLoading" class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
+        <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container [ngSwitch]="col.key">
+            <span *ngSwitchCase="'attendanceDate'">{{ element.attendanceDate | date:'dd-MM-yyyy' }}</span>
+            <span *ngSwitchCase="'attendanceStatus'">{{ getStatusText(element.attendanceStatus) }}</span>
+            <span *ngSwitchCase="'checkInTime'">{{ formatTimeToArabicLabel(element.checkInTime) }}</span>
+            <span *ngSwitchCase="'checkOutTime'">{{ formatTimeToArabicLabel(element.checkOutTime) }}</span>
+            <span *ngSwitchDefault>{{ element[col.key] }}</span>
+          </ng-container>
+        </td>
+      </ng-container>
+
+        <!-- تغيير الحالة column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>تغيير الحالة</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="accent" (click)="openStatusDialog(element)">
+              <mat-icon>sync_alt</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="allColumnKeys"></tr>
+  <tr mat-row *matRowDef="let row; columns: allColumnKeys"></tr>
+    </table>
+  </div>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="filters.pageSize"
+      [pageIndex]="filters.page - 1"
+      [pageSizeOptions]="[5, 10, 20]"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+      aria-label="جدول الحضور والانصراف">
+    </mat-paginator>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+/* 🔥 Popup Container */
+
+.custom-popup-panel .mat-mdc-dialog-container {
+  background-color: var(--bg-color) !important;
+  border-radius: 24px !important;
+  border: 1px solid var(--gold);
+  padding: 24px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.8);
+}
+
+/* 🔥 Title */
+.popup-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold) !important;
+
+  margin-bottom: 20px;
+}
+
+/* 🔥 Form Layout */
+.popup-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* Full width for long fields */
+.full-width {
+  grid-column: span 2;
+}
+
+/* 🔥 Form Fields */
+/* لون الكتابة داخل الـ input */
+.mat-mdc-form-field .mdc-text-field__input {
+  width: 100%;
+  color: black !important;
+}
+
+
+.mat-mdc-text-field-wrapper,
+.mdc-text-field {
+  background-color: var(--sidenav-bg) !important;
+  border-radius: 12px !important;
+  padding: 4px 12px !important;
+}
+
+.mdc-text-field--outlined .mdc-notched-outline__leading,
+.mdc-text-field--outlined .mdc-notched-outline__notch,
+.mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: var(--gold) !important;
+}
+
+/* text */
+.mdc-floating-label {
+  color: var(--gold) !important;
+}
+
+/* 🔥 Dropdown Arrow + text */
+.mat-mdc-select-value-text,
+.mat-mdc-select-arrow {
+  color: var(--text-color) !important;
+}
+
+/* dropdown panel */
+.mat-mdc-select-panel {
+  background-color: var(--sidenav-bg) !important;
+  border: 1px solid var(--gold);
+}
+
+/* options */
+.mat-mdc-option {
+  color: var(--text-color) !important;
+}
+
+.mat-mdc-option:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+.popup-actions {
+  margin-top: 25px;
+  padding: 0 30px 20px 30px; /* ✅ مسافة من الجوانب وتحت */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-btn-cancel {
+  padding: 10px 24px;
+  background: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  border-radius: 12px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.popup-btn-cancel:hover {
+  background: var(--hover-bg);
+}
+
+.popup-btn-save {
+  padding: 10px 24px;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  color: black;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.popup-btn-save:disabled {
+  opacity: .4;
+}
+
+.popup-btn-save:hover:not(:disabled) {
+  background: var(--active-bg);
+  color: var(--gold);
+}
+.popup-btn-cancel,
+.popup-btn-save {
+  min-width: 110px;   /* ✅ شكل أفضل */
+  border-radius: 14px;
+}
+.input-text{
+color: black !important;
+}

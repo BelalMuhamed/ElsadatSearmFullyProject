@@ -1,0 +1,176 @@
+<mat-card class="edit-card">
+  <mat-card-header>
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <div>
+        <mat-card-title>إضافة موظف جديد</mat-card-title>
+        <mat-card-subtitle>إنشاء موظف جديد في النظام</mat-card-subtitle>
+      </div>
+      <button mat-icon-button (click)="goBack()" matTooltip="رجوع">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+  <mat-card-content dir="rtl" class="content-scroll">
+    <form #f="ngForm" class="mt-2" autocomplete="off">
+      <!-- Personal Info -->
+      <div class="section">
+        <h3 class="section-title">المعلومات الشخصية</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الاسم الكامل *</mat-label>
+            <input matInput name="fullName" [(ngModel)]="model.fullName" autocomplete="off" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>النوع</mat-label>
+            <mat-select name="gender" [(ngModel)]="model.gender">
+              <mat-option [value]="0">ذكر</mat-option>
+              <mat-option [value]="1">أنثى</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+          <mat-label>الرقم القومي (SNO) *</mat-label>
+          <input matInput name="sno" [(ngModel)]="model.sno" autocomplete="off" />
+        </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>تاريخ الميلاد</mat-label>
+            <input matInput [matDatepicker]="bdPicker" name="birthDate" [(ngModel)]="model.birthDate" required autocomplete="off" />
+            <mat-datepicker-toggle matSuffix [for]="bdPicker"></mat-datepicker-toggle>
+            <mat-datepicker #bdPicker></mat-datepicker>
+          </mat-form-field>
+
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="section">
+        <h3 class="section-title">بيانات الاتصال</h3>
+        <div class="grid-form">
+          
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الهاتف</mat-label>
+            <input matInput name="phoneNumber" [(ngModel)]="model.phoneNumber" autocomplete="tel" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>العنوان</mat-label>
+            <input matInput name="address" [(ngModel)]="model.address" autocomplete="street-address" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+               <mat-label>اسم الحساب</mat-label>
+               <input matInput name="accountName" [(ngModel)]="model.accountName" autocomplete="off" />
+             </mat-form-field>
+
+        
+        </div>
+      </div>
+
+
+      <!-- Employment Info -->
+      <div class="section">
+        <h3 class="section-title">بيانات التوظيف</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>كود الموظف</mat-label>
+            <input matInput name="employeeCode" [(ngModel)]="model.employeeCode" autocomplete="off" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>المدينة</mat-label>
+            <input matInput name="cityName" [(ngModel)]="model.cityName" [matAutocomplete]="cityAuto" autocomplete="off" (input)="filterCities($any($event.target).value || '')" />
+             <button mat-icon-button matSuffix type="button" aria-label="فتح قائمة المدن" (click)="openCityPanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+            <mat-autocomplete #cityAuto="matAutocomplete" (optionSelected)="onCitySelected($event.option.value)">
+              <mat-option *ngFor="let c of filteredCities" [value]="c.cityName">{{ c.cityName }}</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>القسم</mat-label>
+            <input matInput name="departmentName" [(ngModel)]="model.departmentName" [matAutocomplete]="deptAuto" autocomplete="off" (input)="filterDepartments($any($event.target).value || '')" />
+            <button mat-icon-button matSuffix type="button" aria-label="فتح قائمة الأقسام" (click)="openDeptPanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+            <mat-autocomplete #deptAuto="matAutocomplete" (optionSelected)="onDepartmentSelected($event.option.value)">
+              <mat-option *ngFor="let d of filteredDepartments" [value]="d.name">{{ d.name }}</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>تاريخ التعيين</mat-label>
+            <input matInput [matDatepicker]="hdPicker" name="hireDate" [(ngModel)]="model.hireDate" required autocomplete="off" />
+            <mat-datepicker-toggle matSuffix [for]="hdPicker"></mat-datepicker-toggle>
+            <mat-datepicker #hdPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Payroll & Schedule -->
+      <div class="section">
+        <h3 class="section-title">الراتب والدوام</h3>
+        <div class="grid-form">
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>الراتب</mat-label>
+            <input matInput type="number" name="salary" [(ngModel)]="model.salary" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>وقت الحضور (HH:mm:ss)</mat-label>
+            <input matInput name="timeIn" [(ngModel)]="model.timeIn" placeholder="09:00:00" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>وقت الانصراف (HH:mm:ss)</mat-label>
+            <input matInput name="timeOut" [(ngModel)]="model.timeOut" placeholder="17:00:00" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>سعر ساعة الإضافة</mat-label>
+            <input matInput type="number" name="overtimeRatePerHour" [(ngModel)]="model.overtimeRatePerHour" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>سعر ساعة الخصم</mat-label>
+            <input matInput type="number" name="deductionRatePerHour" [(ngModel)]="model.deductionRatePerHour" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Account & Role -->
+      <div class="section">
+        <h3 class="section-title">حساب الدخول والدور</h3>
+        <div class="grid-form">
+            <mat-form-field appearance="outline" class="custom-input-theme">
+              <mat-label>البريد الإلكتروني *</mat-label>
+              <input matInput type="email" name="email" [(ngModel)]="model.email" autocomplete="off" />
+            </mat-form-field>
+         
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>كلمة المرور</mat-label>
+            <input matInput name="password" [(ngModel)]="model.password" [type]="showPassword ? 'text' : 'password'" autocomplete="new-password" />
+            <button mat-icon-button matSuffix type="button" (click)="toggleShowPassword()" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+               <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+
+
+
+          <mat-form-field appearance="outline" class="custom-input-theme" *ngIf="roles.length">
+            <mat-label>الدور</mat-label>
+            <input matInput name="roleName" [(ngModel)]="model.roleName" [matAutocomplete]="roleAuto" autocomplete="off" (input)="filterRoles($any($event.target).value || '')" />
+            <button mat-icon-button matSuffix type="button" aria-label="فتح قائمة الادوار"><mat-icon>arrow_drop_down</mat-icon></button>
+            <mat-autocomplete #roleAuto="matAutocomplete" (optionSelected)="onRoleSelected($event.option.value)">
+              <mat-option *ngFor="let r of filteredRoles" [value]="r">{{ r }}</mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+        </div>
+      </div>
+
+    </form>
+  </mat-card-content>
+  <mat-card-actions class="d-flex justify-content-center ">
+    <button mat-stroked-button color="primary" class="mx-2 w-25" (click)="save()" [disabled]="isSaving">حفظ</button>
+    <button mat-stroked-button color="warn" class="mx-2 w-25" (click)="cancel()" [disabled]="isSaving">إلغاء</button>
+  </mat-card-actions>
+</mat-card>

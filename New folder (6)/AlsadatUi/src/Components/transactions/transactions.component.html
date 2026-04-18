@@ -1,0 +1,144 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center"> سجل حركة المخازن  </h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+@if (isLoading) {
+    <p  class="text-center" style="color: var(--gold);">Loading...</p>
+}
+@else  {
+
+
+ <div class="d-flex justify-content-between align-items-center gap-3 my-3">
+
+
+  <div class="d-flex justify-content-between  w-100 ">
+<form [formGroup]="Searchform"
+      class="popup-form  flex-wrap gap-3 container d-flex justify-content-center align-items-center flex-column ">
+<div class="">
+  <!-- Source Store -->
+  <mat-form-field class="flex-grow-1 mx-3 custom-input-theme" appearance="outline">
+    <mat-label>المخزن المصدر</mat-label>
+    <mat-select formControlName="sourceName">
+      <mat-option value="">-- اختر المخزن --</mat-option>
+      <mat-option *ngFor="let s of Stores" [value]="s.storeName">
+        {{ s.storeName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Destination Store -->
+  <mat-form-field class="flex-grow-1  mx-3 custom-input-theme" appearance="outline">
+    <mat-label>المخزن المستهدف</mat-label>
+    <mat-select formControlName="destenationName">
+      <mat-option value="">-- اختر المخزن --</mat-option>
+      <mat-option *ngFor="let s of Stores" [value]="s.storeName">
+        {{ s.storeName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Created Date -->
+  <mat-form-field class="flex-grow-1 mx-3 custom-input-theme" appearance="outline">
+    <mat-label>تاريخ الإنشاء</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="createdAt">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker touchUi #picker></mat-datepicker>
+  </mat-form-field>
+</div>
+<div>
+ <button
+    mat-raised-button
+    class="add-coupon-btn px-3  mx-3"
+(click)="onSearch()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >search</mat-icon>
+
+   ابحث
+  </button>
+
+
+   <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+(click)="ReAsign()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >refresh </mat-icon>
+
+   إعادة تعيين
+  </button>
+</div>
+</form>
+
+
+</div>
+
+</div>
+
+
+  <div class="table-container mat-elevation-z8">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+   @for (col of columns; track col.key) {
+  <ng-container [matColumnDef]="col.key">
+    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+    <td mat-cell *matCellDef="let element">
+      @switch (col.type) {
+
+
+
+
+
+@case('date') {
+  <span>
+    {{ element[col.key] | date:'fullDate' }} - {{ element[col.key] | date:'shortTime' }}
+  </span>
+}
+
+
+    @case ('actions') {
+    <div class="action-buttons">
+
+<!-- داخل الجدول -->
+<button mat-icon-button color="primary" class="border-0 bg-transparent"  (click)="viewTransactionProducts(element)">
+  <mat-icon>visibility</mat-icon>
+
+</button>
+
+
+    </div>
+  }
+
+        @default {
+
+            <span>{{ element[col.key] ?? '-'}}</span>
+
+        }
+      }
+    </td>
+  </ng-container>
+}
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+  </table>
+   <div dir="rtl" class="paginator-container">
+  <mat-paginator
+    [length]="totalCount"
+    [pageSize]="transactionFilters.pageSize"
+    [pageIndex]="transactionFilters.page- 1"
+    [pageSizeOptions]="[5, 10, 20,30,50,70,100]"
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+    aria-label="جدول المعاملات">
+  </mat-paginator>
+</div>
+
+</div>
+<ng-template #loading>
+    <div class="flex justify-center p-4">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+
+}

@@ -1,0 +1,65 @@
+<div class="salary-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>الأقسام</h2>
+      <div class="action-buttons">
+        <button mat-stroked-button color="primary" (click)="openAdd()" class="action-btn mx-2">
+          <mat-icon>add</mat-icon>
+          إضافة قسم
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading" class="text-center">جاري التحميل...</div>
+
+      <table mat-table [dataSource]="departments" class="mat-elevation-z1" dir="rtl" *ngIf="!isLoading">
+        <!-- Department Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>اسم القسم</th>
+          <td mat-cell *matCellDef="let d">{{ d.name }}</td>
+        </ng-container>
+
+        <!-- Created At -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>تاريخ الإنشاء</th>
+          <td mat-cell *matCellDef="let d">{{ d.createdAt ? (d.createdAt | date:'dd/MM/yyyy') : '-' }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>إجراءات</th>
+          <td mat-cell *matCellDef="let d">
+            <button mat-icon-button color="primary" (click)="openEdit(d)" title="تعديل">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="hardDelete(d)" title="حذف نهائي">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Status column (toggle) -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>الحالة</th>
+          <td mat-cell *matCellDef="let d" style="text-align:center">
+            <mat-slide-toggle [checked]="!d.isDeleted" (change)="toggleDepartmentStatus(d)" matTooltip="تفعيل/تعطيل"></mat-slide-toggle>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['name','createdAt','status','actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name','createdAt','status','actions'];"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[5,10,25,50]" (page)="onPageChange($event)" [showFirstLastButtons]="true" aria-label="جدول الأقسام"></mat-paginator>
+  </div>
+
+      <div *ngIf="!isLoading && (!departments || departments.length === 0)" class="empty-state text-center justify-content-center ">
+        لا توجد أقسام متاحة
+      </div>
+</div>

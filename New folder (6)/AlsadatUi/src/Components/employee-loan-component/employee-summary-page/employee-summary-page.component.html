@@ -1,0 +1,102 @@
+<div class="page-container p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="page-title">تفاصيل قروض الموظف</h2>
+  </div>
+
+  <div class="search-row mb-3">
+    <div class="d-flex justify-content-center mb-2">
+      <mat-button-toggle-group name="userType" [(ngModel)]="userType" appearance="legacy">
+        <mat-button-toggle value="employee">موظف</mat-button-toggle>
+        <mat-button-toggle value="representative">مندوب</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <mat-form-field appearance="outline" class="w-100 custom-input-theme">
+      <mat-label>{{ userType === 'employee' ? 'الموظف (البحث بالاسم أو الكود)' : 'المندوب (البحث بالاسم أو الكود)' }}</mat-label>
+      <input matInput [(ngModel)]="employeeFilter" (ngModelChange)="onEmployeeFilterChange($event)" [matAutocomplete]="auto" placeholder="ابحث بالاسم أو الكود" />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+        <mat-option *ngIf="employeesLoading" disabled>
+          <div class="d-flex align-items-center justify-content-center">
+            <mat-spinner diameter="18" class="me-2"></mat-spinner> جاري التحميل...
+          </div>
+        </mat-option>
+
+        <mat-option *ngFor="let e of filteredEmployees" [value]="e">
+          <div class="d-flex justify-content-between w-100 employee-option">
+            <div class="employee-name">{{ e.fullName || e.name || 'بدون اسم' }}</div>
+            <div class="employee-code text-muted">{{ e.employeeCode || e.code || e.representativesCode || e.representativeCode }}</div>
+          </div>
+        </mat-option>
+
+        <mat-option *ngIf="!employeesLoading && filteredEmployees.length === 0 && employeeFilter" disabled>
+          لا توجد نتائج لـ "{{ employeeFilter }}"
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="isLoadingSummary" class="text-center">جاري التحميل...</div>
+
+  <mat-card *ngIf="summary && !isLoadingSummary" class="mb-3 summary-card">
+    <mat-card-content>
+      <div class="summary-grid">
+        <div><strong>اسم الموظف:</strong> <div class="employee-name">{{ summary.employeeName }}</div></div>
+        <div><strong>إجمالي القروض:</strong> {{ summary.totalLoansCount }}</div>
+        <div><strong>إجمالي المبلغ:</strong> {{ summary.totalBorrowed | number:'1.2-2' }}</div>
+        <div><strong>اجمالي المدفوع:</strong> {{ summary.totalPaid | number:'1.2-2' }}</div>
+        <div><strong>المتبقي:</strong> {{ summary.totalRemaining | number:'1.2-2' }}</div>
+        <div><strong>خصم الشهر:</strong> {{ summary.currentMonthDeduction | number:'1.2-2' }}</div>
+        <div><strong>المبلغ المتاح:</strong> {{ summary.availableLoanAmount | number:'1.2-2' }}</div>
+        <div><strong>الحد الأقصى للقرض:</strong> {{ summary.maxLoanAmount | number:'1.2-2' }}</div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="d-flex justify-content-center">
+      <div style="width:100%; display:flex; justify-content:center; gap:12px; margin-top:6px;">
+        <button mat-raised-button color="primary" class="action-btn mx-2" (click)="openAddLoan()">إضافة قرض</button>
+        <button mat-stroked-button class="action-btn mx-2" (click)="calculateMonthlyDeduction()">احسب خصم الشهر</button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+
+  <div *ngIf="loans && loans.length > 0">
+    <h4>قروض الموظف</h4>
+    <table mat-table [dataSource]="loans" class="mat-elevation-z1 w-100">
+      <ng-container matColumnDef="loanNumber">
+        <th mat-header-cell *matHeaderCellDef>رقم القرض</th>
+        <td mat-cell *matCellDef="let l">{{ l.loanNumber }}</td>
+      </ng-container>
+      <ng-container matColumnDef="loanAmount">
+        <th mat-header-cell *matHeaderCellDef>قيمة القرض</th>
+        <td mat-cell *matCellDef="let l">{{ l.loanAmount | number:'1.2-2' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="installment">
+        <th mat-header-cell *matHeaderCellDef>قيمة القسط</th>
+        <td mat-cell *matCellDef="let l">{{ l.installmentAmount | number:'1.2-2' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="remaining">
+        <th mat-header-cell *matHeaderCellDef>المتبقي</th>
+        <td mat-cell *matCellDef="let l">{{ l.remainingAmount | number:'1.2-2' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="first">
+        <th mat-header-cell *matHeaderCellDef>أول قسط</th>
+        <td mat-cell *matCellDef="let l">{{ l.firstInstallmentDate | date:'dd-MM-yyyy' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>الحالة</th>
+        <td mat-cell *matCellDef="let l">{{ getStatusText(l) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>إجراءات</th>
+        <td mat-cell *matCellDef="let l">
+          <button mat-stroked-button class="action-btn" (click)="openLoanPayments(l)">الدفعات</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['loanNumber','loanAmount','installment','remaining','first','status','actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['loanNumber','loanAmount','installment','remaining','first','status','actions']"></tr>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoadingSummary && (!loans || loans.length === 0)" class="text-center text-muted">لا توجد قروض لعرضها</div>
+</div>

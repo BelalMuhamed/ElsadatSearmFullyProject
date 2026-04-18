@@ -1,0 +1,208 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center">فواتير المشتريات</h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+
+@if (!isLoaded) {
+  <p class="text-center" style="color: var(--gold);">جاري التحميل...</p>
+} @else {
+  <div class="w-100 me-auto d-flex justify-content-end">
+    <button class="add-coupon-btn"   [routerLink]="['/purchase-invoice/add']">
+
+      <mat-icon>add</mat-icon>
+      إضافة فاتورة جديدة
+    </button>
+  </div>
+
+  <!-- Filter Form -->
+  <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+    <form [formGroup]="form" class="popup-form">
+      <div class="w-100 d-block">
+        <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+          <mat-label>رقم الفاتورة </mat-label>
+          <input matInput formControlName="invoiceNumber">
+        </mat-form-field>
+       <mat-form-field appearance="outline" >
+  <mat-label>حالة التسكين</mat-label>
+
+  <mat-select formControlName="settledStatus">
+    <mat-option [value]="null">الكل</mat-option>
+    <mat-option [value]="0">مسكن</mat-option>
+    <mat-option [value]="1">غير مسكن</mat-option>
+
+  </mat-select>
+      </mat-form-field>
+       <mat-form-field appearance="outline" >
+  <mat-label>حالة الحذف</mat-label>
+
+  <mat-select formControlName="deleteStatus">
+    <mat-option  [value]="null">الكل</mat-option>
+    <mat-option  [value]="0">طلبات الحذف</mat-option>
+    <mat-option  [value]="1">طلبات حذف مرفضة </mat-option>
+
+  </mat-select>
+      </mat-form-field>
+<mat-form-field appearance="outline">
+  <mat-label>اسم المورد</mat-label>
+  <mat-select formControlName="supplierId" (openedChange)="onSupplierSelectOpened($event)">
+    <mat-option>
+      <input
+        #supplierSearchInput
+        matInput
+        type="text"
+        [(ngModel)]="supplierSearch"
+        [ngModelOptions]="{standalone: true}"
+        placeholder="ابحث باسم المورد..."
+        (click)="$event.stopPropagation()"
+        (keydown)="$event.stopPropagation()"
+      />
+    </mat-option>
+    <mat-option *ngFor="let supplier of filteredSuppliers" [value]="supplier.id">
+      {{ supplier.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <button
+          mat-raised-button
+          class="add-coupon-btn px-3 ms-2 m-0"
+          (click)="onSearch()"
+          type="button"
+        >
+          <mat-icon aria-hidden="false" aria-label="Search icon">search</mat-icon>
+          ابحث
+        </button>
+        <button
+          mat-raised-button
+          class="add-coupon-btn px-3 m-0"
+          (click)="resetFilters()"
+          type="button"
+        >
+          <mat-icon aria-hidden="false" aria-label="Reset icon">refresh</mat-icon>
+          إعادة تعيين
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      @for (col of columns; track col.key) {
+        <ng-container [matColumnDef]="col.key">
+          <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+          <td mat-cell *matCellDef="let element">
+            @switch (col.type) {
+              @case('date') {
+  <span>
+    {{ element[col.key] | date:'fullDate' }} - {{ element[col.key] | date:'shortTime' }}
+  </span>
+}
+              @case('settledStatus')
+              {
+                @if (element.settledStatus == 0) {
+                  <span >تم التسكين </span>
+                } @else if (element.settledStatus == 1) {
+                  <span>غير مسكن</span>
+                } @else {
+                  <span>-</span>
+                }
+              }
+              @case ('actions') {
+               <div class="action-buttons">
+                @if(isUserAdmin){
+  <button
+  mat-icon-button
+  color="warn"
+  class="border-0 bg-transparent"
+  matTooltip="حذف الفاتورة"
+  matTooltipPosition="above"
+  (click)="DeletePurchaseInvoice(element.id)"
+>
+  <mat-icon>delete</mat-icon>
+</button>
+                  @if(element.deleteStatus==0)
+                  {
+                     <button
+                      mat-icon-button
+                      color="warn"
+                      class="border-0 bg-transparent"
+                      matTooltip=" الموافقة علي طلب الحذف"
+                      matTooltipPosition="above"
+                      (click)="DeletePurchaseInvoice(element.id)"
+                    >
+                     <mat-icon>task_alt</mat-icon>
+
+                    </button>
+                       <button
+                      mat-icon-button
+                      color="warn"
+                      class="border-0 bg-transparent"
+                      matTooltip=" رفض طلب الحذف   "
+                      matTooltipPosition="above"
+                      (click)="CancelDeleteRequestPurchaseInvoice(element)"
+                    >
+                   <mat-icon>cancel</mat-icon>
+
+
+                    </button>
+                  }
+                }
+                @else if(!isUserAdmin &&(element.deleteStatus==null ||element.deleteStatus==1))
+                {
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      class="border-0 bg-transparent"
+                      matTooltip="طلب حذف"
+                      matTooltipPosition="above"
+                      (click)="AskToDeletePurchaseInvoice(element)"
+                    >
+                     <mat-icon>assignment_late</mat-icon>
+                    </button>
+                }
+
+
+
+
+
+
+               <button
+                mat-icon-button
+                color="primary"
+                class="border-0 bg-transparent"
+                 [routerLink]="['/purchase-invoice', element.id, 'details']">
+
+  <mat-icon>visibility</mat-icon>
+              </button>
+
+            </div>
+              }
+              @default {
+                <span>{{ element[col.key] ?? '-' }}</span>
+              }
+            }
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+    </table>
+
+    <div dir="rtl" class="paginator-container">
+      <mat-paginator
+        [length]="totalCount"
+         [pageSize]="purchaseInvoiceFilters.pageSize"
+    [pageIndex]="(purchaseInvoiceFilters.page ?? 1) - 1"
+    [pageSizeOptions]="[5, 10, 20,50,70,100]"
+        [showFirstLastButtons]="true"
+        (page)="onPageChange($event)"
+        aria-label="جدول فواتير المشتريات"
+      ></mat-paginator>
+    </div>
+  </div>
+}

@@ -1,0 +1,158 @@
+<div class="salary-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>البحث عن المرتبات</h2>
+    </div>
+
+    <div class="search-section justify-content-center " dir="rtl">
+      <mat-form-field appearance="outline" class="custom-input-theme search-field">
+        <mat-label>كود الموظف</mat-label>
+        <input matInput [(ngModel)]="employeeCode" name="employeeCode" placeholder="أدخل كود الموظف" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme search-field">
+        <mat-label>الشهر</mat-label>
+        <mat-select [(ngModel)]="selectedMonth" (selectionChange)="onMonthChange()">
+          <mat-option *ngFor="let month of months" [value]="month.id">
+            {{ month.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme search-field">
+        <mat-label>السنة</mat-label>
+        <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()">
+          <mat-option *ngFor="let year of years" [value]="year">
+            {{ year }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+        <button mat-raised-button color="primary" (click)="getSalaryData()" class="action-btn align-items-center" [disabled]="isSearching">
+          <mat-icon>search</mat-icon>
+          بحث
+        </button>
+    </div>
+
+
+  </div>
+
+  <hr style="border-color: var(--gold); opacity: 0.5; margin: 20px 0;">
+
+  <div *ngIf="isSearching" class="text-center loading-state">
+    <span style="color: var(--gold);">جاري البحث...</span>
+  </div>
+
+  <div *ngIf="!isSearching && salaryData" class="salary-details">
+    <!-- Employee Info Card -->
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>بيانات الموظف</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid" dir="rtl">
+          <div class="info-item">
+            <span class="label">كود الموظف:</span>
+            <span class="value">{{ salaryData.employeeCode }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">اسم الموظف:</span>
+            <span class="value">{{ salaryData.employeeName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">القسم:</span>
+            <span class="value">{{ salaryData.departmentName ?? '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">الفترة:</span>
+            <span class="value">{{ selectedMonth }}/{{ selectedYear }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Attendance Card -->
+    <mat-card class="attendance-card">
+      <mat-card-header>
+        <mat-card-title>سجل الحضور</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="attendance-grid" dir="rtl">
+          <div class="attendance-item">
+            <span class="label">إجمالي أيام العمل:</span>
+            <span class="value primary">{{ salaryData.totalWorkingDays }}</span>
+          </div>
+          <div class="attendance-item">
+            <span class="label">أيام الحضور:</span>
+            <span class="value success">{{ salaryData.presentDays }}</span>
+          </div>
+          <div class="attendance-item">
+            <span class="label">أيام الغياب:</span>
+            <span class="value danger">{{ salaryData.absentDays }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Salary Calculation Card -->
+    <mat-card class="salary-calc-card">
+      <mat-card-header>
+        <mat-card-title>حساب الراتب</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="salary-table" dir="rtl">
+          <div class="salary-row">
+            <span class="label">الراتب الأساسي:</span>
+            <span class="value">{{ formatCurrency(salaryData.basicSalary) }}</span>
+          </div>
+          
+          <div class="salary-row">
+            <span class="label">ساعات الإضافة:</span>
+            <span class="value">{{ salaryData.overtimeHours.toFixed(2) }} ساعة</span>
+          </div>
+          
+          <div class="salary-row">
+            <span class="label">مكافأة الإضافة:</span>
+            <span class="value success">+{{ formatCurrency(salaryData.totalOvertimePay) }}</span>
+          </div>
+          
+          <div class="salary-row">
+            <span class="label">ساعات الخصم:</span>
+            <span class="value">{{ salaryData.deductionHours.toFixed(2) }} ساعة</span>
+          </div>
+          
+          <div class="salary-row">
+            <span class="label">خصم الساعات:</span>
+            <span class="value danger">-{{ formatCurrency(salaryData.totalDeductions) }}</span>
+          </div>
+
+          <hr style="margin: 12px 0; opacity: 0.3;">
+
+          <div class="salary-row net-salary">
+            <span class="label"><strong>الراتب النهائي:</strong></span>
+            <span class="value"><strong style="color: var(--gold); font-size: 1.2em;">{{ formatCurrency(salaryData.netSalary) }}</strong></span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-stroked-button color="primary" (click)="printSalary()" class="action-btn mx-2">
+        <mat-icon>print</mat-icon>
+        طباعة
+      </button>
+      <button mat-stroked-button color="accent" (click)="downloadPDF()" class="action-btn mx-2">
+        <mat-icon>download</mat-icon>
+        تحميل PDF
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isSearching && !salaryData" class="text-center empty-state">
+    <mat-icon class="empty-icon">search</mat-icon>
+    <p>ابحث  بكود الموظف لعرض المرتب</p>
+  </div>
+</div>

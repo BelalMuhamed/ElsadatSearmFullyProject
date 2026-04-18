@@ -1,0 +1,153 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center"> المخازن </h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+@if (isLoading) {
+    <p  class="text-center" style="color: var(--gold);">Loading...</p>
+}
+@else  {
+  <div class="w-100 me-auto  d-flex justify-content-end">
+       <button class="add-coupon-btn  "  (click)="openAdd()">
+    <mat-icon>add</mat-icon>
+    إضافة مخزن
+  </button>
+  </div>
+
+ <div class="d-flex justify-content-between align-items-center gap-3 my-3">
+
+
+  <div class="d-flex justify-content-between  w-100 ">
+
+<!-- <form [formGroup]="Searchform" class="popup-form d-flex flex-wrap gap-3 container d-flex justify-content-center align-items-center ">
+  <mat-form-field class="flex-grow-1" appearance="outline"class=" custom-input-theme">
+    <mat-label>الاسم </mat-label>
+    <input matInput formControlName="storeName">
+  </mat-form-field>
+
+
+
+
+
+
+  <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+(click)="onSearch()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >search</mat-icon>
+
+   ابحث
+  </button>
+
+
+   <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+(click)="ReAsign()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >refresh </mat-icon>
+
+   إعادة تعيين
+  </button>
+
+</form> -->
+<div class="d-flex justify-content-center  w-100 "[formGroup]="Searchform">
+ <mat-form-field  class="flex-grow-1" appearance="outline"class=" custom-input-theme mx-3" >
+    <mat-label>الاسم </mat-label>
+    <input matInput formControlName="storeName">
+  </mat-form-field>
+
+
+
+    <button
+    mat-raised-button
+    class="add-coupon-btn px-3  mx3"
+(click)="onSearch()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >search</mat-icon>
+
+   ابحث
+  </button>
+
+
+   <button
+    mat-raised-button
+    class="add-coupon-btn px-3  mx-3"
+(click)="ReAsign()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >refresh </mat-icon>
+
+   إعادة تعيين
+  </button>
+
+</div>
+
+</div>
+
+</div>
+
+
+  <div class="table-container mat-elevation-z8">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+   @for (col of columns; track col.key) {
+  <ng-container [matColumnDef]="col.key">
+    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+    <td mat-cell *matCellDef="let element">
+      @switch (col.type) {
+
+
+
+  @case ('boolean') {
+  <mat-slide-toggle
+      [checked]="!element[col.key]"
+      (change)="OnToggleChanged(element, $event.checked)"
+      class="delete-toggle"
+  >
+  </mat-slide-toggle>
+}
+
+    @case ('actions') {
+    <div class="action-buttons" >
+
+<!-- داخل الجدول -->
+<button mat-icon-button color="primary" class="border-0 bg-transparent"  (click)="openEdit(element)">
+  <mat-icon>edit</mat-icon>
+</button>
+
+
+    </div>
+  }
+
+        @default {
+
+            <span>{{ element[col.key] ?? '-'}}</span>
+
+        }
+      }
+    </td>
+  </ng-container>
+}
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+  </table>
+   <div dir="rtl" class="paginator-arabic">
+  <mat-paginator
+    [length]="totalCount"
+      [pageSize]="filters.pageSize"
+    [pageIndex]="(filters.page ?? 1) - 1"
+    [pageSizeOptions]="[5, 10, 20,50,70,100]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+
+</div>
+<ng-template #loading>
+    <div class="flex justify-center p-4">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+
+}

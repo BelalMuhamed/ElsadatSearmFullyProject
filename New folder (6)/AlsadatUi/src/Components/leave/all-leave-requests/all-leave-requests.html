@@ -1,0 +1,93 @@
+<div class="w-100 d-flex justify-content-between align-items-center mb-3">
+  <h2 class="w-25 text-center page-title">طلبات الإجازة</h2>
+       <mat-button-toggle-group name="userType" [(ngModel)]="userType" appearance="legacy" style="margin-left: 45%;">
+        <mat-button-toggle value="employee">موظف</mat-button-toggle>
+        <mat-button-toggle value="representative">مندوب</mat-button-toggle>
+      </mat-button-toggle-group>
+</div>
+
+  <div class="filters mb-3">
+    <div class="filter-form w-100 d-flex gap-2 align-items-center" dir="rtl">
+ 
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:180px; max-width:280px;">
+        <mat-label>{{ userType === 'employee' ? 'الموظف' : 'المندوب' }}</mat-label>
+        <input type="text" matInput [(ngModel)]="employeeFilter" (ngModelChange)="onEmployeeFilterChange($event)" [matAutocomplete]="auto" placeholder="ابحث بالاسم أو الكود" />
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+          <mat-option *ngFor="let e of filteredEmployees" [value]="(e.employeeCode || e.code || e.representativeCode || e.representiveCode || e.userId || e.id)">{{ formatPerson(e) }}</mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:140px;">
+        <mat-label>النوع</mat-label>
+        <mat-select [(ngModel)]="filters.leaveTypeId">
+          <mat-option [value]="null">الكل</mat-option>
+          <mat-option *ngFor="let t of leaveTypes" [value]="t.id">{{t.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:120px;">
+        <mat-label>الحالة</mat-label>
+        <mat-select [(ngModel)]="filters.status">
+          <mat-option [value]="null">الكل</mat-option>
+          <mat-option [value]="1">معلق</mat-option>
+          <mat-option [value]="2">معتمد</mat-option>
+          <mat-option [value]="3">مرفوض</mat-option>
+          <mat-option [value]="4">ملغى</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:160px;">
+        <mat-label>من تاريخ</mat-label>
+        <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filters.fromDate" />
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:160px;">
+        <mat-label>إلى تاريخ</mat-label>
+        <input matInput [matDatepicker]="toPicker" [(ngModel)]="filters.toDate" />
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="w-100 d-flex justify-content-center mt-2">
+      <button mat-raised-button color="primary" (click)="applyFilters()" class="action-btn mx-2">بحث</button>
+      <button mat-stroked-button (click)="clearFilters()" class="action-btn mx-2">إعادة تعيين</button>
+      <button mat-raised-button color="primary" (click)="approveSelected()" class="action-btn mx-2">الموافقة على المحدد</button>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading" class="text-center">جاري التحميل...</div>
+
+      <table mat-table [dataSource]="items" class="mat-elevation-z1" dir="rtl" *ngIf="!isLoading">
+
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>اختر</th>
+          <td mat-cell *matCellDef="let r">
+            <mat-checkbox *ngIf="r.status === 1" (change)="toggleSelect(r.id,$event.checked)" [checked]="selectedIds.has(r.id)"></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="employeeName">
+          <th mat-header-cell *matHeaderCellDef>الموظف</th>
+          <td mat-cell *matCellDef="let e">{{ formatPerson(e) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="leaveTypeName"><th mat-header-cell *matHeaderCellDef>النوع</th><td mat-cell *matCellDef="let e">{{e.leaveTypeName}}</td></ng-container>
+        <ng-container matColumnDef="fromDate"><th mat-header-cell *matHeaderCellDef>من</th><td mat-cell *matCellDef="let e">{{e.fromDate | date}}</td></ng-container>
+        <ng-container matColumnDef="toDate"><th mat-header-cell *matHeaderCellDef>إلى</th><td mat-cell *matCellDef="let e">{{e.toDate | date}}</td></ng-container>
+        <ng-container matColumnDef="daysRequested"><th mat-header-cell *matHeaderCellDef>أيام</th><td mat-cell *matCellDef="let e">{{e.daysRequested}}</td></ng-container>
+        <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>الحالة</th><td mat-cell *matCellDef="let e">{{getStatusText(e)}}</td></ng-container>
+        <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>إجراءات</th><td mat-cell *matCellDef="let e"><button mat-icon-button color="primary" (click)="approve(e)" *ngIf="e.status===1"><mat-icon>check</mat-icon></button><button mat-icon-button color="warn" (click)="reject(e)" *ngIf="e.status===1"><mat-icon>close</mat-icon></button><button mat-icon-button (click)="cancel(e)" *ngIf="e.status===1 || e.status===2"><mat-icon>delete</mat-icon></button></td></ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['select','employeeName','leaveTypeName','fromDate','toDate','daysRequested','status','actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['select','employeeName','leaveTypeName','fromDate','toDate','daysRequested','status','actions'];"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10,20,50]" (page)="onPageChange($event)" [showFirstLastButtons]="true"></mat-paginator>
+  </div>

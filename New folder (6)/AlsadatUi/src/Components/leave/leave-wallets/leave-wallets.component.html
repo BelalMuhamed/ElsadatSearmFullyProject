@@ -1,0 +1,67 @@
+<div class="salary-container">
+  <div class="salary-container">
+    <div class="header-section justify-content-between align-items-center d-flex">
+      <h2 class="page-title">محفظة الإجازات (HR)</h2>
+        <mat-button-toggle-group name="userType" [(ngModel)]="userType" appearance="legacy" style="margin-left: 45%;">
+          <mat-button-toggle value="employee">موظف</mat-button-toggle>
+          <mat-button-toggle value="representative">مندوب</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
+    <div class="filters mb-3">
+      <div class="filter-form w-100 d-flex gap-2 align-items-center" dir="rtl">
+      
+
+        <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:260px; max-width:320px;">
+          <mat-label>{{ userType === 'employee' ? 'الموظف' : 'المندوب' }}</mat-label>
+          <input matInput [(ngModel)]="employeeFilter" (ngModelChange)="employeeFilter=$event" [matAutocomplete]="auto" placeholder="ابحث بالاسم أو الكود" />
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+            <mat-option *ngFor="let e of filteredEmployees" [value]="(e.employeeCode || e.code || e.userId || e.id)">{{ formatPerson(e) }}</mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:220px;">
+          <mat-label>نوع الإجازة (مفرد)</mat-label>
+          <mat-select [(ngModel)]="selectedLeaveType">
+            <mat-option [value]="null">الكل</mat-option>
+            <mat-option *ngFor="let t of leaveTypes" [value]="t.id">{{t.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:260px;">
+          <mat-label>اختيارات متعددة لأنواع (لإنشاء متعدد)</mat-label>
+          <mat-select [(ngModel)]="selectedLeaveTypes" multiple>
+            <mat-option *ngFor="let t of leaveTypes" [value]="t.id">{{t.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:140px;">
+          <mat-label>السنة</mat-label>
+          <input matInput type="number" [(ngModel)]="year" />
+        </mat-form-field>
+      </div>
+
+      <div class="w-100 d-flex justify-content-center mt-2">
+        <button mat-raised-button color="primary" (click)="fetchBalances()" class="action-btn mx-2">جلب المحافظ</button>
+        <button mat-stroked-button color="primary" (click)="openSetCustom()" class="action-btn mx-2">إنشاء محفظة مخصصة</button>
+        <button mat-stroked-button color="primary" (click)="openCreateMultiple()" class="action-btn mx-2">إنشاء محفظة متعددة</button>
+        <button mat-stroked-button color="primary" (click)="initializeAll()" class="action-btn mx-2">تهيئة لجميع الأنواع</button>
+      </div>
+    </div>
+
+    <mat-card>
+      <mat-card-content>
+        <div *ngIf="!balances || balances.balances.length === 0" class="empty-state" dir="rtl">لا توجد محافظ لعرضها</div>
+
+        <div *ngIf="balances && balances.balances.length > 0">
+          <table class="mat-elevation-z1" dir="rtl">
+            <thead><tr><th>النوع</th><th>الافتتاحي</th><th>المكتسب</th><th>المستخدم</th><th>المتبقي</th><th>معلق</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let b of balances.balances"><td>{{b.leaveTypeName}}</td><td>{{b.openingBalance}}</td><td>{{b.accrued}}</td><td>{{b.used}}</td><td>{{b.remaining}}</td><td>{{b.pending}}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

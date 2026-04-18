@@ -1,0 +1,29 @@
+.swal-details {
+  text-align: right;
+}
+
+.swal-details .row {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+  font-size: 15px;
+}
+
+.swal-details .points {
+  color: #d4af37;
+}
+
+.swal-details .positive {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.swal-details .negative {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+/* Dark mode enhancement */
+body.dark-mode .custom-swal-popup {
+  border: 1px solid #333;
+}

@@ -1,0 +1,13 @@
+<div class="role-dialog w-100" dir="rtl">
+  <h3>{{ data ? 'تعديل مخزن' : 'إضافة مخزن جديد' }}</h3>
+
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>اسم المخزن</mat-label>
+    <input matInput name="roleName" [(ngModel)]="storeName" />
+  </mat-form-field>
+
+  <div class="d-flex justify-content-end" style="gap:8px; margin-top:12px;">
+    <button mat-stroked-button color="primary" (click)="save()" [disabled]="isSaving">حفظ</button>
+    <button mat-stroked-button color="warn" (click)="cancel()" [disabled]="isSaving">إلغاء</button>
+  </div>
+</div>

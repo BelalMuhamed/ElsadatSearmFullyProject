@@ -1,0 +1,46 @@
+.journal-container {
+  padding: 25px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  border-radius: 10px;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.header-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.full-width {
+  grid-column: span 3;
+}
+
+.details-table {
+  margin-top: 20px;
+}
+
+.details-header,
+.details-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 60px;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.totals {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.actions {
+  margin-top: 20px;
+  text-align: right;
+}

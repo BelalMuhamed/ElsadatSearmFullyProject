@@ -1,0 +1,26 @@
+<div class="table-container mat-elevation-z8 mt-5">
+
+  <form [formGroup]="form" >
+    <div class="d-flex justify-content-between align-items-center">
+    <mat-form-field appearance="outline" class="w-25 custom-input-theme">
+      <mat-label>خصم أول</mat-label>
+      <input matInput type="number" formControlName="firstDiscount">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-25 custom-input-theme">
+      <mat-label>خصم ثاني</mat-label>
+      <input matInput type="number" formControlName="secondDiscount">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-25 custom-input-theme">
+      <mat-label>خصم ثالث</mat-label>
+      <input matInput type="number" formControlName="thirdDiscount">
+    </mat-form-field>
+    </div>
+    <button mat-raised-button class="add-coupon-btn px-3 m-0" (click)="save()">
+      <mat-icon>save</mat-icon>
+      تحديث الخصومات
+    </button>
+
+  </form>
+</div>

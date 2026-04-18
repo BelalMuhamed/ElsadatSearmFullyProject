@@ -1,0 +1,49 @@
+.leave-dialog {
+	background: var(--surface);
+	padding: 18px;
+	max-width: 720px;
+	width: 100%;
+	border-radius: 8px;
+	box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+.dialog-header h4 { margin: 0 0 12px 0; color: var(--gold); text-align:center; }
+.w-100 { width: 100%; }
+.dates { display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 12px; }
+
+.full-width {
+	width: 100%;
+}
+
+
+.dialog-actions { display:flex; justify-content:center; gap:12px; padding: 12px 0 0; }
+.dialog-actions .action-btn { min-width:120px; height:40px; border-radius:8px; }
+
+/* Dark-mode appearance (match loan dialog and public-holiday dialog) */
+:host-context(body.dark-mode) .leave-dialog,
+body.dark-mode .cdk-overlay-container .leave-dialog {
+	background: #1b1b1b !important;
+	color: #e8e8e8 !important;
+	border: 1px solid rgba(255,255,255,0.04) !important;
+	box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field .mat-input-element,
+:host-context(body.dark-mode) .mat-form-field .mat-mdc-input-element,
+body.dark-mode .cdk-overlay-container .leave-dialog .mat-form-field .mat-input-element {
+	color: #e8e8e8 !important;
+	background: transparent !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline .mat-form-field-outline,
+body.dark-mode .cdk-overlay-container .leave-dialog .mat-form-field-appearance-outline .mat-form-field-outline {
+	border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Buttons in dark mode */
+:host-context(body.dark-mode) .dialog-actions .action-btn,
+body.dark-mode .cdk-overlay-container .leave-dialog .dialog-actions .action-btn {
+	color: #e8e8e8 !important;
+	border-color: rgba(255,255,255,0.08) !important;
+}

@@ -1,0 +1,23 @@
+<mat-card class="p-3 payment-dialog">
+  <h3 class="text-center">تسجيل دفعة</h3>
+
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>قيمة الدفع</mat-label>
+    <input matInput type="number" [(ngModel)]="model.paymentAmount" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>تاريخ الدفع</mat-label>
+    <input matInput type="date" [(ngModel)]="model.paymentDate" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>ملاحظات</mat-label>
+    <input matInput [(ngModel)]="model.notes" />
+  </mat-form-field>
+
+  <div class="dialog-actions justify-content-center">
+    <button mat-stroked-button class="action-btn" (click)="close()">إلغاء</button>
+    <button mat-raised-button class="action-btn" color="primary" (click)="save()" [disabled]="isSaving">حفظ</button>
+  </div>
+</mat-card>

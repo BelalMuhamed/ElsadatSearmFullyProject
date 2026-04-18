@@ -1,0 +1,150 @@
+:host { display: block; }
+
+h4 { 
+  color: var(--gold); 
+  text-align: center; 
+  margin-bottom: 12px; 
+}
+
+.deduction-dialog {
+  background: var(--surface);
+  padding: 18px;
+  max-width: 520px;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.w-100 { 
+  width: 100%; 
+}
+
+.mat-form-field { 
+  width: 100%; 
+  margin-bottom: 10px; 
+}
+
+.deduction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dialog-actions { 
+  display: flex; 
+  justify-content: center; 
+  gap: 12px; 
+  margin-top: 16px; 
+}
+
+.action-btn { 
+  min-width: 140px; 
+  height: 38px; 
+  border-radius: 8px; 
+}
+
+.p-3 {
+  padding: 18px;
+}
+
+.mb-3 {
+  margin-bottom: 12px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.py-2 {
+  padding: 8px 0;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.me-2 {
+  margin-right: 8px;
+}
+
+.text-muted {
+  color: #999;
+}
+
+.employee-option {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+.employee-name {
+  font-weight: 500;
+  flex: 1;
+}
+
+.employee-code {
+  font-size: 12px;
+  min-width: 80px;
+  text-align: left;
+}
+
+/* Dark mode appearance for the deduction dialog */
+:host-context(body.dark-mode) .deduction-dialog,
+body.dark-mode .cdk-overlay-container .deduction-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Make dialog fit well inside overlay */
+:host-context(body.dark-mode) .mat-dialog-container .deduction-dialog,
+body.dark-mode .cdk-overlay-container .mat-dialog-container .deduction-dialog {
+  width: 520px !important;
+  max-width: calc(100% - 32px) !important;
+}
+
+/* Inputs & form fields in dark mode inside the dialog */
+:host-context(body.dark-mode) .mat-form-field .mat-input-element,
+:host-context(body.dark-mode) .mat-form-field .mat-mdc-input-element,
+body.dark-mode .cdk-overlay-container .deduction-dialog .mat-form-field .mat-input-element {
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline .mat-form-field-outline,
+body.dark-mode .cdk-overlay-container .deduction-dialog .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Buttons inside dialog */
+:host-context(body.dark-mode) .dialog-actions .action-btn,
+body.dark-mode .cdk-overlay-container .deduction-dialog .dialog-actions .action-btn {
+  color: #e8e8e8 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Light mode form field styling */
+:host-context(body.light-mode) .mat-form-field .mat-input-element,
+:host-context(body.light-mode) .mat-form-field .mat-mdc-input-element {
+  color: #333 !important;
+  background: transparent !important;
+}
+
+:host-context(body.light-mode) .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+

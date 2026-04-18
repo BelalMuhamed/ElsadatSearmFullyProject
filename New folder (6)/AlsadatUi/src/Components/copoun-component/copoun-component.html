@@ -1,0 +1,106 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center">الكوبونات </h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+@if (isLoading) {
+    <p  class="text-center" style="color: var(--gold);">Loading...</p>
+}
+@else  {
+ <div class="d-flex justify-content-between align-items-center gap-3 my-3">
+
+  <!-- زرار إضافة كوبون -->
+  <button class="add-coupon-btn" (click)="openAddCouponPopup()">
+    <mat-icon>add</mat-icon>
+    إضافة كوبون
+  </button>
+  <div class="d-flex justify-content-between  w-30">
+<mat-form-field appearance="outline" class="w-30 w-50 custom-input-theme">
+  <mat-label>نقاط تجميع الكوبونات</mat-label>
+  <input matInput type="number" [(ngModel)]="updatedPoints" placeholder="0" required />
+</mat-form-field>
+
+
+
+
+  <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+    (click)="updatePoints()"
+  >
+    <mat-icon>save</mat-icon>
+    تحديث النقاط
+  </button>
+
+</div>
+
+</div>
+
+
+  <div class="table-container mat-elevation-z8">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+   @for (col of columns; track col.key) {
+  <ng-container [matColumnDef]="col.key">
+    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+    <td mat-cell *matCellDef="let element">
+      @switch (col.type) {
+
+
+
+
+      @case ('boolean') {
+  <mat-slide-toggle
+      [checked]="element[col.key]"
+      (change)="toggleActive(element)">
+  </mat-slide-toggle>
+}
+
+
+    @case ('actions') {
+    <div class="action-buttons">
+
+
+    <button
+  mat-icon-button
+  color="accent"
+  class="bg-transparent border-0"
+  (click)="onEdit(element)"
+>
+  <mat-icon>edit</mat-icon>
+</button>
+
+    </div>
+  }
+  @case ('copounPaiedType') {
+    @if (element[col.key] === 0) {
+        <span>كاش</span>
+    }
+    @else if (element[col.key] === 1) {
+        <span>تجميع</span>
+    }
+    @else if (element[col.key] === 2) {
+        <span>كاش وهدايا</span>
+    }
+}
+
+        @default {
+
+            <span>{{ element[col.key] }}</span>
+
+        }
+      }
+    </td>
+  </ng-container>
+}
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+  </table>
+</div>
+<ng-template #loading>
+    <div class="flex justify-center p-4">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+}

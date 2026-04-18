@@ -1,0 +1,31 @@
+.mat-card { max-width: 720px; margin: 0 auto; background: var(--surface); }
+.payments-card { padding: 18px; }
+.action-btn { min-width: 120px; height: 38px; border-radius: 8px; }
+table { width: 100%; margin-top: 8px; }
+.text-center { text-align: center; }
+.total-row { text-align: right; padding: 12px 8px; border-top: 1px solid rgba(0,0,0,0.08); margin-top: 8px; font-weight: 600; }
+.action-row { display:flex; justify-content:center; gap:12px; margin-top:14px; }
+.payment-json { background: #f8f8f8; padding:8px; border-radius:4px; margin-top:6px; max-height:200px; overflow:auto; }
+
+/* highlight total row with subtle gold styling */
+.total-row { background: rgba(181,138,0,0.06); border-radius: 6px; padding: 12px 14px; display:flex; justify-content:flex-end; align-items:center; gap:8px; }
+.total-row strong { color: var(--gold); font-size: 1.05rem; }
+
+:host-context(body.dark-mode) .total-row { background: rgba(181,138,0,0.12); border: 1px solid rgba(181,138,0,0.18); }
+:host-context(body.dark-mode) .payment-json { background: #111; color: #e8e8e8; }
+
+/* Ensure the dialog card itself is dark and fills the dialog container in dark mode */
+:host-context(body.dark-mode) .mat-card,
+:host-context(body.dark-mode) .payments-card {
+	background: #1b1b1b !important;
+	color: #e8e8e8 !important;
+	border: 1px solid rgba(255,255,255,0.04) !important;
+	border-radius: 8px !important;
+	box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+/* Make sure the mat-card uses full width inside mat-dialog-container so no white gutters appear */
+:host-context(body.dark-mode) .mat-dialog-container .mat-card {
+	width: 720px !important;
+	max-width: calc(100% - 32px) !important;
+}

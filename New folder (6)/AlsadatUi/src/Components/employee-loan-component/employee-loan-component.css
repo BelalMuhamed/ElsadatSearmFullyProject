@@ -1,0 +1,257 @@
+.salary-container {
+  padding: 16px;
+}
+
+.header-section {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-title {
+  margin: 0;
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.filters {
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.filter-form {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.action-btn {
+  min-width: 120px;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.paginator-container {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+}
+
+/* Card styling */
+:host ::ng-deep .mat-mdc-card {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+:host-context(body.dark-mode) .mat-mdc-card {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Table styling */
+.mat-mdc-table {
+  background-color: transparent !important;
+}
+
+.mat-mdc-header-cell {
+  color: var(--gold) !important;
+  font-weight: 600;
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 2px solid rgba(241, 196, 15, 0.2);
+}
+
+.mat-mdc-cell {
+  text-align: center;
+  padding: 12px 8px;
+  color: inherit;
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell {
+  color: #ddd;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:host-context(body.light-mode) .mat-mdc-cell {
+  color: #333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Button group styling */
+.button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 18px;
+  }
+
+  .filter-form {
+    flex-direction: column;
+  }
+
+  .mat-mdc-form-field {
+    width: 100% !important;
+  }
+}
+
+/* Focus states */
+:host ::ng-deep .mat-mdc-button:focus,
+:host ::ng-deep .mat-icon-button:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Dark mode */
+:host-context(body.dark-mode) .filters {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+:host-context(body.dark-mode) .filter-form {
+  color: #e8e8e8;
+}
+
+/* Light mode */
+:host-context(body.light-mode) .filters {
+  background-color: rgba(0, 0, 0, 0.02);
+  font-weight: 600;
+  text-transform: none;
+  border-bottom: 1px solid var(--border);
+  padding: 12px;
+}
+
+table tbody td {
+  padding: 12px;
+  border-bottom: 1px dashed var(--border);
+}
+
+table tbody tr:hover {
+  background: var(--table-row-hover);
+}
+
+/* paginator container */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  direction: rtl;
+}
+
+/* Dark / Light mode alignments */
+:host-context(body.dark-mode) .paginator-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--gold);
+}
+:host-context(body.light-mode) .paginator-container {
+  background: rgba(241, 196, 15, 0.05);
+  border-color: var(--gold);
+}
+
+/* Ensure paginator icons visible in dark mode */
+:host-context(body.dark-mode) button.mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon {
+  color: var(--gold) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* empty state */
+.empty-state {
+  color: var(--muted);
+  padding: 18px 0;
+}
+
+/* dialog action buttons */
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+/* Filters form style (match attendance page look) */
+.filter-form {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* make action buttons consistent size like attendance page */
+.filter-actions .action-btn {
+  min-width: 140px;
+  height: 38px;
+  border-radius: 8px;
+}
+
+/* Dark-mode: make action buttons visible/consistent like attendance page */
+:host-context(body.dark-mode) .action-btn {
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+}
+
+:host-context(body.light-mode) .action-btn {
+  background: transparent;
+  color: var(--text);
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .filters .mat-form-field {
+    min-width: 100%;
+  }
+
+  .filters .d-flex {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 800px) {
+  .filter-form { flex-direction: column; gap: 0.6rem; }
+  .filters .flex-grow-1 { width: 100%; min-width: 0; }
+}

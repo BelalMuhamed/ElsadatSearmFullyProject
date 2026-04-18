@@ -1,0 +1,11 @@
+:host ::ng-deep .mat-dialog-container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+table {
+  width: 100%;
+  th, td {
+    color: var(--text-color);
+  }
+}

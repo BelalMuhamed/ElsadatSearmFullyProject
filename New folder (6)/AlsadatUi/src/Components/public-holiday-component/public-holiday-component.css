@@ -1,0 +1,288 @@
+.w-100 { width: 100%; }
+.w-25 { width: 25%; }
+.d-flex { display: flex; }
+.justify-content-between { justify-content: space-between; }
+.align-items-center { align-items: center; }
+.mb-3 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+.mx-2 { margin-left: 12px; margin-right: 12px; }
+
+.page-title { 
+  color: var(--gold); 
+  text-align: center; 
+  font-weight: 700; 
+  font-size: 24px; 
+  margin: 0;
+}
+
+.salary-container { 
+  padding: 18px; 
+  max-width: 1100px; 
+  margin: 0 auto; 
+  min-height: calc(100vh - 80px); 
+}
+
+.action-buttons { 
+  display: flex; 
+  gap: 10px; 
+}
+
+.action-btn { 
+  min-width: 120px; 
+}
+
+.filter-form { 
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap; 
+  justify-content: center; 
+  margin: 12px 0; 
+}
+
+.table-container { 
+  overflow-x: auto; 
+  padding: 8px; 
+}
+
+.paginator-container { 
+  display: flex; 
+  justify-content: center; 
+  margin-top: 20px; 
+  padding: 16px; 
+  border: 2px solid var(--gold); 
+  border-radius: 8px; 
+  background: rgba(0, 0, 0, 0.02); 
+  direction: rtl; 
+}
+
+:host-context(body.dark-mode) .paginator-container { 
+  background: rgba(255, 255, 255, 0.03); 
+  border-color: var(--gold); 
+}
+
+:host-context(body.light-mode) .paginator-container { 
+  background: rgba(241, 196, 15, 0.05); 
+  border-color: var(--gold); 
+}
+
+mat-card { 
+  padding: 12px; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: 10px; 
+  box-shadow: var(--card-shadow); 
+}
+
+:host-context(body.dark-mode) .table-container { 
+  background: #121212; 
+  color: #e8e8e8; 
+  border-radius: 6px; 
+}
+
+:host-context(body.dark-mode) table.mat-mdc-table { 
+  background: transparent; 
+  color: #e8e8e8; 
+}
+
+:host-context(body.dark-mode) .mat-mdc-header-cell { 
+  color: var(--gold); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06); 
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell { 
+  color: #ddd; 
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator { 
+  color: #ddd; 
+}
+
+:host-context(body.dark-mode) mat-card { 
+  background: #1e1e1e; 
+  color: #e8e8e8; 
+}
+
+:host-context(body.light-mode) mat-card { 
+  background: #fff; 
+}
+
+:host-context(body.light-mode) .mat-mdc-header-cell { 
+  color: var(--gold); 
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-icon { 
+  color: var(--gold) !important; 
+  opacity: 1; 
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value { 
+  color: var(--gold) !important; 
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-paginator-icon { 
+  color: var(--gold) !important; 
+  opacity: 1; 
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-select-value { 
+  color: var(--gold) !important; 
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button:hover { 
+  background: rgba(0, 0, 0, 0.04); 
+}
+
+:host-context(body.dark-mode) button.mat-mdc-icon-button { 
+  visibility: visible !important; 
+  opacity: 1 !important; 
+  display: inline-flex !important; 
+  color: var(--gold) !important; 
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon { 
+  color: var(--gold) !important; 
+  fill: var(--gold) !important; 
+  visibility: visible !important; 
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator svg { 
+  stroke: var(--gold) !important; 
+  fill: var(--gold) !important; 
+  visibility: visible !important; 
+}
+
+:host-context(body.dark-mode) button.mat-mdc-icon-button:disabled,
+:host-context(body.dark-mode) button.mat-mdc-icon-button[disabled] { 
+  opacity: 0.35 !important; 
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled .mat-icon,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] .mat-icon { 
+  opacity: 0.35 !important; 
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled svg,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] svg { 
+  opacity: 0.35 !important; 
+}
+
+.mat-mdc-header-cell { 
+  text-align: center; 
+  padding: 12px 8px; 
+}
+
+table { 
+  width: 100%; 
+}
+
+.empty-state { 
+  padding: 18px 0; 
+}
+
+/* Paginator container styling */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  direction: rtl;
+}
+
+:host-context(body.dark-mode) .paginator-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--gold);
+}
+
+:host-context(body.light-mode) .paginator-container {
+  background: rgba(241, 196, 15, 0.05);
+  border-color: var(--gold);
+}
+
+/* Dark mode tweaks */
+:host-context(body.dark-mode) .mat-mdc-paginator {
+  color: #ddd;
+}
+
+/* Light mode polish */
+:host-context(body.light-mode) .mat-mdc-header-cell {
+  color: var(--gold);
+}
+
+/* Paginator icons visibility */
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1;
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ===== NUCLEAR: Force ALL paginator elements visible in Dark Mode ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  color: var(--gold) !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator svg {
+  stroke: var(--gold) !important;
+  fill: var(--gold) !important;
+  visibility: visible !important;
+}
+
+/* ===== DISABLED BUTTONS: Make them appear faded/lighter ===== */
+:host-context(body.dark-mode) button.mat-mdc-icon-button:disabled,
+:host-context(body.dark-mode) button.mat-mdc-icon-button[disabled] {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled .mat-icon,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] .mat-icon {
+  opacity: 0.35 !important;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator button:disabled svg,
+:host-context(body.dark-mode) .mat-mdc-paginator button[disabled] svg {
+  opacity: 0.35 !important;
+}
+
+/* Center text in table cells */
+.mat-mdc-header-cell {
+  text-align: center;
+  padding: 12px 8px;
+}
+
+.mat-mdc-cell {
+  text-align: center;
+  padding: 12px 8px;
+}
+

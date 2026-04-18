@@ -1,0 +1,98 @@
+<div class="w-100 d-flex justify-content-between align-items-center mb-3">
+  <h2 class="w-25 text-center">إدارة المناديب</h2>
+  <button mat-raised-button color="primary" (click)="addNewRepresentative()" class="action-btn">
+    <mat-icon>add</mat-icon>
+    إضافة مندوب جديد
+  </button>
+</div>
+
+<div class="filter-form" dir="rtl">
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>كود المندوب</mat-label>
+    <input matInput [(ngModel)]="filters.representativeCode" name="repCode" placeholder="أدخل كود المندوب" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>اسم المندوب</mat-label>
+    <input matInput [(ngModel)]="filters.representativeName" name="repName" placeholder="أدخل اسم المندوب" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>المدينة</mat-label>
+    <input matInput [(ngModel)]="filters.cityName" name="cityName" placeholder="أدخل اسم المدينة" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="custom-input-theme">
+    <mat-label>نوع المندوب</mat-label>
+    <mat-select [(ngModel)]="filters.representiveType" name="repType">
+      <mat-option [value]="0">الكل</mat-option>
+        <mat-option [value]="1">معاينات</mat-option>
+      <mat-option [value]="2">تحصيل</mat-option>
+      <mat-option [value]="3">مختلط</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div style="display: flex; align-items: center; gap: 8px; padding: 8px; margin-bottom: 20px; ">
+    <mat-slide-toggle [(ngModel)]="showDeletedOnly" name="showDeleted" color="primary">عرض المحذوفين </mat-slide-toggle>
+  </div>
+</div>
+
+<div class="container d-flex justify-content-center align-items-center">
+  <button mat-raised-button color="primary" (click)="onFilter()" class="action-btn mx-4">بحث</button>
+  <button mat-stroked-button color="warn" (click)="onReset()" class="action-btn">إعادة تعيين</button>
+</div>
+
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+
+<div class="page-content">
+  <div *ngIf="isLoading" class="text-center" style="color: var(--gold);">جاري التحميل...</div>
+
+  <div *ngIf="!isLoading" class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
+        <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container [ngSwitch]="col.key">
+            <span *ngSwitchCase="'salary'">{{ formatSalary(element.salary) }}</span>
+            <span *ngSwitchCase="'representiveType'">{{ formatRepresentativeType(element.representiveType) }}</span>
+            <span *ngSwitchDefault>{{ element[col.key] }}</span>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="openEditDialog(element)" matTooltip="تعديل">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Status column (toggle) -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>الحالة</th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;">
+          <mat-slide-toggle class="delete-toggle" [checked]="!element.isDeleted" (change)="toggleRepresentativeStatus(element)" matTooltip="تفعيل/تعطيل"></mat-slide-toggle>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="allColumnKeys"></tr>
+      <tr mat-row *matRowDef="let row; columns: allColumnKeys"></tr>
+    </table>
+  </div>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="paginationParams.pageSize"
+      [pageIndex]="(paginationParams.pageNumber || 1) - 1"
+      [pageSizeOptions]="[5, 10, 20]"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+      aria-label="جدول المناديب">
+    </mat-paginator>
+  </div>
+</div>
