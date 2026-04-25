@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { ProductDto, ProductFilterationDto } from '../models/IProductVM';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/ApiReponse';
+import { ApiResponse, Result } from '../models/ApiReponse';
+import { ExcelImportResult } from '../models/IExcelDtos';
 
 @Injectable({
   providedIn: 'root'
@@ -37,11 +38,32 @@ export class ProductService {
    toggleStatus(product: ProductDto): Observable<any> {
     return this.http.put(`${this.apiUrl}Product/toggle-status`, product);
   }
-uploadExcel(file: File, createdUser: string): Observable<any> {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('createdUser', createdUser); // الحقل الجديد
+// -----------------------------------------------------------
+  // 7) Download Excel template  — GET /api/Supplier/import/template
+  //   Returns a binary .xlsx as Blob so the browser can save it.
+  // -----------------------------------------------------------
+  downloadTemplate(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}Product/import/template`, { responseType: 'blob' });
+  }
 
-  return this.http.post(`${this.apiUrl}Product/upload`, formData);
-}
+  // -----------------------------------------------------------
+  // 8) Import from Excel  — POST /api/Supplier/import
+  //   `reportProgress:true` lets the dialog show a live progress bar.
+  //   Caller receives HttpEvent<T> — use the `Response` event to read the body.
+  // -----------------------------------------------------------
+   importFromExcel(
+      file: File,
+
+    ): Observable<Result<ExcelImportResult<ProductDto>>> {
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+
+      return this.http.post<
+        Result<ExcelImportResult<ProductDto>>>(
+        `${this.apiUrl}Product/import`,
+        formData
+      );
+    }
 }

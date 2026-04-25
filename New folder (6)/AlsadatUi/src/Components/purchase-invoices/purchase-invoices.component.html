@@ -151,7 +151,7 @@
                     </button>
                   }
                 }
-                @else if(!isUserAdmin &&(element.deleteStatus==null ||element.deleteStatus==1))
+                @else if(!isUserAdmin &&(element.deleteStatus==null ||element.deleteStatus==1) && !isUserStockManager)
                 {
                     <button
                       mat-icon-button

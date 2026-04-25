@@ -1,0 +1,76 @@
+<div class="phone-input-wrapper" [formGroup]="innerForm" dir="ltr">
+
+  <!-- ===================== Country selector ===================== -->
+  <mat-form-field appearance="outline" class="phone-country-field custom-input-theme">
+    <mat-label>الدولة</mat-label>
+
+    <mat-select
+      formControlName="country"
+      [compareWith]="compareCountries"
+      panelClass="phone-country-panel"
+      [attr.aria-label]="'اختيار الدولة'">
+
+      <!-- Selected value display (trigger) -->
+      <mat-select-trigger>
+        <span class="phone-country-trigger">
+          <span class="dial-code">+{{ innerForm.controls.country.value?.dialCode }}</span>
+          <span class="iso-code">{{ innerForm.controls.country.value?.iso2 | uppercase }}</span>
+        </span>
+      </mat-select-trigger>
+
+      <!-- Searchable list header -->
+      <div class="country-search-wrapper" (click)="$event.stopPropagation()">
+        <input
+          matInput
+          type="text"
+          placeholder="ابحث عن دولة..."
+          autocomplete="off"
+          class="country-search-input"
+          [value]="searchTerm"
+          (input)="onSearchCountry($event)"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+          (keyup)="$event.stopPropagation()"
+          dir="rtl" />
+      </div>
+
+      <!-- Country list -->
+      <mat-option
+        *ngFor="let country of filteredCountries; trackBy: trackCountry"
+        [value]="country">
+        <span class="country-option" dir="rtl">
+          <span class="country-name-ar">{{ country.nameAr }}</span>
+          <span class="country-dial">+{{ country.dialCode }}</span>
+        </span>
+      </mat-option>
+
+      <!-- Empty-state when the search returns nothing -->
+      <div *ngIf="filteredCountries.length === 0" class="country-empty" dir="rtl">
+        لا توجد نتائج للبحث
+      </div>
+
+    </mat-select>
+  </mat-form-field>
+
+
+
+  <!-- ===================== National number ===================== -->
+
+  <mat-form-field appearance="outline" class="phone-number-field custom-input-theme">
+    <mat-label>{{ label }}<span *ngIf="required" class="required-mark"> *</span></mat-label>
+
+    <input
+      matInput
+      type="tel"
+      inputmode="numeric"
+      autocomplete="tel-national"
+      formControlName="nationalNumber"
+      [attr.maxlength]="innerForm.controls.country.value?.maxLength"
+      [placeholder]="'رقم الهاتف بدون كود الدولة'"
+      (input)="onNationalInput($event)"
+      (blur)="handleBlur()" />
+
+    <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+  </mat-form-field>
+
+</div>

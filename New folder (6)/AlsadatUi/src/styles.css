@@ -37,6 +37,7 @@ body.light-mode input[type="time"]::-webkit-calendar-picker-indicator {
 .dark-theme,
 .dark-theme * {
     color: var(--text-color) !important;
+
 }
 
 
@@ -95,6 +96,8 @@ body.dark-mode .mat-calendar-arrow {
   --card-shadow: 0 1px 3px rgba(16,24,40,0.06);
   --radius: 8px;
   --table-row-hover: rgba(21,101,192,0.06);
+    --input-bg: #f5f5f5;
+
 }
 
 body.dark-mode {
@@ -120,6 +123,8 @@ body.dark-mode {
   --text-high: #a6e7f0;
   --text-safe: #b7f5cb;
   --text-deleted: white;
+    --input-bg: #1a1a1a;
+
 }
 .deleted-row
 {
@@ -1788,4 +1793,47 @@ body.light-mode .custom-swal-popup {
 
 .swal2-cancel {
   background-color: #6b7280 !important;
+}
+body.dark-mode .mat-mdc-card {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+body.dark-mode .mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  background-color: var(--input-bg) !important;
+}
+body.dark-mode .mdc-text-field--outlined {
+  background-color: var(--input-bg) !important;
+}
+.custom-popup-panel .mat-mdc-dialog-container {
+  background: #0f0f0f !important; /* black */
+  color: #fff !important;
+  border-radius: 20px !important;
+  border: 1px solid #d4af37 !important; /* gold */
+  padding: 24px !important;
+}
+.mat-mdc-dialog-container mdc-dialog cdk-dialog-container mdc-dialog--open
+{
+  background: var(--bg-color) !important;
+
+}
+
+/* إزالة الخلفية البيضاء الداخلية */
+.custom-popup-panel .mdc-dialog__surface {
+  background: var(--bg-color) !important;
+}
+/* Light mode */
+body.light-mode .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+  background-color: white !important;
+}
+
+/* Dark mode */
+body.dark-mode .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+  background-color: var(--input-bg) !important;
+}
+body.light-mode .mat-mdc-form-field-focus-overlay {
+  background: transparent !important;
+}
+
+body.dark-mode .mat-mdc-form-field-focus-overlay {
+  background: rgba(212, 175, 55, 0.1) !important;
 }

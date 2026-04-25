@@ -36,7 +36,8 @@
 
 .mat-mdc-text-field-wrapper,
 .mdc-text-field {
-  background-color: var(--sidenav-bg) !important;
+   background-color: var(--input-bg);
+
   border-radius: 12px !important;
   padding: 4px 12px !important;
 }

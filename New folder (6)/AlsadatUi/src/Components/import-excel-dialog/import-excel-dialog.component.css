@@ -1,0 +1,134 @@
+.import-dialog {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-color, #fff);
+  color: var(--text-color, #000);
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 85vh;
+}
+
+/* ===== Header ===== */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px;
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #000;
+}
+
+.header-icon {
+  font-size: 26px;
+}
+
+/* ===== Stepper ===== */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #999;
+}
+
+.step.active {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+.step.done {
+  color: #4caf50;
+}
+
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ddd;
+}
+
+.step.active .step-num {
+  background: #d4af37;
+  color: #000;
+}
+
+/* ===== Drop Zone ===== */
+.drop-zone {
+  border: 2px dashed rgba(212, 175, 55, 0.5);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+}
+
+.drop-zone.dragging {
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.drop-icon {
+  font-size: 50px;
+  color: #d4af37;
+}
+
+/* ===== File ===== */
+.selected-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #d4af37;
+  border-radius: 10px;
+}
+
+/* ===== Upload ===== */
+.uploading-body {
+  text-align: center;
+  padding: 40px;
+}
+
+.uploading-icon {
+  font-size: 60px;
+  color: #d4af37;
+}
+
+/* ===== Stats ===== */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  text-align: center;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(212, 175, 55, 0.08);
+}
+
+/* ===== Errors ===== */
+.errors-table-wrapper {
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid #eee;
+}
+
+/* ===== Footer ===== */
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid #eee;
+}
+
+.primary-btn {
+  background: #d4af37 !important;
+  color: #000 !important;
+}

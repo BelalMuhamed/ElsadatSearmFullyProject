@@ -1,0 +1,215 @@
+<div class="import-dialog" dir="rtl">
+
+  <!-- ============ Header ============ -->
+  <div class="dialog-header">
+    <div class="d-flex align-items-center gap-2">
+      <mat-icon class="header-icon">upload_file</mat-icon>
+      <h2 class="m-0">استيراد الموردين من Excel</h2>
+    </div>
+    <button mat-icon-button type="button" (click)="close()" matTooltip="إغلاق" aria-label="إغلاق">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- ============ Stepper indicator ============ -->
+  <div class="step-indicator">
+    <div class="step" [class.active]="step() === 'select'" [class.done]="step() !== 'select'">
+      <span class="step-num">1</span>
+      <span class="step-label">اختيار الملف</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step" [class.active]="step() === 'uploading'" [class.done]="step() === 'result'">
+      <span class="step-num">2</span>
+      <span class="step-label">الرفع</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step" [class.active]="step() === 'result'">
+      <span class="step-num">3</span>
+      <span class="step-label">النتيجة</span>
+    </div>
+  </div>
+
+  <!-- ============ Step 1: Select ============ -->
+  @if (step() === 'select') {
+    <div class="dialog-body">
+
+      <div
+        class="drop-zone"
+        [class.dragging]="isDragging()"
+        [class.has-file]="selectedFile()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)">
+
+        @if (!selectedFile()) {
+          <mat-icon class="drop-icon">cloud_upload</mat-icon>
+          <p class="drop-title">اسحب وأفلت ملف Excel هنا</p>
+          <p class="drop-sub">أو اضغط لاختيار ملف (.xlsx أو .xls، أقصى 5 ميجابايت)</p>
+
+          <label class="browse-btn">
+            <mat-icon>folder_open</mat-icon>
+            اختر ملف
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+              (change)="onBrowse($event)"
+              hidden />
+          </label>
+        } @else {
+          <div class="selected-file">
+            <mat-icon class="file-icon">description</mat-icon>
+            <div class="file-meta">
+              <div class="file-name">{{ selectedFile()!.name }}</div>
+              <div class="file-size">{{ formatFileSize(selectedFile()!.size) }}</div>
+            </div>
+            <button
+              mat-icon-button
+              type="button"
+              class="remove-btn"
+              matTooltip="إزالة الملف"
+              (click)="clearFile()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="hint-box">
+        <mat-icon>info</mat-icon>
+        <div>
+          <p class="m-0">
+            يجب أن يحتوي الملف على العمودين التاليين فقط:
+            <strong>Name</strong> و <strong>PhoneNumbers</strong>
+          </p>
+          <p class="m-0 small-note">
+            رقم الهاتف بصيغة دولية، مثال: <code>+201012345678</code>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="dialog-footer">
+      <button mat-stroked-button type="button" (click)="close()">إلغاء</button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        class="primary-btn"
+        [disabled]="!selectedFile()"
+        (click)="upload()">
+        <mat-icon>upload</mat-icon>
+        بدء الاستيراد
+      </button>
+    </div>
+  }
+
+  <!-- ============ Step 2: Uploading ============ -->
+  @if (step() === 'uploading') {
+    <div class="dialog-body uploading-body">
+      <mat-icon class="uploading-icon">cloud_upload</mat-icon>
+      <h3 class="m-0">جاري رفع الملف...</h3>
+      <p class="small-note">{{ selectedFile()?.name }}</p>
+
+      <mat-progress-bar
+        mode="determinate"
+        [value]="progressPercent()">
+      </mat-progress-bar>
+      <p class="progress-percent">{{ progressPercent() }}%</p>
+    </div>
+  }
+
+  <!-- ============ Step 3: Result ============ -->
+  @if (step() === 'result' && result()) {
+    <div class="dialog-body">
+
+      <!-- Summary banner -->
+      <div class="result-banner" [attr.data-kind]="resultBannerKind()">
+        @switch (resultBannerKind()) {
+          @case ('success') { <mat-icon>check_circle</mat-icon> }
+          @case ('warning') { <mat-icon>warning</mat-icon> }
+          @case ('error')   { <mat-icon>error</mat-icon> }
+        }
+        <div class="banner-text">{{ resultBannerText() }}</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-num">{{ result()!.totalRows }}</span>
+          <span class="stat-label">إجمالي الصفوف</span>
+        </div>
+        <div class="stat success">
+          <span class="stat-num">{{ result()!.successCount }}</span>
+          <span class="stat-label">نجحت</span>
+        </div>
+        <div class="stat failed">
+          <span class="stat-num">{{ result()!.failedCount }}</span>
+          <span class="stat-label">فشلت</span>
+        </div>
+      </div>
+
+      <!-- Errors table (only if there are errors) -->
+      @if (hasErrors()) {
+        <div class="errors-section">
+          <div class="errors-header">
+            <h4 class="m-0">
+              <mat-icon>error_outline</mat-icon>
+              الأخطاء
+            </h4>
+            <button
+              mat-stroked-button
+              type="button"
+              color="warn"
+              (click)="exportErrors()"
+              matTooltip="تصدير الأخطاء كملف Excel لمعالجتها وإعادة الاستيراد">
+              <mat-icon>download</mat-icon>
+              تصدير الأخطاء
+            </button>
+          </div>
+
+          <div class="errors-table-wrapper">
+            <table mat-table [dataSource]="result()!.errors" class="errors-table">
+
+              <ng-container matColumnDef="rowNumber">
+                <th mat-header-cell *matHeaderCellDef>الصف</th>
+                <td mat-cell *matCellDef="let e">{{ e.rowNumber || '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="supplierName">
+                <th mat-header-cell *matHeaderCellDef>اسم المورد</th>
+                <td mat-cell *matCellDef="let e">{{ e.supplierName || '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="column">
+                <th mat-header-cell *matHeaderCellDef>العمود</th>
+                <td mat-cell *matCellDef="let e">{{ e.column }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="message">
+                <th mat-header-cell *matHeaderCellDef>الرسالة</th>
+                <td mat-cell *matCellDef="let e" class="message-cell">{{ e.message }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="errorColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: errorColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      }
+
+    </div>
+
+    <div class="dialog-footer">
+      <button mat-stroked-button type="button" (click)="backToSelect()">
+        <mat-icon>refresh</mat-icon>
+        استيراد ملف آخر
+      </button>
+      <button mat-flat-button color="primary" type="button" class="primary-btn" (click)="close()">
+        <mat-icon>check</mat-icon>
+        إنهاء
+      </button>
+    </div>
+  }
+
+</div>

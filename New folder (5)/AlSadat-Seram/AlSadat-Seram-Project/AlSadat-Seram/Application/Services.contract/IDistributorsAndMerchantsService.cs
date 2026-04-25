@@ -16,6 +16,8 @@ namespace Application.Services.contract
         Task<Result<string>> AddNewDistributorOrMerchant(DistributorsAndMerchantsAndAgentsDto dto);
         Task<Result<string>> EditDistributorOrMerchant(DistributorsAndMerchantsAndAgentsDto dto);
         Task<Result<DistributorsAndMerchantsAndAgentsDto>> GetDistributorOrMerchantById(string userId);
+        Task<Result<byte[]>> ExportTemplateAsync(CancellationToken ct);
+       Task<Result<ExcelImportResult<DistributorsAndMerchantsAndAgentsDto>>>ImportFromExcelAsync(Stream fileStream, CancellationToken ct);
 
     }
 }

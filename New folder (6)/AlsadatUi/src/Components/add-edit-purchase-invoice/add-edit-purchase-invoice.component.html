@@ -68,113 +68,83 @@
 
     <!-- القسم الثاني: المنتجات -->
     <div class="section products-section" formArrayName="items">
-      <div class="section-header">
-        <h3 class="section-title">المنتجات</h3>
+  <h3 class="section-title">المنتجات</h3>
 
-      </div>
+  <div class="products-table">
 
-      <div class="products-list">
-
-           <ng-container *ngFor="let item of items.controls; let i = index; let last = last">
-          <div [formGroupName]="i" class="product-card">
-
-              <div class="product-content d-flex justify-content-evenly align-items-center">
-              <!-- رقم المنتج -->
-              <div class="product-number-wrapper">
-                <span class="product-number">{{ i + 1 }}</span>
-              </div>
-
-              <!-- حقول المنتج -->
-              <div class="product-fields">
-                <div class="product-form-row">
-                  <mat-form-field appearance="outline" class="custom-input-theme product-select">
-                    <mat-label>المنتج</mat-label>
-                    <mat-select formControlName="productId">
-                      @for (pro of  getAvailableProducts(i); track pro.id) {
-                        <mat-option [value]="pro.id">{{ pro.name }}</mat-option>
-                      }
-                    </mat-select>
-                    @if (item.get('productId')?.invalid && item.get('productId')?.touched) {
-                      <mat-error>برجاء اختيار المنتج</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="custom-input-theme">
-                    <mat-label>الكمية</mat-label>
-                    <input matInput type="number" (blur)="calculateTotal(i)" formControlName="quantity">
-                    @if (item.get('quantity')?.invalid && item.get('quantity')?.touched) {
-                      <mat-error>الكمية إجباري</mat-error>
-                    }
-                    <mat-error *ngIf="quantityControl?.hasError('min')">الكمية يجب أن تكون على الأقل 1</mat-error>
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="custom-input-theme">
-                    <mat-label>سعر الشراء</mat-label>
-                    <input matInput type="number" (blur)="calculateTotal(i)" formControlName="buyingPricePerUnit">
-                    @if (item.get('buyingPricePerUnit')?.invalid && item.get('buyingPricePerUnit')?.touched) {
-                      <mat-error>سعر الشراء إجباري</mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="product-form-row">
-                  <mat-form-field appearance="outline" class="custom-input-theme">
-                    <mat-label>نسبة الخصم</mat-label>
-                    <input matInput type="number" (blur)="calculateDiscount(i)" formControlName="precentageRival">
-                    @if (item.get('precentageRival')?.invalid && item.get('precentageRival')?.touched) {
-                      <mat-error>نسبة الخصم إجباري</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="custom-input-theme">
-                    <mat-label>خصم نقدي</mat-label>
-                    <input matInput (blur)="calculateDiscount(i)" type="number" formControlName="rivalValue">
-                    @if (item.get('rivalValue')?.invalid && item.get('rivalValue')?.touched) {
-                      <mat-error>نسبة الخصم إجباري</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="custom-input-theme">
-                    <mat-label>إجمالي الخصم</mat-label>
-                    <input matInput readonly type="number" formControlName="totalRivalValue">
-                  </mat-form-field>
-                </div>
-
-                <div class="product-totals mb-4 mt-0">
-                  <div class="total-item">
-                    <span class="total-label">الإجمالي قبل الخصم:</span>
-                    <span class="total-value">{{ item.get('totalGrowthAmount')?.value | number:'1.2-2' }}</span>
-                  </div>
-                  <div class="total-item highlight">
-                    <span class="total-label">الإجمالي بعد الخصم:</span>
-                    <span class="total-value success">{{ item.get('totalNetAmount')?.value | number:'1.2-2' }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- زر الحذف -->
-              <div class="product-delete-wrapper" *ngIf="items.length > 1">
-                <button type="button" (click)="removeItem(i)" class="action-btn delete-btn">
-                  <mat-icon>delete_outline</mat-icon>
-                </button>
-              </div>
-            </div>
-
-
-          </div>
-
-          <!-- خط فاصل ذهبي بين المنتجات -->
-          <div class="product-divider" *ngIf="!last"></div>
-        </ng-container>
-
-
-      </div>
-
-           <button type="button" (click)="addItem()" class="action-btn add-btn d-flex justify-content-evenly align-items-center">
-          <mat-icon>add</mat-icon>
-          <span>إضافة منتج</span>
-        </button>
+    <!-- Header -->
+    <div class="table-row table-header">
+      <div>#</div>
+      <div>المنتج</div>
+      <div>الكمية</div>
+      <div>سعر الشراء</div>
+      <div>خصم %</div>
+      <div>خصم نقدي</div>
+      <div>إجمالي الخصم</div>
+      <div>قبل الخصم</div>
+      <div>بعد الخصم</div>
+      <div></div>
     </div>
+
+    <!-- Rows -->
+    <div
+      class="table-row"
+      *ngFor="let item of items.controls; let i = index"
+      [formGroupName]="i"
+    >
+      <div class="net">{{ i + 1 }}</div>
+
+      <div>
+        <mat-select formControlName="productId">
+          @for (pro of getAvailableProducts(i); track pro.id) {
+            <mat-option [value]="pro.id">{{ pro.name }}</mat-option>
+          }
+        </mat-select>
+      </div>
+
+      <div>
+        <input type="number" formControlName="quantity" (blur)="calculateTotal(i)">
+      </div>
+
+      <div>
+        <input type="number" formControlName="buyingPricePerUnit" (blur)="calculateTotal(i)">
+      </div>
+
+      <div>
+        <input type="number" formControlName="precentageRival" (blur)="calculateDiscount(i)">
+      </div>
+
+      <div>
+        <input type="number" formControlName="rivalValue" (blur)="calculateDiscount(i)">
+      </div>
+
+      <div>
+        <input readonly formControlName="totalRivalValue">
+      </div>
+
+      <div class="gross">
+        {{ item.get('totalGrowthAmount')?.value | number:'1.2-2' }}
+      </div>
+
+      <div class="net">
+        {{ item.get('totalNetAmount')?.value | number:'1.2-2' }}
+      </div>
+
+      <div>
+        <button *ngIf="items.length > 1" (click)="removeItem(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Add button -->
+  <button type="button" (click)="addItem()" class="add-btn">
+    <mat-icon>add</mat-icon>
+    إضافة منتج
+  </button>
+</div>
 
     <!-- القسم الثالث: ملخص الفاتورة -->
     <div class="section invoice-summary-section">

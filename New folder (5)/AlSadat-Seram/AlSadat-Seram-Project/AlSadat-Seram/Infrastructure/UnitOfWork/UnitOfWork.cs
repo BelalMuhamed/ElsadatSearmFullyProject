@@ -51,7 +51,10 @@ namespace Infrastructure.UnitOfWork
             if (_transaction != null)
                 await _transaction.RollbackAsync();
         }
-
+        public bool IsTransactionActive()
+        {
+            return _Context.Database.CurrentTransaction != null;
+        }
         public async Task LogError(Exception ex)
         {
             string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");

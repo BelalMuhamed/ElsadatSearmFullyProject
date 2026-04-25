@@ -46,4 +46,11 @@ namespace Application.DTOs
     }
 
 
+    public class DistributorMerchantExcelDto
+    {
+        public string الاسم_بالكامل { get; set; } = null!;
+        public string النوع { get; set; } = null!; // موزع / تاجر / وكيل
+        public string رقم_الهاتف { get; set; } = null!;
+    }
+
 }

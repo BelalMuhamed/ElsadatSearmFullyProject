@@ -1,4 +1,5 @@
-﻿using Application.Services.contract;
+﻿using Application.DTOs;
+using Application.Services.contract;
 using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
@@ -12,74 +13,7 @@ namespace Infrastructure.Services
 {
     public class ExcelReaderService: IExcelReaderService
     {
-        //public ExcelReadResult<T> Read<T>(Stream fileStream) where T : new()
-        //{
-        //    var result = new ExcelReadResult<T>();
-
-        //    using var workbook = new XLWorkbook(fileStream);
-        //    var worksheet = workbook.Worksheet(1);
-
-        //    var headerRow = worksheet.Row(1);
-
-        //    var headers = headerRow.Cells()
-        //        .Select((c, i) => new
-        //        {
-        //            Name = c.GetString(),
-        //            Index = i + 1
-        //        })
-        //        .ToDictionary(x => x.Name, x => x.Index);
-
-        //    var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-        //    var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
-
-        //    int rowIndex = 2;
-
-        //    foreach (var row in rows)
-        //    {
-        //        var obj = new T();
-        //        bool hasError = false;
-
-        //        foreach (var prop in properties)
-        //        {
-        //            if (!headers.TryGetValue(prop.Name, out int columnIndex))
-        //                continue;
-
-        //            var cell = row.Cell(columnIndex);
-        //            var value = cell.Value;
-
-        //            try
-        //            {
-        //                if (cell.IsEmpty() || string.IsNullOrWhiteSpace(value.ToString()))
-        //                    continue;
-
-        //                var targetType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-
-        //                var convertedValue = Convert.ChangeType(value, targetType);
-
-        //                prop.SetValue(obj, convertedValue);
-        //            }
-        //            catch
-        //            {
-        //                hasError = true;
-
-        //                result.Errors.Add(new ExcelError
-        //                {
-        //                    Row = rowIndex,
-        //                    Column = prop.Name,
-        //                    Message = $"Invalid value '{cell.Value}' for type {prop.PropertyType.Name}"
-        //                });
-        //            }
-        //        }
-
-        //        if (!hasError)
-        //            result.Data.Add(obj);
-
-        //        rowIndex++;
-        //    }
-
-        //    return result;
-        //}
+    
         public ExcelReadResult<T> Read<T>(Stream fileStream) where T : new()
         {
             var result = new ExcelReadResult<T>();
@@ -188,6 +122,62 @@ namespace Infrastructure.Services
 
                 rowIndex++;
             }
+
+            return result;
+        }
+        public async Task<ExcelImportResult<TEntity>> ImportAsync<TExcel, TEntity>(
+    Stream fileStream,
+    Func<TExcel, ImportRowContext, Task<RowImportResult<TEntity>>> mapFunc,
+    CancellationToken ct)
+    where TExcel : new()
+        {
+            var parsed = Read<TExcel>(fileStream);
+
+            var result = new ExcelImportResult<TEntity>();
+
+            foreach (var err in parsed.errors)
+            {
+                result.Errors.Add(new ExcelImportRowError
+                {
+                    RowNumber = err.Row,
+                    Column = err.Column,
+                    Message = err.Message
+                });
+            }
+
+            result.TotalRows = parsed.data.Count + parsed.errors.Count;
+
+            int rowNumber = 1;
+
+            foreach (var row in parsed.data)
+            {
+                rowNumber++;
+                ct.ThrowIfCancellationRequested();
+
+                var mapped = await mapFunc(row, new ImportRowContext
+                {
+                    RowNumber = rowNumber
+                });
+
+                if (mapped.IsSuccess && mapped.Entity != null)
+                {
+                    result.Imported.Add(mapped.Entity);
+                    result.SuccessCount++;
+                }
+                else
+                {
+                    result.Errors.Add(new ExcelImportRowError
+                    {
+                        RowNumber = rowNumber,
+                        Column = mapped.Column,
+                        Message = mapped.ErrorMessage!
+                    });
+
+                    result.FailedCount++;
+                }
+            }
+
+            result.FailedCount = result.Errors.Count;
 
             return result;
         }

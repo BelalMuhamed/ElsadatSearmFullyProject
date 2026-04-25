@@ -1,3 +1,4 @@
+import { SwalService } from './../../app/Services/swal.service';
 import { DisAndMerchantService } from './../../app/Services/dis-and-merchant.service';
 import { DistributorsAndMerchantsFilters, DistributorsAndMerchantsDto } from './../../app/models/IDisAndMercDto';
 import { HttpClientModule } from '@angular/common/http';
@@ -21,6 +22,8 @@ import { RouterLink } from "@angular/router";
 import { AddEditMerchDisPopupComponent } from '../../app/Popups/add-edit-merch-dis-popup/add-edit-merch-dis-popup.component';
 import { TreeAccountsService } from '../../app/Services/tree-accounts.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ImportExcelDialogComponent } from '../import-excel-dialog/import-excel-dialog.component';
+import saveAs from 'file-saver';
 
 @Component({
   selector: 'app-dis-and-merchant',
@@ -48,11 +51,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class DisAndMerchantComponent {
 
    Searchform !: FormGroup;
+     private readonly subs = new Subscription();
+
   private fb = inject(FormBuilder);
   private _DisAndMerchantService = inject(DisAndMerchantService);
   private _DisAndMerchantSubscription = new Subscription();
     private _TreeAccountService = inject(TreeAccountsService);
   private _TreeAccountSubscription = new Subscription();
+private _swal=inject(SwalService)
   filters:DistributorsAndMerchantsFilters={
     page:1,
     pageSize:10,
@@ -84,19 +90,19 @@ export class DisAndMerchantComponent {
 { key: 'actions', label: 'الإجراءات', type: 'actions' },
 
 ];
-  displayedColumnKeys = this.columns.map(c => c.key);
-       dataSource = new MatTableDataSource<DistributorsAndMerchantsDto>([]);
-       totalCount = 0;
-        @ViewChild(MatPaginator) paginator!: MatPaginator;
-       isLoading = true;
-    ngOnInit(): void {
-      this.GetAllDisAdnMerchants();
-      this.InitSearchForm();
-    }
-    ngOnDestroy():void{
-      this._DisAndMerchantSubscription?.unsubscribe();
-    }
-    GetAllDisAdnMerchants()
+displayedColumnKeys = this.columns.map(c => c.key);
+dataSource = new MatTableDataSource<DistributorsAndMerchantsDto>([]);
+totalCount = 0;
+ @ViewChild(MatPaginator) paginator!: MatPaginator;
+isLoading = true;
+ngOnInit(): void {
+  this.GetAllDisAdnMerchants();
+  this.InitSearchForm();
+}
+ngOnDestroy():void{
+  this._DisAndMerchantSubscription?.unsubscribe();
+}
+GetAllDisAdnMerchants()
     {
       this._DisAndMerchantSubscription.add(this._DisAndMerchantService.getAllDisAndMerch(this.filters).subscribe({
         next:(res)=>{
@@ -115,20 +121,20 @@ export class DisAndMerchantComponent {
                 });
         }
       }))
-    }
-    onPageChange(event: PageEvent) {
-      this.filters.page = event.pageIndex + 1;
-      this.filters.pageSize = event.pageSize;
-      this.GetAllDisAdnMerchants();
-    }
-    ToggleCategoryStatus(dto: DistributorsAndMerchantsDto, checked: boolean) {
+}
+PageChange(event: PageEvent) {
+this.filters.page = event.pageIndex + 1;
+this.filters.pageSize = event.pageSize;
+this.GetAllDisAdnMerchants();
+}
+ToggleCategoryStatus(dto: DistributorsAndMerchantsDto, checked: boolean) {
       dto.isDelted = !checked;
       dto.deletedAt=new Date().toISOString();
       dto.deletedBy=localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail')
       this._DisAndMerchantService.EditDisOrMerchant(dto).subscribe({
           next: (res) => {
 
-      
+
           Swal.fire({
         icon: res.isSuccess ? 'success' : 'error',
         title: res.message ?? res.data,
@@ -140,8 +146,8 @@ export class DisAndMerchantComponent {
        this.GetAllDisAdnMerchants();
     }
       })
-    }
-    InitSearchForm()
+}
+InitSearchForm()
     {
        this.Searchform = this.fb.group({
       phoneNumber: [''],
@@ -150,8 +156,8 @@ export class DisAndMerchantComponent {
       type: [''],
       isDeleted: [''],
     });
-    }
-    onSearch() {
+}
+onSearch() {
   if (this.Searchform.valid) {
     const formValues = this.Searchform.value;
 
@@ -180,11 +186,12 @@ ReAsign()
 this.InitSearchForm();
     this.GetAllDisAdnMerchants();
 }
-
-          openAddPopup() {
+openAddPopup() {
   const dialogRef = this.dialog.open(AddEditMerchDisPopupComponent, {
-    width: '450px',
-    data: null
+    width: '60%',
+    height:'90%',
+    data: null,
+      panelClass: 'custom-popup-panel'
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -215,13 +222,14 @@ this.InitSearchForm();
     }
   });
 }
-    private dialog =inject(MatDialog);
-
+private dialog =inject(MatDialog);
 openEditPopup(row: DistributorsAndMerchantsDto) {
 
   const dialogRef = this.dialog.open(AddEditMerchDisPopupComponent, {
-    width: '450px',
-    data: row
+     width: '60%',
+    height:'90%',
+    data: row,
+    panelClass: 'custom-popup-panel'
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -258,6 +266,16 @@ Swal.fire({
 
 
 
+  downloadTemplate(): void {
+    this.subs.add(
+      this._DisAndMerchantService.downloadImportTemplate().subscribe({
+        next: blob => {
+          saveAs(blob, 'Suppliers_Template.xlsx');
+        },
+        error: () => this._swal.error('تعذر تحميل القالب')
+      })
+    );
+  }
 
 
 
@@ -309,5 +327,27 @@ Swal.fire({
     }
   });
 
+}
+openDistributorMerchantImport(): void {
+
+  const ref = this.dialog.open(ImportExcelDialogComponent<DistributorsAndMerchantsDto>, {
+    width: '860px',
+    maxWidth: '95vw',
+    disableClose: true,
+    data: {
+      title: 'استيراد موزعين / تجار',
+      fileHint: 'يجب أن يحتوي الملف على البيانات حسب القالب المحدد',
+      templateName: 'تحميل قالب الموزعين والتجار',
+      importFn: (file: File) => this._DisAndMerchantService.importFromExcel(file),
+      columns: ['fullName', 'address', 'phoneNumber', 'type']
+    }
+  });
+
+  ref.afterClosed().subscribe(result => {
+
+        this.GetAllDisAdnMerchants();
+  this.InitSearchForm();
+    
+  });
 }
 }

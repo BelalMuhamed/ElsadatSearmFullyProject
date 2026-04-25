@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { DistributorsAndMerchantsDto, DistributorsAndMerchantsFilters } from '../models/IDisAndMercDto';
 import { ApiResponse, Result } from '../models/ApiReponse';
 import { Observable } from 'rxjs';
+import { ExcelImportResult } from '../models/IExcelDtos';
 
 @Injectable({
   providedIn: 'root'
@@ -62,4 +63,38 @@ export class DisAndMerchantService {
     `${this.apiUrl}DistAndMerch/get/${userId}`
   );
 }
+// -----------------------------------------------------------
+  // 7) Download Excel template  — GET /api/Supplier/import/template
+  //   Returns a binary .xlsx as Blob so the browser can save it.
+  // -----------------------------------------------------------
+
+   downloadImportTemplate(): Observable<Blob> {
+    return this.http.get(
+      `${this.apiUrl}DistAndMerch/import/template`,
+      { responseType: 'blob' }
+    );
+  }
+
+
+  // -----------------------------------------------------------
+  // 8) Import from Excel  — POST /api/Supplier/import
+  //   `reportProgress:true` lets the dialog show a live progress bar.
+  //   Caller receives HttpEvent<T> — use the `Response` event to read the body.
+  // -----------------------------------------------------------
+
+  importFromExcel(
+    file: File,
+
+  ): Observable<Result<ExcelImportResult<DistributorsAndMerchantsDto>>> {
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+
+    return this.http.post<
+      Result<ExcelImportResult<DistributorsAndMerchantsDto>>>(
+      `${this.apiUrl}DistAndMerch/import`,
+      formData
+    );
+  }
 }

@@ -7,58 +7,36 @@
 }
 @else  {
   <div class="w-100 d-flex justify-content-start">
-  <div class="w-50 d-flex justify-content-arround align-items-start  gap-3 my-3 ">
-    <div class="w-50 d-flex justify-content-between align-items-start flex-column gap-3 my-3 ">
-    <div class="  d-flex justify-content-end ">
-       <button class="add-coupon-btn  " (click)="openAddEditPopup()">
+ <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 my-2">
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="تحميل قالب Excel"
+      (click)="downloadTemplate()">
+      <mat-icon>download</mat-icon>
+      تحميل قالب Excel
+    </button>
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="استيراد الموردين من ملف Excel"
+      (click)="openDistributorMerchantImport()">
+      <mat-icon>upload_file</mat-icon>
+      استيراد Excel
+    </button>
+    <button class="add-coupon-btn  " (click)="openAddEditPopup()">
     <mat-icon>add</mat-icon>
-     إضافة منتج جديد
-  </button>
-  </div>
-   <div class="d-flex justify-content-end">
-       <button class="add-coupon-btn  " (click)="downloadExcelTemplate()">
-    <mat-icon>download</mat-icon>
-    تحميل نموذج Excel
-
-  </button>
-  </div>
-  </div>
-<div class="excel-upload-container">
-
-  <!-- زرار رفع Excel -->
-  <button class="add-coupon-btn upload-btn" (click)="fileInput.click()">
-    <mat-icon>upload</mat-icon>
-    رفع ملف Excel
+    إضافة منتج جديد
   </button>
 
-  <!-- input مخفي -->
-  <input
-    #fileInput
-    type="file"
-    accept=".xlsx,.xls"
-    (change)="onFileSelected($event)"
-    hidden
-  />
 
-</div>
-<!-- عرض اسم الملف -->
-<div *ngIf="selectedFileName" class="selected-file">
-  <mat-icon>description</mat-icon>
-  {{selectedFileName}}
-</div>
-<!-- Spinner يظهر عند الرفع -->
-<div *ngIf="isUploading" class="spinner-overlay">
-  <mat-progress-spinner
-    mode="indeterminate"
-    color="primary">
-  </mat-progress-spinner>
-</div>
-</div>
+  </div>
 
- <div class=" w-50 d-flex justify-content-center align-items-center gap-3 my-3">
 
-  <!-- زرار إضافة كوبون -->
 
+<div class=" w-50 d-flex justify-content-center align-items-center gap-3 my-3">
 
 <form [formGroup]="form" class="popup-form ">
   <div class="w-100 d-block">

@@ -25,4 +25,18 @@ namespace Application.DTOs.ProductsDtos
         public List<T> Data { get; set; } = new();
         public List<ExcelReaderDtos.ExcelError> Errors { get; set; } = new();
     }
+
+
+    public class ProductExcelDto
+    {
+        public string? اسم_المنتج { get; set; }
+
+        public string? كود_المنتج { get; set; }
+
+        public decimal سعر_البيع { get; set; }
+
+        public int عدد_النقاط { get; set; }
+
+        public int اقل_كمية { get; set; }
+    }
 }

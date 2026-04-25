@@ -1,6 +1,9 @@
 ﻿using AlSadatSeram.Services.contract;
 using Application.DTOs;
+using Application.DTOs.FinanceDtos;
 using Application.Services.contract;
+using Application.Services.contract.CurrentUserService;
+using ClosedXML.Excel;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Entities.Finance;
@@ -8,6 +11,8 @@ using Domain.Entities.Transactions;
 using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.UnitOfWork.Contract;
+using Infrastructure.Services.CurrentUserServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,11 +28,18 @@ namespace Infrastructure.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IServiceManager _serviceManager;
+        private readonly ICurrentUserService currentUserService;
+        private readonly IExcelReaderService excelService;
 
-        public DistributorsAndMerchantsService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public DistributorsAndMerchantsService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,IServiceManager serviceManager, ICurrentUserService currentUserService,
+        IExcelReaderService excelService)
         {
             this.unitOfWork = unitOfWork;
             this._userManager = userManager;
+            _serviceManager = serviceManager;
+            this.currentUserService = currentUserService;
+            this.excelService = excelService;
         }
 
         public async Task<Result<string>> AddNewDistributorOrMerchant(DistributorsAndMerchantsAndAgentsDto dto)
@@ -43,15 +55,14 @@ namespace Infrastructure.Services
                 if (string.IsNullOrWhiteSpace(dto.phoneNumber))
                     return Result<string>.Failure("رقم الهاتف مطلوب", HttpStatusCode.BadRequest);
 
-                if (dto.cityId is null)
-                    return Result<string>.Failure("المدينة مطلوبة", HttpStatusCode.BadRequest);
+                
 
 
                 // 2️⃣ CHECK UNIQUE PHONE
                 var userRepo = unitOfWork.GetRepository<ApplicationUser, string>();
 
                 bool exists = await userRepo.GetQueryable()
-                                            .AnyAsync(u => u.UserName == dto.phoneNumber);
+                                            .AnyAsync(u => u.PhoneNumber == dto.phoneNumber);
 
                 if (exists)
                     return Result<string>.Failure("رقم الهاتف مستخدم بالفعل", HttpStatusCode.Conflict);
@@ -68,8 +79,8 @@ namespace Infrastructure.Services
                     NormalizedUserName = dto.phoneNumber.ToUpper(),
                     NormalizedEmail = dto.phoneNumber.ToUpper(),
                     PhoneNumber = dto.phoneNumber,
-                    Gender = (Gender)dto.gender,
-                    CityID = dto.cityId.Value,
+                   
+                    CityID = dto.cityId,
                     CreateAt = DateTime.Now,
                     CreateBy = dto.createdBy,
                     Address = dto.address,
@@ -124,37 +135,26 @@ namespace Infrastructure.Services
                 
                 await distRepo.AddWithoutSaveAsync(entity);
                 #region account
-                var accountsRepo = unitOfWork.GetRepository<ChartOfAccounts, int>();
+                // add Accountant account for supplier in tree account
 
-                var lastAccountCode = accountsRepo
-                    .GetQueryable()
-                    .Where(a => a.ParentAccountId == 4)
-                    .Select(a => a.AccountCode)
-                    .OrderByDescending(c => c)
-                    .FirstOrDefault();
-
-                string newAccountCode =
-                    lastAccountCode == null
-                        ? "102101"
-                        : (int.Parse(lastAccountCode) + 1).ToString();
-
-                var DisOrMerchAccount = new ChartOfAccounts
+                AccountDto CustomerAccountToAddInTreeAccountant = new AccountDto()
                 {
-                    AccountCode = newAccountCode,
-                    UserId = user.Id,
-                    AccountName = dto.fullName,
-                    ParentAccountId = 4,
-                    Type = AccountTypes.Assets,
-                    IsLeaf = true,
-                    IsActive = true
-                };
+                    userId = user.Id.ToString(),
+                    accountName = user.FullName,
+                    type = 0,
+                    parentAccountId =8,
+                    isLeaf = true,
+                    isActive = true,
 
-                await accountsRepo.AddWithoutSaveAsync(DisOrMerchAccount);
+                };
+                var IsAccountAdded = await _serviceManager.treeService.AddNewAccount(CustomerAccountToAddInTreeAccountant);
+                if (!IsAccountAdded.IsSuccess)
+                    return IsAccountAdded;
                 #endregion
 
-              
+
                 // 6️⃣ SAVE BOTH CHANGES
-                saved = await unitOfWork.SaveChangesAsync();
+
 
                 if (saved > 0)
                 {
@@ -265,7 +265,7 @@ namespace Infrastructure.Services
         //       };
         //   }
         public async Task<ApiResponse<List<DistributorsAndMerchantsAndAgentsDto>>>
-       GetAllDistributorsAndMerchants(DistributorsAndMerchantsFilters req)
+        GetAllDistributorsAndMerchants(DistributorsAndMerchantsFilters req)
         {
             IQueryable<Distributor_Merchant_Agent> query  = unitOfWork
                 .GetRepository<Distributor_Merchant_Agent, string>()
@@ -558,6 +558,467 @@ namespace Infrastructure.Services
             {
                 return Result<DistributorsAndMerchantsAndAgentsDto>.Failure("حدث خطأ أثناء جلب البيانات", HttpStatusCode.InternalServerError);
             }
+        }
+
+        // =======================================================
+        // DistributorsAndMerchantsService
+        // EXPORT TEMPLATE METHOD
+        // Using ClosedXML directly (since ExcelService has no export)
+        // =======================================================
+
+        //public async Task<Result<byte[]>> ExportTemplateAsync(CancellationToken ct)
+        //{
+        //    try
+        //    {
+        //        ct.ThrowIfCancellationRequested();
+
+        //        using var workbook = new XLWorkbook();
+
+        //        // ==========================================
+        //        // Sheet 1 : Main Template
+        //        // ==========================================
+        //        var ws = workbook.Worksheets.Add("Distributors");
+
+        //        ws.Cell(1, 1).Value = "الاسم بالكامل";
+        //        ws.Cell(1, 2).Value = "النوع";
+        //        ws.Cell(1, 3).Value = "رقم الهاتف";
+
+        //        // Header Style
+        //        var header = ws.Range(1, 1, 1, 3);
+
+        //        header.Style.Font.Bold = true;
+        //        header.Style.Font.FontSize = 12;
+        //        header.Style.Alignment.Horizontal =
+        //            XLAlignmentHorizontalValues.Center;
+
+        //        header.Style.Fill.BackgroundColor =
+        //            XLColor.FromHtml("#D4AF37");
+
+        //        header.Style.Border.OutsideBorder =
+        //            XLBorderStyleValues.Thin;
+
+        //        header.Style.Border.InsideBorder =
+        //            XLBorderStyleValues.Thin;
+
+
+        //        // ==========================================
+        //        // Example Row
+        //        // ==========================================
+        //        ws.Cell(2, 1).Value = "شركة النور التجارية";
+        //        ws.Cell(2, 2).Value = "تاجر";
+        //        ws.Cell(2, 3).Style.NumberFormat.Format = "@";
+        //        ws.Cell(2, 3).SetValue("01012345678");
+
+        //        ws.Range(2, 1, 2, 3).Style.Font.Italic = true;
+        //        ws.Range(2, 1, 2, 3).Style.Font.FontColor =
+        //            XLColor.Gray;
+
+
+        //        // ==========================================
+        //        // Force phone column text format
+        //        // ==========================================
+        //        ws.Column(3).Style.NumberFormat.Format = "@";
+        //        ws.Range(2, 3, 1000, 3).Style.NumberFormat.Format = "@";
+
+
+        //        // ==========================================
+        //        // Dropdown for Type Column
+        //        // ==========================================
+        //        var validationRange = ws.Range("B2:B1000");
+
+        //        var validation = validationRange.CreateDataValidation();
+
+        //        validation.IgnoreBlanks = true;
+        //        validation.InCellDropdown = true;
+        //        validation.AllowedValues = XLAllowedValues.List;
+        //        validation.List("موزع,تاجر,وكيل");
+
+
+        //        // ==========================================
+        //        // Comment on Phone Header
+        //        // ==========================================
+        //        ws.Cell(1, 3)
+        //          .CreateComment()
+        //          .AddText("اكتب رقم الهاتف كنص حتى لا يغيره Excel");
+
+
+        //        // ==========================================
+        //        // Auto Size
+        //        // ==========================================
+        //        ws.Columns().AdjustToContents();
+
+        //        ws.Column(1).Width = Math.Max(ws.Column(1).Width, 30);
+        //        ws.Column(2).Width = Math.Max(ws.Column(2).Width, 18);
+        //        ws.Column(3).Width = Math.Max(ws.Column(3).Width, 22);
+
+        //        ws.SheetView.FreezeRows(1);
+
+
+        //        // ==========================================
+        //        // Sheet 2 : Instructions
+        //        // ==========================================
+        //        var help = workbook.Worksheets.Add("Instructions");
+
+        //        help.Cell(1, 1).Value = "تعليمات الاستيراد";
+        //        help.Cell(1, 1).Style.Font.Bold = true;
+        //        help.Cell(1, 1).Style.Font.FontSize = 14;
+
+        //        help.Cell(3, 1).Value = "الأعمدة المطلوبة:";
+        //        help.Cell(3, 1).Style.Font.Bold = true;
+
+        //        help.Cell(4, 1).Value = "1- الاسم بالكامل (إجباري)";
+        //        help.Cell(5, 1).Value = "2- النوع: موزع / تاجر / وكيل";
+        //        help.Cell(6, 1).Value = "3- رقم الهاتف (إجباري وفريد)";
+
+        //        help.Cell(8, 1).Value = "ملاحظات:";
+        //        help.Cell(8, 1).Style.Font.Bold = true;
+
+        //        help.Cell(9, 1).Value =
+        //            "احذف الصف التجريبي قبل رفع الملف";
+
+        //        help.Cell(10, 1).Value =
+        //            "أي رقم هاتف مكرر سيتم رفضه";
+
+        //        help.Column(1).Width = 80;
+
+
+        //        // ==========================================
+        //        // Save File
+        //        // ==========================================
+        //        using var ms = new MemoryStream();
+
+        //        workbook.SaveAs(ms);
+
+        //        return Result<byte[]>.Success(
+        //            ms.ToArray(),
+        //            "تم إنشاء القالب بنجاح");
+        //    }
+        //    catch (OperationCanceledException)
+        //    {
+        //        return Result<byte[]>.Failure(
+        //            "تم إلغاء العملية",
+        //            HttpStatusCode.BadRequest);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await unitOfWork.LogError(ex);
+
+        //        return Result<byte[]>.Failure(
+        //            "حدث خطأ أثناء إنشاء الملف",
+        //            HttpStatusCode.InternalServerError);
+        //    }
+        //}
+
+        public async Task<Result<byte[]>> ExportTemplateAsync(CancellationToken ct)
+        {
+            try
+            {
+                ct.ThrowIfCancellationRequested();
+
+                using var workbook = new XLWorkbook();
+
+                // =========================
+                // Sheet 1
+                // =========================
+                var ws = workbook.Worksheets.Add("Distributors");
+
+                ws.Cell(1, 1).Value = "الاسم_بالكامل";
+                ws.Cell(1, 2).Value = "النوع";
+                ws.Cell(1, 3).Value = "رقم_الهاتف";
+
+                // Header style
+                var header = ws.Range(1, 1, 1, 3);
+                header.Style.Font.Bold = true;
+                header.Style.Font.FontSize = 12;
+                header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                header.Style.Fill.BackgroundColor = XLColor.FromHtml("#D4AF37");
+                header.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                header.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                // =========================
+                // Example row
+                // =========================
+                ws.Cell(2, 1).Value = "شركة النور التجارية";
+                ws.Cell(2, 2).Value = "تاجر";
+                ws.Cell(2, 3).SetValue("01012345678");
+
+                ws.Range(2, 1, 2, 3).Style.Font.Italic = true;
+                ws.Range(2, 1, 2, 3).Style.Font.FontColor = XLColor.Gray;
+
+                // =========================
+                // Phone format as TEXT
+                // =========================
+                ws.Column(3).Style.NumberFormat.Format = "@";
+
+                // =========================
+                // SIMPLE FIX (IMPORTANT)
+                // Instead of string list → use array
+                // =========================
+                var validationRange = ws.Range("B2:B1000");
+
+                var validation = validationRange.CreateDataValidation();
+
+                validation.IgnoreBlanks = true;
+                validation.InCellDropdown = true;
+                validation.AllowedValues = XLAllowedValues.List;
+
+                // ✅ FIX: array instead of CSV string
+                var values = new[] { "موزع", "تاجر", "وكيل" };
+
+                validation.List(string.Join(",", values));              // =========================
+                // Freeze header
+                // =========================
+                ws.SheetView.FreezeRows(1);
+
+                ws.Columns().AdjustToContents();
+
+                // =========================
+                // Sheet 2
+                // =========================
+                var help = workbook.Worksheets.Add("Instructions");
+
+                help.Cell(1, 1).Value = "تعليمات الاستيراد";
+                help.Cell(1, 1).Style.Font.Bold = true;
+
+                help.Cell(3, 1).Value = "الأعمدة:";
+                help.Cell(4, 1).Value = "الاسم بالكامل - النوع - رقم الهاتف";
+
+                help.Column(1).Width = 80;
+
+                using var ms = new MemoryStream();
+                workbook.SaveAs(ms);
+
+                return Result<byte[]>.Success(
+                    ms.ToArray(),
+                    "تم إنشاء القالب بنجاح");
+            }
+            catch (OperationCanceledException)
+            {
+                return Result<byte[]>.Failure(
+                    "تم إلغاء العملية",
+                    HttpStatusCode.BadRequest);
+            }
+            catch (Exception ex)
+            {
+                await unitOfWork.LogError(ex);
+
+                return Result<byte[]>.Failure(
+                    "حدث خطأ أثناء إنشاء الملف",
+                    HttpStatusCode.InternalServerError);
+            }
+        }
+
+        // =======================================================
+        // DistributorsAndMerchantsService
+        // UPDATED IMPORT METHOD USING NEW ExcelReaderService.ImportAsync
+        // =======================================================
+
+        public async Task<Result<ExcelImportResult<DistributorsAndMerchantsAndAgentsDto>>>
+        ImportFromExcelAsync(Stream fileStream, CancellationToken ct)
+        {
+            try
+            {
+                var currentUserId = currentUserService.UserId;
+
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    return Result<ExcelImportResult<DistributorsAndMerchantsAndAgentsDto>>
+                        .Failure("المستخدم الحالي غير معروف", HttpStatusCode.Unauthorized);
+
+                // preload phones once
+                var userRepo = unitOfWork.GetRepository<ApplicationUser, string>();
+                var curretUser = await userRepo.FindAsync(u=>u.Id== currentUserId);
+                var existingPhones = await userRepo
+                    .GetQueryable()
+                    .Where(x => !x.IsDeleted)
+                    .Select(x => x.PhoneNumber)
+                    .ToListAsync(ct);
+
+                var dbPhones = existingPhones
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => NormalizePhone(x!))
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                var filePhones = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                var importResult =
+                    await excelService.ImportAsync<
+                        DistributorMerchantExcelDto,
+                        DistributorsAndMerchantsAndAgentsDto>(
+                    fileStream,
+
+                    async (row, ctx) =>
+                    {
+                        ct.ThrowIfCancellationRequested();
+
+                        // ==================================
+                        // validate full name
+                        // ==================================
+                        var fullName = row.الاسم_بالكامل?.Trim();
+                        Console.WriteLine($"FullName raw: '{row.الاسم_بالكامل}'");
+                        if (string.IsNullOrWhiteSpace(fullName))
+                            return RowImportResult<DistributorsAndMerchantsAndAgentsDto>
+                                .Fail("الاسم بالكامل مطلوب", "الاسم بالكامل");
+
+                        if (fullName.Length > 200)
+                            return RowImportResult<DistributorsAndMerchantsAndAgentsDto>
+                                .Fail("الاسم بالكامل تجاوز الحد المسموح", "الاسم بالكامل");
+
+
+                        // ==================================
+                        // validate type
+                        // ==================================
+                        int type;
+
+                        var rawType = row.النوع?.Trim();
+
+                        if (rawType == "موزع")
+                            type = (int)DistributorOrMerchantOrAgent.Distributor;
+
+                        else if (rawType == "تاجر")
+                            type = (int)DistributorOrMerchantOrAgent.Merchant;
+
+                        else if (rawType == "وكيل")
+                            type = (int)DistributorOrMerchantOrAgent.Agents;
+
+                        else
+                            return RowImportResult<DistributorsAndMerchantsAndAgentsDto>
+                                .Fail("النوع يجب أن يكون موزع أو تاجر أو وكيل", "النوع");
+
+
+                        // ==================================
+                        // validate phone
+                        // ==================================
+                        var phone = NormalizePhone(row.رقم_الهاتف);
+
+                        if (!IsValidPhone(phone))
+                            return RowImportResult<DistributorsAndMerchantsAndAgentsDto>
+                                .Fail("رقم الهاتف غير صالح", "رقم الهاتف");
+
+
+                        // duplicate in file
+                        if (!filePhones.Add(phone))
+                            return RowImportResult<DistributorsAndMerchantsAndAgentsDto>
+                                .Fail("رقم الهاتف مكرر داخل الملف", "رقم الهاتف");
+
+
+                        // duplicate in DB
+                        if (dbPhones.Contains(phone))
+                            return RowImportResult<DistributorsAndMerchantsAndAgentsDto>
+                                .Fail("رقم الهاتف مستخدم بالفعل", "رقم الهاتف");
+
+
+                        // ==================================
+                        // map dto
+                        // ==================================
+                        var dto = new DistributorsAndMerchantsAndAgentsDto
+                        {
+                            fullName = fullName,
+                            phoneNumber = phone,
+                            type = type,
+                         
+
+                            createdBy = curretUser.FullName+ " / " + curretUser.Email,
+                            createdAt = DateTime.Now
+                        };
+
+                        return RowImportResult<DistributorsAndMerchantsAndAgentsDto>
+                            .Success(dto);
+                    },
+
+                    ct);
+
+
+                // ==================================
+                // Save valid rows
+                // ==================================
+                var saveErrors = new List<string>();
+
+                foreach (var item in importResult.Imported)
+                {
+                    ct.ThrowIfCancellationRequested();
+
+                    var result = await AddNewDistributorOrMerchant(item);
+
+                    if (!result.IsSuccess)
+                    {
+                        saveErrors.Add($"{item.fullName}: {result.Message}");
+                    }
+                }
+                if (saveErrors.Any())
+                {
+                    return Result<ExcelImportResult<DistributorsAndMerchantsAndAgentsDto>>
+                        .Failure(string.Join(" | ", saveErrors), HttpStatusCode.BadRequest);
+                }
+                return Result<ExcelImportResult<DistributorsAndMerchantsAndAgentsDto>>
+                    .Success(importResult, "تم تنفيذ الاستيراد");
+            }
+            catch (OperationCanceledException)
+            {
+                return Result<ExcelImportResult<DistributorsAndMerchantsAndAgentsDto>>
+                    .Failure("تم إلغاء العملية", HttpStatusCode.BadRequest);
+            }
+            catch (Exception ex)
+            {
+                await unitOfWork.LogError(ex);
+
+                return Result<ExcelImportResult<DistributorsAndMerchantsAndAgentsDto>>
+                    .Failure("حدث خطأ أثناء الاستيراد", HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+        // =======================================================
+        // HELPERS
+        // =======================================================
+
+        private static string NormalizePhone(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            // keep digits only
+            var digits = new string(value.Where(char.IsDigit).ToArray());
+
+            if (string.IsNullOrWhiteSpace(digits))
+                return string.Empty;
+
+            // Egyptian normalization
+            if (digits.StartsWith("0") && digits.Length == 11)
+            {
+                // 010xxxxxxxx → +2010xxxxxxxx
+                return "+2" + digits;
+            }
+
+            if (digits.StartsWith("1") && digits.Length == 10)
+            {
+                // 10xxxxxxxx → +2010xxxxxxxx
+                return "+20" + digits;
+            }
+
+            if (digits.StartsWith("20") && digits.Length == 12)
+            {
+                // 2010xxxxxxxx → +2010xxxxxxxx
+                return "+" + digits;
+            }
+
+            if (digits.StartsWith("201") && digits.Length == 13)
+            {
+                // already correct without +
+                return "+" + digits;
+            }
+
+            if (value.StartsWith("+") && digits.StartsWith("20"))
+            {
+                // already formatted correctly
+                return "+" + digits;
+            }
+
+            return digits; // fallback (invalid format)
+        }
+
+        private static bool IsValidPhone(string phone)
+        {
+            return phone.StartsWith("+20") && phone.Length == 13;
         }
 
     }

@@ -2,7 +2,7 @@ import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { SupplierService } from '../../app/Services/supplier.service';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../app/Services/store.service';
-import { SupplierDto, SupplierFilteration } from '../../app/models/ISupplierModels';
+import { SupplierDto, SupplierFilteration, SupplierLookupDto, SupplierLookupFilter } from '../../app/models/ISupplierModels';
 import Swal from 'sweetalert2';
 import { PurchaseInvoiceService } from '../../app/Services/purchase-invoice.service';
 import { PurchaseInvoiceDtos, PurchaseInvoiceFilteration } from '../../app/models/IPurchaseInvoiceVMs';
@@ -23,6 +23,7 @@ import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatLine } from "@angular/material/core";
 import { log } from 'console';
+import { SwalService } from '../../app/Services/swal.service';
 
 @Component({
   selector: 'app-purchase-invoices',
@@ -51,15 +52,14 @@ export class PurchaseInvoicesComponent {
   private _SupplierSubscription = new Subscription();
   private _PurchaseInvoiceService = inject(PurchaseInvoiceService);
   private _PurchaseInvoiceSubscription = new Subscription();
+  private _swalService = inject(SwalService)
   isUserAdmin:boolean=false;
+  isUserStockManager:boolean=false;
   //#endregion
   //#region  filters
-supplierfilters: SupplierFilteration = {
+supplierfilters: SupplierLookupFilter = {
     name: null,
-    phoneNumbers: null,
-    isDeleted: null,
-    page: null,
-    pageSize: null,
+
   }
   purchaseInvoiceFilters:PurchaseInvoiceFilteration=
   {
@@ -74,7 +74,7 @@ supplierfilters: SupplierFilteration = {
   //#endregion
 
 //#region variables
-AllSuppliers:SupplierDto[]=[];
+AllSuppliers:SupplierLookupDto[]=[];
 supplierSearch: string = '';
 
 //#endregion
@@ -107,7 +107,7 @@ supplierSearch: string = '';
 ngOnInit(): void
 {
   this.isUserAdmin= localStorage.getItem('roles')?.includes('Admin')!;
-
+this.isUserStockManager=localStorage.getItem('roles')?.includes('StockManager')!;
   console.log(localStorage.getItem('roles'));
   console.log(this.isUserAdmin);
 
@@ -130,19 +130,13 @@ get filteredSuppliers() {
 }
 GetAllSuppliers(): void
 {
-  this._SupplierSubscription.add( this._SupplierService.getAllSuppliers(this.supplierfilters).subscribe({
+  this._SupplierSubscription.add( this._SupplierService.getLookups(this.supplierfilters).subscribe({
     next: (res) => {
-      this.AllSuppliers = res.data;
+      this.AllSuppliers = res.data!;
 
     },
     error: (err) => {
-       Swal.fire({
-                  icon: "error",
-                  title: "حدث خطأ أثناء تجميل الموردين  ",
-                  text: `${err.message}`,
-                  confirmButtonText: "موافق",
-                  confirmButtonColor: "#d33",
-                })
+      this._swalService.error(err.message)
     }}));
 }
 GetAllPurchaseInvoices():void
@@ -158,13 +152,7 @@ GetAllPurchaseInvoices():void
       error:(err)=>
       {
        this.isLoaded = true
-         Swal.fire({
-                    icon: "error",
-                    title: "حدث خطأ أثناء تحميل فواتير المشتريات  ",
-                    text: `${err.message}`,
-                    confirmButtonText: "موافق",
-                    confirmButtonColor: "#d33",
-                  })
+        this._swalService.error(err.message)
       }
   }));
 }
@@ -180,26 +168,14 @@ this._PurchaseInvoiceSubscription.add(this._PurchaseInvoiceService.editPurchaseI
 }).subscribe({
   next:(res)=>
   {
-    Swal.fire({
-            icon: "success",
-            title: "تم الطلب بنجاح",
-            text: "تم إرسال طلب حذف الفاتورة للموافقة",
-            confirmButtonText: "موافق",
-            confirmButtonColor: "#3085d6",
-          });
+   this._swalService.handleResponse(res)
           this.GetAllPurchaseInvoices();
           this.GetAllSuppliers();
   },
   error:(err)=>{
-    console.log(err);
 
-      Swal.fire({
-                icon: "error",
-                title: "حدث خطأ",
-                text: `${err.error.message}`,
-                confirmButtonText: "موافق",
-                confirmButtonColor: "#d33",
-              })
+
+    this._swalService.error("فشل تحميل الفواتير")
   }
 }));
 }

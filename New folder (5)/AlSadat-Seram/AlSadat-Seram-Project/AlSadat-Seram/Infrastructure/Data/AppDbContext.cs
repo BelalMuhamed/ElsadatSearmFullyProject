@@ -72,7 +72,7 @@ namespace Infrastructure.Data
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ChartOfAccounts> Accounts { get; set; }
 
-        public DbSet<SupplierProducts> SupplierProducts { get; set; }
+  
         public DbSet<SalesInvoiceItemStoresQuantities> SalesInvoiceItemStoresQuantities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -89,10 +89,7 @@ namespace Infrastructure.Data
             builder.Entity<JournalEntries>()
            .Property(x => x.IsPosted)
            .HasDefaultValue(true);
-            builder.Entity<SupplierProducts>()
-                .HasIndex(il => new { il.SupplierId,il.ProductId })
-                .IsUnique();
-
+           
             builder.Entity<Stock>()
                 .HasKey(x => new { x.StoreId,x.ProductId });
 
@@ -257,11 +254,37 @@ namespace Infrastructure.Data
             builder.Entity<Plumbers>()
                 .HasKey(p => p.Id); // إضافة Primary Key
 
-          
+            builder.Entity<Supplier>(e =>
+            {
+                e.Property(s => s.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
 
-          
+                e.Property(s => s.phoneNumbers)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-          
+                e.Property(s => s.address)
+                    .HasMaxLength(500);
+
+                // cityId is NULLABLE → the supplier can exist without a city.
+                // Relationship: many suppliers → optional one city.
+                // OnDelete = Restrict so deleting a city never cascades into suppliers.
+                e.HasOne(s => s.city)
+                 .WithMany()
+                 .HasForeignKey(s => s.cityId)
+                 .IsRequired(false)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                // Performance: these columns are filtered/sorted on in GetAllSuppliers
+                e.HasIndex(s => s.Name);
+                e.HasIndex(s => s.phoneNumbers);
+                e.HasIndex(s => s.IsDeleted);
+                e.HasIndex(s => s.cityId);
+            });
+
+
+
             builder.Entity<JournalEntries>()
                .HasIndex(j => j.ReferenceNo)
                .HasDatabaseName("IX_JournalEntries_ReferenceNo");

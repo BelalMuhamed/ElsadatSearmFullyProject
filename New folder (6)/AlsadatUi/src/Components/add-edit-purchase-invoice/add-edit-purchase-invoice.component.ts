@@ -1,7 +1,7 @@
 import { Component, ElementRef, inject, QueryList, ViewChildren } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SupplierService } from '../../app/Services/supplier.service';
-import { SupplierDto, SupplierFilteration } from '../../app/models/ISupplierModels';
+import { SupplierDto, SupplierFilteration, SupplierLookupFilter } from '../../app/models/ISupplierModels';
 import Swal from 'sweetalert2';
 import { StoreService } from '../../app/Services/store.service';
 import { StoreDto, StoreFilteration } from '../../app/models/IstoreVM';
@@ -141,12 +141,9 @@ filteredStores: StoreDto[] = [];
     supplierSearchCtrl = new FormControl('');
   suppliers !: SupplierDto[] ;
   stores !:StoreDto[];
-  filters: SupplierFilteration = {
+  filters: SupplierLookupFilter = {
       name: null,
-      phoneNumbers: null,
-      isDeleted: false,
-      page: null,
-      pageSize: null,
+     
     }
     GetProducts()
     {
@@ -166,7 +163,7 @@ filteredStores: StoreDto[] = [];
     }
 GetAllSuppliers(): void {
         this.supplierSubscription.add(
-          this.supplierService.getAllSuppliers(this.filters).subscribe({
+          this.supplierService.getLookups(this.filters).subscribe({
             next: (res: any) => {
 
             this.suppliers = res.data;

@@ -23,6 +23,8 @@ import { log } from 'console';
 
 import { MatOption } from "@angular/material/core";
 import { MatSelectModule } from '@angular/material/select';
+import { SwalService } from '../../app/Services/swal.service';
+import { ImportExcelDialogComponent } from '../import-excel-dialog/import-excel-dialog.component';
 
 @Component({
   selector: 'app-product',
@@ -48,6 +50,8 @@ import { MatSelectModule } from '@angular/material/select';
 export class ProductComponent {
 
   private ProductService = inject(ProductService);
+  private _swal = inject(SwalService);
+
   private ProductSubscription = new Subscription();
   filters:ProductFilterationDto={
 
@@ -167,279 +171,13 @@ export class ProductComponent {
       });
 
 }
-downloadExcelTemplate() {
 
-  const headers = [
-    ['productName', 'productCode', 'sellingPrice', 'pointsPerUnit', 'minQuantity']
-  ];
 
-  const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(headers);
-
-  const workbook: XLSX.WorkBook = {
-    Sheets: { 'Products': worksheet },
-    SheetNames: ['Products']
-  };
-
-  const excelBuffer: any = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array'
-  });
-
-  const blob = new Blob([excelBuffer], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  });
-
-  saveAs(blob, 'Products_Template.xlsx');
-}
-// onFileSelected(event: any) {
-//   const file: File = event.target.files[0];
-//   if (!file) return;
-
-//   const createdUser =localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail'); // أو اسم المستخدم الحالي من session
-
-//   this.ProductService.uploadExcel(file, createdUser).subscribe({
-//     next: (res) => {
-//       if (res.isSuccess) {
-//         console.log('تمت الإضافة:', res.data);
-//         if (res.message) alert(res.message);
-//       } else {
-//         console.error('فشل:', res.message);
-//       }
-//     },
-//     error: (err) => {
-//       console.error('خطأ في السيرفر:', err);
-//     }
-//   });
-// }
-// onFileSelected(event: any) {
-//   const file: File = event.target.files[0];
-//   if (!file) return;
-
-//   const createdUser = localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail');
-
-//   this.ProductService.uploadExcel(file, createdUser).subscribe({
-//     next: (res) => {
-//       // تحديد الثيم الحالي
-//       const isDarkMode = document.body.classList.contains('dark-mode');
-
-//       // إذا كان في أخطاء
-//       if (res.isSuccess && res.data && res.data.length && res.message?.includes('بعض الأخطاء')) {
-//         // تجهيز النص للأخطاء
-//         const failedProducts = res.errors
-//           .filter((p: any) => p.errors && p.errors.length)
-//           .map((p: any) => p.errors.map((e: any) => `${e.Column}: ${e.Message}`).join('\n'))
-//           .join('\n\n');
-
-//         Swal.fire({
-//           title: 'تمت الإضافة مع بعض الأخطاء',
-//           html: `<pre style="text-align:left;">${failedProducts}</pre>`,
-//           icon: 'warning',
-//           confirmButtonText: 'حسناً',
-//           background: isDarkMode ? '#222' : '#fff',
-//           color: isDarkMode ? '#fff' : '#000',
-//         });
-//       }
-//       // إذا نجاح كامل
-//       else if (res.isSuccess) {
-//         Swal.fire({
-//           title: 'تمت الإضافة بنجاح',
-//           text: res.message || 'تمت إضافة جميع المنتجات بنجاح',
-//           icon: 'success',
-//           confirmButtonText: 'حسناً',
-//           background: isDarkMode ? '#222' : '#fff',
-//           color: isDarkMode ? '#fff' : '#000',
-//         });
-//       }
-//       // فشل كامل
-//       else {
-//         Swal.fire({
-//           title: 'فشل إضافة المنتجات',
-//           text: res.message || 'حدث خطأ أثناء إضافة المنتجات',
-//           icon: 'error',
-//           confirmButtonText: 'حسناً',
-//           background: isDarkMode ? '#222' : '#fff',
-//           color: isDarkMode ? '#fff' : '#000',
-//         });
-//       }
-//     },
-//     error: (err) => {
-//       const isDarkMode = document.body.classList.contains('dark-mode');
-//       Swal.fire({
-//         title: 'حدث خطأ في السيرفر',
-//         text: err?.message || 'تعذر الاتصال بالسيرفر',
-//         icon: 'error',
-//         confirmButtonText: 'حسناً',
-//         background: isDarkMode ? '#222' : '#fff',
-//         color: isDarkMode ? '#fff' : '#000',
-//       });
-//     }
-//   });
-// }
 isUploading = false; // متغير للتحكم في عرض الـ spinner
 selectedFileName: string | null = null;
-// onFileSelected(event: any) {
-//   const file: File = event.target.files[0];
-//   if (!file) return;
+ private readonly subs = new Subscription();
 
-//   const createdUser = localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail');
 
-//   this.isUploading = true; // إظهار الـ spinner
-
-//   this.ProductService.uploadExcel(file, createdUser).subscribe({
-//     next: (res) => {
-//       this.isUploading = false; // إخفاء الـ spinner
-//       const isDarkMode = document.body.classList.contains('dark-mode');
-
-//       // إذا كان هناك بعض الأخطاء
-//     if (res.isSuccess && res.data?.errors?.length) {
-
-//   const failedProducts = res.data.errors
-//     .map((e: any) => `${e.column}: ${e.message}`)
-//     .join('<br>');
-
-//   Swal.fire({
-//     title: 'تمت الإضافة مع بعض الأخطاء',
-//     html: `<pre style="text-align:left;">${failedProducts}</pre>`,
-//     icon: 'warning'
-//   });
-
-// }
-//       // نجاح كامل
-//       else if (res.isSuccess) {
-//         Swal.fire({
-//           title: 'تمت الإضافة بنجاح',
-//           text: res.message || 'تمت إضافة جميع المنتجات بنجاح',
-//           icon: 'success',
-//           confirmButtonText: 'حسناً',
-//           background: isDarkMode ? '#222' : '#fff',
-//           color: isDarkMode ? '#fff' : '#000',
-//         });
-//       }
-//       // فشل كامل
-//       else {
-//         Swal.fire({
-//           title: 'فشل إضافة المنتجات',
-//           text: res.message || 'حدث خطأ أثناء إضافة المنتجات',
-//           icon: 'error',
-//           confirmButtonText: 'حسناً',
-//           background: isDarkMode ? '#222' : '#fff',
-//           color: isDarkMode ? '#fff' : '#000',
-//         });
-//       }
-//     },
-//     error: (err) => {
-//       this.isUploading = false; // إخفاء الـ spinner
-//       const isDarkMode = document.body.classList.contains('dark-mode');
-//       Swal.fire({
-//         title: 'حدث خطأ في السيرفر',
-//         text: err?.message || 'تعذر الاتصال بالسيرفر',
-//         icon: 'error',
-//         confirmButtonText: 'حسناً',
-//         background: isDarkMode ? '#222' : '#fff',
-//         color: isDarkMode ? '#fff' : '#000',
-//       });
-//     }
-//   });
-// }
-onFileSelected(event: any) {
-
-  const file: File = event.target.files[0];
-  if (!file) return;
-
-    this.selectedFileName = file.name;
-
-  const createdUser =
-    localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail');
-
-  this.isUploading = true;
-
-  this.ProductService.uploadExcel(file, createdUser).subscribe({
-
-    next: (res) => {
-
-      this.isUploading = false;
-
-      const isDarkMode = document.body.classList.contains('dark-mode');
-      const hasSuccessRows = res.data?.data?.length > 0;
-
-      // بعض الصفوف فشلت
-      if (res.isSuccess && res.data?.errors?.length) {
-
-        const failedProducts = res.data.errors
-          .map((e: any) => `${e.column}: ${e.message}`)
-          .join('<br>');
-
-        Swal.fire({
-          title: 'تمت الإضافة مع بعض الأخطاء',
-          html: `<div style="text-align:left">${failedProducts}</div>`,
-          icon: 'warning',
-          confirmButtonText: 'حسناً',
-          background: isDarkMode ? '#1e1e1e' : '#ffffff',
-          color: isDarkMode ? '#ffffff' : '#000000'
-        }).then(() => {
-
-          if (hasSuccessRows) {
-            this.GetAllProducts();
-          }
-
-        });
-
-      }
-
-      // نجاح كامل
-      else if (res.isSuccess) {
-
-        Swal.fire({
-          title: 'تمت الإضافة بنجاح',
-          text: res.message || 'تمت إضافة جميع المنتجات بنجاح',
-          icon: 'success',
-          confirmButtonText: 'حسناً',
-          background: isDarkMode ? '#1e1e1e' : '#ffffff',
-          color: isDarkMode ? '#ffffff' : '#000000'
-        }).then(() => {
-
-          this.GetAllProducts();
-
-        });
-
-      }
-
-      // فشل كامل
-      else {
-
-        Swal.fire({
-          title: 'فشل إضافة المنتجات',
-          text: res.message || 'حدث خطأ أثناء إضافة المنتجات',
-          icon: 'error',
-          confirmButtonText: 'حسناً',
-          background: isDarkMode ? '#1e1e1e' : '#ffffff',
-          color: isDarkMode ? '#ffffff' : '#000000'
-        });
-
-      }
-
-    },
-
-    error: (err) => {
-
-      this.isUploading = false;
-
-      const isDarkMode = document.body.classList.contains('dark-mode');
-
-      Swal.fire({
-        title: 'حدث خطأ في السيرفر',
-        text: err?.message || 'تعذر الاتصال بالسيرفر',
-        icon: 'error',
-        confirmButtonText: 'حسناً',
-        background: isDarkMode ? '#1e1e1e' : '#ffffff',
-        color: isDarkMode ? '#ffffff' : '#000000'
-      });
-
-    }
-
-  });
-
-}
 applyFilters() {
   // Get values from the form
   const formValues = this.form.value;
@@ -467,4 +205,36 @@ ReAsign()
 this.initForm();
     this.GetAllProducts();
 }
+openDistributorMerchantImport(): void {
+
+  const ref = this.dialog.open(ImportExcelDialogComponent<ProductDto>, {
+    width: '860px',
+    maxWidth: '95vw',
+    disableClose: true,
+    data: {
+      title: 'استيراد موزعين / تجار',
+      fileHint: 'يجب أن يحتوي الملف على البيانات حسب القالب المحدد',
+      templateName: 'تحميل قالب الموزعين والتجار',
+      importFn: (file: File) => this.ProductService.importFromExcel(file),
+      columns: ['fullName', 'address', 'phoneNumber', 'type']
+    }
+  });
+
+  ref.afterClosed().subscribe(result => {
+
+        this.GetAllProducts();
+  this.initForm();
+
+  });
+}
+ downloadTemplate(): void {
+    this.subs.add(
+      this.ProductService.downloadTemplate().subscribe({
+        next: blob => {
+          saveAs(blob, 'products_Template.xlsx');
+        },
+        error: () => this._swal.error('تعذر تحميل القالب')
+      })
+    );
+  }
 }

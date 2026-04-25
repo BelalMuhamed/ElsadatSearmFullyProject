@@ -10,22 +10,29 @@ import { MatTableModule } from '@angular/material/table';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { SwalService } from '../../app/Services/swal.service';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-purchase-invoice-details',
   standalone: true,
-  imports: [MatCard, MatCardTitle,CommonModule, MatCardTitle, MatCard,MatTableModule],
+  imports: [MatCard, MatCardTitle, CommonModule, MatCardTitle, MatCard, MatTableModule, MatIcon],
   templateUrl: './purchase-invoice-details.component.html',
   styleUrl: './purchase-invoice-details.component.css'
 })
 export class PurchaseInvoiceDetailsComponent {
   isPrintMode: boolean = false;
+  isUserStockManager:boolean=false;
 displayedColumns: string[] = ['product', 'quantity', 'price', 'discount','total'];
-
 get columnsToDisplay(): string[] {
-  if (this.isPrintMode) {
-    return ['product', 'quantity']; // 👈 فقط
+
+
+
+
+  if (this.isUserStockManager) {
+    return ['product', 'quantity']; // بدون أسعار
   }
+
+  // 👈 باقي المستخدمين
   return this.displayedColumns;
 } private _PurchaseInvoiceService = inject(PurchaseInvoiceService);
  private swalService = inject(SwalService);
@@ -46,6 +53,7 @@ invoice!:PurchaseInvoiceDtos;
 
     }
   });
+  this.isUserStockManager=localStorage.getItem('roles')?.includes('StockManager')!;
   this.GetCurrentInvoiceDetails();
   }
 
@@ -117,10 +125,14 @@ private downloadPdf(type: 'full' | 'simple', fileName: string, errorMsg: string)
     });
 }
 generateFullPDF() {
-  this.downloadPdf('full', `invoice-${this.invoiceId}.pdf`, 'فشل تحميل الفاتورة الكاملة');
+  this.downloadPdf('full', `invoice-${this.invoice.invoiceNumber}-${this.invoice.supplierName}-${new Date().toISOString()}.pdf`, 'فشل تحميل الفاتورة الكاملة');
 }
 
 generateSimplePDF() {
-  this.downloadPdf('simple', `invoice-${this.invoiceId}-simple.pdf`, 'فشل تحميل الفاتورة المبسطة');
+  this.downloadPdf('simple', `invoice-${this.invoice.invoiceNumber}-${this.invoice.supplierName}-${new Date().toISOString()}.pdf`, 'فشل تحميل الفاتورة المبسطة');
 }
+
+
+
+
 }

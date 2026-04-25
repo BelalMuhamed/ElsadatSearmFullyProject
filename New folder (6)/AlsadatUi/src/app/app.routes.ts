@@ -110,7 +110,7 @@ export const routes: Routes = [
   loadComponent: () =>
     import('../Components/purchase-invoices/purchase-invoices.component')
       .then(c => c.PurchaseInvoicesComponent),
-    canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+    canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant','StockManager'] }
 
 },
 {
@@ -126,7 +126,7 @@ export const routes: Routes = [
   loadComponent: () =>
     import('../Components/purchase-invoice-details/purchase-invoice-details.component')
       .then(c => c.PurchaseInvoiceDetailsComponent),
-   canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+   canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant','StockManager'] }
 
 }
 ,
@@ -255,7 +255,7 @@ export const routes: Routes = [
           .then(m => m.StockComponent),
        canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'StockManager'] }
       },
-      
+
       { path: 'hr/employees', component: EmployeesListComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/employee-salary/:empCode', component: EmployeeSalaryComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/roles', component: RolesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin'] }},

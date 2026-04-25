@@ -315,20 +315,146 @@ namespace Infrastructure.Services.FinanceService
             }
         }
 
-        
+
+        //public async Task<Result<string>> AddNewAccount(AccountDto accountDto)
+        //{
+        //    try
+        //    {
+        //        var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
+
+        //        if (string.IsNullOrWhiteSpace(accountDto.accountCode))
+        //            return Result<string>.Failure("كود الحساب حقل ضروري");
+
+        //        if (string.IsNullOrWhiteSpace(accountDto.accountName))
+        //            return Result<string>.Failure("اسم الحساب حقل ضروري");
+
+        //        // ✅ مهم جداً: لازم يكون فيه أب
+        //        if (!accountDto.parentAccountId.HasValue)
+        //            return Result<string>.Failure("لا يمكن إضافة حساب بدون حساب أب");
+
+        //        var parent = await repo.GetByIdAsync(accountDto.parentAccountId.Value);
+
+        //        if (parent == null)
+        //            return Result<string>.Failure("الحساب الأب غير موجود");
+
+        //        if (parent.IsLeaf)
+        //            return Result<string>.Failure("لا يمكن إضافة حساب تحت حساب نهائي");
+
+        //        if ((int)parent.Type != accountDto.type)
+        //            return Result<string>.Failure("نوع الحساب يجب أن يطابق نوع الأب");
+
+        //        var codeExists = await repo.AnyAsync(x => x.AccountCode == accountDto.accountCode);
+        //        if (codeExists)
+        //            return Result<string>.Failure("كود الحساب مكرر");
+
+        //        var nameExists = await repo.AnyAsync(x => x.AccountName == accountDto.accountName);
+        //        if (nameExists)
+        //            return Result<string>.Failure("اسم الحساب مكرر");
+
+        //        var entity = new ChartOfAccounts
+        //        {
+        //            AccountCode = accountDto.accountCode.Trim(),
+        //            AccountName = accountDto.accountName.Trim(),
+        //            UserId = accountDto.userId,
+        //            Type = parent.Type, // ✅ نأخذ النوع من الأب إجبارياً
+        //            ParentAccountId = parent.Id,
+        //            IsLeaf = accountDto.isLeaf,
+        //            IsActive = accountDto.isActive
+        //        };
+
+        //        await repo.AddAsync(entity);
+
+        //        return Result<string>.Success("تم إنشاء الحساب الفرعي بنجاح");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _unitOfWork.LogError(ex);
+        //        return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
+        //    }
+        //}
+        //public async Task<Result<string>> AddNewAccount(AccountDto accountDto)
+        //{
+        //    try
+        //    {
+        //        var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
+
+        //        if (string.IsNullOrWhiteSpace(accountDto.accountName))
+        //            return Result<string>.Failure("اسم الحساب حقل ضروري");
+
+        //        if (!accountDto.parentAccountId.HasValue)
+        //            return Result<string>.Failure("لا يمكن إضافة حساب بدون حساب أب");
+
+        //        var parent = await repo.GetByIdAsync(accountDto.parentAccountId.Value);
+
+        //        if (parent == null)
+        //            return Result<string>.Failure("الحساب الأب غير موجود");
+
+        //        if (parent.IsLeaf)
+        //            return Result<string>.Failure("لا يمكن إضافة حساب تحت حساب نهائي");
+
+        //        if ((int)parent.Type != accountDto.type)
+        //            return Result<string>.Failure("نوع الحساب يجب أن يطابق نوع الأب");
+
+        //        // 🔥 1. Get siblings (direct children only)
+        //        var children = await repo.GetAsync(x => x.ParentAccountId == parent.Id);
+
+        //        string newCode;
+
+        //        if (!children.Any())
+        //        {
+        //            // أول ابن
+        //            newCode = parent.AccountCode + ".1";
+        //        }
+        //        else
+        //        {
+        //            // 🔥 نجيب آخر جزء ونزوده
+        //            var lastCode = children
+        //                .Select(x => x.AccountCode)
+        //                .Select(code => code.Split('.').Last())
+        //                .Where(x => int.TryParse(x, out _))
+        //                .Select(int.Parse)
+        //                .Max();
+
+        //            newCode = $"{parent.AccountCode}.{lastCode + 1}";
+        //        }
+
+        //        var entity = new ChartOfAccounts
+        //        {
+        //            AccountCode = newCode,
+        //            AccountName = accountDto.accountName.Trim(),
+        //            UserId = accountDto.userId,
+        //            Type = parent.Type,
+        //            ParentAccountId = parent.Id,
+        //            IsLeaf = accountDto.isLeaf,
+        //            IsActive = accountDto.isActive
+        //        };
+
+        //        await repo.AddAsync(entity);
+
+        //        return Result<string>.Success(newCode);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _unitOfWork.LogError(ex);
+        //        return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
+        //    }
+        //}
         public async Task<Result<string>> AddNewAccount(AccountDto accountDto)
         {
             try
             {
                 var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
 
-                if (string.IsNullOrWhiteSpace(accountDto.accountCode))
-                    return Result<string>.Failure("كود الحساب حقل ضروري");
+                bool hasExternalTransaction = _unitOfWork.IsTransactionActive();
+
+                if (!hasExternalTransaction)
+                {
+                    await _unitOfWork.BeginTransactionAsync();
+                }
 
                 if (string.IsNullOrWhiteSpace(accountDto.accountName))
                     return Result<string>.Failure("اسم الحساب حقل ضروري");
 
-                // ✅ مهم جداً: لازم يكون فيه أب
                 if (!accountDto.parentAccountId.HasValue)
                     return Result<string>.Failure("لا يمكن إضافة حساب بدون حساب أب");
 
@@ -343,20 +469,32 @@ namespace Infrastructure.Services.FinanceService
                 if ((int)parent.Type != accountDto.type)
                     return Result<string>.Failure("نوع الحساب يجب أن يطابق نوع الأب");
 
-                var codeExists = await repo.AnyAsync(x => x.AccountCode == accountDto.accountCode);
-                if (codeExists)
-                    return Result<string>.Failure("كود الحساب مكرر");
+                var children = await repo.GetAsync(x => x.ParentAccountId == parent.Id);
 
-                var nameExists = await repo.AnyAsync(x => x.AccountName == accountDto.accountName);
-                if (nameExists)
-                    return Result<string>.Failure("اسم الحساب مكرر");
+                string newCode;
+
+                if (!children.Any())
+                {
+                    newCode = parent.AccountCode + ".1";
+                }
+                else
+                {
+                    var lastCode = children
+                        .Select(x => x.AccountCode)
+                        .Select(code => code.Split('.').Last())
+                        .Where(x => int.TryParse(x, out _))
+                        .Select(int.Parse)
+                        .Max();
+
+                    newCode = $"{parent.AccountCode}.{lastCode + 1}";
+                }
 
                 var entity = new ChartOfAccounts
                 {
-                    AccountCode = accountDto.accountCode.Trim(),
+                    AccountCode = newCode,
                     AccountName = accountDto.accountName.Trim(),
                     UserId = accountDto.userId,
-                    Type = parent.Type, // ✅ نأخذ النوع من الأب إجبارياً
+                    Type = parent.Type,
                     ParentAccountId = parent.Id,
                     IsLeaf = accountDto.isLeaf,
                     IsActive = accountDto.isActive
@@ -364,10 +502,22 @@ namespace Infrastructure.Services.FinanceService
 
                 await repo.AddAsync(entity);
 
-                return Result<string>.Success("تم إنشاء الحساب الفرعي بنجاح");
+                await _unitOfWork.SaveChangesAsync();
+
+                if (!hasExternalTransaction)
+                {
+                    await _unitOfWork.CommitAsync();
+                }
+
+                return Result<string>.Success(newCode);
             }
             catch (Exception ex)
             {
+                if (!_unitOfWork.IsTransactionActive())
+                {
+                    await _unitOfWork.RollbackAsync();
+                }
+
                 await _unitOfWork.LogError(ex);
                 return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
             }

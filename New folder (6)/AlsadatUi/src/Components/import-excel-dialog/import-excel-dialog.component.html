@@ -1,0 +1,218 @@
+<div class="import-dialog" dir="rtl">
+
+  <!-- ============ Header ============ -->
+  <div class="dialog-header">
+    <div class="d-flex align-items-center gap-2">
+      <mat-icon class="header-icon">upload_file</mat-icon>
+      <h2 class="m-0">{{ config.title }}</h2>
+    </div>
+
+    <button mat-icon-button type="button" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- ============ Stepper ============ -->
+  <div class="step-indicator">
+
+    <div class="step" [class.active]="step() === 'select'" [class.done]="step() !== 'select'">
+      <span class="step-num">1</span>
+      <span>اختيار الملف</span>
+    </div>
+
+    <div class="step-connector"></div>
+
+    <div class="step" [class.active]="step() === 'uploading'" [class.done]="step() === 'result'">
+      <span class="step-num">2</span>
+      <span>الرفع</span>
+    </div>
+
+    <div class="step-connector"></div>
+
+    <div class="step" [class.active]="step() === 'result'">
+      <span class="step-num">3</span>
+      <span>النتيجة</span>
+    </div>
+
+  </div>
+
+  <!-- ============ STEP 1 ============ -->
+  @if (step() === 'select') {
+
+  <div class="dialog-body">
+
+    <div class="drop-zone"
+         [class.dragging]="isDragging()"
+         [class.has-file]="file()"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)">
+
+      @if (!file()) {
+
+        <mat-icon class="drop-icon">cloud_upload</mat-icon>
+
+        <p class="drop-title">اسحب وأفلت ملف Excel هنا</p>
+
+        <p class="drop-sub">
+          {{ config.fileHint }}
+        </p>
+
+        <label class="browse-btn">
+          <mat-icon>folder_open</mat-icon>
+          اختيار ملف
+          <input type="file" hidden (change)="onBrowse($event)" />
+        </label>
+
+      } @else {
+
+        <div class="selected-file">
+          <mat-icon class="file-icon">description</mat-icon>
+
+          <div class="file-meta">
+            <div class="file-name">{{ file()!.name }}</div>
+            <div class="file-size">{{ formatFileSize(file()!.size) }}</div>
+          </div>
+
+          <button mat-icon-button (click)="file.set(null)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+  <div class="dialog-footer">
+    <button mat-stroked-button (click)="close()">إلغاء</button>
+
+    <button mat-flat-button class="primary-btn"
+            [disabled]="!file()"
+            (click)="upload()">
+      <mat-icon>upload</mat-icon>
+      بدء الاستيراد
+    </button>
+  </div>
+
+  }
+
+  <!-- ============ STEP 2 ============ -->
+  @if (step() === 'uploading') {
+
+  <div class="dialog-body uploading-body">
+
+    <mat-icon class="uploading-icon">cloud_upload</mat-icon>
+
+    <h3>جاري رفع الملف...</h3>
+
+    <mat-progress-bar mode="determinate" [value]="progress()"></mat-progress-bar>
+
+    <p class="progress-percent">{{ progress() }}%</p>
+
+  </div>
+
+  }
+
+  <!-- ============ STEP 3 ============ -->
+  @if (step() === 'result' && result()) {
+
+  <div class="dialog-body">
+
+    <!-- Banner -->
+    <div class="result-banner" [attr.data-kind]="hasErrors() ? 'warning' : 'success'">
+
+      <mat-icon>{{ hasErrors() ? 'warning' : 'check_circle' }}</mat-icon>
+
+      <div>
+        {{ result()!.successCount }} نجح /
+        {{ result()!.failedCount }} فشل
+      </div>
+
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+
+      <div class="stat">
+        <span class="stat-num">{{ result()!.totalRows }}</span>
+        <span>إجمالي</span>
+      </div>
+
+      <div class="stat success">
+        <span class="stat-num">{{ result()!.successCount }}</span>
+        <span>نجح</span>
+      </div>
+
+      <div class="stat failed">
+        <span class="stat-num">{{ result()!.failedCount }}</span>
+        <span>فشل</span>
+      </div>
+
+    </div>
+
+    <!-- Errors -->
+    @if (hasErrors()) {
+
+    <div class="errors-section">
+
+      <div class="errors-header">
+
+        <h4>
+          <mat-icon>error</mat-icon>
+          الأخطاء
+        </h4>
+
+        <button mat-stroked-button color="warn" (click)="exportErrors()">
+          <mat-icon>download</mat-icon>
+          تصدير
+        </button>
+
+      </div>
+
+      <div class="errors-table-wrapper">
+
+        <table mat-table [dataSource]="result()!.errors">
+
+          <ng-container matColumnDef="rowNumber">
+            <th mat-header-cell *matHeaderCellDef>الصف</th>
+            <td mat-cell *matCellDef="let e">{{ e.rowNumber }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="column">
+            <th mat-header-cell *matHeaderCellDef>العمود</th>
+            <td mat-cell *matCellDef="let e">{{ e.column }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef>الخطأ</th>
+            <td mat-cell *matCellDef="let e">{{ e.message }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="errorColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: errorColumns;"></tr>
+
+        </table>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+  <div class="dialog-footer">
+    <button mat-stroked-button (click)="step.set('select')">
+      إعادة
+    </button>
+
+    <button mat-flat-button class="primary-btn" (click)="close()">
+      إنهاء
+    </button>
+  </div>
+
+  }
+
+</div>

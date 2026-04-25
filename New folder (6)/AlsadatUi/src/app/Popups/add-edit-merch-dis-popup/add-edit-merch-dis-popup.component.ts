@@ -12,6 +12,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
+import { PhoneInputComponent } from '../../../Components/phone-input/phone-input.component';
 
 @Component({
   selector: 'app-add-edit-merch-dis-popup',
@@ -24,7 +25,8 @@ import { CommonModule } from '@angular/common';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule
+    MatButtonModule,
+    PhoneInputComponent
   ],
   templateUrl: './add-edit-merch-dis-popup.component.html',
   styleUrls: ['./add-edit-merch-dis-popup.component.css']
@@ -127,7 +129,7 @@ this.CitySubscription?.unsubscribe();
       this.data?.phoneNumber || '',
       [
         Validators.required,
-        Validators.pattern(/^01[0125][0-9]{8}$/)
+       
       ]
     ],
      firstSpecialDiscount: [

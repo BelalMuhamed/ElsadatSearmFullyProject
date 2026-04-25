@@ -1,8 +1,11 @@
 ﻿using Application.DTOs;
 using Application.Services.contract;
+using Domain.Common;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace AlSadat_Seram.Api.Controllers
 {
@@ -12,7 +15,13 @@ namespace AlSadat_Seram.Api.Controllers
     public class DistAndMerchController : ControllerBase
     {
         private readonly IServiceManager serviceManager;
+        private const long MaxImportBytes = 5 * 1024 * 1024; // 5 MB
 
+        private static readonly string[] AllowedExtensions =
+        {
+    ".xlsx",
+    ".xls"
+};
         public DistAndMerchController(IServiceManager ServiceManager)
         {
             serviceManager = ServiceManager;
@@ -20,7 +29,7 @@ namespace AlSadat_Seram.Api.Controllers
         // -----------------------------------------------------------
         // 1) Add New Distributor or Merchant
         // -----------------------------------------------------------
-        [HttpPost("add/{userId}")]
+        [HttpPost("add")]
 
         [Authorize(Roles = "Admin,Accountant")]
         public async Task<IActionResult> AddDistributorOrMerchant([FromBody] DistributorsAndMerchantsAndAgentsDto dto)
@@ -76,6 +85,89 @@ namespace AlSadat_Seram.Api.Controllers
             {
                 return BadRequest(new {message= ex.Message });
             }
+        }
+
+
+        // -------------------------------------------------------------
+        // 1) GET /api/DistributorsAndMerchants/import/template
+        // download excel template
+        // -------------------------------------------------------------
+        [HttpGet("import/template")]
+        [Authorize(Roles = "Admin,Accountant")]
+        public async Task<IActionResult> DownloadImportTemplate(
+            CancellationToken ct)
+        {
+            var result =
+                await serviceManager
+                    .DistributorsAndMerchantsService
+                    .ExportTemplateAsync(ct);
+
+            if (!result.IsSuccess || result.Data is null)
+                return StatusCode(
+                    (int)result.StatusCode,
+                    result);
+
+            return File(
+                result.Data,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "DistributorsAndMerchants_Template.xlsx");
+        }
+
+
+        // -------------------------------------------------------------
+        // 2) POST /api/DistributorsAndMerchants/import
+        // upload excel file and import
+        // -------------------------------------------------------------
+        [HttpPost("import")]
+        [RequestSizeLimit(MaxImportBytes)]
+        [RequestFormLimits(MultipartBodyLengthLimit = MaxImportBytes)]
+        [Authorize(Roles = "Admin,Accountant")]
+        public async Task<IActionResult> ImportFromExcel(
+            IFormFile file,
+          
+            CancellationToken ct)
+        {
+            if (file is null || file.Length == 0)
+                return BadRequest(
+                    Result<string>.Failure(
+                        "الملف فارغ",
+                        HttpStatusCode.BadRequest));
+
+            if (file.Length > MaxImportBytes)
+                return BadRequest(
+                    Result<string>.Failure(
+                        "حجم الملف أكبر من المسموح (5 ميجابايت)",
+                        HttpStatusCode.BadRequest));
+
+            var ext = Path.GetExtension(file.FileName)?
+                .ToLowerInvariant();
+
+            if (string.IsNullOrWhiteSpace(ext) ||
+                !AllowedExtensions.Contains(ext))
+            {
+                return BadRequest(
+                    Result<string>.Failure(
+                        "نوع الملف غير مدعوم — استخدم .xlsx أو .xls",
+                        HttpStatusCode.BadRequest));
+            }
+
+        
+
+            await using var stream = file.OpenReadStream();
+
+            var result =
+                await serviceManager
+                    .DistributorsAndMerchantsService
+                    .ImportFromExcelAsync(
+                        stream,
+                       
+                        ct);
+
+            return result.IsSuccess
+                ? Ok(result)
+                : StatusCode(
+                    (int)result.StatusCode,
+                    result);
         }
     }
 }

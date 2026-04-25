@@ -110,10 +110,7 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IPurchaseInvoiceContract> _purchaseInvoiceService;
     private readonly Lazy<IjournalEntryDetails> _journalEntryDetails;
     private readonly Lazy<IJounalEntryContract> _journalEntry;
-
-
-
-
+    private readonly IExcelReaderService excelReader;
 
     public ServiceManager(
     IUnitOfWork UnitOfWork,
@@ -123,7 +120,7 @@ public class ServiceManager: IServiceManager
     IHttpContextAccessor HttpContextAccessor,
     IOptions<JwtSettings> jwtSettings,
     IMapper Mapper,
-    ILoggerFactory loggerFactory)
+    ILoggerFactory loggerFactory, IExcelReaderService ExcelReader)
     {
         // Initialize the services using Lazy<T> to defer their creation until they are accessed  
         _CurrentUserService = new Lazy<ICurrentUserService>(() => new CurrentUserService(HttpContextAccessor,loggerFactory.CreateLogger<CurrentUserService>()));
@@ -138,19 +135,20 @@ public class ServiceManager: IServiceManager
         _salesInvoiceService = new Lazy<IsalesInvoiceService>(() => new salesInvoiceService(UnitOfWork, _CurrentUserService.Value));
         _CopounService = new Lazy<ICopounService>(() => new CopounService(UnitOfWork));
         _BillDiscountService = new Lazy<IBillDiscount>(() => new BillsDiscountSr(UnitOfWork));
-        _ProductService = new Lazy<IProductService>(() => new ProductServcie(UnitOfWork));
+        _ProductService = new Lazy<IProductService>(() => new ProductServcie(UnitOfWork,_CurrentUserService.Value,excelReader));
         _StoreTransactionService = new Lazy<IStoreTransactionService>(() => new StoreTransactionService(UnitOfWork));
         _StoreService = new Lazy<IStore>(() => new StoreService(UnitOfWork));
         _GovernrateService = new Lazy<IGovernrateCaontract>(() => new GovernrateService(UnitOfWork));
         _CityService = new Lazy<ICityContract>(() => new CityService(UnitOfWork));
         _stockService = new Lazy<IStockService>(() => new StockService(UnitOfWork));
         _treeService=new Lazy<ITreeAccounts>(()=> new TreeAccountsService(UnitOfWork));
-        _supplierService = new Lazy<ISupplierContract>(() => new SupplierService(UnitOfWork));
+        _supplierService = new Lazy<ISupplierContract>(
+    () => new SupplierService(UnitOfWork, ExcelReader, this));
         _journalEntry = new Lazy<IJounalEntryContract>(() => new JournalEntryService(UnitOfWork));
         _journalEntryDetails = new Lazy<IjournalEntryDetails>(() => new JournalEntryDetailsService(UnitOfWork));
         _purchaseInvoiceService = new Lazy<IPurchaseInvoiceContract>(() => new PurchaseInvoiceService(UnitOfWork));
        
-        _DistributorsAndMerchantsService = new Lazy<IDistributorsAndMerchantsService>(() => new DistributorsAndMerchantsService(UnitOfWork,UserManager));
+        _DistributorsAndMerchantsService = new Lazy<IDistributorsAndMerchantsService>(() => new DistributorsAndMerchantsService(UnitOfWork,UserManager,this, _CurrentUserService.Value, ExcelReader));
         _CoponCollectionRepresentiveRateService = new Lazy<ICoponCollectionRepresentiveRateService>(() => new CoponCollectionRepresentiveRateService(UnitOfWork , _CurrentUserService.Value));
         _EmployeeAttendanceService = new Lazy<IEmployeeAttendanceService>(() => new EmployeeAttendanceService(UnitOfWork,_CurrentUserService.Value,UserManager));
         _EmployeeService = new Lazy<IEmployeeService>(() => new EmployeeService(UserManager,_CurrentUserService.Value,UnitOfWork,RoleManager));
@@ -165,6 +163,7 @@ public class ServiceManager: IServiceManager
         _EmployeeLeaveService = new Lazy<IEmployeeLeaveService>(() => new EmployeeLeaveService(UnitOfWork,_CurrentUserService.Value,UserManager));
         _EmployeeBonusService = new Lazy<IEmployeeBonusService>(() => new EmployeeBonusService(UnitOfWork, _CurrentUserService.Value));    
         _RepresentativeAttendanceService = new Lazy<IRepresentativeAttendanceService>(() => new RepresentativeAttendanceService(UnitOfWork,_CurrentUserService.Value,UserManager));
+        excelReader = ExcelReader;
     }
     // Properties to access the services
     public IAuthService AuthService => _AuthService.Value;

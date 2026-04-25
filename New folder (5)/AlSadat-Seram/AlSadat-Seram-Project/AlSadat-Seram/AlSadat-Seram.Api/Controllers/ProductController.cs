@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.ProductsDtos;
 using Application.Services.contract;
 using Domain.Common;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,8 @@ namespace AlSadat_Seram.Api.Controllers
 
     public class ProductController : ControllerBase
     {
+        private const long MaxImportBytes = 5 * 1024 * 1024; // 5 MB
+        private static readonly string[] AllowedExtensions = { ".xlsx", ".xls" };
         private readonly IServiceManager serviceManager;
 
         public ProductController(IServiceManager serviceManager)
@@ -112,53 +115,50 @@ namespace AlSadat_Seram.Api.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-        [HttpPost("upload")]
-        public async Task<IActionResult> UploadExcel(ExcelReq req)
+        [HttpGet("import/template")]
+        [Authorize(Roles = "Admin,Accountant")]
+        public async Task<IActionResult> DownloadImportTemplate(CancellationToken ct)
         {
-            if (req.file == null || req.file.Length == 0)
-                return BadRequest(Result<string>.Failure("الملف فارغ"));
+            var result = await serviceManager.ProductService.ExportProductsTemplateAsync(ct);
+            if (!result.IsSuccess || result.Data is null)
+                return StatusCode((int)result.StatusCode, result);
 
-            try
-            {
-                using var stream = req.file.OpenReadStream();
+            return File(
+                result.Data,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "productstemplate.xlsx");
+        }
 
-                var res = await serviceManager.ProductService
-                    .BulkAddFromExcel(stream, req.createdUser);
+        // -------------------------------------------------------------
+        // 8) POST /api/Supplier/import  — upload + import an .xlsx
+        //    - 5 MB request-size cap (S-6)
+        //    - whitelist extensions
+        //    - CancellationToken forwarded to the service (B-21)
+        // -------------------------------------------------------------
+        [HttpPost("import")]
+        [RequestSizeLimit(MaxImportBytes)]
+        [RequestFormLimits(MultipartBodyLengthLimit = MaxImportBytes)]
+        [Authorize(Roles = "Admin,Accountant")]
+        public async Task<IActionResult> ImportFromExcel(IFormFile file, CancellationToken ct)
+        {
+            if (file is null || file.Length == 0)
+                return BadRequest(Result<string>.Failure("الملف فارغ", HttpStatusCode.BadRequest));
 
-                var response = new ExcelUploadResponse<ExcelProductDto>
-                {
-                    Data = res.data,
-                    Errors = res.errors
-                };
+            if (file.Length > MaxImportBytes)
+                return BadRequest(Result<string>.Failure(
+                    "حجم الملف أكبر من المسموح (5 ميجابايت)", HttpStatusCode.BadRequest));
 
-                // حالة: كل الصفوف فشلت
-                if (res.errors.Any() &&  res.data.Count==0)
-                {
-                    return Ok(Result<ExcelUploadResponse<ExcelProductDto>>.Failure(
-                        $"فشل إضافة جميع المنتجات ({res.errors.Count} صفوف)"
-                    ));
-                }
+            var ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !AllowedExtensions.Contains(ext))
+                return BadRequest(Result<string>.Failure(
+                    "نوع الملف غير مدعوم — استخدم .xlsx أو .xls", HttpStatusCode.BadRequest));
 
-                // حالة: بعض الصفوف فشل
-                if (res.errors.Any())
-                {
-                    return Ok(Result<ExcelUploadResponse<ExcelProductDto>>.Success(
-                        response,
-                        $"تمت إضافة بعض المنتجات مع وجود أخطاء ({res.errors.Count} صفوف فشلت)"
-                    ));
-                }
+            await using var stream = file.OpenReadStream();
+            var result = await serviceManager.ProductService.ImportProductsFromExcelAsync(stream, ct);
 
-                // نجاح كامل
-                return Ok(Result<ExcelUploadResponse<ExcelProductDto>>.Success(
-                    response,
-                    "تمت إضافة جميع المنتجات بنجاح"
-                ));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500,
-                    Result<string>.Failure(ex.Message, HttpStatusCode.InternalServerError));
-            }
+            return result.IsSuccess
+                ? Ok(result)
+                : StatusCode((int)result.StatusCode, result);
         }
 
     }

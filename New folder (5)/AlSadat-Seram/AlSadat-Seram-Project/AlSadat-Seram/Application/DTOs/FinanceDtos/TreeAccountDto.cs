@@ -23,7 +23,7 @@ namespace Application.DTOs.FinanceDtos
     public class AccountDto
     {
         public int? id { get; set; }
-        public string accountCode { get; set; }
+        public string? accountCode { get; set; }
         public string? userId { get; set; }
         public string accountName { get; set; }
         public int type { get; set; }

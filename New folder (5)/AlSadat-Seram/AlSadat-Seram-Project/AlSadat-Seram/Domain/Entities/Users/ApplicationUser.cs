@@ -20,7 +20,7 @@ namespace Domain.Entities.Users
         }
         public string FullName { get; set; }
         public string? Address { get; set; }
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
         public string? CreateBy { get; set; }
         public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
         public string? UpdateBy { get; set; }
@@ -32,7 +32,7 @@ namespace Domain.Entities.Users
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         //----------- Obj From City and ForeignKey CityId ---------------------------------
         [ForeignKey(nameof(City))]
-        public int CityID { get; set; }
+        public int? CityID { get; set; }
         public virtual City? City { get; set; }
         //----------- ICollection From Previews  ---------------------------------
         public virtual ICollection<Previews> MerchantPreviews { get; set; } = [];

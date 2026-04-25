@@ -863,8 +863,11 @@ namespace Infrastructure.Services
                 return Result<byte[]>.Failure("Invoice not found", HttpStatusCode.NotFound);
 
             var invoice = invoiceResult.Data;
+            var logoBytes = File.ReadAllBytes("Assets/Images/logo.png");
 
-            var document = new PurchaseInvoicePdfDocument(invoice, isSimple);
+
+
+            var document = new PurchaseInvoicePdfDocument(invoice,logoBytes , isSimple);
 
             var pdfBytes = document.GeneratePdf();
 

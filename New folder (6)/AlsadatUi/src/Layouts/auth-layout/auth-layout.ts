@@ -75,7 +75,7 @@ export class AuthLayout implements OnInit {
       else if(this.roles.includes('StockManager'))
         this.router.navigate(['/stocks']);
       else
-        this.router.navigate(['/login']);
+        this.router.navigate(['/unauthorized']);
 
     },
 

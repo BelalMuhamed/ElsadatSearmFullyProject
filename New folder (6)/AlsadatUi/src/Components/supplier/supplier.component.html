@@ -6,17 +6,42 @@
 @if (!isLoaded) {
   <p class="text-center" style="color: var(--gold);">جاري التحميل...</p>
 } @else {
-  <div class="w-100 me-auto d-flex justify-content-end">
-    <button class="add-coupon-btn"   [routerLink]="['/supplier/add']">
 
+  <!-- ===================== Toolbar ===================== -->
+  <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 my-2">
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="تحميل قالب Excel"
+      (click)="downloadTemplate()">
+      <mat-icon>download</mat-icon>
+      تحميل قالب Excel
+    </button>
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="استيراد الموردين من ملف Excel"
+      (click)="openImportDialog()">
+      <mat-icon>upload_file</mat-icon>
+      استيراد Excel
+    </button>
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      [routerLink]="['/supplier/add']">
       <mat-icon>add</mat-icon>
       إضافة مورد جديد
     </button>
+
   </div>
 
-  <!-- Filter Form -->
+  <!-- ===================== Filter Form ===================== -->
   <div class="d-flex justify-content-center align-items-center gap-3 my-3">
-    <form [formGroup]="form" class="popup-form">
+    <form [formGroup]="form" class="popup-form" (ngSubmit)="applyFilters()">
+
       <div class="w-100 d-block">
         <mat-form-field class="custom-input-theme ms-2" appearance="outline">
           <mat-label>اسم المورد</mat-label>
@@ -27,6 +52,16 @@
           <mat-label>رقم الهاتف</mat-label>
           <input matInput formControlName="phoneNumbers">
         </mat-form-field>
+
+        <!-- 3-state status filter (B-10) -->
+        <mat-form-field appearance="outline" class="ms-2 custom-input-theme">
+          <mat-label>الحالة</mat-label>
+          <mat-select formControlName="isDeleted">
+            <mat-option [value]="null">الكل</mat-option>
+            <mat-option [value]="false">فعال</mat-option>
+            <mat-option [value]="true">محذوف</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
 
       <div class="d-flex justify-content-center">
@@ -34,54 +69,60 @@
           mat-raised-button
           class="add-coupon-btn px-3 ms-2 m-0"
           (click)="applyFilters()"
-          type="button"
-        >
-          <mat-icon aria-hidden="false" aria-label="Search icon">search</mat-icon>
+          type="button">
+          <mat-icon aria-hidden="false" aria-label="بحث">search</mat-icon>
           ابحث
         </button>
         <button
           mat-raised-button
           class="add-coupon-btn px-3 m-0"
           (click)="resetFilters()"
-          type="button"
-        >
-          <mat-icon aria-hidden="false" aria-label="Reset icon">refresh</mat-icon>
+          type="button">
+          <mat-icon aria-hidden="false" aria-label="إعادة تعيين">refresh</mat-icon>
           إعادة تعيين
         </button>
       </div>
     </form>
   </div>
 
-  <!-- Table -->
+  <!-- ===================== Table ===================== -->
   <div class="table-container mat-elevation-z8">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
       @for (col of columns; track col.key) {
         <ng-container [matColumnDef]="col.key">
           <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
           <td mat-cell *matCellDef="let element">
             @switch (col.type) {
+
               @case ('boolean') {
+                <!-- isDeleted column: toggle is "on" when supplier is ACTIVE (!isDeleted) -->
                 <mat-slide-toggle
-                  [checked]="!element[col.key]"
-                  (change)="ToggleSupplierStatus(element, $event.checked)"
-                  class="delete-toggle"
-                ></mat-slide-toggle>
+                  [checked]="!element.isDeleted"
+                  (change)="toggleSupplierStatus(element, $event.checked)"
+                  [matTooltip]="element.isDeleted ? 'تفعيل المورد' : 'إيقاف المورد'"
+                  [attr.aria-label]="'حالة المورد ' + element.name"
+                  class="delete-toggle">
+                </mat-slide-toggle>
               }
+
               @case ('actions') {
-               <div class="action-buttons">
-          <!-- Updated Edit Button -->
-          <button
-            mat-icon-button
-            color="primary"
-            class="border-0 bg-transparent"
-            [routerLink]="['/supplier/edit', element.id]"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-        </div>
+                <div class="action-buttons">
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    class="border-0 bg-transparent"
+                    [routerLink]="['/supplier/edit', element.id]"
+                    [disabled]="element.isDeleted"
+                    [matTooltip]="element.isDeleted ? 'قم بتفعيل المورد أولًا للتعديل' : 'تعديل المورد'"
+                    [attr.aria-label]="'تعديل المورد ' + element.name">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
               }
+
               @default {
-                <span>{{ element[col.key] ?? '-' }}</span>
+                <span>{{ element[col.key] ?? '—' }}</span>
               }
             }
           </td>
@@ -89,19 +130,23 @@
       }
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys;"></tr>
+
+      <!-- Empty state -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell text-center p-4" [attr.colspan]="displayedColumnKeys.length">
+          لا يوجد موردين بالمعايير المحددة
+        </td>
+      </tr>
     </table>
 
-    <div dir="rtl" class="paginator-container">
-      <mat-paginator
-        [length]="totalCount"
-         [pageSize]="filters.pageSize"
-    [pageIndex]="(filters.page ?? 1) - 1"
-    [pageSizeOptions]="[5, 10, 20,50,70,100]"
-        [showFirstLastButtons]="true"
-        (page)="onPageChange($event)"
-        aria-label="جدول الموردون"
-      ></mat-paginator>
-    </div>
+    <!-- Paginator (kept, as per your confirmation it was already wired in the existing HTML) -->
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="filters.pageSize ?? 10"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="onPageChange($event)"
+      aria-label="تنقل بين الصفحات">
+    </mat-paginator>
   </div>
 }

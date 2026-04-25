@@ -2,6 +2,7 @@
 using Application.DTOs;
 using Application.DTOs.ProductsDtos;
 using Application.Services.contract;
+using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,7 @@ namespace AlSadat_Seram.Api.Controllers
         {
             serviceManager = ServiceManager;
         }
+       
 
         [HttpGet]
 
@@ -97,6 +99,8 @@ namespace AlSadat_Seram.Api.Controllers
 
         public async Task<IActionResult> GetSimplePdf(int id)
         {
+
+            
             var result = await serviceManager.purchaseInvoiceService.GeneratePdf(id, true);
 
             if (!result.IsSuccess)

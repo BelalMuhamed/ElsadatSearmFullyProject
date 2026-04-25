@@ -4,21 +4,22 @@
     {{ isEditMode ? 'تعديل البيانات' : 'إضافة عميل جديد' }}
   </h2>
 <form [formGroup]="AddEditform" class="popup-form p-5">
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>الاسم بالكامل </mat-label>
-    <input matInput formControlName="fullName" />
-    <mat-error *ngIf="AddEditform.get('fullName')?.hasError('required')">حقل مطلوب</mat-error>
-    <mat-error *ngIf="AddEditform.get('fullName')?.hasError('minlength')">
-  يجب ألا يقل الاسم عن 5 حرفًا
-</mat-error>
 
-  </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>  العنوان</mat-label>
     <input matInput formControlName="address" />
     <mat-error *ngIf="AddEditform.get('address')?.hasError('required')">حقل مطلوب</mat-error>
     <mat-error *ngIf="AddEditform.get('address')?.hasError('minlength')">
   يجب ألا يقل العنوان عن 3 حرفًا
+</mat-error>
+
+  </mat-form-field>
+   <mat-form-field appearance="outline" class="full-width">
+    <mat-label>الاسم بالكامل </mat-label>
+    <input matInput formControlName="fullName" />
+    <mat-error *ngIf="AddEditform.get('fullName')?.hasError('required')">حقل مطلوب</mat-error>
+    <mat-error *ngIf="AddEditform.get('fullName')?.hasError('minlength')">
+  يجب ألا يقل الاسم عن 5 حرفًا
 </mat-error>
 
   </mat-form-field>
@@ -45,14 +46,21 @@
   </mat-error>
 </mat-form-field>
 
-<mat-form-field appearance="outline" class="full-width">
+<!-- <mat-form-field appearance="outline" class="full-width">
     <mat-label>رقم الهاتف  </mat-label>
     <input matInput formControlName="phoneNumber" placeholder="01XXXXXXXXX"/>
     <mat-error *ngIf="AddEditform.get('phoneNumber')?.hasError('required')">حقل مطلوب</mat-error>
     <mat-error *ngIf="AddEditform.get('phoneNumber')?.hasError('pattern')">
   يجب إدخال رقم موبايل مصري صحيح (مثال: 010 أو 011 أو 012 أو 015)
 </mat-error>
-  </mat-form-field>
+  </mat-form-field> -->
+   <app-phone-input
+            formControlName="phoneNumber"
+           defaultCountry="eg"
+            [required]="true"
+            label="رقم الهاتف"
+            placeholder="رقم الهاتف">
+          </app-phone-input>
 
 <mat-form-field appearance="outline" class="full-width">
   <mat-label>اختر المدينة</mat-label>

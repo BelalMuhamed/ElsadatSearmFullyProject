@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddEditSupplierComponent } from './add-edit-supplier.component';
+import { PhoneInputComponent } from './phone-input.component';
 
-describe('AddEditSupplierComponent', () => {
-  let component: AddEditSupplierComponent;
-  let fixture: ComponentFixture<AddEditSupplierComponent>;
+describe('PhoneInputComponent', () => {
+  let component: PhoneInputComponent;
+  let fixture: ComponentFixture<PhoneInputComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddEditSupplierComponent]
+      imports: [PhoneInputComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AddEditSupplierComponent);
+    fixture = TestBed.createComponent(PhoneInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

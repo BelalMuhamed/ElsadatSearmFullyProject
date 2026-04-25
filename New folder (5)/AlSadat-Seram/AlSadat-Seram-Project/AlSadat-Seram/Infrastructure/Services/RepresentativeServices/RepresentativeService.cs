@@ -360,7 +360,7 @@ internal class RepresentativeService:IRepresentativeService
             UserId = e.UserId,
             Email = e.User!.Email ?? "",
             FullName = e.User.FullName,
-            Gender = e.User.Gender,
+            Gender =  (Gender)e.User.Gender,
             PhoneNumber = e.User.PhoneNumber,
             RepresentativeCode = e.RepresentativesCode,
             Address = e.User.Address,

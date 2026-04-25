@@ -1,5 +1,7 @@
 ﻿using AlSadatSeram.Services.contract;
+using Application.DTOs;
 using Application.DTOs.ProductsDtos;
+using Domain.Common;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ namespace Application.Services.contract
         Task<ProductDto> GetByProductCode(string productCode);
 
         Task<bool> IsProductCodeExists(string productCode, int? excludeProductId = null);
-        Task<ExcelReadResult<ExcelProductDto>> BulkAddFromExcel(Stream fileStream,string createdUser);
-
+        Task<Result<ExcelImportResult<ProductDto>>> ImportProductsFromExcelAsync(Stream fileStream, CancellationToken ct);
+        Task<Result<byte[]>> ExportProductsTemplateAsync(CancellationToken ct);
     }
 }

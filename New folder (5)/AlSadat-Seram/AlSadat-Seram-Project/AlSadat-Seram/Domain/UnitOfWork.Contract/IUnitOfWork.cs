@@ -18,6 +18,7 @@ namespace Domain.UnitOfWork.Contract
         Task RollbackAsync();
         Task CommitAsync();
         Task LogError(Exception ex);
-        
+        public bool IsTransactionActive();
+
     }
 }
