@@ -294,7 +294,9 @@ namespace Infrastructure.Data
         new ChartOfAccounts { Id = 10, AccountCode = "2.1", AccountName = "الموردين", ParentAccountId = 2, Type = AccountTypes.Liabilities, IsLeaf = false, IsActive = true },
         new ChartOfAccounts { Id = 11, AccountCode = "3.1", AccountName = "رأس المال", ParentAccountId = 3, Type = AccountTypes.Equity, IsLeaf = true, IsActive = true },
         new ChartOfAccounts { Id = 12, AccountCode = "4.1", AccountName = "مبيعات المنتجات", ParentAccountId = 4, Type = AccountTypes.Income, IsLeaf = true, IsActive = true },
-        new ChartOfAccounts { Id = 13, AccountCode = "5.1", AccountName = "رواتب الموظفين", ParentAccountId = 5, Type = AccountTypes.Expenses, IsLeaf = true, IsActive = true }
+        new ChartOfAccounts { Id = 13, AccountCode = "5.1", AccountName = "رواتب الموظفين", ParentAccountId = 5, Type = AccountTypes.Expenses, IsLeaf = true, IsActive = true },
+        new ChartOfAccounts{Id = 14,AccountCode = "5.2",AccountName = "تكلفة البضاعة المباعة",ParentAccountId = 5,Type = AccountTypes.Expenses,IsLeaf = true,IsActive = true
+}
     };
 
                 await context.Database.OpenConnectionAsync();

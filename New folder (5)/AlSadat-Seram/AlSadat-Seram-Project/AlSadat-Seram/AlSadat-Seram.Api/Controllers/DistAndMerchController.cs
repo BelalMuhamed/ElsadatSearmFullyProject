@@ -73,7 +73,7 @@ namespace AlSadat_Seram.Api.Controllers
         // 4) Get All With Filters + Pagination
         // -----------------------------------------------------------
         [HttpGet("list")]
-        [Authorize(Roles = "Admin,Accountant")]
+        [Authorize(Roles = "Admin,Accountant,StockManager")]
         public async Task<IActionResult> GetAllDistributorsAndMerchants([FromQuery] DistributorsAndMerchantsFilters filters)
        {
             try

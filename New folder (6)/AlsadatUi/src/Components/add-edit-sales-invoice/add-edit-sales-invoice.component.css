@@ -372,3 +372,79 @@ color: red;
 :host-context(body.dark-mode) .gold-hover:hover {
   background-color: rgba(212, 175, 55, 0.15) !important;
 }
+.products-table {
+  overflow-x: auto;
+}
+@media (max-width: 768px) {
+  .table-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.products-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Row */
+.table-row {
+  display: grid;
+  grid-template-columns:
+    40px 1.5fr 80px 100px 80px 100px 120px 120px 120px 60px;
+  align-items: center;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Header */
+.table-header {
+  background: rgba(212, 175, 55, 0.1);
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* Cells */
+.table-row > div {
+  padding: 8px;
+  border-left: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* Remove last border */
+.table-row > div:last-child {
+  border-left: none;
+}
+
+/* Inputs */
+.table-row input,
+.table-row mat-select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: inherit;
+}
+
+/* Net highlight */
+.table-row .net {
+  color: #4caf50;
+  font-weight: bold;
+}
+.table-row .gross {
+  color: #fb0000;
+  font-weight: bold;
+}
+/* Hover */
+.table-row:hover {
+  background: rgba(212, 175, 55, 0.05);
+}
+
+/* Add button */
+.add-btn {
+  margin-top: 10px;
+  border: 1px dashed var(--gold);
+  color: var(--gold);
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: transparent;
+}

@@ -44,7 +44,7 @@ export class AddEditSalesInvoiceComponent {
    filteredProducts: ProductDto[][] = [];
   AllProducts: ProductDto[] = [];
     CustomerSearchCtrl = new FormControl('');
-ProductSearchControl = new FormControl('');
+productSearchControls: FormControl[] = [];
 isEditMode = false;
 invoiceId: number | null = null;
    Customerfilters:DistributorsAndMerchantsFilters={
@@ -460,6 +460,7 @@ addItem() {
   }
 
   this.items.push(this.createItem());
+  this.productSearchControls.push(new FormControl());
 
   const index = this.items.length - 1;
   const item = this.items.at(index);
@@ -491,7 +492,7 @@ addItem() {
   setTimeout(() => this.scrollToLastProduct(), 150);
 }
 setupProductSearch(index: number) {
-  this.ProductSearchControl.valueChanges.subscribe(search => {
+  this.productSearchControls[index].valueChanges.subscribe(search => {
     const value = search?.toLowerCase() || '';
 
     this.filteredProducts[index] = this.getAvailableProducts(index)
@@ -624,5 +625,23 @@ refreshAllProductFilters() {
   this.items.controls.forEach((_, index) => {
     this.filteredProducts[index] = this.getAvailableProducts(index);
   });
+}
+onProductChange(index: number) {
+  const item = this.items.at(index);
+
+  const productId = item.get('productID')?.value;
+  const product = this.AllProducts.find(p => p.id === productId);
+
+  if (!product) return;
+
+  item.patchValue({
+    sellingPrice: product.sellingPrice
+  });
+
+  this.onItemChange(index);
+}
+onItemChange(index: number) {
+  const item = this.items.at(index) as FormGroup;
+  this.recalculateItem(item);
 }
 }

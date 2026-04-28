@@ -69,7 +69,7 @@ export const routes: Routes = [
 
 
       //#region  Accountatnt
-      { path: 'SalesInvoices', component: SalesInvoicesComponent,canActivate: [authGuard, roleGuard], data: { roles: [ 'Accountant','Admin'] }},
+      { path: 'SalesInvoices', component: SalesInvoicesComponent,canActivate: [authGuard, roleGuard], data: { roles: [ 'Accountant','Admin','StockManager'] }},
       { path: 'Copouns', component: CopounComponent,   canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
       { path: 'general-setting/bill-discounts', component: BillDiscountComponent,  canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
       { path: 'DistributorsAndMerchants', component: DisAndMerchantComponent,  canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant']}},
@@ -159,7 +159,7 @@ export const routes: Routes = [
   loadComponent: () =>
     import('../Components/sales-invoice-details/sales-invoice-details.component')
       .then(c => c.SalesInvoiceDetailsComponent),
-    canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+    canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant','StockManager'] }
 
 },
 {
@@ -236,7 +236,7 @@ export const routes: Routes = [
       //#endregion
 
       //#region  stock mangment
-      { path: 'Products', component: ProductComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'StockManager'] }},
+      { path: 'Products', component: ProductComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'StockManager','Accountant'] }},
       { path: 'transactions/all', component: TransactionsComponent,canActivate: [authGuard, roleGuard], data: { roles: [ 'StockManager','Admin'] }},
       { path: 'stores/all', component: StoresComponent,canActivate: [authGuard, roleGuard], data: { roles: [ 'StockManager','Admin'] }},
       //#endregion
@@ -262,7 +262,7 @@ export const routes: Routes = [
       { path: 'hr/employees/add', component: EmployeeAddComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/salaries', component: SalarySearchComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin'] }},
+      { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/collection-rates', component: CollectionRepresentiveRateComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/copon-collection-rates', component: CoponCollectionRepresentiveRateComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/employee-loans', component: EmployeeLoanComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},

@@ -111,4 +111,29 @@ reverseInvoice(id: number): Observable<Result<string>> {
     {}
   );
 }
+downloadInvoicePdfToStockPrepare(id: number): Observable<Blob> {
+  return this.http.get(`${this.apiUrl}SalesInvoices/${id}/pdf/prepareInovoice`, {
+    responseType: 'blob'
+  });
+}
+
+// Download simple confirmed PDF (store endpoint)
+getConfirmedPdfStore(id: number): Observable<Blob> {
+  return this.http.get(
+    `${this.apiUrl}SalesInvoices/${id}/pdf/Confirmed/store`,
+    {
+      responseType: 'blob'
+    }
+  );
+}
+
+// Download confirmed PDF (other endpoint)
+getConfirmedPdf(id: number): Observable<Blob> {
+  return this.http.get(
+    `${this.apiUrl}SalesInvoices/${id}/pdf/confirmed`,
+    {
+      responseType: 'blob'
+    }
+  );
+}
 }

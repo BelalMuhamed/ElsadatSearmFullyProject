@@ -35,7 +35,7 @@
       </li>
 
 <li>
-  <div class="dropdown-header" (click)="settingsOpened = !settingsOpened">
+  <div class="dropdown-header" (click)="settingsOpened = !settingsOpened"*ngIf="hasRole(['Accountant', 'Admin'])" >
     <span>الإعدادات</span>
     <mat-icon>
       {{ settingsOpened ? 'expand_less' : 'expand_more' }}

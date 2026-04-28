@@ -22,6 +22,8 @@ import { MatIcon } from "@angular/material/icon";
 export class PurchaseInvoiceDetailsComponent {
   isPrintMode: boolean = false;
   isUserStockManager:boolean=false;
+
+  
 displayedColumns: string[] = ['product', 'quantity', 'price', 'discount','total'];
 get columnsToDisplay(): string[] {
 

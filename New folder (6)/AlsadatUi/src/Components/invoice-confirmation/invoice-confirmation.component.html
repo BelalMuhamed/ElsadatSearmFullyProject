@@ -131,14 +131,36 @@
 <!-- زرار Submit عام -->
 <div class="mt-3 text-end">
 
- <button
+
+
+
+ <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 my-2">
+   <button
   mat-raised-button
   class="gold-outline-btn"
   [disabled]="!canSubmitAll()"
   (click)="submitAllStocks()"
 >
   <mat-icon class="me-1">check_circle</mat-icon>
-  حفظ  
+  حفظ
 </button>
+<button
+  class="add-coupon-btn"
+  matTooltip="طباعة فاتورة"
+  (click)="downloadPdf(
+    (invoiceData?.invoiceNumber || '') + '-' + (invoiceData?.distributorName || ''),
+    'حدث خطا اثناء الطباعة'
+  )">
+  <mat-icon>print</mat-icon>
+  طباعة فاتورة صرف 
+</button>
+
+
+
+
+
+  </div>
+
 </div>
+
 }

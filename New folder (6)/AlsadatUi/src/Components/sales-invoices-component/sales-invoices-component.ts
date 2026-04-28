@@ -117,9 +117,14 @@ filters:DistributorsAndMerchantsFilters={
     private dialog = inject(MatDialog)
     private fb = inject(FormBuilder)
     form!: FormGroup
+  isUserStockManager:boolean=false;
 
   ngOnInit(): void
   {
+    this.isUserStockManager=localStorage.getItem('roles')?.includes('StockManager')!;
+
+      this.isUserAdmin= localStorage.getItem('roles')?.includes('Admin')!;
+
   this.GetAllCustomers();
   this.GetAllSalesInvoices();
   this.InitSearchForm();

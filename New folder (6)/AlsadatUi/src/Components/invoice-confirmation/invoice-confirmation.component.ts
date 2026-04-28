@@ -12,6 +12,7 @@ import { MatExpansionModule, MatExpansionPanel } from '@angular/material/expansi
 import { StockService } from '../../app/Services/stock.service';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { invoiceProductsStock, ProductStockDto } from '../../app/models/IStockVM';
+import { SwalService } from '../../app/Services/swal.service';
 @Component({
   selector: 'app-invoice-confirmation',
   standalone: true,
@@ -28,6 +29,7 @@ itemsList: SalesInvoiceItemsResp[] = [];
     private _SalesInvoiceSubscription = new Subscription();
     private _StockService = inject(StockService);
     private _StockSubscription = new Subscription();
+    private  swalService=inject(SwalService);
     isLoaded: boolean = false;
     invoiceData?: SalesInvoicesResponse;
 
@@ -86,87 +88,7 @@ GetSelectedInvoice()
 
 deletedProducts: { [productId: number]: string } = {}; // يخزن رسالة الحذف لكل منتج
 
-// GetProductStock(productId: number) {
-//   if (!productId) return;
 
-//   // لو الفورم موجود مسبقًا، لا تعيد جلب البيانات
-//   if (this.stockForms[productId]) return;
-
-//   this._StockService.getStockByProductId(productId).subscribe({
-//     next: (res) => {
-//       const product = res.data;
-//       if (!product) return;
-
-//       // تحقق من الحذف
-//       if (product.isProductDeleted || product.isCategoryDeleted) {
-//         this.deletedProducts[productId] = 'المنتج محذوف أو الفئة الخاصة به محذوفة، الرجاء تعديل الفاتورة أولاً.';
-//         return;
-//       }
-
-// // عند إنشاء الفورم لكل منتج
-// const originalQty = this.itemsList.find(i => i.productID === product.productId)?.quantity || 0;
-
-// // FormArray مع validator
-// const stocksArray = this.fb.array([], this.totalWithdrawnValidator(originalQty));
-
-// const productForm = this.fb.group({
-//   productId: [product.productId],
-//   stocks: stocksArray
-// });
-
-//       product.stocks.forEach(stock => {
-//         const ctrl = this.fb.group({
-//           storeId: [stock.storeId],
-//           storeName: [stock.storeName],
-//           avaliableQuantity: [stock.avaliableQuantity || 0],
-//           withdrawnQuantity: [stock.withdrawnQuantity || 0, Validators.min(0)]
-//         });
-
-//         // الاشتراك على القيمة real-time للتحقق من تجاوز المتاح
-//         ctrl.get('withdrawnQuantity')?.valueChanges.subscribe(value => {
-//           const withdrawn = Number(value) || 0;
-//           const available = Number(ctrl.get('avaliableQuantity')?.value) || 0;
-
-//           // تحقق من تجاوز الكمية المتاحة
-//           if (withdrawn > available) {
-//             ctrl.get('withdrawnQuantity')?.setErrors({ exceedAvailable: true });
-//           } else {
-//             const errors = ctrl.get('withdrawnQuantity')?.errors;
-//             if (errors) {
-//               delete errors['exceedAvailable'];
-//               ctrl.get('withdrawnQuantity')?.setErrors(Object.keys(errors).length ? errors : null);
-//             }
-//           }
-
-//           // تحقق مجموع withdrawnQuantity لكل المخازن <= Qty الفاتورة
-//           const totalWithdrawn = stocksArray.controls.reduce((sum, c) => {
-//             const val = Number(c.get('withdrawnQuantity')?.value) || 0;
-//             return sum + val;
-//           }, 0);
-
-//           const originalQty = this.itemsList.find(i => i.productID === productId)?.quantity || 0;
-
-//           if (totalWithdrawn > originalQty) {
-//             stocksArray.setErrors({ exceedTotal: true });
-//           } else {
-//             stocksArray.setErrors(null);
-//           }
-//         });
-
-//         stocksArray.push(ctrl);
-//       });
-
-//       this.stockForms[productId] = productForm;
-//     },
-//     error: (err) => {
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'خطأ',
-//         text: err.error?.message || 'حدث خطأ أثناء جلب بيانات المخزون!',
-//       });
-//     }
-//   });
-// }
 
 
 GetProductStock(productId: number) {
@@ -308,28 +230,7 @@ submitProductStock(productId: number) {
   // الآن الـ productForm.value جاهز كـ ProductStockDto
   console.log('تم الحفظ:', product);
 }
-// تحقق إذا يمكن حفظ كل المنتجات مرة واحدة
-// canSubmitAll(): boolean {
-//   return this.itemsList.every(item => {
-//     const productId = item.productID;
-//     const productForm = this.stockForms[productId];
 
-//     // تحقق إذا المنتج محذوف أو الفورم غير موجود
-//     if (this.deletedProducts[productId] || !productForm) return false;
-
-//     const stocksArray = productForm.get('stocks') as FormArray;
-//     if (!stocksArray || stocksArray.length === 0) return false;
-
-//     // مجموع withdrawnQuantity لكل المخازن
-//     const totalWithdrawn = stocksArray.controls.reduce((sum, stock) => {
-//       const val = Number(stock.get('withdrawnQuantity')?.value) || 0;
-//       return sum + val;
-//     }, 0);
-
-//     // تحقق أن المجموع <= Qty الفاتورة
-//     return totalWithdrawn <= (item.quantity || 0);
-//   });
-// }
 canSubmitAll(): boolean {
   return this.itemsList.every(item => {
 
@@ -444,4 +345,28 @@ totalWithdrawnValidator(expectedQty: number): ValidatorFn {
       : null;
   };
 }
+downloadFile(blob: Blob, fileName: string = 'invoice.pdf') {
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+}
+ downloadPdf( fileName: string, errorMsg: string) {
+  this._SalesInvoiceService.downloadInvoicePdfToStockPrepare(this.id!)
+    .subscribe({
+      next: (blob) => {
+        this.downloadFile(blob, fileName);
+        this.swalService.success('تم تحميل الفاتورة بنجاح');
+      },
+      error: () => {
+        this.swalService.error(errorMsg);
+      }
+    });
+}
+
+
 }

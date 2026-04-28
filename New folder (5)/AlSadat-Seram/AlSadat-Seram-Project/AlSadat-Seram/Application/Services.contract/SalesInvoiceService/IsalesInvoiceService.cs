@@ -24,5 +24,7 @@ namespace Application.Services.contract.SalesInvoiceService
         Task<Result<string>> ConfirmInvoice(invoiceConfirmationProductsStock req);
         Task<Result<SalesInvoiceDetails>> GetInvoiceDetails(int id);
         Task<Result<string>> ReverseInvoice(int id);
+        Task<Result<byte[]>> GeneratePdf(int id, bool isSimple);
+       Task<Result<byte[]>> GenerateConfirmedPdf(int id, bool isSimple);
     }
 }

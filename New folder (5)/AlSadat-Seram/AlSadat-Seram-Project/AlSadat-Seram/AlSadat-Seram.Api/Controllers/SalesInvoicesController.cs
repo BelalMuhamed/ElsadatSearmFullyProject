@@ -166,5 +166,42 @@ namespace AlSadatSeram.Controllers
             return Ok(result);
         }
 
+
+        [HttpGet("{id:int}/pdf/prepareInovoice")]
+        [Authorize(Roles = "Admin,StockManager,Accountant")]
+
+        public async Task<IActionResult> GetSimplePdf(int id)
+        {
+
+
+            var result = await _ServiceManager.SalesInvoiceService.GeneratePdf(id, true);
+
+            if (!result.IsSuccess)
+                return StatusCode((int)result.StatusCode, result);
+
+            return File(result.Data, "application/pdf", $"invoice-{id}-simple.pdf");
+        }
+        [HttpGet("{id:int}/pdf/Confirmed/store")]
+        [Authorize(Roles = "Admin,StockManager,Accountant")]
+        public async Task<IActionResult> GetSimpleConfirmedPdf(int id)
+        {
+            var result = await _ServiceManager.SalesInvoiceService.GenerateConfirmedPdf(id, true);
+
+            if (!result.IsSuccess)
+                return StatusCode((int)result.StatusCode, result);
+
+            return File(result.Data, "application/pdf", $"invoice-{id}-confirmed.pdf");
+        }
+        [HttpGet("{id:int}/pdf/confirmed")]
+        [Authorize(Roles = "Admin,StockManager,Accountant")]
+        public async Task<IActionResult> GetConfirmedPdf(int id)
+        {
+            var result = await _ServiceManager.SalesInvoiceService.GenerateConfirmedPdf(id,false);
+
+            if (!result.IsSuccess)
+                return StatusCode((int)result.StatusCode, result);
+
+            return File(result.Data, "application/pdf", $"invoice-{id}-confirmed.pdf");
+        }
     }
 }

@@ -1,10 +1,10 @@
-<div class="invoice-details-container" *ngIf="invoiceId">
+<div class="invoice-details-container" *ngIf="invoice">
 
   <!-- Invoice Header -->
 <mat-card class="invoice-card">
-  <mat-card-title>فاتورة رقم: {{ invoice.invoiceNumber }}</mat-card-title>
+  <mat-card-title>فاتورة رقم: {{ invoice?.invoiceNumber }}</mat-card-title>
  <mat-card-subtitle>
-  الموزع: {{ invoice.distributorName ?? '0' }} <br>
+  الموزع: {{ invoice?.distributorName }} <br>
   تاريخ الإنشاء: {{ invoice.createdAt ? (invoice.createdAt | date:'medium') : '0' }}<br>
   نقاط: {{ invoice.totalPoints ?? 0 }}<br>
   خصم أول: {{ invoice.firstDiscount ?? 0 | number:'1.2-2' }}<br>
@@ -18,7 +18,7 @@
   <!-- Products Table -->
   <div *ngFor="let item of invoice.withdrwanStock" class="product-card mat-elevation-z2">
     <mat-card>
-      <mat-card-title>{{ item.productName }} (ID: {{ item.productID }})</mat-card-title>
+      <mat-card-title>{{ item.productName }} </mat-card-title>
       <mat-card-subtitle>
         السعر: {{ item.sellingPrice | number:'1.2-2' }} |
         الكمية: {{ item.quantity }} |
@@ -45,7 +45,28 @@
       </table>
     </mat-card>
   </div>
+   <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 my-2">
 
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="طباعة فاتورة"
+      (click)="downloadConfirmedPdf()" *ngIf="!isUserStockManager">
+      <mat-icon>print</mat-icon>
+   طباعة فاتورة عميل
+    </button>
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="طباعة فاتورة مخزن"
+      (click)="downloadConfirmedStorePdf()">
+      <mat-icon>print</mat-icon>
+     طباعة فاتورة مخزن
+    </button>
+
+
+  </div>
 </div>
 
 <!-- Loading / Error -->

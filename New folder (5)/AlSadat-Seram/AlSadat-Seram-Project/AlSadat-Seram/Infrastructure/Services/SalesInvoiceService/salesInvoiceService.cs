@@ -2,6 +2,7 @@
 using AlSadatSeram.Services.contract.SalesInvoiceItemsDD.Dtos;
 using Application.DTOs;
 using Application.DTOs.SalesInvoices;
+using Application.Helper;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.SalesInvoiceService;
 using Domain.Common;
@@ -16,6 +17,7 @@ using Domain.UnitOfWork.Contract;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -394,13 +396,13 @@ namespace Infrastructure.Services.SalesInvoiceService
                .FindAsync(a => a.UserId == invoice.DistributorID);
                 if (customerAccount == null) return Result<string>.Failure(" هذا العميل لا يوجد له حساب في شجرة الحسابات ", HttpStatusCode.BadRequest);
                 var stockAccount = await unitOfWork.GetRepository<ChartOfAccounts, int>()
-                    .FindAsync(a => a.AccountCode == "1012");
+                    .FindAsync(a => a.AccountCode == "1.1.3");
                 if (stockAccount == null) return Result<string>.Failure(" حساب 1012 الخاص بمنتجات المخازن غير موجود ", HttpStatusCode.BadRequest);
                 var SalesAccount = await unitOfWork.GetRepository<ChartOfAccounts, int>()
-              .FindAsync(a => a.AccountCode == "401");
+              .FindAsync(a => a.AccountCode == "4.1");
                 if (SalesAccount == null) return Result<string>.Failure(" لا يمكن اثبات القيد بدون وحجود حساب 401 المبيعات في شجرة الحسابات ", HttpStatusCode.BadRequest);
                 var CostOfGoodsSoldAccount = await unitOfWork.GetRepository<ChartOfAccounts, int>()
-              .FindAsync(a => a.AccountCode == "503");
+              .FindAsync(a => a.AccountCode == "5.2");
                 if (CostOfGoodsSoldAccount == null) return Result<string>.Failure(" لا يمكن اثبات القيد بدون وحجود حساب 503 تكلفة البضاعة المباعة في شجرة الحسابات ",HttpStatusCode.BadRequest);
                 #region Update Stock
                 foreach (var pro in req.withdrwanItemsQuantities)
@@ -1393,6 +1395,44 @@ namespace Infrastructure.Services.SalesInvoiceService
                 await unitOfWork.RollbackAsync();
                 return Result<string>.Failure("حدث خطأ أثناء عكس الفاتورة", HttpStatusCode.InternalServerError);
             }
+        }
+
+
+        public async Task<Result<byte[]>> GeneratePdf(int id, bool isSimple)
+        {
+            var invoiceResult = await GetById(id);
+
+            if (!invoiceResult.IsSuccess)
+                return Result<byte[]>.Failure("Invoice not found", HttpStatusCode.NotFound);
+
+            var invoice = invoiceResult.Data;
+            var logoBytes = File.ReadAllBytes("Assets/Images/logo.png");
+
+
+
+            var document = new SalesInvoicePdfDocument(invoice, logoBytes);
+
+            var pdfBytes = document.GeneratePdf();
+
+            return Result<byte[]>.Success(pdfBytes);
+        }
+        public async Task<Result<byte[]>> GenerateConfirmedPdf(int id, bool isSimple)
+        {
+            var invoiceResult = await GetInvoiceDetails(id);
+
+            if (!invoiceResult.IsSuccess)
+                return Result<byte[]>.Failure("Invoice not found", HttpStatusCode.NotFound);
+
+            var invoice = invoiceResult.Data;
+            var logoBytes = File.ReadAllBytes("Assets/Images/logo.png");
+
+
+
+            var document = new ConfirmedSalesInvoicePdfDocument(invoice, logoBytes, isSimple);
+
+            var pdfBytes = document.GeneratePdf();
+
+            return Result<byte[]>.Success(pdfBytes);
         }
     }
 }

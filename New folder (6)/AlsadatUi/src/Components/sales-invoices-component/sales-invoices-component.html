@@ -188,7 +188,7 @@
           }
 
             @else if(element.salesInvoiceStatus==1||element.salesInvoiceStatus==3){
-                @if(element.salesInvoiceStatus!=3 && !isUserAdmin && element.deleteStatus!=0 )
+                @if(element.salesInvoiceStatus!=3 && !isUserAdmin && element.deleteStatus!=0 &&!isUserStockManager)
                   {
  <button
                             mat-icon-button
