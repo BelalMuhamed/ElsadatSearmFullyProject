@@ -13,41 +13,30 @@ export class DisAndMerchantService {
 
  apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
-  getAllDisAndMerch(filter: DistributorsAndMerchantsFilters): Observable<ApiResponse<DistributorsAndMerchantsDto[]>> {
+ getAllDisAndMerch(
+  filter: DistributorsAndMerchantsFilters
+): Observable<ApiResponse<DistributorsAndMerchantsDto[]>> {
 
-    let params = new HttpParams();
+  let params = new HttpParams();
 
-    if (filter.cityName !== null && filter.cityName !== undefined) {
-      params = params.set('cityName', filter.cityName);
-    }
+  if (filter.cityName)    params = params.set('cityName',    filter.cityName);
+  if (filter.fullName)    params = params.set('fullName',    filter.fullName);
+  if (filter.phoneNumber) params = params.set('phoneNumber', filter.phoneNumber);
 
-    if (filter.fullName !== null && filter.fullName !== undefined) {
-      params = params.set('fullName', filter.fullName);
-    }
+  if (filter.type !== null && filter.type !== undefined)
+    params = params.set('type', filter.type.toString());
 
-     if (filter.isDeleted !== null && filter.isDeleted !== undefined) {
-      params = params.set('isDeleted', filter.isDeleted);
-    }
-    if (filter.phoneNumber !== null && filter.phoneNumber !== undefined) {
-      params = params.set('phoneNumber', filter.phoneNumber);
-    }
-      if (filter.type !== null && filter.type !== undefined) {
-      params = params.set('type', filter.type);
-    }
+  if (filter.isDeleted !== null && filter.isDeleted !== undefined)
+    params = params.set('isDeleted', String(filter.isDeleted));
 
-    if (filter.page !== null && filter.page !== undefined) {
-      params = params.set('page', filter.page.toString());
-    }
+  if (filter.page)     params = params.set('page',     filter.page.toString());
+  if (filter.pageSize) params = params.set('pageSize', filter.pageSize.toString());
 
-    if (filter.pageSize !== null && filter.pageSize !== undefined) {
-      params = params.set('pageSize', filter.pageSize.toString());
-    }
-
-    return this.http.get<ApiResponse<DistributorsAndMerchantsDto[]>>(
-      `${this.apiUrl}DistAndMerch/list`,
-      { params }
-    );
-  }
+  return this.http.get<ApiResponse<DistributorsAndMerchantsDto[]>>(
+    `${this.apiUrl}DistAndMerch/list`,
+    { params }
+  );
+}
   EditDisOrMerchant(req:DistributorsAndMerchantsDto):Observable<Result<any>>
   {
  return this.http.put<Result<any>>(`${this.apiUrl}DistAndMerch/edit/${req.userId}`, req);

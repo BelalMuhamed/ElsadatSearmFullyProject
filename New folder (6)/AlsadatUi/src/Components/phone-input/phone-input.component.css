@@ -1,51 +1,81 @@
-/* PhoneInputComponent — two side-by-side Material form fields.
-   The wrapper is forced to LTR even on Arabic pages — standard phone UX.
-   Matches the project's existing `custom-input-theme` class (gold palette). */
+/* PhoneInputComponent — unified country + national-number control.
+   Renders as ONE visual pill, theme-aware via CSS variables.
+   LTR-forced (standard phone UX even on Arabic pages). */
 
+/* ───────── Wrapper ───────── */
 .phone-input-wrapper {
-display:  flex;
+  display: flex;
+  align-items: stretch;
+  gap: 0;                              /* zero gap → fields touch */
+  width: 100%;
+  direction: ltr;
 }
 
-/* ---- Country selector (narrower) ---- */
-/* .phone-country-field {
-  flex: 0 0 130px;
-  min-width: 110px;
-} */
+/* ───────── Country selector (left, narrower) ───────── */
+.phone-country-field {
+  flex: 0 0 140px;
+  min-width: 120px;
+}
 
-/* ---- National number input (takes remaining width) ---- */
+/* ───────── National number (right, fills remaining) ───────── */
 .phone-number-field {
   flex: 1 1 auto;
   min-width: 0;
 }
 
+/* ───────── Pill-merge: country + number look like ONE control ───────── */
+::ng-deep .phone-country-field .mdc-notched-outline__trailing {
+  border-start-end-radius: 0 !important;
+  border-end-end-radius: 0 !important;
+  border-inline-end: none !important;
+}
 
+::ng-deep .phone-number-field .mdc-notched-outline__leading {
+  border-start-start-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+}
 
-/* Selected-country trigger display inside the mat-select */
+/* ───────── Hide subscript wrappers (the empty space below each field) ───────── */
+::ng-deep .phone-country-field .mat-mdc-form-field-subscript-wrapper,
+::ng-deep .phone-number-field .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+/* ───────── Equalize heights ───────── */
+::ng-deep .phone-country-field .mat-mdc-text-field-wrapper,
+::ng-deep .phone-number-field .mat-mdc-text-field-wrapper {
+  height: 56px;
+}
+
+::ng-deep .phone-country-field .mat-mdc-form-field-infix,
+::ng-deep .phone-number-field .mat-mdc-form-field-infix {
+  padding-top: 16px !important;
+  padding-bottom: 8px !important;
+}
+
+/* ───────── Selected-country trigger ───────── */
 .phone-country-trigger {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: inherit;
-  direction: ltr;
 }
-
 .phone-country-trigger .dial-code {
   font-weight: 600;
-  color: var(--gold, #d4af37);
+  color: var(--gold);
 }
-
 .phone-country-trigger .iso-code {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   opacity: 0.7;
   letter-spacing: 0.5px;
 }
 
 .required-mark {
-  color: #d33;
+  color: var(--danger-color, #d33);
   margin-inline-start: 2px;
 }
 
-/* ---- Country list option ---- */
+/* ───────── Country list option ───────── */
 .country-option {
   display: flex;
   align-items: center;
@@ -53,100 +83,61 @@ display:  flex;
   width: 100%;
   gap: 12px;
 }
-
 .country-name-ar {
   flex: 1;
   text-align: right;
 }
-
 .country-dial {
-  color: var(--gold, #d4af37);
+  color: var(--gold);
   font-weight: 600;
   direction: ltr;
   unicode-bidi: embed;
 }
 
-/* ---- Search box at the top of the panel ---- */
+/* ───────── Search box (sticky at top of dropdown) ───────── */
 .country-search-wrapper {
   position: sticky;
   top: 0;
   z-index: 2;
   padding: 8px 12px;
-  background: inherit;
-  color: inherit;
+  background: var(--sidenav-bg, inherit);
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .country-search-input {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 6px;
-  background: transparent;
-  color: inherit;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-color);
   font-size: 0.9rem;
   font-family: inherit;
   outline: none;
   box-sizing: border-box;
 }
-
 .country-search-input:focus {
-  border-color: var(--gold, #d4af37);
-  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.18);
 }
 
 .country-empty {
   padding: 16px;
   text-align: center;
-  color: #888;
+  color: var(--input-placeholder, #888);
   font-size: 0.9rem;
 }
 
-/* ---- Panel width override via global class (see note below) ---- */
-/* Angular Material applies the panelClass to .mat-mdc-select-panel.
-   We need :global-ish reach; ::ng-deep is the simplest for Angular 17 view encapsulation. */
+/* ───────── Dropdown panel sizing ───────── */
 ::ng-deep .phone-country-panel.mat-mdc-select-panel {
   min-width: 280px !important;
   max-height: 320px !important;
 }
-
 ::ng-deep .phone-country-panel .mat-mdc-option {
   min-height: 40px;
 }
-.phone-country-field .mat-mdc-form-field-subscript-wrapper,
-.phone-number-field .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
-.phone-country-field .mat-mdc-text-field-wrapper,
-.phone-number-field .mat-mdc-text-field-wrapper {
 
- height: 56px; /* Material default */
-}
-
-
-.phone-input-wrapper {
-  display: flex;
-  gap: 8px;
-align-items: center;}
-.phone-input-wrapper mat-form-field {
-  box-sizing: border-box;
-}
-
-.phone-country-field {
-   flex: 0 0 140px; /* fixed width */
-  min-width: 120px;
-}
-
-.phone-number-field {
-  flex: 1;
-}
-::ng-deep .mat-mdc-form-field-infix {
-  padding-top: 16px !important;
-  padding-bottom: 8px !important;
-}
-
-
-/* ---- Responsive: stack on narrow screens ---- */
+/* ───────── Responsive ───────── */
 @media (max-width: 520px) {
   .phone-input-wrapper {
     flex-direction: column;
@@ -156,5 +147,15 @@ align-items: center;}
     flex: 1 1 auto;
     width: 100%;
     min-width: 0;
+  }
+  /* Restore independent rounded corners on stacked layout */
+  ::ng-deep .phone-country-field .mdc-notched-outline__trailing {
+    border-start-end-radius: 4px !important;
+    border-end-end-radius: 4px !important;
+    border-inline-end: 1px solid var(--gold) !important;
+  }
+  ::ng-deep .phone-number-field .mdc-notched-outline__leading {
+    border-start-start-radius: 4px !important;
+    border-end-start-radius: 4px !important;
   }
 }

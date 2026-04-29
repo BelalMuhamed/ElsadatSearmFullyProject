@@ -174,96 +174,7 @@ namespace Infrastructure.Services
             }
         }
 
-        //   public async Task<ApiResponse<List<DistributorsAndMerchantsAndAgentsDto>>> GetAllDistributorsAndMerchants(DistributorsAndMerchantsFilters req)
-        //   {
-        //       var query = unitOfWork
-        //.GetRepository<Distributor_Merchant_Agent, string>()
-        //.GetQueryable();
-
-        //       // Apply Includes first
-        //       query = query
-        //           .Include(x => x.User)
-        //           .ThenInclude(u => u.City);
-
-        //       // -------------------------------
-        //       // Apply Filters
-        //       // -------------------------------
-
-        //       if (!string.IsNullOrWhiteSpace(req.fullName))
-        //           query = query.Where(x => x.User.FullName.Contains(req.fullName));
-
-        //       if (!string.IsNullOrWhiteSpace(req.phoneNumber))
-        //           query = query.Where(x => x.User.PhoneNumber.Contains(req.phoneNumber));
-
-        //       if (!string.IsNullOrWhiteSpace(req.cityName))
-        //           query = query.Where(x => x.User.City.Name.Contains(req.cityName));
-
-        //       if (req.type != null)
-        //           query = query.Where(x =>(int)x.Type == req.type);
-        //       if (req.isDeleted!= null)
-        //           query=query.Where(x=>x.User.IsDeleted == req.isDeleted);
-        //       // -------------------------------
-        //       // Total Count
-        //       // -------------------------------
-        //       var totalCount = await query.CountAsync();
-
-        //       // -------------------------------
-        //       // Pagination
-        //       // -------------------------------
-        //       int page = req.page <= 0 ? 1 : req.page;
-        //       int pageSize = req.pageSize <= 0 ? 10 : req.pageSize;
-
-        //       var skip = (page - 1) * pageSize;
-
-        //       // -------------------------------
-        //       // Select DTO
-        //       // -------------------------------
-        //       var list = await query
-        //           .OrderByDescending(x => x.User.CreateAt)
-        //           .Skip(skip)
-        //           .Take(pageSize)
-        //           .Select(x => new DistributorsAndMerchantsAndAgentsDto
-        //           {
-        //               userId = x.UserId,
-        //               fullName = x.User.FullName,
-        //               address = x.User.Address,
-        //               gender = (int?)x.User.Gender,
-        //               type =(int) x.Type,
-
-        //               createdAt = x.User.CreateAt,
-        //               createdBy = x.User.CreateBy,
-        //               updatedAt = x.User.UpdateAt,
-        //               updatedBy = x.User.UpdateBy,
-        //               isDelted = x.User.IsDeleted,
-        //               deletedAt = x.User.DeleteAt,
-        //               deletedBy = x.User.DeleteBy,
-
-        //               cityId = x.User.CityID,
-        //               cityName = x.User.City != null ? x.User.City.Name : null,
-
-        //               phoneNumber = x.User.PhoneNumber,
-        //               password = null,
-        //               firstSpecialDiscount = x.FirstSpecialDiscount,
-        //               secondSpecialDiscount = x.SecondSpecialDiscount,
-        //               thirdSpecialDiscount = x.ThirdSpecialDiscount,
-        //               PointsBalance = x.Balance,
-        //               cashBalance = x.CashBalance,
-        //               indebtedness = x.Indebtedness
-        //           })
-        //           .ToListAsync();
-
-        //       // -------------------------------
-        //       // Final Response
-        //       // -------------------------------
-        //       return new ApiResponse<List<DistributorsAndMerchantsAndAgentsDto>>
-        //       {
-        //           data = list,
-        //           totalCount = totalCount,
-        //           page = page,
-        //           pageSize = pageSize,
-        //           totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
-        //       };
-        //   }
+      
         public async Task<ApiResponse<List<DistributorsAndMerchantsAndAgentsDto>>>
         GetAllDistributorsAndMerchants(DistributorsAndMerchantsFilters req)
         {
@@ -340,7 +251,6 @@ namespace Infrastructure.Services
                     cityName = x.User.City != null ? x.User.City.Name : null,
 
                     phoneNumber = x.User.PhoneNumber,
-                    password = null,
 
                     firstSpecialDiscount = x.FirstSpecialDiscount,
                     secondSpecialDiscount = x.SecondSpecialDiscount,
@@ -366,35 +276,38 @@ namespace Infrastructure.Services
                     : 1
             };
         }
-        public async Task<Result<string>> EditDistributorOrMerchant(DistributorsAndMerchantsAndAgentsDto dto)
+        public async Task<Result<string>> EditDistributorOrMerchant(
+            DistributorsAndMerchantsAndAgentsDto dto)
         {
+            // ───────── 1. Validation (aligned with Excel import contract) ─────────
+            if (string.IsNullOrWhiteSpace(dto.userId))
+                return Result<string>.Failure("معرف المستخدم مطلوب", HttpStatusCode.BadRequest);
+
+            if (string.IsNullOrWhiteSpace(dto.fullName))
+                return Result<string>.Failure("الإسم مطلوب", HttpStatusCode.BadRequest);
+
+            if (string.IsNullOrWhiteSpace(dto.phoneNumber))
+                return Result<string>.Failure("رقم الهاتف مطلوب", HttpStatusCode.BadRequest);
+
+            if (dto.type is null || dto.type < 0 || dto.type > 2)
+                return Result<string>.Failure("النوع غير صالح", HttpStatusCode.BadRequest);
+
+            // ⛔ REMOVED: cityId required check — city is OPTIONAL (Excel import support).
+            // ⛔ REMOVED: address required check — address is OPTIONAL.
+
             await unitOfWork.BeginTransactionAsync();
 
             try
             {
-                
-                if (dto.userId is null)
-                    return Result<string>.Failure("المستخدم غير موجود", HttpStatusCode.BadRequest);
-
-                if (string.IsNullOrWhiteSpace(dto.fullName))
-                    return Result<string>.Failure("الإسم مطلوب", HttpStatusCode.BadRequest);
-
-                if (string.IsNullOrWhiteSpace(dto.phoneNumber))
-                    return Result<string>.Failure("رقم الهاتف مطلوب", HttpStatusCode.BadRequest);
-
-                if (dto.cityId is null)
-                    return Result<string>.Failure("المدينة مطلوبة", HttpStatusCode.BadRequest);
-
-
-                
                 var userRepo = unitOfWork.GetRepository<ApplicationUser, string>();
                 var distRepo = unitOfWork.GetRepository<Distributor_Merchant_Agent, string>();
 
+                // ───────── 2. Load existing aggregate ─────────
                 var user = await userRepo.GetQueryable()
                                          .Include(x => x.City)
                                          .FirstOrDefaultAsync(u => u.Id == dto.userId);
 
-                if (user == null)
+                if (user is null)
                 {
                     await unitOfWork.RollbackAsync();
                     return Result<string>.Failure("المستخدم غير موجود", HttpStatusCode.NotFound);
@@ -403,64 +316,79 @@ namespace Infrastructure.Services
                 var dist = await distRepo.GetQueryable()
                                          .FirstOrDefaultAsync(x => x.UserId == user.Id);
 
-                if (dist == null)
+                if (dist is null)
                 {
                     await unitOfWork.RollbackAsync();
                     return Result<string>.Failure("البيانات غير موجودة", HttpStatusCode.NotFound);
                 }
 
-
-                
-                bool phoneExists = userRepo.GetQueryable()
-                                           .Any(x => x.UserName == dto.phoneNumber && x.Id != user.Id);
+                // ───────── 3. Phone uniqueness ─────────
+                bool phoneExists = await userRepo.GetQueryable()
+                    .AnyAsync(x => x.UserName == dto.phoneNumber && x.Id != user.Id);
 
                 if (phoneExists)
                 {
                     await unitOfWork.RollbackAsync();
-                    return Result<string>.Failure("رقم الهاتف مستخدم بالفعل من مستخدم آخر", HttpStatusCode.Conflict);
+                    return Result<string>.Failure(
+                        "رقم الهاتف مستخدم بالفعل من مستخدم آخر",
+                        HttpStatusCode.Conflict);
                 }
 
+                // ───────── 4. Apply patch ─────────
+                // Required fields (validated above) overwrite directly.
+                user.FullName = dto.fullName!;
+                user.PhoneNumber = dto.phoneNumber!;
+                user.UserName = dto.phoneNumber!;
+                user.Email = dto.phoneNumber!;
+                user.NormalizedUserName = dto.phoneNumber!.ToUpper();
+                user.NormalizedEmail = dto.phoneNumber!.ToUpper();
 
+                // Optional fields — null means "set to null" (true PUT semantics).
+                user.Address = dto.address;
+                user.CityID = dto.cityId;
+                if (dto.gender.HasValue) user.Gender = (Gender)dto.gender.Value;
+
+                // Server-owned audit (DO NOT trust client-supplied values).
+                var currentUserId = currentUserService.UserId;
+                var currentUser= await userRepo.FindAsync(u=>u.Id==currentUserId);
                
-                user.FullName = dto.fullName??user.FullName;
-                user.CityID = dto.cityId??user.CityID;
-                user.PhoneNumber = dto.phoneNumber??user.PhoneNumber;
-                user.Address=dto.address??user.Address;
-                user.UserName = dto.phoneNumber ?? user.PhoneNumber;
-                user.Email = dto.phoneNumber ?? user.PhoneNumber;
-                user.Gender = (Gender)dto.gender;
-                user.UpdateAt = dto.updatedAt??user.UpdateAt;
-                user.UpdateBy=dto.updatedBy??user.UpdateBy;
-                user.DeleteAt = dto.deletedAt??user.DeleteAt;
-                user.DeleteBy=dto.deletedBy??user.DeleteBy;
-                user.NormalizedUserName = dto.phoneNumber ?? user.PhoneNumber.ToUpper();
-                user.NormalizedEmail = dto.phoneNumber ?? user.PhoneNumber.ToUpper();
-                dist.Type = (DistributorOrMerchantOrAgent)dto.type;
-                dist.CashBalance = dto.cashBalance??dist.CashBalance;
-                dist.Balance = dto.PointsBalance??dist.Balance; 
-                dist.Indebtedness=dto.indebtedness??dist.Indebtedness;
-                user.IsDeleted=dto.isDelted??user.IsDeleted;
+                user.UpdateAt = DateTime.UtcNow;
+                user.UpdateBy = currentUser is not null
+                    ? $"{currentUser.FullName} / {currentUser.Email}"
+                    : user.UpdateBy;
+
+                // Soft-delete toggling (controller-driven; safe to honor here).
+                if (dto.isDelted.HasValue)
+                {
+                    user.IsDeleted = dto.isDelted.Value;
+                    user.DeleteAt = dto.isDelted.Value ? DateTime.UtcNow : null;
+                    user.DeleteBy = dto.isDelted.Value
+                        ? user.UpdateBy
+                        : null;
+                }
+
+                // Distributor record
+                dist.Type = (DistributorOrMerchantOrAgent)dto.type!.Value;
+                dist.CashBalance = dto.cashBalance ?? dist.CashBalance;
+                dist.Balance = dto.PointsBalance ?? dist.Balance;
+                dist.Indebtedness = dto.indebtedness ?? dist.Indebtedness;
                 dist.FirstSpecialDiscount = dto.firstSpecialDiscount;
                 dist.SecondSpecialDiscount = dto.secondSpecialDiscount;
                 dist.ThirdSpecialDiscount = dto.thirdSpecialDiscount;
+
+                // ───────── 5. Persist ─────────
                 int saved = await unitOfWork.SaveChangesAsync();
 
-                if (saved > 0)
-                {
-                    await unitOfWork.CommitAsync();
-                    return Result<string>.Success("تم التعديل بنجاح", HttpStatusCode.OK);
-                }
-                else
-                {
-                    await unitOfWork.RollbackAsync();
-                    return Result<string>.Failure("لم يتم حفظ التعديلات", HttpStatusCode.BadRequest);
-                }
+                // saved == 0 is legitimate when nothing changed; treat as success.
+                await unitOfWork.CommitAsync();
+                return Result<string>.Success("تم التعديل بنجاح", HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await unitOfWork.RollbackAsync();
-
-                return Result<string>.Failure("حدث خطأ أثناء تعديل البيانات", HttpStatusCode.InternalServerError);
+                return Result<string>.Failure(
+                    "حدث خطأ أثناء تعديل البيانات",
+                    HttpStatusCode.InternalServerError);
             }
         }
         public async Task<Result<DistributorsAndMerchantsAndAgentsDto>> GetDistributorOrMerchantById(string userId)
@@ -560,154 +488,7 @@ namespace Infrastructure.Services
             }
         }
 
-        // =======================================================
-        // DistributorsAndMerchantsService
-        // EXPORT TEMPLATE METHOD
-        // Using ClosedXML directly (since ExcelService has no export)
-        // =======================================================
-
-        //public async Task<Result<byte[]>> ExportTemplateAsync(CancellationToken ct)
-        //{
-        //    try
-        //    {
-        //        ct.ThrowIfCancellationRequested();
-
-        //        using var workbook = new XLWorkbook();
-
-        //        // ==========================================
-        //        // Sheet 1 : Main Template
-        //        // ==========================================
-        //        var ws = workbook.Worksheets.Add("Distributors");
-
-        //        ws.Cell(1, 1).Value = "الاسم بالكامل";
-        //        ws.Cell(1, 2).Value = "النوع";
-        //        ws.Cell(1, 3).Value = "رقم الهاتف";
-
-        //        // Header Style
-        //        var header = ws.Range(1, 1, 1, 3);
-
-        //        header.Style.Font.Bold = true;
-        //        header.Style.Font.FontSize = 12;
-        //        header.Style.Alignment.Horizontal =
-        //            XLAlignmentHorizontalValues.Center;
-
-        //        header.Style.Fill.BackgroundColor =
-        //            XLColor.FromHtml("#D4AF37");
-
-        //        header.Style.Border.OutsideBorder =
-        //            XLBorderStyleValues.Thin;
-
-        //        header.Style.Border.InsideBorder =
-        //            XLBorderStyleValues.Thin;
-
-
-        //        // ==========================================
-        //        // Example Row
-        //        // ==========================================
-        //        ws.Cell(2, 1).Value = "شركة النور التجارية";
-        //        ws.Cell(2, 2).Value = "تاجر";
-        //        ws.Cell(2, 3).Style.NumberFormat.Format = "@";
-        //        ws.Cell(2, 3).SetValue("01012345678");
-
-        //        ws.Range(2, 1, 2, 3).Style.Font.Italic = true;
-        //        ws.Range(2, 1, 2, 3).Style.Font.FontColor =
-        //            XLColor.Gray;
-
-
-        //        // ==========================================
-        //        // Force phone column text format
-        //        // ==========================================
-        //        ws.Column(3).Style.NumberFormat.Format = "@";
-        //        ws.Range(2, 3, 1000, 3).Style.NumberFormat.Format = "@";
-
-
-        //        // ==========================================
-        //        // Dropdown for Type Column
-        //        // ==========================================
-        //        var validationRange = ws.Range("B2:B1000");
-
-        //        var validation = validationRange.CreateDataValidation();
-
-        //        validation.IgnoreBlanks = true;
-        //        validation.InCellDropdown = true;
-        //        validation.AllowedValues = XLAllowedValues.List;
-        //        validation.List("موزع,تاجر,وكيل");
-
-
-        //        // ==========================================
-        //        // Comment on Phone Header
-        //        // ==========================================
-        //        ws.Cell(1, 3)
-        //          .CreateComment()
-        //          .AddText("اكتب رقم الهاتف كنص حتى لا يغيره Excel");
-
-
-        //        // ==========================================
-        //        // Auto Size
-        //        // ==========================================
-        //        ws.Columns().AdjustToContents();
-
-        //        ws.Column(1).Width = Math.Max(ws.Column(1).Width, 30);
-        //        ws.Column(2).Width = Math.Max(ws.Column(2).Width, 18);
-        //        ws.Column(3).Width = Math.Max(ws.Column(3).Width, 22);
-
-        //        ws.SheetView.FreezeRows(1);
-
-
-        //        // ==========================================
-        //        // Sheet 2 : Instructions
-        //        // ==========================================
-        //        var help = workbook.Worksheets.Add("Instructions");
-
-        //        help.Cell(1, 1).Value = "تعليمات الاستيراد";
-        //        help.Cell(1, 1).Style.Font.Bold = true;
-        //        help.Cell(1, 1).Style.Font.FontSize = 14;
-
-        //        help.Cell(3, 1).Value = "الأعمدة المطلوبة:";
-        //        help.Cell(3, 1).Style.Font.Bold = true;
-
-        //        help.Cell(4, 1).Value = "1- الاسم بالكامل (إجباري)";
-        //        help.Cell(5, 1).Value = "2- النوع: موزع / تاجر / وكيل";
-        //        help.Cell(6, 1).Value = "3- رقم الهاتف (إجباري وفريد)";
-
-        //        help.Cell(8, 1).Value = "ملاحظات:";
-        //        help.Cell(8, 1).Style.Font.Bold = true;
-
-        //        help.Cell(9, 1).Value =
-        //            "احذف الصف التجريبي قبل رفع الملف";
-
-        //        help.Cell(10, 1).Value =
-        //            "أي رقم هاتف مكرر سيتم رفضه";
-
-        //        help.Column(1).Width = 80;
-
-
-        //        // ==========================================
-        //        // Save File
-        //        // ==========================================
-        //        using var ms = new MemoryStream();
-
-        //        workbook.SaveAs(ms);
-
-        //        return Result<byte[]>.Success(
-        //            ms.ToArray(),
-        //            "تم إنشاء القالب بنجاح");
-        //    }
-        //    catch (OperationCanceledException)
-        //    {
-        //        return Result<byte[]>.Failure(
-        //            "تم إلغاء العملية",
-        //            HttpStatusCode.BadRequest);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await unitOfWork.LogError(ex);
-
-        //        return Result<byte[]>.Failure(
-        //            "حدث خطأ أثناء إنشاء الملف",
-        //            HttpStatusCode.InternalServerError);
-        //    }
-        //}
+       
 
         public async Task<Result<byte[]>> ExportTemplateAsync(CancellationToken ct)
         {

@@ -1,0 +1,219 @@
+/* =========================================================================
+   Warehouse Inventory page — design tokens consumed from the global theme.
+   Uses CSS custom properties so the page works in both light and dark mode.
+   ========================================================================= */
+
+.inventory-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  color: var(--text-color, #1f2937);
+}
+
+/* ---------- Header ---------- */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 3px solid #0f85d3;
+  padding-bottom: .75rem;
+}
+
+.title-block {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.title-icon { height: 36px; width: auto; }
+
+.page-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-color, #0f85d3);
+}
+
+.header-actions { display: flex; gap: .5rem; }
+
+/* ---------- Legend ---------- */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: .5rem .75rem;
+  background: var(--input-bg, #fafafa);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  font-size: .875rem;
+}
+
+.legend-item { display: inline-flex; align-items: center; gap: .4rem; }
+
+.dot {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+/* ---------- Filters ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-field { min-width: 220px; flex: 1 1 220px; }
+
+.low-only-toggle { margin-inline-start: auto; }
+
+/* ---------- Loading / Empty ---------- */
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  padding: 3rem 1rem;
+  color: var(--muted-text, #6b7280);
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  opacity: .5;
+}
+
+/* ---------- Table ---------- */
+.table-wrap {
+  background: var(--input-bg, #fff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  overflow: auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+  min-width: 800px;
+}
+
+.inventory-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--header-bg, #0f85d3);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  padding: .75rem .5rem;
+  border-bottom: 2px solid rgba(0,0,0,.08);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.inventory-table tbody td {
+  padding: .65rem .5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color, #f3f4f6);
+}
+
+.inventory-table tbody tr:hover td {
+  background: var(--hover-bg, rgba(15,133,211,.06));
+}
+
+.col-code  { font-family: monospace; font-weight: 600; }
+.col-name  { text-align: start; }
+.col-min   { color: var(--muted-text, #6b7280); }
+.col-total { font-weight: 700; }
+.qty-cell  { font-variant-numeric: tabular-nums; }
+
+/* Deleted product / store visual cues */
+.deleted-row td {
+  background: var(--color-deleted, #fee2e2) !important;
+  color: var(--text-deleted, #991b1b) !important;
+  font-style: italic;
+}
+
+.deleted-store {
+  text-decoration: line-through;
+  opacity: .7;
+}
+
+/* ---------- Status colors (driven by server-side StockHealth) ---------- */
+.health-out {
+  background: #fecaca;
+  color: #7f1d1d;
+}
+.health-critical {
+  background: #fed7aa;
+  color: #9a3412;
+}
+.health-warning {
+  background: #fef08a;
+  color: #854d0e;
+}
+.health-healthy {
+  background: #bbf7d0;
+  color: #14532d;
+}
+
+.dot.health-out      { background: #fecaca; border-color: #7f1d1d; }
+.dot.health-critical { background: #fed7aa; border-color: #9a3412; }
+.dot.health-warning  { background: #fef08a; border-color: #854d0e; }
+.dot.health-healthy  { background: #bbf7d0; border-color: #14532d; }
+
+.status-pill {
+  display: inline-block;
+  padding: .15rem .65rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+/* ---------- Footer totals row ---------- */
+.totals-row td {
+  background: var(--footer-bg, #f9fafb);
+  font-weight: 700;
+  border-top: 2px solid var(--header-bg, #0f85d3);
+  padding: .85rem .5rem;
+}
+
+.totals-row .col-code {
+  text-align: end;
+  font-family: inherit;
+  color: var(--text-color, #1f2937);
+}
+
+.warehouse-total-cell { font-size: 1rem; }
+
+.grand-total {
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 1.05rem;
+}
+
+/* ---------- Paginator ---------- */
+.paginator {
+  background: transparent;
+  border-top: 1px solid var(--border-color, #f3f4f6);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .filters { flex-direction: column; align-items: stretch; }
+  .low-only-toggle { margin-inline-start: 0; }
+  .header-actions { width: 100%; justify-content: flex-end; }
+}

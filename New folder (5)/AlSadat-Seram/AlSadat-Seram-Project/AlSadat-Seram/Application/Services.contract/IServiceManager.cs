@@ -72,7 +72,9 @@ namespace Application.Services.contract
         public IPurchaseInvoiceContract purchaseInvoiceService { get; }
         public IjournalEntryDetails journalEntryDeatils { get; }
         public IJounalEntryContract journalEntry { get; }
-    
+        public IWarehouseInventoryReportService warehouseInventoryReportService { get; }
+
+
 
 
 

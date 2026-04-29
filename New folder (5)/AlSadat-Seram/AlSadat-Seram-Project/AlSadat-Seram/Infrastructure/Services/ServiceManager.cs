@@ -111,6 +111,8 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IjournalEntryDetails> _journalEntryDetails;
     private readonly Lazy<IJounalEntryContract> _journalEntry;
     private readonly IExcelReaderService excelReader;
+    private readonly Lazy<IWarehouseInventoryReportService> _warehouseInventoryReportService;
+
 
     public ServiceManager(
     IUnitOfWork UnitOfWork,
@@ -163,6 +165,8 @@ public class ServiceManager: IServiceManager
         _EmployeeLeaveService = new Lazy<IEmployeeLeaveService>(() => new EmployeeLeaveService(UnitOfWork,_CurrentUserService.Value,UserManager));
         _EmployeeBonusService = new Lazy<IEmployeeBonusService>(() => new EmployeeBonusService(UnitOfWork, _CurrentUserService.Value));    
         _RepresentativeAttendanceService = new Lazy<IRepresentativeAttendanceService>(() => new RepresentativeAttendanceService(UnitOfWork,_CurrentUserService.Value,UserManager));
+        _warehouseInventoryReportService = new Lazy<IWarehouseInventoryReportService>(
+            () => new WarehouseInventoryReportService(UnitOfWork));
         excelReader = ExcelReader;
     }
     // Properties to access the services
@@ -216,4 +220,6 @@ public class ServiceManager: IServiceManager
     IRepresentativeService IServiceManager._RepresentativeService => _RepresentativeService.Value;
     public IRepresentativeAttendanceService RepresentativeAttendanceService => _RepresentativeAttendanceService.Value;
 
+    public IWarehouseInventoryReportService warehouseInventoryReportService
+          => _warehouseInventoryReportService.Value;
 }

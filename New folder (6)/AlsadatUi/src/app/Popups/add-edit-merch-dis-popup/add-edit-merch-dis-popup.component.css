@@ -5,39 +5,62 @@
   border-radius: 24px !important;
   border: 1px solid var(--gold);
   padding: 24px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,.8);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .8);
 }
 
-/* 🔥 Title */
-.popup-title {
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Title */
+.popup-title,
+.dialog-title {
   text-align: center;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--gold);
-  margin-bottom: 20px;
+  margin: 0 0 4px;
 }
 
-/* 🔥 Form Layout */
+/* Subtitle (visible only on Edit) */
+.dialog-subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 16px;
+}
+.dialog-subtitle .dot {
+  color: var(--gold);
+}
+
+/* Form */
 .popup-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 14px 16px;
+  padding: 16px 4px;
+}
+.full-width  { grid-column: span 1; }
+.full-row    { grid-column: 1 / -1; }
+
+.optional-hint {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-inline-start: 4px;
 }
 
-/* Full width for long fields */
-.full-width {
-  grid-column: span 1;
-}
-
-/* 🔥 Form Fields */
-.mat-mdc-form-field {
-  width: 100%;
-}
+/* Form fields */
+.mat-mdc-form-field { width: 100%; }
 
 .mat-mdc-text-field-wrapper,
 .mdc-text-field {
-   background-color: var(--input-bg);
-
+  background-color: var(--input-bg);
   border-radius: 12px !important;
   padding: 4px 12px !important;
 }
@@ -48,74 +71,114 @@
   border-color: var(--gold) !important;
 }
 
-/* text */
-.mdc-floating-label {
-  color: var(--gold) !important;
-}
-
-/* 🔥 Dropdown Arrow + text */
+.mdc-floating-label              { color: var(--gold) !important; }
 .mat-mdc-select-value-text,
-.mat-mdc-select-arrow {
-  color: var(--text-color) !important;
-}
+.mat-mdc-select-arrow            { color: var(--text-color) !important; }
+.mat-mdc-select-panel            { background-color: var(--sidenav-bg) !important; border: 1px solid var(--gold); }
+.mat-mdc-option                  { color: var(--text-color) !important; }
+.mat-mdc-option:hover            { background-color: var(--hover-bg) !important; }
 
-/* dropdown panel */
-.mat-mdc-select-panel {
-  background-color: var(--sidenav-bg) !important;
+/* In-panel city search input */
+.select-search-input {
+  width: calc(100% - 16px);
+  margin: 6px 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
   border: 1px solid var(--gold);
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+.select-search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, .25);
 }
 
-/* options */
-.mat-mdc-option {
-  color: var(--text-color) !important;
+/* Discount group */
+.discount-group {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--gold);
+  border-radius: 14px;
+  padding: 10px 16px 4px;
+  margin-top: 4px;
+}
+.discount-group legend {
+  padding: 0 8px;
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+.discount-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
-.mat-mdc-option:hover {
-  background-color: var(--hover-bg) !important;
-}
-
+/* Actions */
 .popup-actions {
-  margin-top: 25px;
-  padding: 0 30px 20px 30px; /* ✅ مسافة من الجوانب وتحت */
+  margin-top: 18px;
+  padding: 0 8px 8px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  gap: 12px;
+}
+
+.popup-btn-cancel,
+.popup-btn-save {
+  min-width: 130px;
+  border-radius: 14px;
+  padding: 10px 22px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: 0.25s ease;
+  cursor: pointer;
 }
 
 .popup-btn-cancel {
-  padding: 10px 24px;
   background: transparent;
   border: 2px solid var(--gold);
   color: var(--gold);
-  border-radius: 12px;
-  font-weight: 600;
-  transition: 0.3s;
 }
-
-.popup-btn-cancel:hover {
-  background: var(--hover-bg);
-}
+.popup-btn-cancel:hover:not(:disabled) { background: var(--hover-bg); }
 
 .popup-btn-save {
-  padding: 10px 24px;
   background: var(--gold);
+  color: #000;
   border: none;
-  border-radius: 12px;
-  color: black;
-  font-weight: 700;
-  transition: 0.3s;
 }
-
-.popup-btn-save:disabled {
-  opacity: .4;
-}
-
 .popup-btn-save:hover:not(:disabled) {
   background: var(--active-bg);
   color: var(--gold);
 }
-.popup-btn-cancel,
-.popup-btn-save {
-  min-width: 110px;   /* ✅ شكل أفضل */
-  border-radius: 14px;
+.popup-btn-save:disabled,
+.popup-btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Spinner color inside the gold button */
+.popup-btn-save ::ng-deep .mat-mdc-progress-spinner circle {
+  stroke: #000;
+}
+/* Phone field — full row, error rendered below */
+.phone-wrap {
+  width: 100%;
+}
+.phone-error {
+  font-size: 0.78rem;
+  color: var(--danger-color, #d33);
+  margin-top: 4px;
+  padding-inline-start: 4px;
+}
+/* Responsive — single column on phones */
+@media (max-width: 600px) {
+  .popup-form        { grid-template-columns: 1fr; }
+  .discount-grid     { grid-template-columns: 1fr; }
+  .popup-actions     { flex-direction: column-reverse; align-items: stretch; }
+  .popup-btn-cancel,
+  .popup-btn-save    { width: 100%; }
 }

@@ -31,7 +31,6 @@ import { RolesComponent } from '../Components/roles-component/roles-component';
 import { EmployeeAddComponent } from '../Components/employee-add-component/employee-add-component';
 import { EmployeeSalaryComponent } from '../Components/employee-salary-component/employee-salary-component';
 import { PayrollComponent } from '../Components/payroll-component/payroll-component';
-import { StockComponent } from '../Components/stock/stock.component';
 import { SalarySearchComponent } from '../Components/salary-search-component/salary-search-component';
 import { QuickAttendanceComponent } from '../Components/quick-attendance-component/quick-attendance-component';
 import { DepartmentComponent } from '../Components/department-component/department-component';
@@ -251,8 +250,8 @@ export const routes: Routes = [
 
  {
         path: 'stocks',
-        loadComponent: () => import('../Components/stock/stock.component')
-          .then(m => m.StockComponent),
+        loadComponent: () => import('../Components/warehouse-inventory/warehouse-inventory.component')
+          .then(m => m.WarehouseInventoryComponent),
        canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'StockManager'] }
       },
 

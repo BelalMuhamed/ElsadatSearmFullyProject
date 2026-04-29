@@ -1,0 +1,133 @@
+<div class="inventory-page" dir="rtl">
+
+  <!-- ────────────── Page Header ────────────── -->
+  <header class="page-header">
+    <div class="title-block">
+      <img src="assets/imgs/stock.png" alt="" class="title-icon" aria-hidden="true">
+      <h2 class="page-title">المخزون</h2>
+    </div>
+
+    <div class="header-actions">
+      <button mat-flat-button
+              color="primary"
+              type="button"
+              [disabled]="isExporting() || !hasData()"
+              (click)="exportToExcel()"
+              matTooltip="تصدير التقرير الحالي إلى ملف Excel">
+        <mat-icon>download</mat-icon>
+        <span>{{ isExporting() ? 'جاري التصدير…' : 'تصدير إلى Excel' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ────────────── Legend ────────────── -->
+  <section class="legend" aria-label="مفتاح الألوان">
+    <span class="legend-item"><span class="dot health-out"></span> نفد المخزون</span>
+    <span class="legend-item"><span class="dot health-critical"></span> حرج (≤ الحد الأدنى)</span>
+    <span class="legend-item"><span class="dot health-warning"></span> منخفض</span>
+    <span class="legend-item"><span class="dot health-healthy"></span> آمن</span>
+  </section>
+
+  <!-- ────────────── Filters ────────────── -->
+  <form [formGroup]="searchForm" class="filters">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>اسم المنتج</mat-label>
+      <input matInput formControlName="productName" autocomplete="off">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>كود المنتج</mat-label>
+      <input matInput formControlName="productCode" autocomplete="off">
+    </mat-form-field>
+
+    <mat-checkbox formControlName="lowStockOnly" class="low-only-toggle">
+      عرض المنتجات منخفضة المخزون فقط
+    </mat-checkbox>
+  </form>
+
+  <!-- ────────────── Loading ────────────── -->
+  <div class="loading-wrap" *ngIf="isLoading()">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <!-- ────────────── Empty state ────────────── -->
+  <div class="empty-state" *ngIf="!isLoading() && !hasData()">
+    <mat-icon>inventory_2</mat-icon>
+    <p>لا توجد بيانات مطابقة لشروط البحث</p>
+  </div>
+
+  <!-- ────────────── Matrix Table ────────────── -->
+  <div class="table-wrap" *ngIf="!isLoading() && hasData() && matrix() as m">
+    <table class="inventory-table">
+
+      <thead>
+        <tr>
+          <th class="col-code">كود المنتج</th>
+          <th class="col-name">اسم المنتج</th>
+          <th class="col-min" matTooltip="الحد الأدنى للمخزون">الحد الأدنى</th>
+
+          <th *ngFor="let w of m.warehouses; trackBy: trackStore"
+              [class.deleted-store]="w.isDeleted"
+              class="col-store">
+            {{ w.storeName }}
+          </th>
+
+          <th class="col-total">الإجمالي</th>
+          <th class="col-status">الحالة</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let p of m.products; trackBy: trackProduct"
+            [class.deleted-row]="p.isDeleted">
+          <td class="col-code">{{ p.productCode }}</td>
+          <td class="col-name">{{ p.productName }}</td>
+          <td class="col-min">{{ p.reorderThreshold }}</td>
+
+          <td *ngFor="let w of m.warehouses; trackBy: trackStore" class="qty-cell">
+            {{ qtyFor(p, w.storeId) }}
+          </td>
+
+          <td class="col-total" [ngClass]="healthClass(p.health)">
+            <strong>{{ p.totalQuantityAcrossWarehouses }}</strong>
+          </td>
+
+          <td class="col-status">
+            <span class="status-pill" [ngClass]="healthClass(p.health)">
+              {{ healthLabel(p.health) }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+
+      <!-- ────────── Footer Totals ────────── -->
+      <tfoot>
+        <tr class="totals-row">
+          <td class="col-code" colspan="3">الإجمالي حسب المخزن</td>
+
+          <td *ngFor="let w of m.warehouses; trackBy: trackStore"
+              class="qty-cell warehouse-total-cell"
+              [ngClass]="warehouseTotalClass(w.storeId)">
+            <strong>{{ warehouseTotal(w.storeId) }}</strong>
+          </td>
+
+          <td class="col-total grand-total">
+            <strong>{{ m.grandTotalQuantity }}</strong>
+          </td>
+          <td class="col-status"></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [length]="totalCount()"
+      [pageSize]="filter.pageSize"
+      [pageIndex]="filter.page - 1"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      (page)="onPageChange($event)"
+      class="paginator">
+    </mat-paginator>
+  </div>
+
+</div>

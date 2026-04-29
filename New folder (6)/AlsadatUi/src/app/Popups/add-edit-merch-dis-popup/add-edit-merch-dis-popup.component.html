@@ -1,110 +1,147 @@
-<div class="dialog-container">
+<div class="dialog-container" dir="rtl">
 
-  <h2 class="dialog-title">
-    {{ isEditMode ? 'تعديل البيانات' : 'إضافة عميل جديد' }}
+  <!-- Title -->
+  <h2 class="dialog-title popup-title">
+    {{ isEditMode ? 'تعديل بيانات العميل' : 'إضافة عميل جديد' }}
   </h2>
-<form [formGroup]="AddEditform" class="popup-form p-5">
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>  العنوان</mat-label>
-    <input matInput formControlName="address" />
-    <mat-error *ngIf="AddEditform.get('address')?.hasError('required')">حقل مطلوب</mat-error>
-    <mat-error *ngIf="AddEditform.get('address')?.hasError('minlength')">
-  يجب ألا يقل العنوان عن 3 حرفًا
-</mat-error>
+  <!-- Subtitle for context on Edit -->
+  @if (isEditMode && data) {
+    <div class="dialog-subtitle">
+      <mat-icon>person</mat-icon>
+      <span>{{ data.fullName }}</span>
+      <span class="dot">•</span>
+      <span>{{ data.phoneNumber || '-' }}</span>
+    </div>
+  }
+ @if (AddEditform) {
+  <form [formGroup]="AddEditform" class="popup-form" (ngSubmit)="submit()">
 
-  </mat-form-field>
-   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>الاسم بالكامل </mat-label>
-    <input matInput formControlName="fullName" />
-    <mat-error *ngIf="AddEditform.get('fullName')?.hasError('required')">حقل مطلوب</mat-error>
-    <mat-error *ngIf="AddEditform.get('fullName')?.hasError('minlength')">
-  يجب ألا يقل الاسم عن 5 حرفًا
-</mat-error>
+    <!-- ───────── REQUIRED ───────── -->
 
-  </mat-form-field>
-  <mat-form-field appearance="outline" class="full-width">
-  <mat-label>اختر الجنس</mat-label>
-  <mat-select formControlName="gender">
-   <mat-option [value]="0">رجل</mat-option>
-        <mat-option [value]="1">امرأة</mat-option>
-  </mat-select>
-  <mat-error *ngIf="AddEditform.get('gender')?.hasError('required')">
-    حقل مطلوب
-  </mat-error>
-</mat-form-field>
- <mat-form-field appearance="outline" class="full-width">
-  <mat-label>اختر النوع</mat-label>
-  <mat-select formControlName="type">
-   <mat-option [value]="0">موزع</mat-option>
+    <!-- Full Name -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>الاسم بالكامل *</mat-label>
+      <input matInput formControlName="fullName" autocomplete="off" />
+      @if (AddEditform.get('fullName')?.hasError('required')) {
+        <mat-error>الاسم مطلوب</mat-error>
+      }
+      @if (AddEditform.get('fullName')?.hasError('minlength')) {
+        <mat-error>يجب ألا يقل الاسم عن 3 أحرف</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Phone -->
+    <!-- Phone — full row, isolated from .full-width grid cell rules -->
+<!-- Phone — now styled correctly by the phone-input component itself -->
+<div class="phone-wrap full-row">
+  <app-phone-input
+    formControlName="phoneNumber"
+    defaultCountry="eg"
+    [required]="true"
+    label="رقم الهاتف"
+    placeholder="رقم الهاتف">
+  </app-phone-input>
+
+  @if (AddEditform.get('phoneNumber')?.touched &&
+       AddEditform.get('phoneNumber')?.hasError('required')) {
+    <div class="phone-error">رقم الهاتف مطلوب</div>
+  }
+</div>
+
+    <!-- Type -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>النوع *</mat-label>
+      <mat-select formControlName="type">
+        <mat-option [value]="0">موزع</mat-option>
         <mat-option [value]="1">تاجر</mat-option>
         <mat-option [value]="2">وكيل</mat-option>
+      </mat-select>
+      @if (AddEditform.get('type')?.hasError('required')) {
+        <mat-error>النوع مطلوب</mat-error>
+      }
+    </mat-form-field>
 
-  </mat-select>
-  <mat-error *ngIf="AddEditform.get('type')?.hasError('required')">
-    حقل مطلوب
-  </mat-error>
-</mat-form-field>
+    <!-- ───────── OPTIONAL ───────── -->
 
-<!-- <mat-form-field appearance="outline" class="full-width">
-    <mat-label>رقم الهاتف  </mat-label>
-    <input matInput formControlName="phoneNumber" placeholder="01XXXXXXXXX"/>
-    <mat-error *ngIf="AddEditform.get('phoneNumber')?.hasError('required')">حقل مطلوب</mat-error>
-    <mat-error *ngIf="AddEditform.get('phoneNumber')?.hasError('pattern')">
-  يجب إدخال رقم موبايل مصري صحيح (مثال: 010 أو 011 أو 012 أو 015)
-</mat-error>
-  </mat-form-field> -->
-   <app-phone-input
-            formControlName="phoneNumber"
-           defaultCountry="eg"
-            [required]="true"
-            label="رقم الهاتف"
-            placeholder="رقم الهاتف">
-          </app-phone-input>
+    <!-- Gender -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>الجنس <span class="optional-hint">(اختياري)</span></mat-label>
+      <mat-select formControlName="gender">
+        <mat-option [value]="null">— غير محدد —</mat-option>
+        <mat-option [value]="0">رجل</mat-option>
+        <mat-option [value]="1">امرأة</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-<mat-form-field appearance="outline" class="full-width">
-  <mat-label>اختر المدينة</mat-label>
-  <mat-select formControlName="cityId">
+    <!-- City -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>المدينة <span class="optional-hint">(اختياري)</span></mat-label>
+      <mat-select formControlName="cityId">
+        <!-- in-panel search box -->
+        <input
+          class="select-search-input"
+          [formControl]="citySearchCtrl"
+          placeholder="بحث عن مدينة..." />
+        <mat-option [value]="null">— بدون مدينة —</mat-option>
+        @for (city of filteredCities; track city.id) {
+          <mat-option [value]="city.id">{{ city.cityName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-    <!-- مربع البحث الجاهز -->
-  <input
-    class="text-dark"
-    [formControl]="citySearchCtrl"
-    placeholder="بحث..."
-    style="width: 100%; padding: 5px;"
-  />
+    <!-- Address — full row -->
+    <mat-form-field appearance="outline" class="full-row">
+      <mat-label>العنوان <span class="optional-hint">(اختياري)</span></mat-label>
+      <input matInput formControlName="address" autocomplete="off" />
+    </mat-form-field>
 
+    <!-- ───────── DISCOUNTS (grouped) ───────── -->
+    <fieldset class="discount-group">
+      <legend>خصومات خاصة (اختياري)</legend>
+      <div class="discount-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>خصم أول %</mat-label>
+          <input matInput type="number" formControlName="firstSpecialDiscount" min="0" max="100" />
+        </mat-form-field>
 
-    <!-- القائمة -->
-    <mat-option *ngFor="let city of filteredCities" [value]="city.id">
-      {{ city.cityName }}
-    </mat-option>
+        <mat-form-field appearance="outline">
+          <mat-label>خصم ثاني %</mat-label>
+          <input matInput type="number" formControlName="secondSpecialDiscount" min="0" max="100" />
+        </mat-form-field>
 
-  </mat-select>
+        <mat-form-field appearance="outline">
+          <mat-label>خصم ثالث %</mat-label>
+          <input matInput type="number" formControlName="thirdSpecialDiscount" min="0" max="100" />
+        </mat-form-field>
+      </div>
+    </fieldset>
 
-  <mat-error *ngIf="AddEditform.get('cityId')?.hasError('required')">
-    حقل مطلوب
-  </mat-error>
-</mat-form-field>
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>  خصم أول</mat-label>
-    <input matInput formControlName="firstSpecialDiscount"type="number" />
-  </mat-form-field>
+  </form>
+ }
+  <!-- Actions — Save is NEVER disabled because of form.invalid; we validate on click. -->
+  <div class="popup-actions">
+    <button
+      type="button"
+      class="popup-btn-cancel"
+      (click)="close()"
+      [disabled]="isSaving">
+      إلغاء
+    </button>
 
-<mat-form-field appearance="outline" class="full-width">
-    <mat-label>  خصم ثاني</mat-label>
-    <input matInput formControlName="secondSpecialDiscount"type="number" />
-  </mat-form-field>
-<mat-form-field appearance="outline" class="full-width">
-    <mat-label>  خصم ثالث</mat-label>
-    <input matInput formControlName="thirdSpecialDiscount"type="number" />
-  </mat-form-field>
-</form>
+    <button
+      type="button"
+      class="popup-btn-save"
+      (click)="submit()"
+      [disabled]="isSaving">
+      @if (isSaving) {
+        <mat-spinner diameter="18"></mat-spinner>
+        <span>جاري الحفظ...</span>
+      } @else {
+        <mat-icon>save</mat-icon>
+        <span>حفظ</span>
+      }
+    </button>
+  </div>
 
-</div>
-<div class="popup-actions">
-  <button mat-dialog-close class="popup-btn-cancel" (click)="close()">إلغاء</button>
-  <button class="popup-btn-save" [disabled]="AddEditform.invalid" (click)="  submit()" >
-    حفظ
-  </button>
 </div>
