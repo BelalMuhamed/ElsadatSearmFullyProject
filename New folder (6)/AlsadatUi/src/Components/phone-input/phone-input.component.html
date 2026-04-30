@@ -1,36 +1,48 @@
 <div class="phone-input-wrapper" [formGroup]="innerForm" dir="ltr">
 
   <!-- ===================== Country selector ===================== -->
-  <mat-form-field appearance="outline" class="phone-country-field custom-input-theme">
+  <mat-form-field appearance="outline" class="phone-country-field">
     <mat-label>الدولة</mat-label>
 
     <mat-select
       formControlName="country"
       [compareWith]="compareCountries"
       panelClass="phone-country-panel"
+      (openedChange)="onPanelOpenedChange($event)"
       [attr.aria-label]="'اختيار الدولة'">
 
       <!-- Selected value display (trigger) -->
       <mat-select-trigger>
         <span class="phone-country-trigger">
-          <span class="dial-code">+{{ innerForm.controls.country.value?.dialCode }}</span>
-          <span class="iso-code">{{ innerForm.controls.country.value?.iso2 | uppercase }}</span>
+          <span class="dial-code">
+            +{{ innerForm.controls.country.value?.dialCode || '—' }}
+          </span>
+          <span class="iso-code">
+            {{ (innerForm.controls.country.value?.iso2 || '') | uppercase }}
+          </span>
         </span>
       </mat-select-trigger>
 
-      <!-- Searchable list header -->
-      <div class="country-search-wrapper" (click)="$event.stopPropagation()">
+      <!--
+        Searchable list header.
+        IMPORTANT:
+          - DO NOT use matInput here — that triggers Material's form-field
+            error ("matInput must be inside <mat-form-field>") and prevents
+            the panel from initializing in some scenarios.
+          - We stop propagation on every keyboard event so mat-select's
+            built-in typeahead doesn't fight our filter.
+      -->
+      <div class="country-search-wrapper"
+           (click)="$event.stopPropagation()"
+           (keydown)="$event.stopPropagation()">
         <input
-          matInput
           type="text"
-          placeholder="ابحث عن دولة..."
-          autocomplete="off"
           class="country-search-input"
           [value]="searchTerm"
           (input)="onSearchCountry($event)"
-          (click)="$event.stopPropagation()"
-          (keydown)="$event.stopPropagation()"
-          (keyup)="$event.stopPropagation()"
+          (keydown.space)="$event.stopPropagation()"
+          placeholder="ابحث عن دولة..."
+          autocomplete="off"
           dir="rtl" />
       </div>
 
@@ -45,7 +57,9 @@
       </mat-option>
 
       <!-- Empty-state when the search returns nothing -->
-      <div *ngIf="filteredCountries.length === 0" class="country-empty" dir="rtl">
+      <div *ngIf="filteredCountries.length === 0"
+           class="country-empty"
+           dir="rtl">
         لا توجد نتائج للبحث
       </div>
 
@@ -53,11 +67,11 @@
   </mat-form-field>
 
 
-
   <!-- ===================== National number ===================== -->
-
-  <mat-form-field appearance="outline" class="phone-number-field custom-input-theme">
-    <mat-label>{{ label }}<span *ngIf="required" class="required-mark"> *</span></mat-label>
+  <mat-form-field appearance="outline" class="phone-number-field">
+    <mat-label>
+      {{ label }}<span *ngIf="required" class="required-mark"> *</span>
+    </mat-label>
 
     <input
       matInput

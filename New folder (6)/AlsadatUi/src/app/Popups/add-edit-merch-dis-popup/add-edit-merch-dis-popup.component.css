@@ -1,4 +1,18 @@
-/* 🔥 Popup Container */
+/* ============================================================
+   AddEditMerchDisPopup — popup styles
+   ------------------------------------------------------------
+   FIX (overflow): the dialog has maxHeight: 92vh applied at the
+   MatDialog level, but the inner .dialog-container did not
+   constrain its children → the form grid + discount group +
+   actions could exceed the dialog height and overflow visually
+   (clipping the close button and pushing fields outside the
+   rounded border in the screenshot).
+
+   The fix turns .dialog-container into a flex column where the
+   form scrolls internally and the title/actions stay pinned.
+   ============================================================ */
+
+/* 🔥 Popup Container override (sits inside the global rule in styles.css) */
 .custom-popup-panel .mat-mdc-dialog-container {
   background-color: var(--bg-color) !important;
   color: var(--text-color) !important;
@@ -6,17 +20,25 @@
   border: 1px solid var(--gold);
   padding: 24px !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, .8);
+  /* Prevent the surface itself from scrolling — we scroll the form area instead */
+  overflow: hidden !important;
 }
 
+/* The dialog-container is now a fixed-height flex column.
+   Title (auto), subtitle (auto), form (flex:1 + scroll), actions (auto). */
 .dialog-container {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  /* Fill the dialog vertically so the form has a real height to constrain to */
+  max-height: calc(92vh - 48px);   /* dialog padding compensation */
+  min-width: 0;
 }
 
 /* Title */
 .popup-title,
 .dialog-title {
+  flex: 0 0 auto;
   text-align: center;
   font-size: 1.5rem;
   font-weight: 700;
@@ -26,6 +48,7 @@
 
 /* Subtitle (visible only on Edit) */
 .dialog-subtitle {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,15 +62,30 @@
   color: var(--gold);
 }
 
-/* Form */
+/* Form — scrollable middle region */
 .popup-form {
+  flex: 1 1 auto;
+  min-height: 0;                  /* required for flex children to scroll */
+  overflow-y: auto;
+  overflow-x: hidden;             /* hard stop on horizontal escape */
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px 16px;
-  padding: 16px 4px;
+  padding: 8px 4px 12px;
+  /* Soft inner scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
 }
-.full-width  { grid-column: span 1; }
-.full-row    { grid-column: 1 / -1; }
+.popup-form::-webkit-scrollbar {
+  width: 6px;
+}
+.popup-form::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 3px;
+}
+
+.full-width  { grid-column: span 1; min-width: 0; }
+.full-row    { grid-column: 1 / -1; min-width: 0; }
 
 .optional-hint {
   font-size: 0.75rem;
@@ -101,6 +139,7 @@
   border-radius: 14px;
   padding: 10px 16px 4px;
   margin-top: 4px;
+  min-width: 0;
 }
 .discount-group legend {
   padding: 0 8px;
@@ -112,16 +151,19 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  min-width: 0;
 }
 
-/* Actions */
+/* Actions — pinned to bottom, NOT inside the scroll area */
 .popup-actions {
-  margin-top: 18px;
-  padding: 0 8px 8px;
+  flex: 0 0 auto;
+  margin-top: 12px;
+  padding: 8px 8px 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 12px;
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
 }
 
 .popup-btn-cancel,
@@ -164,9 +206,11 @@
 .popup-btn-save ::ng-deep .mat-mdc-progress-spinner circle {
   stroke: #000;
 }
-/* Phone field — full row, error rendered below */
+
+/* Phone field — full row, isolated from .full-width grid cell rules */
 .phone-wrap {
   width: 100%;
+  min-width: 0;
 }
 .phone-error {
   font-size: 0.78rem;
@@ -174,6 +218,7 @@
   margin-top: 4px;
   padding-inline-start: 4px;
 }
+
 /* Responsive — single column on phones */
 @media (max-width: 600px) {
   .popup-form        { grid-template-columns: 1fr; }

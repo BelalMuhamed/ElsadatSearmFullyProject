@@ -1,20 +1,24 @@
-/* PhoneInputComponent — unified country + national-number control.
-   Renders as ONE visual pill, theme-aware via CSS variables.
-   LTR-forced (standard phone UX even on Arabic pages). */
+/* ============================================================
+   PhoneInputComponent — unified country + national-number control
+   Renders as ONE visual pill (gold-bordered), theme-aware.
+   LTR-forced (standard phone UX even on Arabic pages).
+   ============================================================ */
 
 /* ───────── Wrapper ───────── */
 .phone-input-wrapper {
   display: flex;
   align-items: stretch;
-  gap: 0;                              /* zero gap → fields touch */
+  gap: 0;
   width: 100%;
   direction: ltr;
+  /* shrink correctly inside narrow grid cells */
+  min-width: 0;
 }
 
-/* ───────── Country selector (left, narrower) ───────── */
+/* ───────── Country selector (left) ───────── */
 .phone-country-field {
-  flex: 0 0 140px;
-  min-width: 120px;
+  flex: 0 0 130px;
+  min-width: 110px;
 }
 
 /* ───────── National number (right, fills remaining) ───────── */
@@ -23,34 +27,59 @@
   min-width: 0;
 }
 
-/* ───────── Pill-merge: country + number look like ONE control ───────── */
+/* ============================================================
+   PILL MERGE — make the two outlined fields look like ONE control.
+   Strategy:
+     • Country field keeps a FULL outline EXCEPT the right edge.
+     • Number field keeps a FULL outline.
+     • The right edge of the country field overlaps by 1px with
+       the left edge of the number field → exactly one seam line.
+   Using physical sides (right/left) is intentional: the wrapper
+   is forced LTR, so logical properties drift across themes.
+   ============================================================ */
+
+/* Country side: kill the right rounding + right border ONLY */
 ::ng-deep .phone-country-field .mdc-notched-outline__trailing {
-  border-start-end-radius: 0 !important;
-  border-end-end-radius: 0 !important;
-  border-inline-end: none !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: 0 !important;
 }
 
+/* Number side: kill the left rounding so it butts up against the country side */
 ::ng-deep .phone-number-field .mdc-notched-outline__leading {
-  border-start-start-radius: 0 !important;
-  border-end-start-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
-/* ───────── Hide subscript wrappers (the empty space below each field) ───────── */
+/* Negative margin closes any sub-pixel gap between the two outlines */
+.phone-number-field {
+  margin-left: -1px;
+}
+
+/* When EITHER field is focused, lift its z-index so the 2px focus
+   outline draws cleanly above the neighbour's 1px outline. */
+::ng-deep .phone-country-field:focus-within,
+::ng-deep .phone-number-field:focus-within {
+  position: relative;
+  z-index: 1;
+}
+
+/* ───────── Hide subscript wrappers (the empty 16px gap below each field) ───────── */
 ::ng-deep .phone-country-field .mat-mdc-form-field-subscript-wrapper,
-::ng-deep .phone-number-field .mat-mdc-form-field-subscript-wrapper {
+::ng-deep .phone-number-field  .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
 }
 
-/* ───────── Equalize heights ───────── */
+/* ───────── Equalize heights (Material default text-field is 56px) ───────── */
 ::ng-deep .phone-country-field .mat-mdc-text-field-wrapper,
-::ng-deep .phone-number-field .mat-mdc-text-field-wrapper {
+::ng-deep .phone-number-field  .mat-mdc-text-field-wrapper {
   height: 56px;
 }
-
 ::ng-deep .phone-country-field .mat-mdc-form-field-infix,
-::ng-deep .phone-number-field .mat-mdc-form-field-infix {
+::ng-deep .phone-number-field  .mat-mdc-form-field-infix {
   padding-top: 16px !important;
   padding-bottom: 8px !important;
+  min-height: unset;
 }
 
 /* ───────── Selected-country trigger ───────── */
@@ -59,6 +88,7 @@
   align-items: center;
   gap: 6px;
   font-family: inherit;
+  white-space: nowrap;
 }
 .phone-country-trigger .dial-code {
   font-weight: 600;
@@ -68,6 +98,11 @@
   font-size: 0.78rem;
   opacity: 0.7;
   letter-spacing: 0.5px;
+}
+
+/* The select arrow is repositioned tighter so the trigger doesn't get cropped */
+::ng-deep .phone-country-field .mat-mdc-select-arrow-wrapper {
+  padding-inline-start: 4px;
 }
 
 .required-mark {
@@ -100,7 +135,7 @@
   top: 0;
   z-index: 2;
   padding: 8px 12px;
-  background: var(--sidenav-bg, inherit);
+  background: var(--sidenav-bg, var(--bg-color, #fff));
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
@@ -132,12 +167,13 @@
 ::ng-deep .phone-country-panel.mat-mdc-select-panel {
   min-width: 280px !important;
   max-height: 320px !important;
+  padding-top: 0 !important;        /* sticky search sits flush */
 }
 ::ng-deep .phone-country-panel .mat-mdc-option {
   min-height: 40px;
 }
 
-/* ───────── Responsive ───────── */
+/* ───────── Responsive — stack on very narrow screens ───────── */
 @media (max-width: 520px) {
   .phone-input-wrapper {
     flex-direction: column;
@@ -148,14 +184,17 @@
     width: 100%;
     min-width: 0;
   }
+  .phone-number-field {
+    margin-left: 0;
+  }
   /* Restore independent rounded corners on stacked layout */
   ::ng-deep .phone-country-field .mdc-notched-outline__trailing {
-    border-start-end-radius: 4px !important;
-    border-end-end-radius: 4px !important;
-    border-inline-end: 1px solid var(--gold) !important;
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+    border-right: 1px solid var(--gold) !important;
   }
   ::ng-deep .phone-number-field .mdc-notched-outline__leading {
-    border-start-start-radius: 4px !important;
-    border-end-start-radius: 4px !important;
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
   }
 }
