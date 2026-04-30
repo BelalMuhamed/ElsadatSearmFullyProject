@@ -225,6 +225,73 @@ export const routes: Routes = [
       .then(c => c.AddEditJournalEntryComponent),
   canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
 },
+{
+  path: 'reports',
+  loadComponent: () =>
+    import('../Components/reports/reports-dashboard/reports-dashboard.component')
+      .then(c => c.ReportsDashboardComponent),
+  canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+},
+{
+  path: 'reports/cash',
+  loadComponent: () =>
+    import('../Components/reports/cash-report/cash-report.component')
+      .then(c => c.CashReportComponent),
+  canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+},
+{
+  path: 'reports/customers/balances',
+  loadComponent: () =>
+    import('../Components/reports/party-balances/party-balances.component')
+      .then(c => c.PartyBalancesComponent),
+  data: { mode: 'customer', roles: ['Admin', 'Accountant'] },
+  canActivate: [authGuard, roleGuard]
+},
+{
+  path: 'reports/suppliers/balances',
+  loadComponent: () =>
+    import('../Components/reports/party-balances/party-balances.component')
+      .then(c => c.PartyBalancesComponent),
+  data: { mode: 'supplier', roles: ['Admin', 'Accountant'] },
+  canActivate: [authGuard, roleGuard]
+},
+{
+  path: 'reports/customers/aging',
+  loadComponent: () =>
+    import('../Components/reports/aging-report/aging-report.component')
+      .then(c => c.AgingReportComponent),
+  data: { mode: 'receivables', roles: ['Admin', 'Accountant'] },
+  canActivate: [authGuard, roleGuard]
+},
+{
+  path: 'reports/suppliers/aging',
+  loadComponent: () =>
+    import('../Components/reports/aging-report/aging-report.component')
+      .then(c => c.AgingReportComponent),
+  data: { mode: 'payables', roles: ['Admin', 'Accountant'] },
+  canActivate: [authGuard, roleGuard]
+},
+{
+  path: 'reports/inventory',
+  loadComponent: () =>
+    import('../Components/reports/inventory-report/inventory-report.component')
+      .then(c => c.InventoryReportComponent),
+  canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+},
+{
+  path: 'reports/trial-balance',
+  loadComponent: () =>
+    import('../Components/reports/trial-balance/trial-balance.component')
+      .then(c => c.TrialBalanceComponent),
+  canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+},
+{
+  path: 'reports/income-statement',
+  loadComponent: () =>
+    import('../Components/reports/income-statement/income-statement.component')
+      .then(c => c.IncomeStatementComponent),
+  canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }
+},
       //#endregion
 
       //#region Hr

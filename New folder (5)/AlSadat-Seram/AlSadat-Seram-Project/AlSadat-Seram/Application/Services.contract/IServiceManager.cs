@@ -74,7 +74,8 @@ namespace Application.Services.contract
         public IJounalEntryContract journalEntry { get; }
         public IWarehouseInventoryReportService warehouseInventoryReportService { get; }
 
-
+        IFinancialReportsService financialReports { get; }
+        ISystemAccountGuard systemAccountGuard { get; }
 
 
 

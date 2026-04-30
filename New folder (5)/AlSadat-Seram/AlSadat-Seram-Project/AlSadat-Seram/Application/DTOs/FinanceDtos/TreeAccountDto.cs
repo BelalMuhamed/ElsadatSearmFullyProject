@@ -11,25 +11,28 @@ namespace Application.DTOs.FinanceDtos
     public class TreeAccountDto
     {
         public int? id { get; set; }
-        public string accountName { get; set; }
+        public string accountName { get; set; } = default!;
         public string? accountCode { get; set; }
         public int? parentId { get; set; }
         public decimal? debit { get; set; }
         public bool isLeaf { get; set; }
         public bool isActive { get; set; }
         public decimal? credit { get; set; }
-        public List<TreeAccountDto> children { get; set; } = new List<TreeAccountDto>();
+        public bool isSystemAccount { get; set; }   // NEW
+        public List<TreeAccountDto> children { get; set; } = new();
     }
+
     public class AccountDto
     {
         public int? id { get; set; }
         public string? accountCode { get; set; }
         public string? userId { get; set; }
-        public string accountName { get; set; }
+        public string accountName { get; set; } = default!;
         public int type { get; set; }
         public int? parentAccountId { get; set; }
-        public bool isLeaf { get; set; }  
+        public bool isLeaf { get; set; }
         public bool isActive { get; set; }
+        public bool isSystemAccount { get; set; }   // NEW (read-only on UI)
     }
     public class DisAndMerchAccountDto()
     {

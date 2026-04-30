@@ -113,6 +113,8 @@ public class ServiceManager: IServiceManager
     private readonly IExcelReaderService excelReader;
     private readonly Lazy<IWarehouseInventoryReportService> _warehouseInventoryReportService;
 
+    private readonly Lazy<IFinancialReportsService> _financialReports;
+    private readonly Lazy<ISystemAccountGuard> _systemGuard;
 
     public ServiceManager(
     IUnitOfWork UnitOfWork,
@@ -143,7 +145,10 @@ public class ServiceManager: IServiceManager
         _GovernrateService = new Lazy<IGovernrateCaontract>(() => new GovernrateService(UnitOfWork));
         _CityService = new Lazy<ICityContract>(() => new CityService(UnitOfWork));
         _stockService = new Lazy<IStockService>(() => new StockService(UnitOfWork));
-        _treeService=new Lazy<ITreeAccounts>(()=> new TreeAccountsService(UnitOfWork));
+        _systemGuard = new Lazy<ISystemAccountGuard>(() => new SystemAccountGuard(UnitOfWork));
+        _financialReports = new Lazy<IFinancialReportsService>(
+            () => new FinancialReportsService(UnitOfWork, _systemGuard.Value));
+        _treeService = new Lazy<ITreeAccounts>(()=> new TreeAccountsService(UnitOfWork, _systemGuard.Value));
         _supplierService = new Lazy<ISupplierContract>(
     () => new SupplierService(UnitOfWork, ExcelReader, this));
         _journalEntry = new Lazy<IJounalEntryContract>(() => new JournalEntryService(UnitOfWork));
@@ -222,4 +227,7 @@ public class ServiceManager: IServiceManager
 
     public IWarehouseInventoryReportService warehouseInventoryReportService
           => _warehouseInventoryReportService.Value;
+
+    public IFinancialReportsService financialReports => _financialReports.Value;
+    public ISystemAccountGuard systemAccountGuard => _systemGuard.Value;
 }

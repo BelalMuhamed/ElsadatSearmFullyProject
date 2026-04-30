@@ -33,6 +33,37 @@
       <li *ngIf="hasRole(['Accountant', 'Admin'])">
         <a routerLink="journal-entries" routerLinkActive="active"> سجل الدفاتر  </a>
       </li>
+      <!-- Accounting group -->
+<li *ngIf="hasRole(['Accountant', 'Admin'])">
+  <div class="dropdown-header" (click)="accountingOpened = !accountingOpened">
+    <span><mat-icon class="dd-icon">account_balance</mat-icon> المحاسبة</span>
+    <mat-icon>{{ accountingOpened ? 'expand_less' : 'expand_more' }}</mat-icon>
+  </div>
+
+  <ul *ngIf="accountingOpened">
+    <li><a routerLink="tree" routerLinkActive="active">شجرة الحسابات</a></li>
+    <li><a routerLink="journal-entries" routerLinkActive="active">سجل الدفاتر (القيود)</a></li>
+
+    <!-- Reports submenu -->
+    <li>
+      <div class="dropdown-header sub" (click)="reportsOpened = !reportsOpened">
+        <span>التقارير</span>
+        <mat-icon>{{ reportsOpened ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </div>
+      <ul *ngIf="reportsOpened">
+        <li><a routerLink="reports" routerLinkActive="active">لوحة التقارير</a></li>
+        <li><a routerLink="reports/cash" routerLinkActive="active">حركة الصندوق</a></li>
+        <li><a routerLink="reports/customers/balances" routerLinkActive="active">أرصدة العملاء</a></li>
+        <li><a routerLink="reports/suppliers/balances" routerLinkActive="active">أرصدة الموردين</a></li>
+        <li><a routerLink="reports/customers/aging" routerLinkActive="active">أعمار ذمم العملاء</a></li>
+        <li><a routerLink="reports/suppliers/aging" routerLinkActive="active">أعمار ذمم الموردين</a></li>
+        <li><a routerLink="reports/inventory" routerLinkActive="active">حركة المخزون</a></li>
+        <li><a routerLink="reports/trial-balance" routerLinkActive="active">ميزان المراجعة</a></li>
+        <li><a routerLink="reports/income-statement" routerLinkActive="active">قائمة الدخل</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
 
 <li>
   <div class="dropdown-header" (click)="settingsOpened = !settingsOpened"*ngIf="hasRole(['Accountant', 'Admin'])" >

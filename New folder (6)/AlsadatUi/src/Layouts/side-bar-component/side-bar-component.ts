@@ -16,7 +16,8 @@ import { AuthService } from '../../app/Services/auth-service';
   styleUrl: './side-bar-component.css'
 })
 export class SideBarComponent {
-
+accountingOpened = false;   // open by default for accountants
+reportsOpened = false;
   isOpen = true;
   settingsOpened = false;
   StocksOpened=false;

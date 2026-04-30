@@ -1,16 +1,47 @@
-<div class="tree-accounts-container">
-  <div class="tree-header">
-    <h2>شجرة الحسابات</h2>
+<div class="tree-accounts-container" dir="rtl">
 
+  <!-- Header -->
+  <div class="tree-header">
+    <div>
+      <h2>شجرة الحسابات</h2>
+      <p class="subtitle">إدارة الدليل المحاسبي للحسابات</p>
+    </div>
+
+    <button class="primary-btn" (click)="onAdd()">
+      <mat-icon>add</mat-icon>
+      <span>إضافة حساب جديد</span>
+    </button>
   </div>
- <div class="w-100 me-auto  d-flex justify-content-end  mb-3">
-       <button class="add-coupon-btn  " (click)="onAdd()">
-    <mat-icon>add</mat-icon>
-إضافة حساب جديد  </button>
+
+  <!-- Toolbar -->
+  <div class="tree-toolbar">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        placeholder="ابحث باسم أو كود الحساب..."
+        [(ngModel)]="searchTerm"
+        aria-label="بحث">
+    </div>
+
+    <label class="toggle-inactive">
+      <input type="checkbox" [(ngModel)]="showInactive">
+      <span>إظهار الحسابات غير النشطة</span>
+    </label>
+
+    <div class="legend">
+      <span class="badge badge-system" matTooltip="حساب نظامي">
+        <mat-icon>lock</mat-icon> حساب نظامي
+      </span>
+      <span class="badge badge-inactive">غير نشط</span>
+    </div>
   </div>
+
+  <!-- Tree -->
   <div class="tree-content" *ngIf="!loading">
     <div class="tree-table-header">
       <div class="col-account">اسم الحساب</div>
+      <div class="col-code">الكود</div>
       <div class="col-debit">مدين</div>
       <div class="col-credit">دائن</div>
       <div class="col-balance">الرصيد</div>
@@ -18,97 +49,99 @@
     </div>
 
     <div class="tree-rows">
-      <div
-        *ngFor="let account of flatAccounts"
-        class="tree-row"
-        [class.visible]="isVisible(account)"
-        [class.has-children]="hasChildren(account)"
-        [style.padding-right.px]="(account.level || 0) * 30 + 16">
+      <ng-container *ngFor="let account of flatAccounts; trackBy: trackById">
+        <div
+          class="tree-row"
+          [class.visible]="isVisible(account)"
+          [class.has-children]="hasChildren(account)"
+          [class.is-system]="account.isSystemAccount"
+          [class.is-inactive]="!account.isActive"
+          [style.padding-right.px]="(account.level || 0) * 28 + 12">
 
-        <div class="row-content">
-          <!-- Expand/Collapse Button -->
-          <div class="col-account">
-            <button
-              *ngIf="hasChildren(account)"
-              class="expand-btn"
-              (click)="toggleExpand(account)"
-              [class.expanded]="account.expanded">
-              <mat-icon>{{ account.expanded ? 'expand_more' : 'chevron_left' }}</mat-icon>
-            </button>
+          <div class="row-content">
+            <div class="col-account">
+              <button
+                *ngIf="hasChildren(account); else leafSpacer"
+                class="expand-btn"
+                (click)="toggleExpand(account)"
+                [attr.aria-expanded]="account.expanded"
+                [class.expanded]="account.expanded">
+                <mat-icon>{{ account.expanded ? 'expand_more' : 'chevron_left' }}</mat-icon>
+              </button>
+              <ng-template #leafSpacer><span class="expand-spacer"></span></ng-template>
 
-            <span class="account-icon" [class.parent]="hasChildren(account)">
-              <mat-icon>{{ hasChildren(account) ? 'folder' : 'description' }}</mat-icon>
-            </span>
+              <span class="account-icon" [class.parent]="hasChildren(account)">
+                <mat-icon>{{ hasChildren(account) ? 'folder' : 'description' }}</mat-icon>
+              </span>
 
-            <span class="account-name">{{ account.accountName }}</span>
-          </div>
+              <span class="account-name">{{ account.accountName }}</span>
 
-          <!-- Debit -->
-          <div class="col-debit">
-            {{ formatNumber(account.debit) }}
-          </div>
+              <span *ngIf="account.isSystemAccount" class="badge badge-system" matTooltip="حساب نظامي محمي">
+                <mat-icon>lock</mat-icon>
+              </span>
+              <span *ngIf="!account.isActive" class="badge badge-inactive">غير نشط</span>
+            </div>
 
-          <!-- Credit -->
-          <div class="col-credit">
-            {{ formatNumber(account.credit) }}
-          </div>
+            <div class="col-code">{{ account.accountCode }}</div>
+            <div class="col-debit">{{ formatNumber(account.debit) }}</div>
+            <div class="col-credit">{{ formatNumber(account.credit) }}</div>
+            <div class="col-balance">
+              <span [ngClass]="getBalanceClass(getBalance(account))">
+                {{ formatNumber(abs(getBalance(account))) }}
+              </span>
+            </div>
 
-          <!-- Balance -->
-          <div class="col-balance">
-            <span [ngClass]="getBalanceClass(getBalance(account))">
-             {{ formatNumber(abs(getBalance(account))) }}
+            <div class="col-actions">
+              <button
+                *ngIf="canViewDetails(account)"
+                mat-icon-button
+                class="action-icon-btn"
+                matTooltip="عرض التفاصيل والحركات"
+                [routerLink]="['/TreeAccounts/details', account.id]">
+                <mat-icon>visibility</mat-icon>
+              </button>
 
-            </span>
-          </div>
+              <button
+                *ngIf="canEdit(account)"
+                mat-icon-button
+                class="action-icon-btn"
+                matTooltip="تعديل"
+                [routerLink]="['/TreeAccounts/edit', account.id]">
+                <mat-icon>edit</mat-icon>
+              </button>
 
-          <!-- Actions -->
-          <div class="col-actions">
-           <button *ngIf="account.isLeaf"
-  mat-icon-button
-  class="action-icon-btn"
-  matTooltip="عرض التفاصيل"
-  [routerLink]="['/TreeAccounts/details', account.id]">
-  <mat-icon>visibility</mat-icon>
-</button>
-            <button
-  *ngIf="!hasParentId(account)"
-  mat-icon-button
-  class="action-icon-btn"
-  matTooltip="تعديل"
-  [routerLink]="['/TreeAccounts/edit', account.id]">
-  <mat-icon>edit</mat-icon>
-</button>
- <button
+              <button
+                *ngIf="canDelete(account)"
+                mat-icon-button
+                class="action-icon-btn danger"
+                matTooltip="حذف"
+                (click)="onDelete(account)">
+                <mat-icon>delete</mat-icon>
+              </button>
 
-  mat-icon-button
-  class="action-icon-btn"
-  matTooltip="حذف"
-  (click)="onDelete(account.id!)">
-  <mat-icon>delete</mat-icon>
-</button>
-
-
-
+              <span *ngIf="account.isSystemAccount" class="locked-hint" matTooltip="لا يمكن تعديل أو حذف الحسابات النظامية">
+                <mat-icon>lock</mat-icon>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 
-  <!-- Loading State -->
+  <!-- Loading -->
   <div class="loading-container" *ngIf="loading">
     <mat-icon class="spinner">refresh</mat-icon>
     <p>جاري تحميل شجرة الحسابات...</p>
   </div>
 
-  <!-- Empty State -->
+  <!-- Empty -->
   <div class="empty-state" *ngIf="!loading && flatAccounts.length === 0">
     <mat-icon>account_tree</mat-icon>
     <h3>لا توجد حسابات</h3>
     <p>ابدأ بإضافة حساب رئيسي جديد</p>
-    <button mat-raised-button class="action-btn" (click)="onAdd()">
-      <mat-icon>add</mat-icon>
-      إضافة حساب
+    <button mat-raised-button class="primary-btn" (click)="onAdd()">
+      <mat-icon>add</mat-icon> إضافة حساب
     </button>
   </div>
 </div>

@@ -397,13 +397,13 @@ namespace Infrastructure.Services.SalesInvoiceService
                 if (customerAccount == null) return Result<string>.Failure(" هذا العميل لا يوجد له حساب في شجرة الحسابات ", HttpStatusCode.BadRequest);
                 var stockAccount = await unitOfWork.GetRepository<ChartOfAccounts, int>()
                     .FindAsync(a => a.AccountCode == "1.1.3");
-                if (stockAccount == null) return Result<string>.Failure(" حساب 1012 الخاص بمنتجات المخازن غير موجود ", HttpStatusCode.BadRequest);
+                if (stockAccount == null) return Result<string>.Failure(" حساب 1.1.3 الخاص بمنتجات المخازن غير موجود ", HttpStatusCode.BadRequest);
                 var SalesAccount = await unitOfWork.GetRepository<ChartOfAccounts, int>()
               .FindAsync(a => a.AccountCode == "4.1");
-                if (SalesAccount == null) return Result<string>.Failure(" لا يمكن اثبات القيد بدون وحجود حساب 401 المبيعات في شجرة الحسابات ", HttpStatusCode.BadRequest);
+                if (SalesAccount == null) return Result<string>.Failure(" لا يمكن اثبات القيد بدون وحجود حساب 4.1 المبيعات في شجرة الحسابات ", HttpStatusCode.BadRequest);
                 var CostOfGoodsSoldAccount = await unitOfWork.GetRepository<ChartOfAccounts, int>()
               .FindAsync(a => a.AccountCode == "5.2");
-                if (CostOfGoodsSoldAccount == null) return Result<string>.Failure(" لا يمكن اثبات القيد بدون وحجود حساب 503 تكلفة البضاعة المباعة في شجرة الحسابات ",HttpStatusCode.BadRequest);
+                if (CostOfGoodsSoldAccount == null) return Result<string>.Failure(" لا يمكن اثبات القيد بدون وحجود حساب 5.2 تكلفة البضاعة المباعة في شجرة الحسابات ",HttpStatusCode.BadRequest);
                 #region Update Stock
                 foreach (var pro in req.withdrwanItemsQuantities)
                 {

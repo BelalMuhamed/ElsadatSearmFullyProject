@@ -1,39 +1,50 @@
-import { ApiResponse } from './ApiReponse';
-export interface TreeAccountDto {
-  id?: number
-  accountName: string
-  debit?: number
-  isLeaf: boolean,
-  credit?: number
-  accountCode:string|null,
-  parentId: number | null,
-  isActive: boolean,
-  children: TreeAccountDto[]
-  expanded?: boolean
-  level?: number
-}
-export interface DisAndMerchAccountDto {
-accountCode:string,
-userId:string|null,
-accountName:string,
-type:number,
-parentAccountId:number,
-isLeaf:boolean,
-isActive:boolean,
-debit:number,
-credit:number
+// =============================================================================
+// File: src/app/models/TreeAccountDto.ts (REPLACE the whole file)
+// =============================================================================
+// Adds `isSystemAccount` to TreeAccountDto and AccountDto.
+// All other interfaces unchanged so nothing else breaks.
 
+import { ApiResponse } from './ApiReponse';
+
+export interface TreeAccountDto {
+  id?: number;
+  accountName: string;
+  debit?: number;
+  isLeaf: boolean;
+  credit?: number;
+  accountCode: string | null;
+  parentId: number | null;
+  isActive: boolean;
+  isSystemAccount?: boolean;          // NEW — optional so old payloads don't break
+  children: TreeAccountDto[];
+  expanded?: boolean;
+  level?: number;
 }
- export interface AccountDto {
-  id: number ;
+
+export interface DisAndMerchAccountDto {
   accountCode: string;
   userId: string | null;
   accountName: string;
   type: number;
-  parentAccountId: number| null;
+  parentAccountId: number;
   isLeaf: boolean;
   isActive: boolean;
+  debit: number;
+  credit: number;
 }
+
+export interface AccountDto {
+  id: number;
+  accountCode: string;
+  userId: string | null;
+  accountName: string;
+  type: number;
+  parentAccountId: number | null;
+  isLeaf: boolean;
+  isActive: boolean;
+  isSystemAccount?: boolean;          // NEW — read-only on UI
+}
+
 export interface FilterationAccountsDto {
   accountCode: string | null;
   accountName: string | null;
@@ -44,7 +55,8 @@ export interface FilterationAccountsDto {
   page: number | null;
   pageSize: number | null;
 }
- export interface AccountDetailsDto {
+
+export interface AccountDetailsDto {
   accountId: number;
   accountName: string;
   accountCode: string;
@@ -62,6 +74,7 @@ export interface AccountMovementDto {
   credit: number;
   runningBalance: number;
 }
+
 export interface AccountDetailsDtoReq {
   accountId: number;
   page: number;

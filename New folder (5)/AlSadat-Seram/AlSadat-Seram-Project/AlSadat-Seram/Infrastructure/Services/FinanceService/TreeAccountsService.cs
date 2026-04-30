@@ -18,91 +18,13 @@ namespace Infrastructure.Services.FinanceService
     public class TreeAccountsService : ITreeAccounts
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ISystemAccountGuard _systemGuard;
 
-        public TreeAccountsService(IUnitOfWork unitOfWork)
+        public TreeAccountsService(IUnitOfWork unitOfWork, ISystemAccountGuard systemGuard)
         {
             _unitOfWork = unitOfWork;
+            this._systemGuard = systemGuard;
         }
-
-        //public async Task<List<TreeAccountDto>> GetTree()
-        //{
-        //    try
-        //    {
-
-        //        var accounts = await _unitOfWork.GetRepository<ChartOfAccounts, int>()
-        //                        .GetAsync(a => a.Id!=null);
-
-
-        //        var details = await _unitOfWork
-        //      .GetRepository<JournalEntryDetails, int>()
-        //      .GetQueryable()
-        //      .Where(d => d.JournalEntry.IsPosted == true)
-        //      .AsNoTracking()
-        //      .ToListAsync();
-
-
-        //        var tree = BuildTree(accounts, details, null);
-
-        //        return tree;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _unitOfWork.LogError(ex);
-        //       return null;
-        //    }
-        //}
-
-
-        //private (decimal debit, decimal credit) GetTotals(ChartOfAccounts account,
-        //                                                  IEnumerable<JournalEntryDetails> details,
-        //                                                  IEnumerable<ChartOfAccounts> allAccounts)
-        //{
-
-        //    var ownDebit = details.Where(d => d.AccountId == account.Id).Sum(d => d.debit);
-        //    var ownCredit = details.Where(d => d.AccountId == account.Id).Sum(d => d.credit);
-
-        //    var children = allAccounts.Where(a => a.ParentAccountId == account.Id);
-
-        //    foreach (var child in children)
-        //    {
-        //        var (childDebit, childCredit) = GetTotals(child, details, allAccounts);
-        //        ownDebit += childDebit;
-        //        ownCredit += childCredit;
-        //    }
-
-        //    return (ownDebit, ownCredit);
-        //}
-
-        //private List<TreeAccountDto> BuildTree(IEnumerable<ChartOfAccounts> accounts,
-        //                                       IEnumerable<JournalEntryDetails> details,
-        //                                       int? parentId)
-        //{
-        //    var children = accounts.Where(a => a.ParentAccountId == parentId).OrderBy(a => a.AccountCode);
-
-        //    var tree = new List<TreeAccountDto>();
-
-        //    foreach (var account in children)
-        //    {
-        //        var (debit, credit) = GetTotals(account, details, accounts);
-
-        //        var dto = new TreeAccountDto
-        //        {
-        //            id = account.Id,
-        //            accountName = account.AccountName,
-        //            parentId=account.ParentAccountId,
-        //            accountCode=account.AccountCode,
-        //            debit = debit,
-        //            isActive = account.IsActive,
-        //            isLeaf=account.IsLeaf,
-        //            credit = credit,
-        //            children = BuildTree(accounts, details, account.Id)
-        //        };
-
-        //        tree.Add(dto);
-        //    }
-
-        //    return tree;
-        //}
 
         public async Task<List<TreeAccountDto>> GetTree()
         {
@@ -172,40 +94,7 @@ namespace Infrastructure.Services.FinanceService
 
             return (ownDebit, ownCredit);
         }
-        private List<TreeAccountDto> BuildTree(
-    IEnumerable<ChartOfAccounts> accounts,
-    Dictionary<int, AccountTotals> totalsLookup,
-    int? parentId)
-        {
-            var children = accounts
-                .Where(a => a.ParentAccountId == parentId)
-                .OrderBy(a => a.AccountCode);
 
-            var tree = new List<TreeAccountDto>();
-
-            foreach (var account in children)
-            {
-                var (debit, credit) =
-                    GetTotals(account, totalsLookup, accounts);
-
-                var dto = new TreeAccountDto
-                {
-                    id = account.Id,
-                    accountName = account.AccountName,
-                    parentId = account.ParentAccountId,
-                    accountCode = account.AccountCode,
-                    debit = debit,
-                    credit = credit,
-                    isActive = account.IsActive,
-                    isLeaf = account.IsLeaf,
-                    children = BuildTree(accounts, totalsLookup, account.Id)
-                };
-
-                tree.Add(dto);
-            }
-
-            return tree;
-        }
         public async Task<Result<List<AccountDto>>> GetAccounts(FilterationAccountsDto req)
         {
             try
@@ -316,129 +205,6 @@ namespace Infrastructure.Services.FinanceService
         }
 
 
-        //public async Task<Result<string>> AddNewAccount(AccountDto accountDto)
-        //{
-        //    try
-        //    {
-        //        var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
-
-        //        if (string.IsNullOrWhiteSpace(accountDto.accountCode))
-        //            return Result<string>.Failure("كود الحساب حقل ضروري");
-
-        //        if (string.IsNullOrWhiteSpace(accountDto.accountName))
-        //            return Result<string>.Failure("اسم الحساب حقل ضروري");
-
-        //        // ✅ مهم جداً: لازم يكون فيه أب
-        //        if (!accountDto.parentAccountId.HasValue)
-        //            return Result<string>.Failure("لا يمكن إضافة حساب بدون حساب أب");
-
-        //        var parent = await repo.GetByIdAsync(accountDto.parentAccountId.Value);
-
-        //        if (parent == null)
-        //            return Result<string>.Failure("الحساب الأب غير موجود");
-
-        //        if (parent.IsLeaf)
-        //            return Result<string>.Failure("لا يمكن إضافة حساب تحت حساب نهائي");
-
-        //        if ((int)parent.Type != accountDto.type)
-        //            return Result<string>.Failure("نوع الحساب يجب أن يطابق نوع الأب");
-
-        //        var codeExists = await repo.AnyAsync(x => x.AccountCode == accountDto.accountCode);
-        //        if (codeExists)
-        //            return Result<string>.Failure("كود الحساب مكرر");
-
-        //        var nameExists = await repo.AnyAsync(x => x.AccountName == accountDto.accountName);
-        //        if (nameExists)
-        //            return Result<string>.Failure("اسم الحساب مكرر");
-
-        //        var entity = new ChartOfAccounts
-        //        {
-        //            AccountCode = accountDto.accountCode.Trim(),
-        //            AccountName = accountDto.accountName.Trim(),
-        //            UserId = accountDto.userId,
-        //            Type = parent.Type, // ✅ نأخذ النوع من الأب إجبارياً
-        //            ParentAccountId = parent.Id,
-        //            IsLeaf = accountDto.isLeaf,
-        //            IsActive = accountDto.isActive
-        //        };
-
-        //        await repo.AddAsync(entity);
-
-        //        return Result<string>.Success("تم إنشاء الحساب الفرعي بنجاح");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _unitOfWork.LogError(ex);
-        //        return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
-        //    }
-        //}
-        //public async Task<Result<string>> AddNewAccount(AccountDto accountDto)
-        //{
-        //    try
-        //    {
-        //        var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
-
-        //        if (string.IsNullOrWhiteSpace(accountDto.accountName))
-        //            return Result<string>.Failure("اسم الحساب حقل ضروري");
-
-        //        if (!accountDto.parentAccountId.HasValue)
-        //            return Result<string>.Failure("لا يمكن إضافة حساب بدون حساب أب");
-
-        //        var parent = await repo.GetByIdAsync(accountDto.parentAccountId.Value);
-
-        //        if (parent == null)
-        //            return Result<string>.Failure("الحساب الأب غير موجود");
-
-        //        if (parent.IsLeaf)
-        //            return Result<string>.Failure("لا يمكن إضافة حساب تحت حساب نهائي");
-
-        //        if ((int)parent.Type != accountDto.type)
-        //            return Result<string>.Failure("نوع الحساب يجب أن يطابق نوع الأب");
-
-        //        // 🔥 1. Get siblings (direct children only)
-        //        var children = await repo.GetAsync(x => x.ParentAccountId == parent.Id);
-
-        //        string newCode;
-
-        //        if (!children.Any())
-        //        {
-        //            // أول ابن
-        //            newCode = parent.AccountCode + ".1";
-        //        }
-        //        else
-        //        {
-        //            // 🔥 نجيب آخر جزء ونزوده
-        //            var lastCode = children
-        //                .Select(x => x.AccountCode)
-        //                .Select(code => code.Split('.').Last())
-        //                .Where(x => int.TryParse(x, out _))
-        //                .Select(int.Parse)
-        //                .Max();
-
-        //            newCode = $"{parent.AccountCode}.{lastCode + 1}";
-        //        }
-
-        //        var entity = new ChartOfAccounts
-        //        {
-        //            AccountCode = newCode,
-        //            AccountName = accountDto.accountName.Trim(),
-        //            UserId = accountDto.userId,
-        //            Type = parent.Type,
-        //            ParentAccountId = parent.Id,
-        //            IsLeaf = accountDto.isLeaf,
-        //            IsActive = accountDto.isActive
-        //        };
-
-        //        await repo.AddAsync(entity);
-
-        //        return Result<string>.Success(newCode);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await _unitOfWork.LogError(ex);
-        //        return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
-        //    }
-        //}
         public async Task<Result<string>> AddNewAccount(AccountDto accountDto)
         {
             try
@@ -540,78 +306,7 @@ namespace Infrastructure.Services.FinanceService
             return false;
         }
        
-        public async Task<Result<string>> EditAccount(AccountDto accountDto)
-        {
-            try
-            {
-                var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
-                var detailsRepo = _unitOfWork.GetRepository<JournalEntryDetails, int>();
-
-                if (accountDto.id == null)
-                    return Result<string>.Failure("المعرف غير مرسل");
-
-                var account = await repo.GetByIdAsync((int)accountDto.id);
-
-                if (account == null)
-                    return Result<string>.Failure("الحساب غير موجود");
-
-                if (string.IsNullOrWhiteSpace(accountDto.accountCode))
-                    return Result<string>.Failure("كود الحساب حقل ضروري");
-
-                if (string.IsNullOrWhiteSpace(accountDto.accountName))
-                    return Result<string>.Failure("اسم الحساب حقل ضروري");
-
-                // ❌ ممنوع إزالة الأب
-                if (!accountDto.parentAccountId.HasValue)
-                    return Result<string>.Failure("لا يمكن إزالة الحساب الأب");
-
-                if (accountDto.parentAccountId == accountDto.id)
-                    return Result<string>.Failure("لا يمكن ربط الحساب بنفسه");
-
-                var parent = await repo.GetByIdAsync(accountDto.parentAccountId.Value);
-
-                if (parent == null)
-                    return Result<string>.Failure("الحساب الأب غير موجود");
-
-                if (parent.IsLeaf)
-                    return Result<string>.Failure("لا يمكن وضع الحساب تحت حساب نهائي");
-
-                if ((int)parent.Type != (int)account.Type)
-                    return Result<string>.Failure("يجب أن يكون نوع الحساب مثل نوع الأب");
-
-                var hasTransactions = await detailsRepo.AnyAsync(x => x.AccountId == account.Id);
-
-                if (hasTransactions && account.Type != parent.Type)
-                    return Result<string>.Failure("لا يمكن تغيير نوع الحساب لوجود قيود عليه");
-
-                var codeExists = await repo.AnyAsync(x =>
-                    x.AccountCode == accountDto.accountCode &&
-                    x.Id != account.Id);
-
-                if (codeExists)
-                    return Result<string>.Failure("كود الحساب مكرر");
-
-                var allAccounts = await repo.GetAllAsync();
-                if (IsDescendant(account.Id, parent.Id, allAccounts))
-                    return Result<string>.Failure("لا يمكن نقل الحساب تحت أحد أبنائه");
-
-                account.AccountCode = accountDto.accountCode.Trim();
-                account.AccountName = accountDto.accountName.Trim();
-                account.UserId = accountDto.userId;
-                account.ParentAccountId = parent.Id;
-                account.IsLeaf = accountDto.isLeaf;
-                account.IsActive = accountDto.isActive;
-
-                await repo.UpdateAsync(account);
-
-                return Result<string>.Success("تم تعديل الحساب بنجاح");
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.LogError(ex);
-                return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
-            }
-        }
+       
 
         public async Task<Result<AccountDto>> GetByAccountId(int id)
         {
@@ -651,43 +346,157 @@ namespace Infrastructure.Services.FinanceService
                 return Result<AccountDto>.Failure("خطأ في الاتصال بقاعدة البيانات");
             }
         }
-
-        public async Task<Result<string>> DeleteAccount(int id)
+        public async Task<Result<string>> EditAccount(AccountDto accountDto)
         {
             try
             {
+                if (accountDto.id is null or 0)
+                    return Result<string>.Failure("المعرف غير مرسل");
+
                 var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
+                var detailsRepo = _unitOfWork.GetRepository<JournalEntryDetails, int>();
 
-                if (id <= 0)
-                    return Result<string>.Failure("المعرف غير صالح");
-
-                 var dto = await repo
-                     .GetQueryable()
-                     .Where(x => x.Id == id)
-                     
-                     .FirstOrDefaultAsync();
-                if (dto == null)
+                var account = await repo.GetByIdAsync(accountDto.id.Value);
+                if (account is null)
                     return Result<string>.Failure("الحساب غير موجود", HttpStatusCode.NotFound);
-                
-                var isParent =await repo.AnyAsync(a=>a.ParentAccountId == id);
-                if(isParent)
-                    return Result<string>.Failure("لا يمكن حذف حساب له أبناء ", HttpStatusCode.NotFound);
-                var haveJournalEntries=await _unitOfWork.GetRepository<JournalEntryDetails, int>().AnyAsync(j=>j.AccountId==id);
-                if (haveJournalEntries)
-                    return Result<string>.Failure("لا يمكن حذف  حساب مربوط بقيود  ", HttpStatusCode.NotFound);
 
-                repo.DeleteWithoutSaveAsync(dto);
-                var res =await _unitOfWork.SaveChangesAsync();
-                if(res<=0)
-                    return Result<string>.Failure("حدث خطأ أثناء الحذف ", HttpStatusCode.NotFound);
+                // 🔒 SYSTEM ACCOUNT GUARD — blocks any edit on seeded accounts
+                if (account.IsSystemAccount)
+                    return Result<string>.Failure(
+                        "هذا الحساب من حسابات النظام ولا يمكن تعديله",
+                        HttpStatusCode.Forbidden);
 
-                return Result<string>.Success("تم حذف الحساب بنجاح ");
+                if (string.IsNullOrWhiteSpace(accountDto.accountName))
+                    return Result<string>.Failure("اسم الحساب حقل ضروري");
+
+                if (!accountDto.parentAccountId.HasValue)
+                    return Result<string>.Failure("لا يمكن إزالة الحساب الأب");
+
+                if (accountDto.parentAccountId == accountDto.id)
+                    return Result<string>.Failure("لا يمكن ربط الحساب بنفسه");
+
+                var parent = await repo.GetByIdAsync(accountDto.parentAccountId.Value);
+                if (parent is null) return Result<string>.Failure("الحساب الأب غير موجود");
+                if (parent.IsLeaf) return Result<string>.Failure("لا يمكن وضع الحساب تحت حساب نهائي");
+                if ((int)parent.Type != (int)account.Type)
+                    return Result<string>.Failure("يجب أن يكون نوع الحساب مثل نوع الأب");
+
+                var hasTransactions = await detailsRepo.AnyAsync(x => x.AccountId == account.Id);
+                if (hasTransactions && account.Type != parent.Type)
+                    return Result<string>.Failure("لا يمكن تغيير نوع الحساب لوجود قيود عليه");
+
+                if (!string.IsNullOrWhiteSpace(accountDto.accountCode))
+                {
+                    var codeExists = await repo.AnyAsync(x =>
+                        x.AccountCode == accountDto.accountCode && x.Id != account.Id);
+                    if (codeExists) return Result<string>.Failure("كود الحساب مكرر");
+                }
+
+                var allAccounts = await repo.GetAllAsync();
+                if (IsDescendant(account.Id, parent.Id, allAccounts))
+                    return Result<string>.Failure("لا يمكن نقل الحساب تحت أحد أبنائه");
+
+                // Apply edit
+                if (!string.IsNullOrWhiteSpace(accountDto.accountCode))
+                    account.AccountCode = accountDto.accountCode.Trim();
+
+                account.AccountName = accountDto.accountName.Trim();
+                account.UserId = accountDto.userId;
+                account.ParentAccountId = parent.Id;
+                account.IsLeaf = accountDto.isLeaf;
+                account.IsActive = accountDto.isActive;
+                // IsSystemAccount and SystemCode are NEVER changed via this endpoint.
+
+                await repo.UpdateAsync(account);
+                return Result<string>.Success("تم تعديل الحساب بنجاح");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 await _unitOfWork.LogError(ex);
                 return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
             }
         }
+
+        // -------------------- DELETE --------------------
+        public async Task<Result<string>> DeleteAccount(int id)
+        {
+            try
+            {
+                if (id <= 0) return Result<string>.Failure("المعرف غير صالح");
+
+                var repo = _unitOfWork.GetRepository<ChartOfAccounts, int>();
+                var account = await repo.GetByIdAsync(id);
+                if (account is null)
+                    return Result<string>.Failure("الحساب غير موجود", HttpStatusCode.NotFound);
+
+                // 🔒 SYSTEM ACCOUNT GUARD
+                if (account.IsSystemAccount)
+                    return Result<string>.Failure(
+                        "هذا الحساب من حسابات النظام ولا يمكن حذفه",
+                        HttpStatusCode.Forbidden);
+
+                if (await repo.AnyAsync(a => a.ParentAccountId == id))
+                    return Result<string>.Failure("لا يمكن حذف حساب له حسابات فرعية", HttpStatusCode.Conflict);
+
+                if (await _unitOfWork.GetRepository<JournalEntryDetails, int>()
+                                     .AnyAsync(j => j.AccountId == id))
+                    return Result<string>.Failure("لا يمكن حذف حساب مرتبط بقيود", HttpStatusCode.Conflict);
+
+                // If account is bound to a User (supplier/customer sub-account),
+                // block deletion and tell the user to delete the supplier/customer instead.
+                if (!string.IsNullOrWhiteSpace(account.UserId))
+                    return Result<string>.Failure(
+                        "هذا الحساب مرتبط بمستخدم (عميل/مورد). يجب حذف العميل أو المورد أولاً.",
+                        HttpStatusCode.Conflict);
+
+                repo.DeleteWithoutSaveAsync(account);
+                var saved = await _unitOfWork.SaveChangesAsync();
+                return saved > 0
+                    ? Result<string>.Success("تم حذف الحساب بنجاح")
+                    : Result<string>.Failure("حدث خطأ أثناء الحذف", HttpStatusCode.InternalServerError);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.LogError(ex);
+                return Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات");
+            }
+        }
+
+        // -------------------- TREE BUILD (unchanged, but pass IsSystemAccount through) --------------------
+        private List<TreeAccountDto> BuildTree(
+            IEnumerable<ChartOfAccounts> accounts,
+            Dictionary<int, AccountTotals> totalsLookup,
+            int? parentId)
+        {
+            var children = accounts
+                .Where(a => a.ParentAccountId == parentId)
+                .OrderBy(a => a.AccountCode);
+
+            var tree = new List<TreeAccountDto>();
+            foreach (var account in children)
+            {
+                var (debit, credit) = GetTotals(account, totalsLookup, accounts);
+                tree.Add(new TreeAccountDto
+                {
+                    id = account.Id,
+                    accountName = account.AccountName,
+                    parentId = account.ParentAccountId,
+                    accountCode = account.AccountCode,
+                    debit = debit,
+                    credit = credit,
+                    isActive = account.IsActive,
+                    isLeaf = account.IsLeaf,
+                    isSystemAccount = account.IsSystemAccount,    // NEW
+                    children = BuildTree(accounts, totalsLookup, account.Id)
+                });
+            }
+            return tree;
+        }
+
+        // ... GetTotals, GetTree, GetAccounts, AddNewAccount, IsDescendant remain unchanged.
+        // Just remember to also map isSystemAccount in GetByAccountId / GetAccounts projections.
     }
+
+
 }
+
