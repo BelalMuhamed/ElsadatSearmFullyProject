@@ -362,6 +362,36 @@ export const routes: Routes = [
       { path: 'tree', component: TreeAccountsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
       { path: 'sales/representatives', component: RepresentativesListComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
       { path: 'sales/representatives/add', component: RepresentativeAddComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
+    {
+  path: 'plumber/all',
+  loadComponent: () =>
+    import('../Components/plumber/plumber.component')
+      .then(c => c.PlumberComponent),
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['Admin', 'Accountant'] }
+},
+{
+  path: 'plumber/add',
+  loadComponent: () =>
+    import('../Components/add-edit-plumber/add-edit-plumber.component')
+      .then(c => c.AddEditPlumberComponent),
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['Admin', 'Accountant'] }
+},
+{
+  path: 'plumber/edit/:id',
+  loadComponent: () =>
+    import('../Components/add-edit-plumber/add-edit-plumber.component')
+      .then(c => c.AddEditPlumberComponent),
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['Admin', 'Accountant'] }
+},{
+  path: 'profile',
+  loadComponent: () =>
+    import('../Components/profile/profile.component')
+      .then(c => c.ProfileComponent),
+  canActivate: [authGuard]
+},
     ],canActivate:[authGuard]
   },
   {path :'unauthorized',component:UnauthorizedComponent}

@@ -59,6 +59,7 @@ using Infrastructure.Services.RepresentativeServices;
 using Infrastructure.Services.SalesInvoiceService;
 using Infrastructure.Services.StoreTransactionServices;
 using Infrastructure.Services.StoreTransactionServices.Validators;
+using Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -98,6 +99,7 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IStockService> _stockService;
     private readonly Lazy<ITreeAccounts> _treeService;
     private readonly Lazy<ISupplierContract> _supplierService;
+    private readonly Lazy<IPlumberContract> _PlumberService;
 
     private readonly Lazy<IPayrollDeductionService> _PayrollDeductionService; // خدمة استقطاعات الرواتب
     private readonly Lazy<ILeaveTypeService> _LeaveTypeService; // خدمة أنواع الإجازات
@@ -157,6 +159,7 @@ public class ServiceManager: IServiceManager
         _treeService = new Lazy<ITreeAccounts>(()=> new TreeAccountsService(UnitOfWork, _systemGuard.Value));
         _supplierService = new Lazy<ISupplierContract>(
     () => new SupplierService(UnitOfWork, ExcelReader, this));
+        _PlumberService = new Lazy<IPlumberContract>(() => new PlumberService(UnitOfWork));
         _journalEntry = new Lazy<IJounalEntryContract>(() => new JournalEntryService(UnitOfWork));
         _journalEntryDetails = new Lazy<IjournalEntryDetails>(() => new JournalEntryDetailsService(UnitOfWork));
         _purchaseInvoiceService = new Lazy<IPurchaseInvoiceContract>(() => new PurchaseInvoiceService(UnitOfWork));
@@ -238,4 +241,5 @@ public class ServiceManager: IServiceManager
     public ISystemAccountGuard systemAccountGuard => _systemGuard.Value;
 
     public IStoreTransactionValidator storeTransactionValidator => _StoreTransactionValidator.Value;
+    public IPlumberContract plumberService => _PlumberService.Value;
 }

@@ -1,0 +1,107 @@
+<div class="page-wrapper" dir="rtl">
+
+  <header class="page-header">
+    <button mat-icon-button class="back-btn" (click)="goBack()" aria-label="العودة">
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+    <h2 class="title">{{ isEditMode ? 'تعديل بيانات سباك' : 'إضافة سباك جديد' }}</h2>
+  </header>
+
+  <hr class="divider">
+
+  @if (isLoading) {
+    <div class="loading-block">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>جاري تحميل البيانات…</span>
+    </div>
+  } @else {
+    <form [formGroup]="form" class="plumber-form" (ngSubmit)="submit()">
+
+      <!-- Row 1 — Name + Phone -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="custom-input-theme">
+          <mat-label>اسم السباك *</mat-label>
+          <input matInput formControlName="name" maxlength="200">
+          @if (form.get('name')?.touched) {
+            @if (form.get('name')?.hasError('required')) {
+              <mat-error>اسم السباك مطلوب</mat-error>
+            } @else if (form.get('name')?.hasError('maxlength')) {
+              <mat-error>الحد الأقصى 200 حرف</mat-error>
+            }
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-input-theme">
+          <mat-label>رقم الهاتف *</mat-label>
+          <input matInput formControlName="phoneNumbers" placeholder="+201012345678" dir="ltr">
+          <mat-hint>الصيغة الدولية مثل: +201012345678</mat-hint>
+          @if (form.get('phoneNumbers')?.touched) {
+            @if (form.get('phoneNumbers')?.hasError('required')) {
+              <mat-error>رقم الهاتف مطلوب</mat-error>
+            } @else if (form.get('phoneNumbers')?.hasError('pattern')) {
+              <mat-error>رقم الهاتف غير صالح — استخدم صيغة دولية</mat-error>
+            }
+          }
+        </mat-form-field>
+      </div>
+
+      <!-- Row 2 — License + Specialty -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="custom-input-theme">
+          <mat-label>رقم الرخصة</mat-label>
+          <input matInput formControlName="licenseNumber" maxlength="50">
+          <mat-hint>اختياري — يجب أن يكون فريدًا إن أُدخل</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-input-theme">
+          <mat-label>التخصص</mat-label>
+          <input matInput
+                 formControlName="specialty"
+                 maxlength="100"
+                 [matAutocomplete]="specialtyAuto">
+          <mat-autocomplete #specialtyAuto>
+            @for (sp of specialtyOptions; track sp) {
+              <mat-option [value]="sp">{{ sp }}</mat-option>
+            }
+          </mat-autocomplete>
+          <mat-hint>اختر من القائمة أو أدخل تخصصًا جديدًا</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Row 3 — City + Address -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="custom-input-theme">
+          <mat-label>المدينة</mat-label>
+          <mat-select formControlName="cityId">
+            <mat-option [value]="null">— غير محدد —</mat-option>
+            @for (c of cities; track c.id) {
+              <mat-option [value]="c.id">{{ c.cityName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-input-theme address-field">
+          <mat-label>العنوان</mat-label>
+          <input matInput formControlName="address" maxlength="500">
+        </mat-form-field>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions-row">
+        <button type="button" mat-stroked-button class="cancel-btn" (click)="cancel()">
+          إلغاء
+        </button>
+        <button type="submit" mat-raised-button class="submit-btn" [disabled]="isSaving">
+          @if (isSaving) {
+            <mat-spinner diameter="18" class="inline-spinner"></mat-spinner>
+            <span>جاري الحفظ…</span>
+          } @else {
+            <mat-icon>save</mat-icon>
+            <span>{{ isEditMode ? 'حفظ التعديلات' : 'حفظ السباك' }}</span>
+          }
+        </button>
+      </div>
+
+    </form>
+  }
+</div>

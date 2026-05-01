@@ -119,3 +119,56 @@ button.mat-icon-button:active {
 
 }
 
+/* =========================================================================
+   Logout link — visible in both light and dark mode.
+   The original <a> had no class and inherited the default link color
+   which became invisible against the dark sidenav background.
+   ========================================================================= */
+.logout-item {
+  margin-top: 1rem;
+  padding-top: .75rem;
+  border-top: 1px solid rgba(212, 175, 55, .25); /* subtle gold separator */
+}
+
+.logout-link {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-radius: 6px;
+  color: var(--sidenav-text) !important;  /* picks black in light, white in dark */
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+  user-select: none;
+}
+
+.logout-link:hover,
+.logout-link:focus-visible {
+  background: rgba(212, 175, 55, .12);
+  color: var(--gold) !important;
+  outline: none;
+}
+
+.logout-link .dd-icon {
+  font-size: 1.15rem;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+/* Defensive: if a global "a { color: ... }" rule sneaks in,
+   keep the logout link readable in dark mode regardless. */
+body.dark-mode .logout-link {
+  color: #fff !important;
+}
+
+body.light-mode .logout-link {
+  color: #1a1a1a !important;
+}
+
+body.dark-mode .logout-link:hover,
+body.dark-mode .logout-link:focus-visible,
+body.light-mode .logout-link:hover,
+body.light-mode .logout-link:focus-visible {
+  color: var(--gold) !important;
+}

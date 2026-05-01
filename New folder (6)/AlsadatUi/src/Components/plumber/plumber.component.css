@@ -1,0 +1,25 @@
+/* Plumber list page styles.
+ * The page leans heavily on the global utility classes (.add-coupon-btn,
+ * .custom-input-theme, .table-container, .delete-toggle, etc.) defined in
+ * styles.css and used by the Supplier page. Only Plumber-specific tweaks
+ * live here. */
+
+.table-container {
+  margin-top: .5rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+/* Slightly tighter cells for the License + Specialty columns */
+table.mat-elevation-z8 td {
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

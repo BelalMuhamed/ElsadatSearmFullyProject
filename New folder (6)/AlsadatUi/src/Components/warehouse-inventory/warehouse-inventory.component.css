@@ -1,6 +1,13 @@
 /* =========================================================================
    Warehouse Inventory page — design tokens consumed from the global theme.
    Uses CSS custom properties so the page works in both light and dark mode.
+
+   TURN 4 CHANGES:
+   - Health-state colors now have separate light/dark variants (translucent
+     backgrounds + theme-aware foregrounds). Less neon in dark mode.
+   - Footer totals row uses the gold accent system instead of the missing
+     --footer-bg fallback that produced a clashing grey strip.
+   - Grand total promoted to a solid gold band — clear focal point.
    ========================================================================= */
 
 .inventory-page {
@@ -17,7 +24,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 3px solid #0f85d3;
+  border-bottom: 3px solid var(--gold, #d4af37);
   padding-bottom: .75rem;
 }
 
@@ -33,7 +40,7 @@
   margin: 0;
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--text-color, #0f85d3);
+  color: var(--gold, #d4af37);
 }
 
 .header-actions { display: flex; gap: .5rem; }
@@ -114,9 +121,9 @@
 .inventory-table thead th {
   position: sticky;
   top: 0;
-  background: var(--header-bg, #0f85d3);
-  color: #fff;
-  font-weight: 600;
+  background: var(--gold, #d4af37);
+  color: #1a1a1a;
+  font-weight: 700;
   text-align: center;
   padding: .75rem .5rem;
   border-bottom: 2px solid rgba(0,0,0,.08);
@@ -131,7 +138,7 @@
 }
 
 .inventory-table tbody tr:hover td {
-  background: var(--hover-bg, rgba(15,133,211,.06));
+  background: var(--hover-bg, rgba(212, 175, 55, .06));
 }
 
 .col-code  { font-family: monospace; font-weight: 600; }
@@ -152,57 +159,127 @@
   opacity: .7;
 }
 
-/* ---------- Status colors (driven by server-side StockHealth) ---------- */
-.health-out {
-  background: #fecaca;
-  color: #7f1d1d;
-}
-.health-critical {
-  background: #fed7aa;
-  color: #9a3412;
-}
-.health-warning {
-  background: #fef08a;
-  color: #854d0e;
-}
-.health-healthy {
-  background: #bbf7d0;
-  color: #14532d;
+/* =========================================================================
+   Health-state colors — tokenised per theme.
+   Softer than the original pastels so they don't overpower the gold accent.
+   Each token has a distinct light/dark variant for proper contrast.
+   ========================================================================= */
+:host {
+  /* Light-mode defaults (also used as fallback) */
+  --hs-out-bg:        #fde2e2;
+  --hs-out-fg:        #8a1f1f;
+  --hs-out-border:    #f3a5a5;
+
+  --hs-critical-bg:   #fde6cf;
+  --hs-critical-fg:   #8a3e0c;
+  --hs-critical-border:#f0b483;
+
+  --hs-warning-bg:    #fbf2c7;
+  --hs-warning-fg:    #6e520c;
+  --hs-warning-border:#e7d486;
+
+  --hs-healthy-bg:    #d6efd9;
+  --hs-healthy-fg:    #1f5a2a;
+  --hs-healthy-border:#a3d4ab;
 }
 
-.dot.health-out      { background: #fecaca; border-color: #7f1d1d; }
-.dot.health-critical { background: #fed7aa; border-color: #9a3412; }
-.dot.health-warning  { background: #fef08a; border-color: #854d0e; }
-.dot.health-healthy  { background: #bbf7d0; border-color: #14532d; }
+:host-context(body.dark-mode) {
+  /* Dark-mode — translucent backgrounds over the dark page,
+     brighter foregrounds for AA contrast. */
+  --hs-out-bg:        rgba(220, 60, 60, .18);
+  --hs-out-fg:        #ff9b9b;
+  --hs-out-border:    rgba(220, 60, 60, .45);
 
+  --hs-critical-bg:   rgba(220, 130, 50, .18);
+  --hs-critical-fg:   #ffc28a;
+  --hs-critical-border:rgba(220, 130, 50, .45);
+
+  --hs-warning-bg:    rgba(212, 175, 55, .18);   /* leans into the gold */
+  --hs-warning-fg:    #f3d56a;
+  --hs-warning-border:rgba(212, 175, 55, .55);
+
+  --hs-healthy-bg:    rgba(80, 170, 100, .18);
+  --hs-healthy-fg:    #9bdca7;
+  --hs-healthy-border:rgba(80, 170, 100, .45);
+}
+
+.health-out      { background: var(--hs-out-bg);      color: var(--hs-out-fg); }
+.health-critical { background: var(--hs-critical-bg); color: var(--hs-critical-fg); }
+.health-warning  { background: var(--hs-warning-bg);  color: var(--hs-warning-fg); }
+.health-healthy  { background: var(--hs-healthy-bg);  color: var(--hs-healthy-fg); }
+
+.dot.health-out      { background: var(--hs-out-bg);      border-color: var(--hs-out-border); }
+.dot.health-critical { background: var(--hs-critical-bg); border-color: var(--hs-critical-border); }
+.dot.health-warning  { background: var(--hs-warning-bg);  border-color: var(--hs-warning-border); }
+.dot.health-healthy  { background: var(--hs-healthy-bg);  border-color: var(--hs-healthy-border); }
+
+/* ---------- Status pill ---------- */
 .status-pill {
   display: inline-block;
   padding: .15rem .65rem;
   border-radius: 999px;
   font-size: .8rem;
   font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color .15s ease;
 }
 
-/* ---------- Footer totals row ---------- */
+.status-pill.health-out      { border-color: var(--hs-out-border); }
+.status-pill.health-critical { border-color: var(--hs-critical-border); }
+.status-pill.health-warning  { border-color: var(--hs-warning-border); }
+.status-pill.health-healthy  { border-color: var(--hs-healthy-border); }
+
+/* =========================================================================
+   Footer totals row — theme-aware.
+   Background uses the gold accent at low alpha so it reads as a
+   "summary band" without competing with the data cells above.
+   ========================================================================= */
 .totals-row td {
-  background: var(--footer-bg, #f9fafb);
+  background: rgba(212, 175, 55, .08);             /* gold @ 8% — light */
   font-weight: 700;
-  border-top: 2px solid var(--header-bg, #0f85d3);
+  border-top: 2px solid var(--gold, #d4af37);
   padding: .85rem .5rem;
+  color: var(--text-color, #1f2937);
+}
+
+:host-context(body.dark-mode) .totals-row td {
+  background: rgba(212, 175, 55, .12);
+  color: var(--text-color, #fff);
 }
 
 .totals-row .col-code {
   text-align: end;
   font-family: inherit;
+  font-weight: 700;
   color: var(--text-color, #1f2937);
 }
 
-.warehouse-total-cell { font-size: 1rem; }
+.warehouse-total-cell {
+  font-size: 1rem;
+}
 
+/* Per-warehouse totals get a soft gold tint to separate them visually
+   from neutral cells while staying subordinate to the grand total. */
+.totals-row .warehouse-total-cell {
+  background: rgba(212, 175, 55, .04);
+}
+
+:host-context(body.dark-mode) .totals-row .warehouse-total-cell {
+  background: rgba(212, 175, 55, .08);
+}
+
+/* Grand total — the visual focal point of the footer.
+   Solid gold band, dark text — same in both themes (high contrast either way). */
 .grand-total {
-  background: #fff7ed;
-  color: #9a3412;
-  font-size: 1.05rem;
+  background: var(--gold, #d4af37) !important;
+  color: #1a1a1a !important;
+  font-size: 1.1rem;
+  letter-spacing: .25px;
+}
+
+:host-context(body.dark-mode) .grand-total {
+  background: var(--gold, #d4af37) !important;
+  color: #1a1a1a !important;
 }
 
 /* ---------- Paginator ---------- */
