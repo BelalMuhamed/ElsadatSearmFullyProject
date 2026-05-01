@@ -25,7 +25,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         // ==================== عمليات القروض ====================
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("CreateLoan")]
         public async Task<IActionResult> CreateLoanAsync([FromBody] CreateEmployeeLoanDto dto)
         {
@@ -45,9 +45,8 @@ namespace AlSadat_Seram.Api.Controllers
                 return StatusCode(500,new { Success = false,Message = "حدث خطأ داخلي" });
             }
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpPost("ApproveLoan")]
-        //[Authorize(Roles = "Admin,FinanceManager")] // صلاحيات خاصة
         public async Task<IActionResult> ApproveLoanAsync([FromBody] ApproveLoanDto dto)
         {
             try
@@ -66,9 +65,8 @@ namespace AlSadat_Seram.Api.Controllers
                 return StatusCode(500,new { Success = false,Message = "حدث خطأ داخلي" });
             }
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpPost("RejectLoan")]
-        //[Authorize(Roles = "Admin,FinanceManager")]
         public async Task<IActionResult> RejectLoanAsync([FromBody] RejectLoanDto dto)
         {
             try
@@ -87,7 +85,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return StatusCode(500,new { Success = false,Message = "حدث خطأ داخلي" });
             }
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpPut("UpdateLoan")]
         public async Task<IActionResult> UpdateLoanAsync(int loanId,[FromBody] UpdateEmployeeLoanDto dto)
         {
@@ -107,7 +105,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return StatusCode(500,new { Success = false,Message = "حدث خطأ داخلي" });
             }
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpPost("MakePayment")]
         public async Task<IActionResult> MakePaymentAsync([FromBody] LoanPaymentsDTo dto)
         {
@@ -130,7 +128,7 @@ namespace AlSadat_Seram.Api.Controllers
 
         // ==================== عمليات الاستعلام ====================
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet("GetLoanById")]
         public async Task<IActionResult> GetLoanByIdAsync(int id)
         {
@@ -149,7 +147,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return StatusCode(500,new { Success = false,Message = "حدث خطأ داخلي" });
             }
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet("GetLoanByNumber")]
         public async Task<IActionResult> GetLoanByNumberAsync(string loanNumber)
         {
@@ -168,7 +166,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return StatusCode(500,new { Success = false,Message = "حدث خطأ داخلي" });
             }
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet("GetEmployeeLoans")]
         public async Task<IActionResult> GetEmployeeLoansAsync(
             string employeeCode,
@@ -190,8 +188,7 @@ namespace AlSadat_Seram.Api.Controllers
             }
         }
 
-        //[Authorize(Roles = "StaffOnly")]
-        //[Authorize(Roles = "Admin,FinanceManager")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet("GetAllLoans")]
         public async Task<IActionResult> GetAllLoansAsync(
             [FromQuery] PaginationParams pagination,
@@ -226,7 +223,7 @@ namespace AlSadat_Seram.Api.Controllers
             }
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet("GetLoanPayments")]
         public async Task<IActionResult> GetLoanPaymentsAsync(int loanId)
         {
@@ -248,7 +245,7 @@ namespace AlSadat_Seram.Api.Controllers
 
         // ==================== التقارير والحسابات ====================
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet("CalculateMonthlyDeduction")]
         public async Task<IActionResult> CalculateMonthlyDeductionAsync(
             string employeeCode,
@@ -271,7 +268,7 @@ namespace AlSadat_Seram.Api.Controllers
             }
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet("GetEmployeeLoanSummary")]
         public async Task<IActionResult> GetEmployeeLoanSummaryAsync(string employeeCode)
         {
@@ -292,10 +289,9 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         // ==================== عمليات الإدارة ====================
-        
-        //[Authorize(Roles = "StaffOnly")]
+
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpDelete("SoftDeleteLoan")]
-        //[Authorize(Roles = "Admin,FinanceManager")]
         public async Task<IActionResult> SoftDeleteLoanAsync(int loanId)
         {
             try
@@ -315,9 +311,8 @@ namespace AlSadat_Seram.Api.Controllers
             }
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpPut("RestoreLoan")]
-        //[Authorize(Roles = "Admin,FinanceManager")]
         public async Task<IActionResult> RestoreLoanAsync(int loanId)
         {
             try
@@ -339,9 +334,8 @@ namespace AlSadat_Seram.Api.Controllers
 
         // ==================== عمليات الدفع التلقائي ====================
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpPost("ProcessMonthlyInstallments")]
-        //[Authorize(Roles = "Admin,FinanceManager")]
         public async Task<IActionResult> ProcessMonthlyInstallmentsAsync([FromQuery] DateTime month)
         {
             try

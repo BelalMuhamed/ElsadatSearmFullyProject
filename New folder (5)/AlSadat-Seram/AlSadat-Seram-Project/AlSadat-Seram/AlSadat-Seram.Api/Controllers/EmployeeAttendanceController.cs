@@ -18,7 +18,7 @@ public class EmployeeAttendanceController:ControllerBase
         _ServiceManager = serviceManager;
     }
     //-------------------------------------------------------------
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR")]
     [HttpGet("GetAllEmployeeAttendance")]
     public async Task<IActionResult> GetAllEmployeeAttendance([FromQuery] PaginationParams paginationParams)
     {
@@ -26,7 +26,7 @@ public class EmployeeAttendanceController:ControllerBase
         return Ok(result);
     }
     //-------------------------------------------------------------
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR")]
     [HttpGet("GetEmployeeAttendanceByFilter")]
     public async Task<IActionResult> GetEmployeeAttendanceByFilter([FromQuery] PaginationParams paginationParams, [FromQuery] EmpAttendanceHelper pramter)
     {
@@ -35,7 +35,7 @@ public class EmployeeAttendanceController:ControllerBase
         return Ok(result);
     }
     //-------------------------------------------------------------
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR")]
     [HttpGet("GetTodayRecord")]
     public IActionResult GetTodayRecord([FromQuery] PaginationParams paginationParams)
     {
@@ -44,7 +44,7 @@ public class EmployeeAttendanceController:ControllerBase
         return Ok(result);
     }
     //-------------------------------------------------------------
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR")]
     [HttpPost("CheckIn")]
     public async Task<IActionResult> CheckIn([FromBody] EmpAttendanceHelper pramter)
     {
@@ -54,7 +54,7 @@ public class EmployeeAttendanceController:ControllerBase
         return BadRequest(result);
     }
     //-------------------------------------------------------------
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR")]
     [HttpPost("CheckOut")]
     public async Task<IActionResult> CheckOut([FromBody] EmpAttendanceHelper pramter)
     {
@@ -64,7 +64,7 @@ public class EmployeeAttendanceController:ControllerBase
         return BadRequest(result);
     }
     //-------------------------------------------------------------
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR")]
     [HttpPost("ImportFromExcel")]
     public async Task<IActionResult> ImportFromExcel(IFormFile file)
     {
@@ -81,7 +81,7 @@ public class EmployeeAttendanceController:ControllerBase
         return BadRequest(result);
     }
     //-------------------------------------------------------------
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR")]
     [HttpPut("UpdateAttendanceStatus")]
     public async Task<IActionResult> UpdateAttendanceStatus([FromBody] EmployeeAttendanceDTO employeeAttendanceDTO, [FromQuery] AttendanceStatus status)
     {
@@ -90,9 +90,5 @@ public class EmployeeAttendanceController:ControllerBase
             return Ok(result);
         return BadRequest(result);
     }
-    //-------------------------------------------------------------
-    //-------------------------------------------------------------
-    //-------------------------------------------------------------
-    //-------------------------------------------------------------
-    //-------------------------------------------------------------
+
 }

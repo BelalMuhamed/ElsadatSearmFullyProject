@@ -19,14 +19,14 @@ namespace AlSadat_Seram.Api.Controllers
         {
             _Servicmanger = servicmanger;
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [HttpGet("GetMyLeaveRequests")]
         public async Task<IActionResult> GetMyLeaveRequests([FromQuery] PaginationParams paginationParams,string employeeEmail)
         {
             var result = await _Servicmanger.EmployeeLeaveService.GetEmployeeLeaveRequestsAsync(employeeEmail,paginationParams);
             return Ok(result);
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetLeaveRequestById")]
         public async Task<IActionResult> GetLeaveRequest(int id)
         {
@@ -36,7 +36,7 @@ namespace AlSadat_Seram.Api.Controllers
 
             return Ok(result.Data);
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [HttpPost("CreateLeaveRequest")]
         public async Task<IActionResult> CreateLeaveRequest([FromBody] CreateLeaveRequestDto requestDto)
         {
@@ -46,7 +46,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { Message = result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("CancelLeaveRequest")]
         public async Task<IActionResult> CancelLeaveRequest(int id,string employeeCode)
         {
@@ -55,14 +55,14 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { Message = result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("SearchLeaveRequests")]
         public async Task<IActionResult> SearchLeaveRequests([FromQuery] LeaveRequestFilterDto filter)
         {
             var result = await _Servicmanger.EmployeeLeaveService.SearchLeaveRequestsAsync(filter);
             return Ok(result);
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("ApproveLeaveRequest")]
         public async Task<IActionResult> ApproveLeaveRequest([FromBody] ApproveRejectLeaveDto dto,string employeeCode)
         {
@@ -72,7 +72,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { Message = result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("RejectLeaveRequest")]
         public async Task<IActionResult> RejectLeaveRequest([FromBody] ApproveRejectLeaveDto dto)
         {
@@ -82,7 +82,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { Message = result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetPendingRequests")]
         public async Task<IActionResult> GetPendingRequests()
         {
@@ -91,7 +91,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(result.Data) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("BulkApproveRequests")]
         public async Task<IActionResult> BulkApproveRequests([FromBody] List<int> requestIds)
         {
@@ -101,7 +101,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { Message = result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [HttpGet("GetEmplyeeLeaveBalance")]
         public async Task<IActionResult> GetEmplyeeLeaveBalance(string employeeName, [FromQuery] int? year = null)
         {
@@ -111,7 +111,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(result.Data) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [HttpGet("GetMyLeaveBalance")]
         public async Task<IActionResult> GetMyLeaveBalance([FromQuery] int? year = null)
         {
@@ -121,7 +121,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(result.Data) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetLeaveBalanceByType")]
         public async Task<IActionResult> GetLeaveBalanceByType(string employeeCode,int leaveTypeId,[FromQuery] int? year = null)
         {
@@ -131,7 +131,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(result.Data) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("UpdateLeaveBalance")]
         public async Task<IActionResult> UpdateLeaveBalance([FromBody] EmployeeLeaveBalanceDto leaveBalance)
         {
@@ -140,7 +140,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("SetCustomLeaveBalance")]
         public async Task<IActionResult> SetCustomLeaveBalance([FromBody] SetCustomLeaveBalanceRequest request)
         {
@@ -152,7 +152,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("InitializeLeaveBalance")]
         public async Task<IActionResult> InitializeLeaveBalance([FromBody] InitializeLeaveBalanceRequest request)
         {
@@ -163,7 +163,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(new { result.Message }) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("CreateMultipleLeaveBalances")]
         public async Task<IActionResult> CreateMultipleLeaveBalances([FromBody] BulkLeaveBalanceRequestDto request)
         {
@@ -172,7 +172,7 @@ namespace AlSadat_Seram.Api.Controllers
                 Ok(result.Data) :
                 BadRequest(new { result.Message });
         }
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetEmployeeLeaveTypesWithBalanceAsync")]
         public async Task<IActionResult> GetEmployeeLeaveTypesWithBalanceAsync(string employeeCode)
         {

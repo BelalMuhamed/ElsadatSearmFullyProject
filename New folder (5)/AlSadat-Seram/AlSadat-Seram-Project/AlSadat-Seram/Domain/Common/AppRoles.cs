@@ -16,7 +16,7 @@ public static class AppRoles
     public const string Distributor = "Distributor";
     public const string StockManager = "StockManager";
     public const string Plumber = "Plumber";
-
+    public const string Employee = "Employee";
 
 
 

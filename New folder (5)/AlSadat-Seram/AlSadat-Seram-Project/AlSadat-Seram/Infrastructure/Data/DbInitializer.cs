@@ -219,20 +219,27 @@ namespace Infrastructure.Data
                         NormalizedName = AppRoles.Agent.ToUpper(),
                         ConcurrencyStamp = Guid.NewGuid().ToString()
                     },
-                      new ApplicationRole
-                      {
-                          Id = Guid.CreateVersion7().ToString(),
-                          Name = AppRoles.Distributor,
-                          NormalizedName = AppRoles.Distributor.ToUpper(),
-                          ConcurrencyStamp = Guid.NewGuid().ToString()
-                      },
-                         new ApplicationRole
-                         {
-                             Id = stockManagerRoleId,
-                             Name = AppRoles.StockManager,
-                             NormalizedName = AppRoles.StockManager.ToUpper(),
-                             ConcurrencyStamp = Guid.NewGuid().ToString()
-                         }
+                    new ApplicationRole
+                    {
+                        Id = Guid.CreateVersion7().ToString(),
+                        Name = AppRoles.Distributor,
+                        NormalizedName = AppRoles.Distributor.ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    },
+                    new ApplicationRole
+                    {
+                        Id = stockManagerRoleId,
+                        Name = AppRoles.StockManager,
+                        NormalizedName = AppRoles.StockManager.ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    },
+                    new ApplicationRole
+                    {
+                        Id = Guid.CreateVersion7().ToString(),
+                        Name = AppRoles.Employee,
+                        NormalizedName = AppRoles.Employee.ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    }
                     );
                 await context.SaveChangesAsync();
 

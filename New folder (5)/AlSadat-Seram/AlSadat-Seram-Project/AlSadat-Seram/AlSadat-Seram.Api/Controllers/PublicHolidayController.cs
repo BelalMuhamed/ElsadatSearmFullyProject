@@ -1,6 +1,7 @@
 ﻿using Application.CommonPagination;
 using Application.Services.contract;
 using Domain.Entities.HR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace AlSadat_Seram.Api.Controllers
             _ServiceManager = serviceManager;
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetAllPublicHoliday")]
         public async Task<IActionResult> GetAllPublicHoliday([FromQuery] PaginationParams paginationParams)
         {
@@ -25,6 +27,7 @@ namespace AlSadat_Seram.Api.Controllers
 
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetAllActivePublicHoliday")]
         public async Task<IActionResult> GetAllActivePublicHoliday([FromQuery]  PaginationParams paginationParams)
         {
@@ -32,6 +35,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(resulte);
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetPublicHolidayByID/{id}")]
         public async Task<IActionResult> GetPublicHolidayByID (int id)
         {
@@ -39,6 +43,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(resulte);
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetSoftDeletePublicHoliday")]
         public async Task<IActionResult> GetSoftDeletePublicHoliday([FromQuery]  PaginationParams paginationParams)
         {
@@ -46,6 +51,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(resulte);
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("CreatePublicHoliday")]
         public async Task<IActionResult> CreatePublicHoliday([FromBody] PublicHoliday Model)
         {
@@ -53,6 +59,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(resulte);
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("UpdatePublicHoliday")]
         public async Task<IActionResult> UpdatePublicHoliday([FromBody] PublicHoliday Model)
         {
@@ -60,6 +67,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(resulte);
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("SoftDeletePublicHoliday")]
         public async Task<IActionResult> SoftDeletePublicHoliday([FromBody] PublicHoliday Model)
         {
@@ -67,6 +75,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(resulte);
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("RestorePublicHoliday")]
         public async Task<IActionResult> RestorePublicHoliday([FromBody] PublicHoliday Model)
         {
@@ -74,6 +83,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(result);
         }
         //----------------------------------------------------------
+        [Authorize(Roles = "Admin,HR")]
         [HttpDelete("HardDeletePublicHoliday")]
         public async Task<IActionResult> HardDeletePublicHoliday([FromBody] PublicHoliday Model)
         {

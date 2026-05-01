@@ -3,6 +3,7 @@ using Application.DTOs.RepresentativeAttendanceDtos;
 using Application.Helper;
 using Application.Services.contract;
 using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AlSadat_Seram.Api.Controllers;
@@ -16,6 +17,7 @@ public class RepresentativeAttendanceController:ControllerBase
     {
         _ServiceManager = serviceManager;
     }
+    [Authorize(Roles = "Admin,HR")]
     [HttpGet("GetAllRepresentativeAttendance")]
     public async Task<IActionResult> GetAllRepresentativeAttendance([FromQuery] PaginationParams paginationParams,[FromQuery] RepresentativeAttendanceHelper Pramter)
     {
@@ -32,6 +34,7 @@ public class RepresentativeAttendanceController:ControllerBase
 
     }
     //--------------------------------------------------------------
+    [Authorize(Roles = "Admin,HR")]
     [HttpPost("RepresentativeCheckIn")]
     public async Task<IActionResult> RepresentativeCheckIn([FromBody] RepresentativeAttendanceHelper pramter)
     {
@@ -48,6 +51,7 @@ public class RepresentativeAttendanceController:ControllerBase
         }
     }
     //--------------------------------------------------------------
+    [Authorize(Roles = "Admin,HR")]
     [HttpPut("UpdateRepresentativeAttendanceStatus")]
     public async Task<IActionResult> UpdateRepresentativeAttendanceStatus
         ([FromBody]RepresentativeAttendanceDto representativeAttendanceDto,[FromQuery]AttendanceStatus status)

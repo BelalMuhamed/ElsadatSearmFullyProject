@@ -331,16 +331,16 @@ export const routes: Routes = [
       },
 
       { path: 'hr/employees', component: EmployeesListComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/employee-salary/:empCode', component: EmployeeSalaryComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/roles', component: RolesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin'] }},
+      { path: 'hr/employee-salary/:empCode', component: EmployeeSalaryComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant'] }},
+      { path: 'hr/roles', component: RolesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/employees/add', component: EmployeeAddComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/salaries', component: SalarySearchComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
+      { path: 'hr/salaries', component: SalarySearchComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant'] }},
+      { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant','Employee'] }},
       { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/collection-rates', component: CollectionRepresentiveRateComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/copon-collection-rates', component: CoponCollectionRepresentiveRateComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/employee-loans', component: EmployeeLoanComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/my-leave-requests', component: LeaveRequestsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
+      { path: 'hr/employee-loans', component: EmployeeLoanComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant'] }},
+      { path: 'hr/my-leave-requests', component: LeaveRequestsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant','Employee'] }},
       { path: 'hr/leave-request/create', component: CreateLeaveRequestComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/leave-request/create-hr', component: HrCreateLeaveComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/pending-leave-requests', component: PendingLeaveRequestsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
@@ -348,20 +348,20 @@ export const routes: Routes = [
       { path: 'hr/leave-wallets', loadComponent: () => import('../Components/leave/leave-wallets/leave-wallets.component').then(m => m.LeaveWalletsComponent), canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/leave-types', component: LeaveTypesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'hr/all-leave-requests', component: AllLeaveRequestsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/payroll-deductions', component: PayrollDeductionsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/employee-deductions', component: EmployeeDeductionsSummaryComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
-      { path: 'hr/payroll', component: PayrollComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
+      { path: 'hr/payroll-deductions', component: PayrollDeductionsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant'] }},
+      { path: 'hr/employee-deductions', component: EmployeeDeductionsSummaryComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant'] }},
+      { path: 'hr/payroll', component: PayrollComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant'] }},
 
       {
         path: 'hr/employee-loan-summary',
         loadComponent: () => import('../Components/employee-loan-component/employee-summary-page/employee-summary-page.component')
           .then(m => m.EmployeeSummaryPageComponent),
-       canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }
+       canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR','Accountant'] }
       },
       { path: 'hr/public-holidays', component: PublicHolidayComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'HR'] }},
       { path: 'tree', component: TreeAccountsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
-      { path: 'sales/representatives', component: RepresentativesListComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
-      { path: 'sales/representatives/add', component: RepresentativeAddComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant'] }},
+      { path: 'hr/representatives', component: RepresentativesListComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant', 'HR'] }},
+      { path: 'hr/representatives/add', component: RepresentativeAddComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'Accountant', 'HR'] }},
     ],canActivate:[authGuard]
   },
   {path :'unauthorized',component:UnauthorizedComponent}

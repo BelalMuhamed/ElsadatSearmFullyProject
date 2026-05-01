@@ -64,7 +64,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return BadRequest(new { message = "مشكلة بالخادم من فضلك حاول الاتصال بالخادم مجددا !" });
             }
         }
-        [Authorize]
+        [Authorize(Roles = "Admin,HR,Accountant")]
         [HttpGet]
         [Route("cities/{id}")]
         public async Task<ActionResult> GetById(int id)

@@ -66,7 +66,7 @@
 </li>
 
 <li>
-  <div class="dropdown-header" (click)="settingsOpened = !settingsOpened"*ngIf="hasRole(['Accountant', 'Admin'])" >
+  <div class="dropdown-header" (click)="settingsOpened = !settingsOpened"*ngIf="hasRole(['Accountant', 'Admin','HR'])" >
     <span>الإعدادات</span>
     <mat-icon>
       {{ settingsOpened ? 'expand_less' : 'expand_more' }}
@@ -98,7 +98,7 @@
 
 
 
-<li *ngIf="hasRole([ 'Admin','HR'])">
+<li *ngIf="hasRole([ 'Admin','HR','Accountant'])">
   <div class="dropdown-header" (click)="hrOpened = !hrOpened">
     <span>HR</span>
     <mat-icon>
@@ -106,41 +106,41 @@
     </mat-icon>
   </div>
       <ul *ngIf="hrOpened" >
-        <li><a routerLink='hr/payroll-deductions' routerLinkActive="active">خصومات الرواتب</a></li>
-        <li><a routerLink='hr/employee-deductions' routerLinkActive="active">تفاصيل خصومات الموظف</a></li>
-        <li><a routerLink='hr/attendance' routerLinkActive="active">الحضور والانصراف</a></li>
-        <li><a routerLink='hr/attendance-record' routerLinkActive="active">تسجيل الحضور والانصراف</a></li>
-        <li><a routerLink='hr/representative-attendance' routerLinkActive="active">حضور وانصراف المناديب</a></li>
-        <li><a routerLink='hr/representative-check-in' routerLinkActive="active">تسجيل دخول المناديب</a></li>
-        <li><a routerLink='hr/quick-attendance' routerLinkActive="active">التسجيل السريع</a></li>
-        <li><a routerLink='hr/roles' routerLinkActive="active">الأدوار</a></li>
-        <li><a routerLink='hr/employees/add' routerLinkActive="active">إضافة موظف</a></li>
-        <li><a routerLink='hr/employees' routerLinkActive="active">إدارة الموظفين</a></li>
-        <li><a routerLink='sales/representatives' routerLinkActive="active">إدارة المناديب</a></li>
-        <li><a routerLink='sales/representatives/add' routerLinkActive="active">إضافة مندوب</a></li>
-        <li><a routerLink='hr/collection-rates' routerLinkActive="active">نسب تحصيل المندوب (فلوس)</a></li>
-        <li><a routerLink='hr/copon-collection-rates' routerLinkActive="active">نسب المندوب من الكوبونات</a></li>
-        <li><a routerLink='hr/payroll' routerLinkActive="active">إدارة الرواتب</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR','Accountant'])"><a routerLink='hr/payroll-deductions' routerLinkActive="active">خصومات الرواتب</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/employee-deductions' routerLinkActive="active">تفاصيل خصومات الموظف</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/attendance' routerLinkActive="active">الحضور والانصراف</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/attendance-record' routerLinkActive="active">تسجيل الحضور والانصراف</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/representative-attendance' routerLinkActive="active">حضور وانصراف المناديب</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/representative-check-in' routerLinkActive="active">تسجيل دخول المناديب</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR','Accountant','Employee'])"><a routerLink='hr/quick-attendance' routerLinkActive="active">التسجيل السريع</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/roles' routerLinkActive="active">الأدوار</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/employees/add' routerLinkActive="active">إضافة موظف</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/employees' routerLinkActive="active">إدارة الموظفين</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/representatives' routerLinkActive="active">إدارة المناديب</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/representatives/add' routerLinkActive="active">إضافة مندوب</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/collection-rates' routerLinkActive="active">نسب تحصيل المندوب (فلوس)</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/copon-collection-rates' routerLinkActive="active">نسب المندوب من الكوبونات</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR', 'Accountant'])"><a routerLink='hr/payroll' routerLinkActive="active">إدارة الرواتب</a></li>
         <!-- <li><a routerLink='hr/salaries' routerLinkActive="active">المرتبات</a></li> -->
-        <li><a routerLink='hr/departments' routerLinkActive="active">الأقسام</a></li>
-        <li><a routerLink='hr/employee-loans' routerLinkActive="active">قروض الموظفين</a></li>
-        <li><a routerLink='hr/employee-loan-summary' routerLinkActive="active">تفاصيل قروض الموظف</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR', 'Accountant'])"><a routerLink='hr/departments' routerLinkActive="active">الأقسام</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR', 'Accountant'])"><a routerLink='hr/employee-loans' routerLinkActive="active">قروض الموظفين</a></li>
+        <li *ngIf="hasRole([ 'Admin','HR', 'Accountant'])"><a routerLink='hr/employee-loan-summary' routerLinkActive="active">تفاصيل قروض الموظف</a></li>
        <li>
-          <div class="dropdown-header" (click)="leaveOpen = !leaveOpen">
+          <div *ngIf="hasRole([ 'Admin','HR', 'Accountant', 'Employee'])" class="dropdown-header" (click)="leaveOpen = !leaveOpen">
           <span>الاجازات</span>
           <mat-icon>
             {{ leaveOpen ? 'expand_less' : 'expand_more' }}
           </mat-icon>
           </div>
           <ul *ngIf="leaveOpen" >
-            <li><a routerLink='hr/public-holidays' routerLinkActive="active">الإجازات الثانوية</a></li>
-            <li><a routerLink="hr/leave-types" routerLinkActive="active">أنواع الإجازات</a></li>
-            <li><a routerLink="hr/all-leave-requests" routerLinkActive="active">طلبات الإجازات</a></li>
-            <li><a routerLink="hr/my-leave-requests" routerLinkActive="active">طلبات الإجازة الخاصة بي</a></li>
-             <li><a routerLink='hr/leave-request/create-hr' routerLinkActive="active">إنشاء طلب إجازة (HR)</a></li>
-            <li><a routerLink="hr/pending-leave-requests" routerLinkActive="active">الطلبات المعلقة</a></li>
-            <li><a routerLink="hr/leave-wallets" routerLinkActive="active">محفظة الإجازات</a></li>
-            <li><a routerLink="hr/leave-balance" routerLinkActive="active">أرصدة الإجازات</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/public-holidays' routerLinkActive="active">الإجازات الثانوية</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink="hr/leave-types" routerLinkActive="active">أنواع الإجازات</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink="hr/all-leave-requests" routerLinkActive="active">طلبات الإجازات</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR','Accountant', 'Employee'])"><a routerLink="hr/my-leave-requests" routerLinkActive="active">طلبات الإجازة الخاصة بي</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink='hr/leave-request/create-hr' routerLinkActive="active">إنشاء طلب إجازة (HR)</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink="hr/pending-leave-requests" routerLinkActive="active">الطلبات المعلقة</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink="hr/leave-wallets" routerLinkActive="active">محفظة الإجازات</a></li>
+            <li *ngIf="hasRole([ 'Admin','HR'])"><a routerLink="hr/leave-balance" routerLinkActive="active">أرصدة الإجازات</a></li>
           </ul>
         </li>
       </ul>
