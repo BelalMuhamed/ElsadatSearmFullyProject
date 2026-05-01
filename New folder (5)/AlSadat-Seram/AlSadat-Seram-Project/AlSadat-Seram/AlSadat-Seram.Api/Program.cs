@@ -24,23 +24,26 @@ internal class Program
     private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>();
 
         // Add services to the container.
 
         builder.Services.AddDbContext<AppDbContext>(options =>
           options.UseSqlServer(builder.Configuration.GetConnectionString("con")));
 
+
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll", policy =>
+            options.AddPolicy("AllowFrontend", policy =>
             {
                 policy
-                    .AllowAnyOrigin()
+                    .WithOrigins(allowedOrigins)
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             });
-
-          
         });
         #region Role-Based Authorization Policies
 
@@ -218,16 +221,21 @@ internal class Program
         }
         #region Global Exception Handling Middleware
         app.UseMiddleware<ExceptionHandlingMiddleware>();
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
         app.UseResponseCompression(); 
         app.UseStaticFiles();
         app.UseRouting();
-        app.UseRateLimiter(); 
-        app.UseCors("AllowAll");
+
+        app.UseCors("AllowFrontend");
+
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseRateLimiter();
+
         app.MapControllers();
         app.MapFallbackToFile("index.html");
+
         //app.MapHub<NotificationHub>("/notificationHub");
         #endregion
 
