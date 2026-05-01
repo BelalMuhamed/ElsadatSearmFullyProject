@@ -75,20 +75,20 @@ internal class EmployeeService : IEmployeeService
             //    var errors = string.Join("; ",roleResult.Errors.Select(e => e.Description));
             //    return Result<string>.Failure($"Failed to assign role to Employee. Errors: {errors}",HttpStatusCode.BadRequest);
             //}
-            if (!string.IsNullOrWhiteSpace(DTo.RoleName))
+            if (DTo.RolesName != null && DTo.RolesName.Any())
             {
                 var currentRoles = await _UserManager.GetRolesAsync(user);
 
-                // Remove old roles
-                await _UserManager.RemoveFromRolesAsync(user, currentRoles);
+                if(currentRoles.Any())
+                    await _UserManager.RemoveFromRolesAsync(user,currentRoles);
 
                 // Add new role
-                var roleAddResult = await _UserManager.AddToRoleAsync(user, DTo.RoleName);
+                var roleAddResult = await _UserManager.AddToRolesAsync(user,DTo.RolesName);
 
                 if (!roleAddResult.Succeeded)
                 {
-                    var errors = string.Join("; ", roleAddResult.Errors.Select(e => e.Description));
-                    return Result<string>.Failure($"Failed to update role. Errors: {errors}");
+                    var errors = string.Join("; ",result.Errors.Select(e => e.Description));
+                    return Result<string>.Failure($"فشل إضافة الأدوار: {errors}");
                 }
             }
             var employee = new Employee
@@ -474,20 +474,30 @@ internal class EmployeeService : IEmployeeService
                 return Result<string>.Failure($"Failed to update user. Errors: {errors}");
             }
 
-            if (!string.IsNullOrWhiteSpace(DTo.RoleName))
+            if(DTo.RolesName != null)
             {
                 var currentRoles = await _UserManager.GetRolesAsync(user);
 
-                // Remove old roles
-                await _UserManager.RemoveFromRolesAsync(user, currentRoles);
-
-                // Add new role
-                var roleAddResult = await _UserManager.AddToRoleAsync(user, DTo.RoleName);
-
-                if (!roleAddResult.Succeeded)
+                // إزالة الأدوار القديمة إذا وجدت
+                if(currentRoles.Any())
                 {
-                    var errors = string.Join("; ", roleAddResult.Errors.Select(e => e.Description));
-                    return Result<string>.Failure($"Failed to update role. Errors: {errors}");
+                    var removeResult = await _UserManager.RemoveFromRolesAsync(user,currentRoles);
+                    if(!removeResult.Succeeded)
+                    {
+                        var errors = string.Join("; ",removeResult.Errors.Select(e => e.Description));
+                        return Result<string>.Failure($"Failed to remove old roles. Errors: {errors}");
+                    }
+                }
+
+                // إضافة الأدوار الجديدة (قائمة)
+                if(DTo.RolesName.Any())
+                {
+                    var addRolesResult = await _UserManager.AddToRolesAsync(user,DTo.RolesName);
+                    if(!addRolesResult.Succeeded)
+                    {
+                        var errors = string.Join("; ",addRolesResult.Errors.Select(e => e.Description));
+                        return Result<string>.Failure($"Failed to update multiple roles. Errors: {errors}");
+                    }
                 }
             }
 

@@ -286,24 +286,24 @@ namespace Infrastructure.Data
             if (!context.Accounts.Any())
             {
                 var accounts = new List<ChartOfAccounts>
-    {
-        new() { Id = 1,  AccountCode = "1",     AccountName = "الأصول",            Type = AccountTypes.Assets,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.AssetsRoot },
-        new() { Id = 2,  AccountCode = "2",     AccountName = "الخصوم",            Type = AccountTypes.Liabilities, IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.LiabilitiesRoot },
-        new() { Id = 3,  AccountCode = "3",     AccountName = "حقوق الملكية",      Type = AccountTypes.Equity,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.EquityRoot },
-        new() { Id = 4,  AccountCode = "4",     AccountName = "الإيرادات",         Type = AccountTypes.Income,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.IncomeRoot },
-        new() { Id = 5,  AccountCode = "5",     AccountName = "المصروفات",         Type = AccountTypes.Expenses,    IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.ExpensesRoot },
+                {
+                    new() { Id = 1,  AccountCode = "1",     AccountName = "الأصول",            Type = AccountTypes.Assets,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.AssetsRoot },
+                    new() { Id = 2,  AccountCode = "2",     AccountName = "الخصوم",            Type = AccountTypes.Liabilities, IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.LiabilitiesRoot },
+                    new() { Id = 3,  AccountCode = "3",     AccountName = "حقوق الملكية",      Type = AccountTypes.Equity,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.EquityRoot },
+                    new() { Id = 4,  AccountCode = "4",     AccountName = "الإيرادات",         Type = AccountTypes.Income,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.IncomeRoot },
+                    new() { Id = 5,  AccountCode = "5",     AccountName = "المصروفات",         Type = AccountTypes.Expenses,    IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.ExpensesRoot },
 
-        new() { Id = 6,  AccountCode = "1.1",   AccountName = "الأصول المتداولة",  ParentAccountId = 1, Type = AccountTypes.Assets,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.CurrentAssets },
-        new() { Id = 7,  AccountCode = "1.1.1", AccountName = "النقدية",           ParentAccountId = 6, Type = AccountTypes.Assets,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.Cash },
-        new() { Id = 8,  AccountCode = "1.1.2", AccountName = "المدينون",          ParentAccountId = 6, Type = AccountTypes.Assets,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.ReceivablesParent },
-        new() { Id = 9,  AccountCode = "1.1.3", AccountName = "المخزون",           ParentAccountId = 6, Type = AccountTypes.Assets,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.Inventory },
+                    new() { Id = 6,  AccountCode = "1.1",   AccountName = "الأصول المتداولة",  ParentAccountId = 1, Type = AccountTypes.Assets,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.CurrentAssets },
+                    new() { Id = 7,  AccountCode = "1.1.1", AccountName = "النقدية",           ParentAccountId = 6, Type = AccountTypes.Assets,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.Cash },
+                    new() { Id = 8,  AccountCode = "1.1.2", AccountName = "المدينون",          ParentAccountId = 6, Type = AccountTypes.Assets,      IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.ReceivablesParent },
+                    new() { Id = 9,  AccountCode = "1.1.3", AccountName = "المخزون",           ParentAccountId = 6, Type = AccountTypes.Assets,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.Inventory },
 
-        new() { Id = 10, AccountCode = "2.1",   AccountName = "الموردين",          ParentAccountId = 2, Type = AccountTypes.Liabilities, IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.SuppliersParent },
-        new() { Id = 11, AccountCode = "3.1",   AccountName = "رأس المال",         ParentAccountId = 3, Type = AccountTypes.Equity,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.Capital },
-        new() { Id = 12, AccountCode = "4.1",   AccountName = "مبيعات المنتجات",   ParentAccountId = 4, Type = AccountTypes.Income,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.SalesRevenue },
-        new() { Id = 13, AccountCode = "5.1",   AccountName = "رواتب الموظفين",    ParentAccountId = 5, Type = AccountTypes.Expenses,    IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.SalariesExpense },
-        new() { Id = 14, AccountCode = "5.2",   AccountName = "تكلفة البضاعة المباعة", ParentAccountId = 5, Type = AccountTypes.Expenses, IsLeaf = true, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.CostOfGoodsSold },
-    };
+                    new() { Id = 10, AccountCode = "2.1",   AccountName = "الموردين",          ParentAccountId = 2, Type = AccountTypes.Liabilities, IsLeaf = false, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.SuppliersParent },
+                    new() { Id = 11, AccountCode = "3.1",   AccountName = "رأس المال",         ParentAccountId = 3, Type = AccountTypes.Equity,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.Capital },
+                    new() { Id = 12, AccountCode = "4.1",   AccountName = "مبيعات المنتجات",   ParentAccountId = 4, Type = AccountTypes.Income,      IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.SalesRevenue },
+                    new() { Id = 13, AccountCode = "5.1",   AccountName = "رواتب الموظفين",    ParentAccountId = 5, Type = AccountTypes.Expenses,    IsLeaf = true,  IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.SalariesExpense },
+                    new() { Id = 14, AccountCode = "5.2",   AccountName = "تكلفة البضاعة المباعة", ParentAccountId = 5, Type = AccountTypes.Expenses, IsLeaf = true, IsActive = true, IsSystemAccount = true, SystemCode = SystemAccountCode.CostOfGoodsSold },
+                };
 
                 await context.Database.OpenConnectionAsync();
                 try

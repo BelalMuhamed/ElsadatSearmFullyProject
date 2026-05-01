@@ -46,6 +46,7 @@
         <td mat-cell *matCellDef="let element">
           <ng-container [ngSwitch]="col.key">
             <span *ngSwitchCase="'salary'">{{ formatSalary(element.salary) }}</span>
+            <span *ngSwitchCase="'rolesName'">{{ (element.rolesName || []).join('، ') }}</span>
             <span *ngSwitchDefault>{{ element[col.key] }}</span>
           </ng-container>
         </td>
