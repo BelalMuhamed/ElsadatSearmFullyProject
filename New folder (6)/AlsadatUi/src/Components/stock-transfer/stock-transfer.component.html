@@ -1,0 +1,152 @@
+<div class="stock-transfer-page" dir="rtl">
+
+  <!-- ═══════════════════════ Page header ═══════════════════════ -->
+  <header class="page-header">
+    <div class="title-block">
+      <mat-icon class="title-icon">swap_horiz</mat-icon>
+      <h2 class="title">تحويل بين المخازن</h2>
+    </div>
+    <p class="subtitle">
+      نقل الكميات من مخزن إلى آخر — يتم تحديث متوسط التكلفة تلقائياً في المخزن المستقبل.
+    </p>
+  </header>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════ Form ═══════════════════════ -->
+  <form [formGroup]="form" class="transfer-form" (ngSubmit)="submit()">
+
+    <!-- ───────── Source / Destination row ───────── -->
+    <section class="warehouses-row">
+
+      <mat-form-field appearance="outline" class="warehouse-field">
+        <mat-label>المخزن المصدر</mat-label>
+        <mat-select formControlName="sourceId">
+          @if (isLoadingStores()) {
+            <mat-option disabled>جاري التحميل…</mat-option>
+          } @else {
+            @for (s of stores(); track s.id) {
+              <mat-option [value]="s.id">{{ s.storeName }}</mat-option>
+            }
+          }
+        </mat-select>
+        @if (sourceId.touched && sourceId.hasError('required')) {
+          <mat-error>اختر المخزن المصدر</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-icon class="arrow-icon">arrow_back</mat-icon>
+
+      <mat-form-field appearance="outline" class="warehouse-field">
+        <mat-label>المخزن المستقبل</mat-label>
+        <mat-select formControlName="destenationId">
+          @if (isLoadingStores()) {
+            <mat-option disabled>جاري التحميل…</mat-option>
+          } @else {
+            @for (s of stores(); track s.id) {
+              <mat-option
+                [value]="s.id"
+                [disabled]="s.id === sourceId.value">
+                {{ s.storeName }}
+              </mat-option>
+            }
+          }
+        </mat-select>
+        @if (destenationId.touched && destenationId.hasError('required')) {
+          <mat-error>اختر المخزن المستقبل</mat-error>
+        }
+      </mat-form-field>
+
+    </section>
+
+    @if (form.hasError('sameWarehouse')) {
+      <div class="form-level-error">
+        <mat-icon>error_outline</mat-icon>
+        <span>المخزن المصدر والمخزن المستقبل يجب أن يكونا مختلفين</span>
+      </div>
+    }
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <!-- ───────── Products section ───────── -->
+    <section class="products-section">
+
+      <div class="section-header">
+        <h3>المنتجات المراد تحويلها</h3>
+        <button
+          type="button"
+          mat-raised-button
+          class="add-line-btn"
+          [disabled]="
+            availableProducts().length === 0 ||
+            lines.length >= availableProducts().length ||
+            isSubmitting()
+          "
+          (click)="addLine()">
+          <mat-icon>add</mat-icon>
+          إضافة منتج
+        </button>
+      </div>
+
+      <!-- Loading products -->
+      @if (isLoadingProducts()) {
+        <div class="loading-block">
+          <mat-spinner diameter="36"></mat-spinner>
+          <span>جاري تحميل المنتجات المتاحة…</span>
+        </div>
+      }
+
+      <!-- No source picked yet -->
+      @if (!isLoadingProducts() && !sourceId.value) {
+        <div class="empty-state">
+          <mat-icon>inventory_2</mat-icon>
+          <p>اختر المخزن المصدر لعرض المنتجات المتاحة</p>
+        </div>
+      }
+
+      <!-- Source picked but no stock -->
+      @if (
+        !isLoadingProducts() &&
+        sourceId.value &&
+        availableProducts().length === 0
+      ) {
+        <div class="empty-state">
+          <mat-icon>warning_amber</mat-icon>
+          <p>لا توجد منتجات متاحة للتحويل في هذا المخزن</p>
+        </div>
+      }
+
+      <!-- Lines (dumb children) -->
+      @if (lines.length > 0) {
+        <div class="lines-container" formArrayName="lines">
+          @for (line of lines.controls; track line; let i = $index) {
+            <app-stock-transfer-line
+              [formGroup]="$any(line)"
+              [index]="i"
+              [availableProducts]="availableProducts()"
+              [pickedProductIds]="pickedProductIds()"
+              (remove)="removeLine(i)">
+            </app-stock-transfer-line>
+          }
+        </div>
+      }
+
+    </section>
+
+    <!-- ───────── Actions ───────── -->
+    <section class="actions-row">
+      <button
+        type="submit"
+        mat-raised-button
+        class="submit-btn"
+        [disabled]="form.invalid || isSubmitting() || lines.length === 0">
+        <mat-spinner *ngIf="isSubmitting()" diameter="20" class="inline-spinner"></mat-spinner>
+        <span *ngIf="isSubmitting()">جاري التنفيذ…</span>
+        <mat-icon *ngIf="!isSubmitting()">swap_horiz</mat-icon>
+        <span *ngIf="!isSubmitting()">تنفيذ التحويل</span>
+      </button>
+    </section>
+
+  </form>
+
+</div>

@@ -88,13 +88,12 @@
       {{ settingsOpened ? 'expand_less' : 'expand_more' }}
     </mat-icon>
   </div>
-    <ul *ngIf="StocksOpened" >
-  <li> <a routerLink="stores/all" routerLinkActive="active">  عرض المخازن </a></li>
-
-  <li> <a routerLink="transactions/all" routerLinkActive="active">سجل حركة المخازن </a></li>
-  <li> <a routerLink="stocks" routerLinkActive="active">   المخزون </a></li>
+ <ul *ngIf="StocksOpened">
+    <li><a routerLink="stores/all"        routerLinkActive="active">عرض المخازن</a></li>
+    <li><a routerLink="transactions/all"  routerLinkActive="active">سجل حركة المخازن</a></li>
+    <li><a routerLink="stock-transfer"    routerLinkActive="active">تحويل بين المخازن</a></li> 
+    <li><a routerLink="stocks"            routerLinkActive="active">المخزون</a></li>
   </ul>
-
 </li>
 
 

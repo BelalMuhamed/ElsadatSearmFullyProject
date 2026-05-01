@@ -1,66 +1,78 @@
-﻿using Application.DTOs;
-using Application.DTOs.CityDtos;
+using Application.DTOs;
 using Application.Services.contract;
-using Domain.UnitOfWork.Contract;
-using Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AlSadat_Seram.Api.Controllers
 {
+    /// <summary>
+    /// Stock-transfer (store-to-store) endpoints.
+    /// <para>
+    /// The global <c>ExceptionHandlingMiddleware</c> already converts unexpected
+    /// exceptions into a uniform <c>Result&lt;string&gt;</c> envelope, so this
+    /// controller does NOT wrap calls in a broad try/catch — that was previously
+    /// hiding 500s as 400s.
+    /// </para>
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin,StockManager,Accountant")]
-
-    public class TransactionController : ControllerBase
+    public sealed class TransactionController : ControllerBase
     {
-        private readonly IServiceManager serviceManager;
+        private readonly IServiceManager _serviceManager;
 
-        public TransactionController(IServiceManager ServiceManager)
+        public TransactionController(IServiceManager serviceManager)
         {
-            serviceManager = ServiceManager;
+            _serviceManager = serviceManager;
         }
+
+        /// <summary>
+        /// Paginated, filterable list of stock transfers.
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult> GetAllTransactions([FromQuery] StoreTransactionFilters req)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllTransactions([FromQuery] StoreTransactionFilters req)
         {
-            try
-            {
-                var res = await serviceManager.storeTransactionService.GetAllTransacctions(req);
-                if (res == null) 
-                {
-                    return BadRequest(new { message = "حدث خطأ اثناء الاتصال بالخادم " });
-                }
-                return Ok(res);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "حدث خطأ اثناء الاتصال بالخادم " });
-            }
+            var response = await _serviceManager.storeTransactionService.GetAllTransacctions(req);
+
+            // The service returns null only on infrastructure failure; surface that as 500.
+            if (response is null)
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = "حدث خطأ أثناء الاتصال بقاعدة البيانات" });
+
+            return Ok(response);
         }
 
+        /// <summary>
+        /// Creates a new stock transfer between two warehouses.
+        /// </summary>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddNewTransaction([FromBody] StoreTransactionDto dto)
         {
-            var result = await serviceManager.storeTransactionService.AddNewTransaction(dto);
+            var result = await _serviceManager.storeTransactionService.AddNewTransaction(dto);
 
-            if (result.IsSuccess)
-                return Ok(new { message = result.Data });
-
-            return BadRequest(new { message = result.Message });
+            return result.IsSuccess
+                ? Ok(result)
+                : StatusCode((int)result.StatusCode, result);
         }
 
-        [HttpGet("{id}/products")]
+        /// <summary>
+        /// Returns the line-items of a given transfer.
+        /// An empty list is a valid 200 response — it means the transfer exists
+        /// but has no detail rows. Returning 404 here was incorrect.
+        /// </summary>
+        [HttpGet("{id:int}/products")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTransactionProducts(int id)
         {
-           
-            var products = await serviceManager.storeTransactionService.GetTransactionProductsById(id);
-
-            if (products == null || products.Count == 0)
-                return NotFound(new { message = "لا توجد منتجات لهذا التحويل" });
-
-            return Ok(products);
+            var products = await _serviceManager.storeTransactionService.GetTransactionProductsById(id);
+            return Ok(products ?? new List<StoreTransactionProductsDto>());
         }
     }
 }
-

@@ -1,4 +1,5 @@
-﻿using AlSadatSeram.Services.contract;
+using AlSadatSeram.Services.contract;
+using Application.Common;
 using Application.DTOs;
 using Application.Services.contract;
 using Domain.Common;
@@ -6,356 +7,163 @@ using Domain.Entities;
 using Domain.Entities.Transactions;
 using Domain.UnitOfWork.Contract;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services.StoreTransactionServices
 {
-    public class StoreTransactionService : IStoreTransactionService
+    /// <summary>
+    /// Application service for store-to-store stock transfers.
+    /// <para>Orchestration only:</para>
+    /// <list type="number">
+    ///   <item>delegate validation to <see cref="IStoreTransactionValidator"/>,</item>
+    ///   <item>load the affected stock rows once,</item>
+    ///   <item>delegate cost math to <see cref="StockMovementCalculator"/>,</item>
+    ///   <item>persist master + details + stock mutations in a single DB transaction.</item>
+    /// </list>
+    /// </summary>
+    /// <remarks>
+    /// Onion alignment: depends on Application + Domain only. EF Core is used here
+    /// (Infrastructure layer) by design — same pattern as <c>SupplierService</c>.
+    /// </remarks>
+    public sealed class StoreTransactionService : IStoreTransactionService
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IStoreTransactionValidator _validator;
 
-        public StoreTransactionService(IUnitOfWork unitOfWork)
+        public StoreTransactionService(
+            IUnitOfWork unitOfWork,
+            IStoreTransactionValidator validator)
         {
-            this.unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
+            _validator = validator;
         }
 
-        //public async Task<Result<string>> AddNewTransaction(StoreTransactionDto dto)
-        //{
-        //    // بدء Transaction
-        //    await unitOfWork.BeginTransactionAsync();
-
-        //    try
-        //    {
-        //        // ----------------------
-        //        // 1) Validations
-        //        // ----------------------
-        //        if (dto == null)
-        //            return Result<string>.Failure("جميع البيانات مطلوبة !");
-
-        //        if (string.IsNullOrWhiteSpace(dto.makeTransactionUser))
-        //            return Result<string>.Failure("خطأ لم يتم تسجيل مستخدم ");
-
-        //        if (dto.sourceId == null || dto.sourceId <= 0)
-        //            return Result<string>.Failure("المخزن المصدر لم يضاف ");
-
-        //        if (dto.destenationId == null || dto.destenationId <= 0)
-        //            return Result<string>.Failure("المخزن المستقبل لم يضاف ");
-
-        //        if (dto.sourceId == dto.destenationId)
-        //            return Result<string>.Failure("المصدر والمستقبل يجب ان يكونوا مختلفين ");
-
-        //        if (dto.transactionProducts == null || dto.transactionProducts.Count == 0)
-        //            return Result<string>.Failure("لم يتم اختيار المنتجات ");
-
-        //        // ----------------------
-        //        // 2) جلب المخازن
-        //        // ----------------------
-        //        var sourceStore = await unitOfWork.GetRepository<Store, int>().GetByIdAsync((int)dto.sourceId);
-        //        if (sourceStore == null)
-        //            return Result<string>.Failure("المخزن المصدر غير موجود");
-
-        //        var destStore = await unitOfWork.GetRepository<Store, int>().GetByIdAsync((int)dto.destenationId);
-        //        if (destStore == null)
-        //            return Result<string>.Failure("المخزن المستقبل غير موجود ");
-
-        //        var stockRepo = unitOfWork.GetRepository<Stock, (int, int)>();
-        //        var sourceStocks = await stockRepo.GetQueryable()
-        //            .Where(s => s.StoreId == dto.sourceId)
-        //            .ToListAsync();
-
-        //        var destStocks = await stockRepo.GetQueryable()
-        //            .Where(s => s.StoreId == dto.destenationId)
-        //            .ToListAsync();
-
-        //        // ----------------------
-        //        // 3) إنشاء Transaction Master
-        //        // ----------------------
-        //        var transaction = new StoresTransaction
-        //        {
-        //            SourceId = dto.sourceId.Value,
-        //            DestenationId = dto.destenationId.Value,
-        //            MakeTransactionUser = dto.makeTransactionUser,
-        //            CreatedAt = DateTime.UtcNow
-        //        };
-
-        //        var transRepo = unitOfWork.GetRepository<StoresTransaction, int>();
-        //        await transRepo.AddWithoutSaveAsync(transaction);
-
-        //        // حفظ مؤقت للحصول على Id
-        //        await unitOfWork.SaveChangesAsync();
-        //        int transactionId = transaction.Id;
-
-        //        // ----------------------
-        //        // 4) تحديث المخزون
-        //        // ----------------------
-        //        foreach (var item in dto.transactionProducts)
-        //        {
-        //            var sourceStock = sourceStocks.FirstOrDefault(s => s.ProductId == item.productId);
-        //            if (sourceStock == null || sourceStock.Quantity < item.quantity)
-        //                return Result<string>.Failure($"الكمية المطلوبة للمنتج {item.productId} غير كافية في المخزن المصدر");
-
-        //            // خصم من المصدر
-        //            sourceStock.Quantity -= item.quantity;
-        //             stockRepo.UpdateWithoutSaveAsync(sourceStock);
-
-        //            // إضافة أو تحديث في المخزن المستقبل
-        //            var destStock = destStocks.FirstOrDefault(s => s.ProductId == item.productId);
-        //            if (destStock != null)
-        //            {
-        //                destStock.Quantity += item.quantity;
-        //                 stockRepo.UpdateWithoutSaveAsync(destStock);
-        //            }
-        //            else
-        //            {
-        //                var newStock = new Stock
-        //                {
-        //                    StoreId = dto.destenationId.Value,
-        //                    ProductId = item.productId,
-        //                    Quantity = item.quantity
-        //                };
-        //                await stockRepo.AddWithoutSaveAsync(newStock);
-        //            }
-        //        }
-
-        //        // ----------------------
-        //        // 5) إضافة تفاصيل TransactionProducts
-        //        // ----------------------
-        //        var transProductsRepo = unitOfWork.GetRepository<TransactionProducts, int>();
-        //        foreach (var item in dto.transactionProducts)
-        //        {
-        //            var productRow = new TransactionProducts
-        //            {
-        //                TransactionId = transactionId,
-        //                ProductId = item.productId,
-        //                Quantity = item.quantity
-        //            };
-
-        //            await transProductsRepo.AddWithoutSaveAsync(productRow);
-        //        }
-
-        //        // ----------------------
-        //        // 6) حفظ كل شيء + Commit
-        //        // ----------------------
-        //        await unitOfWork.SaveChangesAsync();
-        //        await unitOfWork.CommitAsync();
-
-        //        return Result<string>.Success("تم التحويل بنجاح");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Rollback عند أي خطأ
-        //        await unitOfWork.RollbackAsync();
-        //        await unitOfWork.LogError(ex);
-
-        //        return Result<string>.Failure("حدث خطأ أثناء حفظ التحويل: " + ex.Message);
-        //    }
-        //}
+        // ====================================================================
+        // CREATE
+        // ====================================================================
+        /// <inheritdoc />
         public async Task<Result<string>> AddNewTransaction(StoreTransactionDto dto)
         {
-            // بدء Transaction
-            await unitOfWork.BeginTransactionAsync();
+            // ---- 1) Validate first — no DB transaction yet, no rollback needed.
+            var validationResult = await _validator.ValidateAsync(dto);
+            if (!validationResult.IsSuccess)
+                return Result<string>.Failure(validationResult.Message!, validationResult.StatusCode);
 
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
-                // ----------------------
-                // 1) Validations
-                // ----------------------
-                if (dto == null)
-                    return Result<string>.Failure("جميع البيانات مطلوبة !");
+                // ---- 2) Load stock rows for both warehouses in two queries.
+                //         Composite-key repo per existing convention.
+                var stockRepo = _unitOfWork.GetRepository<Stock, (int, int)>();
 
-                if (string.IsNullOrWhiteSpace(dto.makeTransactionUser))
-                    return Result<string>.Failure("خطأ لم يتم تسجيل مستخدم ");
-
-                if (dto.sourceId == null || dto.sourceId <= 0)
-                    return Result<string>.Failure("المخزن المصدر لم يضاف ");
-
-                if (dto.destenationId == null || dto.destenationId <= 0)
-                    return Result<string>.Failure("المخزن المستقبل لم يضاف ");
-
-                if (dto.sourceId == dto.destenationId)
-                    return Result<string>.Failure("المصدر والمستقبل يجب ان يكونوا مختلفين ");
-
-                if (dto.transactionProducts == null || dto.transactionProducts.Count == 0)
-                    return Result<string>.Failure("لم يتم اختيار المنتجات ");
-
-                // ----------------------
-                // 2) جلب المخازن والمخزون
-                // ----------------------
-                var sourceStore = await unitOfWork.GetRepository<Store, int>().GetByIdAsync((int)dto.sourceId);
-                if (sourceStore == null)
-                    return Result<string>.Failure("المخزن المصدر غير موجود");
-
-                var destStore = await unitOfWork.GetRepository<Store, int>().GetByIdAsync((int)dto.destenationId);
-                if (destStore == null)
-                    return Result<string>.Failure("المخزن المستقبل غير موجود ");
-
-                var stockRepo = unitOfWork.GetRepository<Stock, (int, int)>();
                 var sourceStocks = await stockRepo.GetQueryable()
-                    .Where(s => s.StoreId == dto.sourceId)
+                    .Where(s => s.StoreId == dto.sourceId!.Value)
                     .ToListAsync();
 
-                var destStocks = await stockRepo.GetQueryable()
-                    .Where(s => s.StoreId == dto.destenationId)
+                var destinationStocks = await stockRepo.GetQueryable()
+                    .Where(s => s.StoreId == dto.destenationId!.Value)
                     .ToListAsync();
 
-                // ----------------------
-                // 3) إنشاء Transaction Master
-                // ----------------------
+                // ---- 3) Sufficient-stock check — done here so it sits inside the
+                //         same transaction as the mutations, avoiding TOCTOU drift.
+                var stockCheck = EnsureSourceHasEnoughStock(dto, sourceStocks);
+                if (!stockCheck.IsSuccess)
+                {
+                    await _unitOfWork.RollbackAsync();
+                    return stockCheck;
+                }
+
+                // ---- 4) Insert transaction master and obtain its Id.
                 var transaction = new StoresTransaction
                 {
-                    SourceId = dto.sourceId.Value,
-                    DestenationId = dto.destenationId.Value,
+                    SourceId = dto.sourceId!.Value,
+                    DestenationId = dto.destenationId!.Value,
                     MakeTransactionUser = dto.makeTransactionUser,
                     CreatedAt = DateTime.UtcNow
                 };
 
-                var transRepo = unitOfWork.GetRepository<StoresTransaction, int>();
+                var transRepo = _unitOfWork.GetRepository<StoresTransaction, int>();
                 await transRepo.AddWithoutSaveAsync(transaction);
+                await _unitOfWork.SaveChangesAsync();
 
-                // حفظ مؤقت للحصول على Id
-                await unitOfWork.SaveChangesAsync();
-                int transactionId = transaction.Id;
+                // ---- 5) Mutate stock + insert detail rows.
+                await ApplyStockMovementsAsync(dto, sourceStocks, destinationStocks, stockRepo);
+                await AppendTransactionDetailsAsync(dto, transaction.Id);
 
-                // ----------------------
-                // 4) تحديث المخزون مع حساب AvgCost
-                // ----------------------
-                foreach (var item in dto.transactionProducts)
-                {
-                    var sourceStock = sourceStocks.FirstOrDefault(s => s.ProductId == item.productId);
-                    if (sourceStock == null || sourceStock.Quantity < item.quantity)
-                        return Result<string>.Failure($"الكمية المطلوبة للمنتج {item.productId} غير كافية في المخزن المصدر");
+                // ---- 6) Persist + commit.
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
 
-                    // خصم من المصدر
-                    sourceStock.Quantity -= item.quantity;
-                     stockRepo.UpdateWithoutSaveAsync(sourceStock);
-
-                    // إضافة أو تحديث في المخزن المستقبل مع متوسط السعر
-                    var destStock = destStocks.FirstOrDefault(s => s.ProductId == item.productId);
-                    if (destStock != null)
-                    {
-                        decimal totalQuantity = destStock.Quantity + item.quantity;
-                        decimal totalCost = (destStock.Quantity * destStock.AvgCost) + (item.quantity * sourceStock.AvgCost);
-                        destStock.AvgCost = totalCost / totalQuantity;
-
-                        destStock.Quantity += item.quantity;
-                         stockRepo.UpdateWithoutSaveAsync(destStock);
-                    }
-                    else
-                    {
-                        var newStock = new Stock
-                        {
-                            StoreId = dto.destenationId.Value,
-                            ProductId = item.productId,
-                            Quantity = item.quantity,
-                            AvgCost = sourceStock.AvgCost // نقل AvgCost من المصدر
-                        };
-                        await stockRepo.AddWithoutSaveAsync(newStock);
-                    }
-                }
-
-                // ----------------------
-                // 5) إضافة تفاصيل TransactionProducts
-                // ----------------------
-                var transProductsRepo = unitOfWork.GetRepository<TransactionProducts, int>();
-                foreach (var item in dto.transactionProducts)
-                {
-                    var productRow = new TransactionProducts
-                    {
-                        TransactionId = transactionId,
-                        ProductId = item.productId,
-                        Quantity = item.quantity
-                    };
-                    await transProductsRepo.AddWithoutSaveAsync(productRow);
-                }
-
-                // ----------------------
-                // 6) حفظ كل شيء + Commit
-                // ----------------------
-                await unitOfWork.SaveChangesAsync();
-                await unitOfWork.CommitAsync();
-
-                return Result<string>.Success("تم التحويل بنجاح");
+                return Result<string>.Success(
+                    "تم تنفيذ التحويل بنجاح",
+                    HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
-                // Rollback عند أي خطأ
-                await unitOfWork.RollbackAsync();
-                await unitOfWork.LogError(ex);
-
-                return Result<string>.Failure("حدث خطأ أثناء حفظ التحويل: " + ex.Message);
+                await _unitOfWork.RollbackAsync();
+                await _unitOfWork.LogError(ex);
+                return Result<string>.Failure(
+                    "حدث خطأ غير متوقع أثناء تنفيذ التحويل",
+                    HttpStatusCode.InternalServerError);
             }
         }
 
-
-        public async Task<ApiResponse<List<StoreTransactionDto>>> GetAllTransacctions(StoreTransactionFilters req)
+        // ====================================================================
+        // QUERIES
+        // ====================================================================
+        /// <inheritdoc />
+        public async Task<ApiResponse<List<StoreTransactionDto>>> GetAllTransacctions(
+            StoreTransactionFilters req)
         {
+            // NOTE: Signature kept (return type, method name) to avoid breaking the
+            // existing controller. A nicer evolution would be Result<ApiResponse<...>>,
+            // but that would ripple into other consumers — out of scope.
             try
             {
-                int page = req.page ?? 1;
-                int pageSize = req.pageSize ?? 10;
+                var page = req.page ?? 1;
+                var pageSize = req.pageSize ?? 10;
 
-                var repo = unitOfWork.GetRepository<StoresTransaction, int>();
-
-                var query = repo.GetQueryable()
-                                .Include(x => x.Source)
-                                .Include(x => x.Destenation)
-                                .AsQueryable();
-
-                // ---------------------------
-                // 1) Apply Filters
-                // ---------------------------
+                var query = _unitOfWork.GetRepository<StoresTransaction, int>()
+                    .GetQueryable()
+                    .Include(t => t.Source)
+                    .Include(t => t.Destenation)
+                    .AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(req.sourceName))
-                {
-                    string name = req.sourceName.Trim();
-                    query = query.Where(x => x.Source.StoreName.Contains(name));
-                }
+                    query = query.Where(t =>
+                        t.Source != null && t.Source.StoreName.Contains(req.sourceName));
 
                 if (!string.IsNullOrWhiteSpace(req.destenationName))
+                    query = query.Where(t =>
+                        t.Destenation != null && t.Destenation.StoreName.Contains(req.destenationName));
+
+                if (req.createdAt != default)
                 {
-                    string name = req.destenationName.Trim();
-                    query = query.Where(x => x.Destenation.StoreName.Contains(name));
+                    var day = req.createdAt.Date;
+                    query = query.Where(t => t.CreatedAt.Date == day);
                 }
 
-                if (req.createdAt != default(DateTime))
-                {
-                    DateTime nextDay = req.createdAt.Date.AddDays(1);
+                var totalCount = await query.CountAsync();
+                var totalPages = pageSize > 0
+                    ? (int)Math.Ceiling(totalCount / (double)pageSize)
+                    : 1;
 
-                    query = query.Where(x => x.CreatedAt.Date == nextDay);
-                }
-
-
-                // ---------------------------
-                // 2) Count BEFORE pagination
-                // ---------------------------
-                int totalCount = await query.CountAsync();
-
-                // ---------------------------
-                // 3) Apply pagination
-                // ---------------------------
                 var data = await query
-                    .OrderByDescending(x => x.CreatedAt)
+                    .OrderByDescending(t => t.CreatedAt)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
-                    .Select(x => new StoreTransactionDto
+                    .Select(t => new StoreTransactionDto
                     {
-                        id = x.Id,
-                        sourceId = x.SourceId,
-                        destenationId = x.DestenationId,
-                        sourceName = x.Source.StoreName,
-                        destenationName = x.Destenation.StoreName,
-                        makeTransactionUser = x.MakeTransactionUser,
-                        createdAt = x.CreatedAt
+                        id = t.Id,
+                        sourceId = t.SourceId,
+                        destenationId = t.DestenationId,
+                        sourceName = t.Source != null ? t.Source.StoreName : null,
+                        destenationName = t.Destenation != null ? t.Destenation.StoreName : null,
+                        makeTransactionUser = t.MakeTransactionUser,
+                        createdAt = t.CreatedAt
                     })
                     .ToListAsync();
 
-                // ---------------------------
-                // 4) Calculate total pages
-                // ---------------------------
-                int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-                // ---------------------------
-                // 5) Build response
-                // ---------------------------
                 return new ApiResponse<List<StoreTransactionDto>>
                 {
                     page = page,
@@ -367,31 +175,128 @@ namespace Infrastructure.Services
             }
             catch (Exception ex)
             {
-                await unitOfWork.LogError(ex);
-
-                return null;
+                await _unitOfWork.LogError(ex);
+                return null!; // Controller treats null as a server error — preserved for compatibility.
             }
         }
 
+        /// <inheritdoc />
         public async Task<List<StoreTransactionProductsDto>> GetTransactionProductsById(int id)
         {
-            var transProductsRepo = unitOfWork.GetRepository<TransactionProducts, int>();
+            // Returning an empty list (rather than null) so the controller can
+            // reliably distinguish "no items" from "DB failure".
+            var transProductsRepo = _unitOfWork.GetRepository<TransactionProducts, int>();
 
-            var products = await transProductsRepo
-                .GetQueryable().Include(x=>x.Product)
+            return await transProductsRepo
+                .GetQueryable()
+                .Include(x => x.Product)
                 .Where(tp => tp.TransactionId == id)
                 .Select(tp => new StoreTransactionProductsDto
                 {
                     transactionId = tp.TransactionId,
                     productId = tp.ProductId,
-                    quantity = tp.Quantity,
-                    productName=tp.Product.Name
+                    productName = tp.Product.Name,
+                    quantity = tp.Quantity
                 })
                 .ToListAsync();
-
-            return products;
         }
 
+        // ====================================================================
+        // PRIVATE HELPERS — small, focused, intention-revealing names
+        // ====================================================================
 
+        /// <summary>
+        /// Ensures every requested line has a matching stock row at the source
+        /// warehouse with a sufficient on-hand quantity.
+        /// </summary>
+        private static Result<string> EnsureSourceHasEnoughStock(
+            StoreTransactionDto dto,
+            IReadOnlyList<Stock> sourceStocks)
+        {
+            foreach (var line in dto.transactionProducts!)
+            {
+                var sourceStock = sourceStocks.FirstOrDefault(s => s.ProductId == line.productId);
+
+                if (sourceStock is null)
+                    return Result<string>.Failure(
+                        $"المنتج رقم {line.productId} غير موجود في المخزن المصدر",
+                        HttpStatusCode.BadRequest);
+
+                if (sourceStock.Quantity < line.quantity)
+                    return Result<string>.Failure(
+                        $"الكمية المطلوبة للمنتج رقم {line.productId} غير كافية في المخزن المصدر " +
+                        $"(المتاح: {sourceStock.Quantity:0.##})",
+                        HttpStatusCode.BadRequest);
+            }
+
+            return Result<string>.Success(string.Empty);
+        }
+
+        /// <summary>
+        /// Applies the source-decrement and destination-increment with a fresh
+        /// weighted-average cost calculated by <see cref="StockMovementCalculator"/>.
+        /// </summary>
+        private static async Task ApplyStockMovementsAsync(
+            StoreTransactionDto dto,
+            List<Stock> sourceStocks,
+            List<Stock> destinationStocks,
+            Domain.Repositories.contract.IGenericRepository<Stock, (int, int)> stockRepo)
+        {
+            foreach (var line in dto.transactionProducts!)
+            {
+                // Decrement source — already validated as sufficient.
+                var sourceStock = sourceStocks.First(s => s.ProductId == line.productId);
+                sourceStock.Quantity -= line.quantity;
+                stockRepo.UpdateWithoutSaveAsync(sourceStock);
+
+                // Increment destination (or create if first arrival).
+                var destinationStock = destinationStocks
+                    .FirstOrDefault(s => s.ProductId == line.productId);
+
+                if (destinationStock is not null)
+                {
+                    destinationStock.AvgCost = StockMovementCalculator.ComputeNewDestinationAvgCost(
+                        destinationCurrentQuantity: destinationStock.Quantity,
+                        destinationCurrentAvgCost: destinationStock.AvgCost,
+                        transferQuantity: line.quantity,
+                        sourceAvgCost: sourceStock.AvgCost);
+
+                    destinationStock.Quantity += line.quantity;
+                    stockRepo.UpdateWithoutSaveAsync(destinationStock);
+                }
+                else
+                {
+                    var newRow = new Stock
+                    {
+                        StoreId = dto.destenationId!.Value,
+                        ProductId = line.productId,
+                        Quantity = line.quantity,
+                        AvgCost = sourceStock.AvgCost
+                    };
+                    await stockRepo.AddWithoutSaveAsync(newRow);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Inserts one TransactionProducts row per requested line.
+        /// </summary>
+        private async Task AppendTransactionDetailsAsync(
+            StoreTransactionDto dto,
+            int transactionId)
+        {
+            var detailsRepo = _unitOfWork.GetRepository<TransactionProducts, int>();
+
+            foreach (var line in dto.transactionProducts!)
+            {
+                var detailRow = new TransactionProducts
+                {
+                    TransactionId = transactionId,
+                    ProductId = line.productId,
+                    Quantity = line.quantity
+                };
+                await detailsRepo.AddWithoutSaveAsync(detailRow);
+            }
+        }
     }
 }

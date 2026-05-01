@@ -55,5 +55,19 @@ namespace AlSadat_Seram.Api.Controllers
 
             return Ok(res);
         }
+        /// <summary>
+        /// Lightweight per-store stock list for the Stock-Transfer page.
+        /// Returns only products with availableQuantity > 0.
+        /// </summary>
+        [HttpGet("by-store/{storeId:int}")]
+        public async Task<ActionResult> GetAvailableByStore(int storeId)
+        {
+            var res = await serviceManager.stockService.GetAvailableByStoreAsync(storeId);
+
+            if (!res.IsSuccess)
+                return StatusCode((int)res.StatusCode, res);
+
+            return Ok(res);
+        }
     }
 }

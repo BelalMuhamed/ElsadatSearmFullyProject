@@ -46,5 +46,25 @@ namespace Application.DTOs
         public List<ProductStockPerStoreDto> stocks { get; set; } = null;
 
     }
-  
+    /// <summary>
+    /// Lightweight projection used by the Stock-Transfer page to populate
+    /// the source-warehouse product picker.
+    /// <para>
+    /// Only includes products with on-hand quantity &gt; 0 — there is no
+    /// reason to offer a zero-stock product as a transfer candidate.
+    /// </para>
+    /// <para>
+    /// <see cref="avgCost"/> is exposed so the UI can display a read-only
+    /// indicator (it is informational; the authoritative cost stays on the server).
+    /// </para>
+    /// </summary>
+    public sealed class StoreStockProductDto
+    {
+        public int productId { get; set; }
+        public string productName { get; set; } = string.Empty;
+        public string productCode { get; set; } = string.Empty;
+        public decimal availableQuantity { get; set; }
+        public decimal avgCost { get; set; }
+    }
+
 }

@@ -305,6 +305,14 @@ export const routes: Routes = [
       { path: 'Products', component: ProductComponent, canActivate: [authGuard, roleGuard], data: { roles: ['Admin', 'StockManager','Accountant'] }},
       { path: 'transactions/all', component: TransactionsComponent,canActivate: [authGuard, roleGuard], data: { roles: [ 'StockManager','Admin'] }},
       { path: 'stores/all', component: StoresComponent,canActivate: [authGuard, roleGuard], data: { roles: [ 'StockManager','Admin'] }},
+      {
+  path: 'stock-transfer',
+  loadComponent: () =>
+    import('../Components/stock-transfer/stock-transfer.component')
+      .then(c => c.StockTransferComponent),
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['Admin', 'StockManager'] }
+},
       //#endregion
 
       //#region  shared

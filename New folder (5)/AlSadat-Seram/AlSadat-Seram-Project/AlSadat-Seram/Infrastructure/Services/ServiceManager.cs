@@ -57,6 +57,8 @@ using Infrastructure.Services.PublicHolidayServices;
 using Infrastructure.Services.RepresentativeAttendanceServices;
 using Infrastructure.Services.RepresentativeServices;
 using Infrastructure.Services.SalesInvoiceService;
+using Infrastructure.Services.StoreTransactionServices;
+using Infrastructure.Services.StoreTransactionServices.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -115,6 +117,8 @@ public class ServiceManager: IServiceManager
 
     private readonly Lazy<IFinancialReportsService> _financialReports;
     private readonly Lazy<ISystemAccountGuard> _systemGuard;
+    private readonly Lazy<IStoreTransactionValidator> _StoreTransactionValidator;
+
 
     public ServiceManager(
     IUnitOfWork UnitOfWork,
@@ -140,7 +144,9 @@ public class ServiceManager: IServiceManager
         _CopounService = new Lazy<ICopounService>(() => new CopounService(UnitOfWork));
         _BillDiscountService = new Lazy<IBillDiscount>(() => new BillsDiscountSr(UnitOfWork));
         _ProductService = new Lazy<IProductService>(() => new ProductServcie(UnitOfWork,_CurrentUserService.Value,excelReader));
-        _StoreTransactionService = new Lazy<IStoreTransactionService>(() => new StoreTransactionService(UnitOfWork));
+        // مفيش أي:
+        _StoreTransactionValidator = new Lazy<IStoreTransactionValidator>(() => new StoreTransactionValidator(UnitOfWork));
+        _StoreTransactionService = new Lazy<IStoreTransactionService>(() => new StoreTransactionService(UnitOfWork, _StoreTransactionValidator.Value));
         _StoreService = new Lazy<IStore>(() => new StoreService(UnitOfWork));
         _GovernrateService = new Lazy<IGovernrateCaontract>(() => new GovernrateService(UnitOfWork));
         _CityService = new Lazy<ICityContract>(() => new CityService(UnitOfWork));
@@ -230,4 +236,6 @@ public class ServiceManager: IServiceManager
 
     public IFinancialReportsService financialReports => _financialReports.Value;
     public ISystemAccountGuard systemAccountGuard => _systemGuard.Value;
+
+    public IStoreTransactionValidator storeTransactionValidator => _StoreTransactionValidator.Value;
 }

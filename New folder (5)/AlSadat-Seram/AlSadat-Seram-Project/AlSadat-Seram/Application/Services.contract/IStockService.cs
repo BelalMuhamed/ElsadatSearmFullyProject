@@ -19,7 +19,11 @@ namespace Application.Services.contract
         Task<Result<ProductStockDto>> GetByProductID(int productID);
 
 
-
+        /// <summary>
+        /// Returns every product with available quantity > 0 in the given warehouse.
+        /// Used by the Stock-Transfer page to populate the source-product picker.
+        /// </summary>
+        Task<Result<List<StoreStockProductDto>>> GetAvailableByStoreAsync(int storeId);
 
     }
 }

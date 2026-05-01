@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProductStockDto, StockDto, StockFilterations } from '../models/IStockVM';
 import { ApiResponse, Result } from '../models/ApiReponse';
+import { StoreStockProductVM } from '../models/IStockTransferVM';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,18 @@ constructor(private http: HttpClient) {}
   getStockByProductId(id: number | null): Observable<Result<ProductStockDto>> {
     return this.http.get<Result<ProductStockDto>>(
       `${this.apiUrl}Stock/product/${id}`
+    );
+  }
+  /**
+   * Returns the list of products with on-hand quantity > 0 in the
+   * specified warehouse. Used by the Stock-Transfer page to populate
+   * the product picker for the chosen source warehouse.
+   *
+   * Backend: GET /api/Stock/by-store/{storeId}
+   */
+  getAvailableByStore(storeId: number): Observable<Result<StoreStockProductVM[]>> {
+    return this.http.get<Result<StoreStockProductVM[]>>(
+      `${this.apiUrl}Stock/by-store/${storeId}`
     );
   }
 }

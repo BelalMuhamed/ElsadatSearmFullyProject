@@ -228,6 +228,54 @@ namespace Infrastructure.Services
             }
         }
 
+        /// <inheritdoc />
+        public async Task<Result<List<StoreStockProductDto>>> GetAvailableByStoreAsync(int storeId)
+        {
+            if (storeId <= 0)
+                return Result<List<StoreStockProductDto>>.Failure(
+                    "معرّف المخزن غير صالح", HttpStatusCode.BadRequest);
+
+            try
+            {
+                // Confirm the store exists (and is not soft-deleted) before returning rows.
+                var store = await unitOfWork.GetRepository<Store, int>()
+                    .GetQueryable()
+                    .FirstOrDefaultAsync(s => s.Id == storeId);
+
+                if (store is null)
+                    return Result<List<StoreStockProductDto>>.Failure(
+                        "المخزن غير موجود", HttpStatusCode.NotFound);
+
+                // Single projection — Include kept narrow on purpose.
+                var rows = await unitOfWork.GetRepository<Stock, (int, int)>()
+                    .GetQueryable()
+                    .Include(s => s.Product)
+                    .Where(s =>
+                        s.StoreId == storeId &&
+                        s.Quantity > 0 &&
+                        s.Product != null &&
+                        !s.Product.IsDeleted)
+                    .OrderBy(s => s.Product!.Name)
+                    .Select(s => new StoreStockProductDto
+                    {
+                        productId = s.ProductId,
+                        productName = s.Product!.Name,
+                        productCode = s.Product.productCode,
+                        availableQuantity = s.Quantity,
+                        avgCost = s.AvgCost
+                    })
+                    .ToListAsync();
+
+                return Result<List<StoreStockProductDto>>.Success(rows);
+            }
+            catch (Exception ex)
+            {
+                await unitOfWork.LogError(ex);
+                return Result<List<StoreStockProductDto>>.Failure(
+                    "حدث خطأ أثناء تحميل مخزون المخزن",
+                    HttpStatusCode.InternalServerError);
+            }
+        }
 
     }
 }

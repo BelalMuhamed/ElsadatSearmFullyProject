@@ -1,0 +1,70 @@
+<div class="line-card" [formGroup]="formGroup">
+
+  <!-- Row index badge -->
+  <div class="row-badge">{{ index + 1 }}</div>
+
+  <!-- Product picker -->
+  <mat-form-field appearance="outline" class="product-field">
+    <mat-label>المنتج</mat-label>
+    <mat-select
+      formControlName="productId"
+      (selectionChange)="onProductSelected($event.value)">
+      @for (p of availableProducts; track p.productId) {
+        <mat-option
+          [value]="p.productId"
+          [disabled]="isOptionTaken(p.productId)">
+          <span class="opt-name">{{ p.productName }}</span>
+          <span class="opt-code">[{{ p.productCode }}]</span>
+          <span class="opt-qty">— متاح: {{ p.availableQuantity | number:'1.0-2' }}</span>
+        </mat-option>
+      }
+    </mat-select>
+    @if (productControl.touched && productControl.hasError('required')) {
+      <mat-error>اختر المنتج</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Quantity input -->
+  <mat-form-field appearance="outline" class="qty-field">
+    <mat-label>الكمية</mat-label>
+    <input
+      matInput
+      type="number"
+      step="0.01"
+      min="0.01"
+      [max]="availableQuantity"
+      formControlName="quantity"
+      placeholder="0">
+    @if (selectedProduct) {
+      <span matSuffix class="qty-suffix">من {{ availableQuantity | number:'1.0-2' }}</span>
+    }
+    @if (quantityControl.touched) {
+      @if (quantityControl.hasError('required')) {
+        <mat-error>أدخل الكمية</mat-error>
+      } @else if (quantityControl.hasError('min')) {
+        <mat-error>الكمية يجب أن تكون أكبر من صفر</mat-error>
+      } @else if (quantityControl.hasError('max')) {
+        <mat-error>الكمية تتجاوز المتاح ({{ availableQuantity | number:'1.0-2' }})</mat-error>
+      }
+    }
+  </mat-form-field>
+
+  <!-- Avg-cost (read-only indicator) -->
+  @if (selectedProduct) {
+    <div class="avg-cost-chip" matTooltip="متوسط التكلفة في المخزن المصدر">
+      <mat-icon>info</mat-icon>
+      <span>متوسط التكلفة: {{ avgCost | number:'1.2-2' }}</span>
+    </div>
+  }
+
+  <!-- Remove -->
+  <button
+    type="button"
+    mat-icon-button
+    class="remove-btn"
+    matTooltip="حذف الصف"
+    (click)="onRemoveClicked()">
+    <mat-icon>delete_outline</mat-icon>
+  </button>
+
+</div>
