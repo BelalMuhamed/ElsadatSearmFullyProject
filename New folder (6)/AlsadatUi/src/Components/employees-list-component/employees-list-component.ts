@@ -51,6 +51,7 @@ export class EmployeesListComponent implements OnInit {
     { key: 'employeeCode', label: 'كود الموظف', type: 'string' },
     { key: 'fullName', label: 'اسم الموظف', type: 'string' },
     { key: 'email', label: 'البريد الإلكتروني', type: 'string' },
+    { key: 'rolesName', label: 'الأدوار', type: 'string' },
     { key: 'departmentName', label: 'القسم', type: 'string' },
     { key: 'salary', label: 'الراتب', type: 'number' },
     { key: 'phoneNumber', label: 'رقم الهاتف', type: 'string' },

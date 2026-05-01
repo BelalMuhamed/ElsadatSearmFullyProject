@@ -82,6 +82,7 @@ export class EmployeeAddComponent {
     this.model.accountName = this.model.accountName ?? '';
     this.model.password = this.model.password ?? '';
     this.model.employeeCode = this.model.employeeCode ?? '';
+    this.model.rolesName = this.model.rolesName ?? [];
 
     // Load active roles from backend; fallback to common roles
     this.authService.getAllRoles().pipe(
@@ -206,6 +207,16 @@ export class EmployeeAddComponent {
     if (this.model.cityID) {
       const city = this.cities.find(c => c.id === this.model.cityID);
       if (city) this.model.cityName = city.cityName ?? '';
+    }
+
+    // map selected role names -> role ids expected by backend
+    if (this.model.rolesName && Array.isArray(this.model.rolesName)) {
+      const ids = this.model.rolesName
+        .map((rn: string) => this.rolesRaw.find(r => (r.roleName ?? r.role) === rn))
+        .filter((r: any) => !!r)
+        .map((r: any) => r.roleID ?? r.roleId ?? null)
+        .filter((id: any) => id != null);
+      this.model.rolesId = ids as string[];
     }
 
     this.employeeService.addEmployee(this.model).subscribe({

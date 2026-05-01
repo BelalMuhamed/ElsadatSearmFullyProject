@@ -155,13 +155,11 @@
 
 
 
-          <mat-form-field appearance="outline" class="custom-input-theme" *ngIf="roles.length">
-            <mat-label>الدور</mat-label>
-            <input matInput name="roleName" [(ngModel)]="model.roleName" [matAutocomplete]="roleAuto" autocomplete="off" (input)="filterRoles($any($event.target).value || '')" />
-            <button mat-icon-button matSuffix type="button" aria-label="فتح قائمة الادوار"><mat-icon>arrow_drop_down</mat-icon></button>
-            <mat-autocomplete #roleAuto="matAutocomplete" (optionSelected)="onRoleSelected($event.option.value)">
-              <mat-option *ngFor="let r of filteredRoles" [value]="r">{{ r }}</mat-option>
-            </mat-autocomplete>
+          <mat-form-field appearance="outline" class="custom-input-theme" *ngIf="rolesRaw.length">
+            <mat-label>الأدوار</mat-label>
+            <mat-select name="rolesName" [(ngModel)]="model.rolesName" multiple>
+              <mat-option *ngFor="let r of rolesRaw" [value]="r.roleName">{{ r.roleName }}</mat-option>
+            </mat-select>
           </mat-form-field>
 
         </div>

@@ -10,6 +10,7 @@
       <div class="detail-item"><span>الهاتف</span><strong>{{ data.employee.phoneNumber ?? '-' }}</strong></div>
       <div class="detail-item"><span>القسم</span><strong>{{ data.employee.departmentName ?? '-' }}</strong></div>
       <div class="detail-item"><span>المدينة</span><strong>{{ data.employee.cityName ?? '-' }}</strong></div>
+      <div class="detail-item"><span>الأدوار</span><strong>{{ (data.employee.rolesName || []).join('، ') || '-' }}</strong></div>
       <div class="detail-item"><span>الراتب</span><strong>{{ data.employee.salary | number:'1.0-2' }}</strong></div>
       <div class="detail-item"><span>تاريخ التعيين</span><strong>{{ data.employee.hireDate | date:'dd-MM-yyyy' }}</strong></div>
       <div class="detail-item"><span>وقت الحضور</span><strong>{{ data.employee.timeIn }}</strong></div>

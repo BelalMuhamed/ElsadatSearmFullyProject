@@ -98,10 +98,15 @@ export class EmployeeEditDialog implements OnInit {
         this.rolesRaw = items;
         this.roles = items.map((x: any) => x.roleName);
         this.filteredRoles = [...this.roles];
-        // If the model has a roleId but not a roleName, try to map it
-        if (this.model.roleId && !this.model.roleName) {
-          const found = items.find((x: any) => (x.roleID === this.model.roleId) || (x.roleId === this.model.roleId) || (x.roleName === this.model.roleName));
-          if (found) this.model.roleName = found.roleName ?? '';
+        // Ensure roles arrays exist and map incoming ids -> names when possible
+        this.model.rolesName = this.model.rolesName ?? [];
+        this.model.rolesId = this.model.rolesId ?? [];
+        if (this.model.rolesId && this.model.rolesId.length && (!this.model.rolesName || !this.model.rolesName.length)) {
+          const names = this.model.rolesId
+            .map(id => items.find((x: any) => (x.roleID === id) || (x.roleId === id)))
+            .filter(x => !!x)
+            .map(x => x.roleName ?? x.role ?? '');
+          this.model.rolesName = [...new Set([...(this.model.rolesName||[]), ...names])];
         }
       },
       error: () => { this.roles = ['Employee', 'Admin']; }
@@ -217,15 +222,18 @@ export class EmployeeEditDialog implements OnInit {
         return false;
       }
     }
-    // Role: map roleName -> roleId
-    if (this.model.roleName && !this.model.roleId) {
-      const found = this.rolesRaw.find((r: any) => (r.roleName ?? '').toLowerCase() === (this.model.roleName ?? '').toLowerCase() || (r.role ?? '').toLowerCase() === (this.model.roleName ?? '').toLowerCase());
-      if (found) {
-        this.model.roleId = found.roleID ?? found.roleId ?? undefined;
-      } else {
-        Swal.fire('خطأ', 'الرجاء اختيار الدور من القائمة', 'error');
+    // Roles: map rolesName -> rolesId and validate
+    if (this.model.rolesName && Array.isArray(this.model.rolesName)) {
+      const ids = this.model.rolesName
+        .map((rn: string) => this.rolesRaw.find(r => ((r.roleName ?? r.role) + '').toLowerCase() === (rn + '').toLowerCase()))
+        .filter((r: any) => !!r)
+        .map((r: any) => r.roleID ?? r.roleId ?? null)
+        .filter((id: any) => id != null);
+      if (ids.length !== this.model.rolesName.length) {
+        Swal.fire('خطأ', 'الرجاء اختيار الأدوار من القائمة فقط', 'error');
         return false;
       }
+      this.model.rolesId = ids as string[];
     }
 
     return true;

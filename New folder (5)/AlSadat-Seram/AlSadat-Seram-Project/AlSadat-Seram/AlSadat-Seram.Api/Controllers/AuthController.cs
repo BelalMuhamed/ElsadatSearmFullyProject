@@ -54,7 +54,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
         // ========================= ROLES ==============================
         // -------- Get All Roles --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpGet("roles")]
         public async Task<IActionResult> GetAllRoles()
         {
@@ -66,7 +66,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(result);
         }
         // -------- Get Inactive Roles --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpGet("roles/inactive")]
         public async Task<IActionResult> GetInactiveRoles()
         {
@@ -78,7 +78,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(result);
         }
         // -------- Get Soft Deleted Roles --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpGet("roles/deleted")]
         public async Task<IActionResult> GetSoftDeletedRoles()
         {
@@ -90,7 +90,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(result);
         }
         // -------- Get Role By ID --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpGet("roles/{id}")]
         public async Task<IActionResult> GetRoleById(string id)
         {
@@ -103,7 +103,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         // -------- Create Role --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpPost("roles")]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequestDTO dto)
         {
@@ -116,7 +116,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         // -------- Update Role --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpPut("roles/{id}")]
         public async Task<IActionResult> UpdateRole(string id,[FromBody] CreateRoleRequestDTO dto)
         {
@@ -129,7 +129,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         // -------- Soft Delete Role --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpDelete("roles/{id}")]
         public async Task<IActionResult> SoftDeleteRole(string id)
         {
@@ -142,7 +142,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         // -------- Restore Role --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpPut("roles/restore/{id}")]
         public async Task<IActionResult> RestoreRole(string id)
         {
@@ -155,7 +155,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         // -------- Hard Delete Role --------
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         [HttpDelete("roles/hard/{id}")]
         public async Task<IActionResult> DeleteRolePermanently(string id)
         {
