@@ -137,15 +137,13 @@ namespace Infrastructure.Services
                 #region account
                 // add Accountant account for supplier in tree account
 
-                AccountDto CustomerAccountToAddInTreeAccountant = new AccountDto()
+                var CustomerAccountToAddInTreeAccountant = new CreateAccountDto
                 {
                     userId = user.Id.ToString(),
                     accountName = user.FullName,
-                    type = 0,
-                    parentAccountId =8,
+                    parentAccountId = 8,
                     isLeaf = true,
-                    isActive = true,
-
+                    isActive = true
                 };
                 var IsAccountAdded = await _serviceManager.treeService.AddNewAccount(CustomerAccountToAddInTreeAccountant);
                 if (!IsAccountAdded.IsSuccess)

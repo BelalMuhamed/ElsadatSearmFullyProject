@@ -166,13 +166,12 @@
   overflow-y: auto;
 }
 .tree-row {
-  display: none;
+  display: block;
   border-bottom: 1px solid rgba(212, 175, 55, 0.15);
   transition: background-color 0.2s;
 }
-.tree-row.visible {
-  display: block;
-}
+/* Visibility is now driven by *ngIf in the template (see shouldRender()).  */
+/* The legacy `.visible` class is no longer needed.                          */
 .tree-row:hover {
   background-color: var(--hover-bg);
 }
@@ -264,4 +263,16 @@
   to {
     transform: rotate(360deg);
   }
+}
+.tree-actions {
+  display: flex;
+  gap: 8px;
+  margin-inline-start: auto; /* push to the side in RTL */
+}
+
+.tree-actions .ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
 }

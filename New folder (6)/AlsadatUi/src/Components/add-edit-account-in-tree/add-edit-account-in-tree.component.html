@@ -1,4 +1,4 @@
-<div class="account-form-container">
+<div class="account-form-container" dir="rtl">
 
   <h2>
     <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
@@ -7,50 +7,81 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()">
 
-    <mat-form-field appearance="outline" class="full-width">
+    <!-- Account Code: HIDDEN on Create (auto-generated). DISABLED on Edit (immutable). -->
+    <mat-form-field
+      *ngIf="isEditMode"
+      appearance="outline"
+      class="full-width readonly-field"
+      matTooltip="كود الحساب يُنشأ تلقائياً ولا يمكن تعديله">
       <mat-label>كود الحساب</mat-label>
-      <input matInput formControlName="accountCode">
+      <input matInput formControlName="accountCode" readonly>
+      <mat-icon matSuffix>lock</mat-icon>
+      <mat-hint>كود تلقائي — غير قابل للتعديل</mat-hint>
     </mat-form-field>
+
+    <!-- Helper notice on Create mode -->
+    <div *ngIf="!isEditMode" class="info-banner">
+      <mat-icon>info</mat-icon>
+      <span>سيتم إنشاء كود الحساب تلقائياً بناءً على الحساب الأب.</span>
+    </div>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>اسم الحساب</mat-label>
-      <input matInput formControlName="accountName">
+      <input matInput formControlName="accountName" maxlength="200">
+      <mat-error *ngIf="form.get('accountName')?.hasError('required')">
+        اسم الحساب مطلوب
+      </mat-error>
     </mat-form-field>
 
-    <mat-form-field  hidden="!isEditMode" appearance="outline" class="full-width">
+    <mat-form-field
+      *ngIf="isEditMode"
+      appearance="outline"
+      class="full-width">
       <mat-label>المستخدم</mat-label>
       <input matInput formControlName="userId">
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <!-- Account type: read-only — server inherits it from the parent. -->
+    <mat-form-field
+      *ngIf="isEditMode"
+      appearance="outline"
+      class="full-width readonly-field"
+      matTooltip="نوع الحساب يُورث من الحساب الأب">
       <mat-label>نوع الحساب</mat-label>
       <mat-select formControlName="type">
-        <mat-option [value]="0">الاصول</mat-option>
+        <mat-option [value]="0">الأصول</mat-option>
         <mat-option [value]="1">الخصوم</mat-option>
         <mat-option [value]="2">حقوق الملكية</mat-option>
-        <mat-option [value]="3">الايرادات</mat-option>
+        <mat-option [value]="3">الإيرادات</mat-option>
         <mat-option [value]="4">المصاريف</mat-option>
       </mat-select>
+      <mat-icon matSuffix>lock</mat-icon>
     </mat-form-field>
 
-<mat-form-field appearance="outline">
-  <mat-label>الحساب الأب</mat-label>
-  <mat-select formControlName="parentAccountId" (selectionChange)="onselectparent($event.value)">
-    <mat-option *ngFor="let item of ParentAccounts" [value]="item.id">
-      {{ item.accountName }} , {{ item.accountCode }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>الحساب الأب</mat-label>
+      <mat-select formControlName="parentAccountId" [compareWith]="compareFn">
+        <mat-option *ngFor="let item of ParentAccounts" [value]="item.id">
+          {{ item.accountName }} — {{ item.accountCode }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('parentAccountId')?.hasError('required')">
+        يجب اختيار حساب أب
+      </mat-error>
+    </mat-form-field>
 
-    <mat-checkbox formControlName="isLeaf" >حساب نهائي</mat-checkbox>
+    <mat-checkbox formControlName="isLeaf">حساب نهائي</mat-checkbox>
     <mat-checkbox formControlName="isActive" hidden>نشط</mat-checkbox>
 
     <div class="actions">
-      <button mat-raised-button color="primary" type="submit">
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
         {{ isEditMode ? 'حفظ التعديل' : 'إضافة الحساب' }}
       </button>
 
-
+      <button mat-stroked-button type="button" (click)="this.router.navigate(['/tree'])">
+        إلغاء
+      </button>
     </div>
 
   </form>

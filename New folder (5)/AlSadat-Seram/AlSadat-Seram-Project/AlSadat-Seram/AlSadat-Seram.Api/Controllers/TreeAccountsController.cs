@@ -115,7 +115,7 @@ namespace AlSadat_Seram.Api.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromBody] AccountDto dto)
+        public async Task<IActionResult> CreateAccount([FromBody] CreateAccountDto dto)
         {
             try
             {
@@ -126,9 +126,9 @@ namespace AlSadat_Seram.Api.Controllers
 
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات "));
+                return BadRequest(Result<string>.Failure("خطأ في الاتصال بقاعدة البيانات"));
             }
         }
         [HttpGet("{id:int}")]

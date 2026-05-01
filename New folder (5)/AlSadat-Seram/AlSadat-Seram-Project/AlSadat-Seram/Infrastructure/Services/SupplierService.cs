@@ -212,13 +212,16 @@ namespace Infrastructure.Services
             }
         }
 
-        // =======================================================================
-        // 4) ADD
-        // =======================================================================
+        /// <summary>
+        /// Creates a new supplier and its corresponding leaf account in the chart of
+        /// accounts. The two operations are atomic: if either fails, both roll back.
+        /// Duplicate detection matches the Excel-import semantics — a supplier is a
+        /// duplicate only when BOTH name AND phone match an existing ACTIVE supplier.
+        /// </summary>
         public async Task<Result<string>> AddNewSupplier(SupplierDto dto)
         {
-            // DataAnnotation validation is enforced by ASP.NET model binding + [ApiController],
-            // but we re-validate defensively to be safe if the service is ever called outside a controller.
+            // Defensive validation: ASP.NET model binding already runs DataAnnotations,
+            // but we re-validate so the service is safe to call from background jobs etc.
             if (!TryValidate(dto, out var validationMessage))
                 return Result<string>.Failure(validationMessage!, HttpStatusCode.BadRequest);
 
@@ -227,13 +230,18 @@ namespace Infrastructure.Services
             {
                 var supplierRepo = _unitOfWork.GetRepository<Supplier, int>();
 
-                // Duplicate guard (B-5): same Name + same PhoneNumbers among ACTIVE suppliers
+                var trimmedName = dto.name.Trim();
+                var trimmedPhone = dto.phoneNumbers.Trim();
+
+                // Duplicate guard: same Name AND same Phone among ACTIVE suppliers only.
+                // A name alone or a phone alone is NOT a duplicate — two real-world
+                // suppliers can legitimately share either.
                 var duplicateExists = await supplierRepo
                     .GetQueryable()
                     .AnyAsync(s =>
-                      
-                        s.Name == dto.name.Trim() ||
-                        s.phoneNumbers == dto.phoneNumbers.Trim());
+                        !s.IsDeleted &&
+                        s.Name == trimmedName &&
+                        s.phoneNumbers == trimmedPhone);
 
                 if (duplicateExists)
                 {
@@ -244,8 +252,8 @@ namespace Infrastructure.Services
 
                 var supplier = new Supplier
                 {
-                    Name = dto.name.Trim(),
-                    phoneNumbers = dto.phoneNumbers.Trim(),
+                    Name = trimmedName,
+                    phoneNumbers = trimmedPhone,
                     address = string.IsNullOrWhiteSpace(dto.address) ? null : dto.address.Trim(),
                     cityId = dto.cityId,
                     IsDeleted = false
@@ -253,24 +261,27 @@ namespace Infrastructure.Services
 
                 await supplierRepo.AddWithoutSaveAsync(supplier);
                 await _unitOfWork.SaveChangesAsync();
-                // add Accountant account for supplier in tree account
 
-                AccountDto supplierAccountToAddInTreeAccountant = new AccountDto()
+                // Mirror in chart of accounts: leaf account under the suppliers parent.
+                // Type is inherited from the parent server-side; code is auto-generated.
+                var supplierAccountDto = new CreateAccountDto
                 {
                     userId = supplier.Id.ToString(),
-                    accountName=supplier.Name,
-                    type=1,
-                    parentAccountId=10,
-                    isLeaf=true,
-                    isActive= true,
-
+                    accountName = supplier.Name,
+                    parentAccountId = SuppliersParentAccountId,
+                    isLeaf = true,
+                    isActive = true
                 };
-                var IsAccountAdded = await serviceManager.treeService.AddNewAccount(supplierAccountToAddInTreeAccountant);
-                if (!IsAccountAdded.IsSuccess)
-                    return IsAccountAdded;
+
+                var accountResult = await serviceManager.treeService.AddNewAccount(supplierAccountDto);
+                if (!accountResult.IsSuccess)
+                {
+                    await _unitOfWork.RollbackAsync();
+                    return accountResult;
+                }
+
                 await _unitOfWork.CommitAsync();
                 return Result<string>.Success("تم إضافة المورد بنجاح");
-
             }
             catch (Exception ex)
             {
@@ -280,6 +291,14 @@ namespace Infrastructure.Services
                     "حدث خطأ أثناء حفظ المورد", HttpStatusCode.InternalServerError);
             }
         }
+
+        // -----------------------------------------------------------------------------
+        // Suppliers' parent account ID in the chart of accounts. Pre-existing magic
+        // number that pre-dates this PR — should be migrated to
+        // SystemAccountCode.SuppliersParent in a follow-up. Kept as a named constant
+        // here so both AddNewSupplier and ImportFromExcelAsync share a single source.
+        // -----------------------------------------------------------------------------
+        private const int SuppliersParentAccountId = 10;
 
         // =======================================================================
         // 5) EDIT — cannot edit soft-deleted; does NOT touch IsDeleted
@@ -397,7 +416,8 @@ namespace Infrastructure.Services
         }
 
         // =======================================================================
-        // 7) IMPORT FROM EXCEL — per-row errors, partial success, formula-injection guard
+        // 7) IMPORT FROM EXCEL — per-row atomic (supplier + tree account), partial
+        //    success preserved, formula-injection guard at export time only.
         // =======================================================================
         public async Task<Result<SupplierImportResultDto>> ImportFromExcelAsync(
             Stream fileStream, CancellationToken ct)
@@ -406,7 +426,7 @@ namespace Infrastructure.Services
 
             try
             {
-                // 1) Parse workbook via the existing generic reader
+                // ---- 1) Parse workbook via the existing generic reader ---------------
                 var parsed = _excelReader.Read<ExcelSupplierDto>(fileStream);
 
                 // Map reader-level cell errors into our row error shape
@@ -431,7 +451,7 @@ namespace Infrastructure.Services
 
                 ct.ThrowIfCancellationRequested();
 
-                // 2) Pre-load DB state ONCE (no N+1)
+                // ---- 2) Pre-load DB state ONCE (no N+1) -------------------------------
                 var supplierRepo = _unitOfWork.GetRepository<Supplier, int>();
 
                 var existing = await supplierRepo.GetQueryable()
@@ -443,12 +463,13 @@ namespace Infrastructure.Services
                     .Select(x => ComposeKey(x.Name, x.phoneNumbers))
                     .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-                // 3) Validate each parsed row
-                var toInsert = new List<Supplier>();
+                // ---- 3) Validate each parsed row, build a list of validated candidates
+                // We keep the Excel row number on each candidate so per-row errors
+                // during persistence (step 4) can still point at the correct row.
+                var validatedRows = new List<ValidatedSupplierRow>();
                 var seenInFile = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                // Excel row counter starts at 2 (row 1 = header). The reader gives us rows
-                // in the order it found them; we track our own counter aligned with Excel rows.
+                // Excel row counter starts at 2 (row 1 = header).
                 int excelRow = 1;
                 foreach (var row in parsed.data)
                 {
@@ -458,17 +479,7 @@ namespace Infrastructure.Services
                     var rawName = row.Name?.Trim() ?? string.Empty;
                     var rawPhone = row.PhoneNumbers?.Trim() ?? string.Empty;
 
-                    // -------- Normalize the phone number --------
-                    // Excel's number-format rules often strip the leading '+' silently
-                    // (typing "+201012345678" into a General-formatted cell stores it
-                    // as the integer 201012345678). We tolerate both shapes:
-                    //   "+201012345678"  → "+201012345678"
-                    //   "201012345678"   → "+201012345678"
-                    //   " + 20-10 123 4567 890 "  → "+20101234567890" (spaces/dashes stripped)
-                    //
-                    // After normalization we validate the E.164 shape authoritatively.
-                    // If the normalized result doesn't pass, we return a friendly error
-                    // pointing the user at the expected format.
+                    // Phone normalization (see method docs).
                     var normalizedPhone = NormalizeImportedPhone(rawPhone);
 
                     if (!IsValidE164(normalizedPhone))
@@ -483,19 +494,10 @@ namespace Infrastructure.Services
                         continue;
                     }
 
-                    // Values stored as-is. Excel formula-injection safety is applied
-                    // ONLY at export time (when we write data BACK out to a .xlsx file),
-                    // never at persistence time — that would corrupt stored strings
-                    // with a leading apostrophe (e.g. phone numbers starting with '+').
-                    var safeName = rawName;
-                    var safePhone = normalizedPhone;
-
-                    // Validate the rest of the DTO (Name required + max length etc.)
-                    // Phone is already validated above, so we only check Name here.
                     var sanitizedDto = new ExcelSupplierDto
                     {
-                        Name = safeName,
-                        PhoneNumbers = safePhone
+                        Name = rawName,
+                        PhoneNumbers = normalizedPhone
                     };
 
                     if (!TryValidate(sanitizedDto, out var validationMsg, out var failedProperty))
@@ -510,7 +512,7 @@ namespace Infrastructure.Services
                         continue;
                     }
 
-                    var key = ComposeKey(safeName, safePhone);
+                    var key = ComposeKey(rawName, normalizedPhone);
 
                     // Duplicate within the same file
                     if (!seenInFile.Add(key))
@@ -538,56 +540,35 @@ namespace Infrastructure.Services
                         continue;
                     }
 
-                    toInsert.Add(new Supplier
-                    {
-                        Name = safeName,
-                        phoneNumbers = safePhone,
-                        address = null,
-                        // cityId is nullable on Supplier. Imports leave it null —
-                        // the user can attach a city later via the Edit screen.
-                        cityId = null,
-                        IsDeleted = false
-                    });
+                    validatedRows.Add(new ValidatedSupplierRow(
+                        ExcelRowNumber: excelRow,
+                        Name: rawName,
+                        Phone: normalizedPhone));
                 }
 
-                // 4) Persist the valid rows (partial success semantics)
-                if (toInsert.Count > 0)
+                // ---- 4) Persist each valid row in its own transaction -----------------
+                // Per-row atomicity: each loop iteration commits or rolls back ITS OWN
+                // supplier + tree account together. A bad row never poisons a good one.
+                foreach (var candidate in validatedRows)
                 {
-                    await _unitOfWork.BeginTransactionAsync();
-                    try
-                    {
-                        await supplierRepo.AddRangeAsyncWithoutSave(toInsert);
-                        await _unitOfWork.SaveChangesAsync();
-                        await _unitOfWork.CommitAsync();
+                    ct.ThrowIfCancellationRequested();
 
-                        result.successCount = toInsert.Count;
-                        result.imported = toInsert.Select(s => new SupplierDto
-                        {
-                            id = s.Id,
-                            name = s.Name,
-                            phoneNumbers = s.phoneNumbers,
-                            address = s.address,
-                            cityId = s.cityId,
-                            cityName = null,
-                            isDeleted = s.IsDeleted
-                        }).ToList();
+                    var rowResult = await TryInsertSupplierWithAccountAsync(candidate, ct);
+
+                    if (rowResult.IsSuccess)
+                    {
+                        result.successCount++;
+                        result.imported.Add(rowResult.Value);
                     }
-                    catch (Exception dbEx)
+                    else
                     {
-                        await _unitOfWork.RollbackAsync();
-                        await _unitOfWork.LogError(dbEx);
-
-                        // All valid rows failed at DB level → mark them as errors, do not partial-persist
-                        foreach (var s in toInsert)
+                        result.errors.Add(new SupplierImportRowError
                         {
-                            result.errors.Add(new SupplierImportRowError
-                            {
-                                supplierName = s.Name,
-                                column = "DB",
-                                message = "فشل الحفظ في قاعدة البيانات"
-                            });
-                        }
-                        result.successCount = 0;
+                            rowNumber = candidate.ExcelRowNumber,
+                            supplierName = candidate.Name,
+                            column = rowResult.ErrorColumn ?? "row",
+                            message = rowResult.ErrorMessage ?? "فشل الحفظ"
+                        });
                     }
                 }
 
@@ -615,6 +596,101 @@ namespace Infrastructure.Services
                     "حدث خطأ أثناء استيراد الملف — تأكد من صحة التنسيق",
                     HttpStatusCode.InternalServerError);
             }
+        }
+
+        // ---------------------------------------------------------------------------
+        // Inserts ONE supplier together with its leaf account in the chart of
+        // accounts. Both succeed or both roll back — there are no dangling suppliers.
+        //
+        // Returns:
+        //   IsSuccess = true  → Value contains the persisted SupplierDto
+        //   IsSuccess = false → ErrorColumn / ErrorMessage describe the failure
+        // ---------------------------------------------------------------------------
+        private async Task<RowInsertOutcome> TryInsertSupplierWithAccountAsync(
+            ValidatedSupplierRow row, CancellationToken ct)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var supplierRepo = _unitOfWork.GetRepository<Supplier, int>();
+
+                var supplier = new Supplier
+                {
+                    Name = row.Name,
+                    phoneNumbers = row.Phone,
+                    address = null,
+                    cityId = null,
+                    IsDeleted = false
+                };
+
+                await supplierRepo.AddWithoutSaveAsync(supplier);
+                await _unitOfWork.SaveChangesAsync();   // populates supplier.Id for the account link
+
+                // Same shape as AddNewSupplier — single source of truth for this mapping.
+                var accountDto = new CreateAccountDto
+                {
+                    userId = supplier.Id.ToString(),
+                    accountName = supplier.Name,
+                    parentAccountId = SuppliersParentAccountId,
+                    isLeaf = true,
+                    isActive = true
+                };
+
+                var accountResult = await serviceManager.treeService.AddNewAccount(accountDto);
+                if (!accountResult.IsSuccess)
+                {
+                    await _unitOfWork.RollbackAsync();
+                    return RowInsertOutcome.Failure(
+                        column: "TreeAccount",
+                        message: $"تعذّر إنشاء الحساب المحاسبي للمورد: {accountResult.Message}");
+                }
+
+                await _unitOfWork.CommitAsync();
+
+                return RowInsertOutcome.Success(new SupplierDto
+                {
+                    id = supplier.Id,
+                    name = supplier.Name,
+                    phoneNumbers = supplier.phoneNumbers,
+                    address = supplier.address,
+                    cityId = supplier.cityId,
+                    cityName = null,
+                    isDeleted = supplier.IsDeleted
+                });
+            }
+            catch (Exception ex)
+            {
+                // Best-effort rollback — never let a row failure break the loop.
+                try { await _unitOfWork.RollbackAsync(); } catch { /* swallow */ }
+                await _unitOfWork.LogError(ex);
+
+                return RowInsertOutcome.Failure(
+                    column: "DB",
+                    message: "فشل الحفظ في قاعدة البيانات");
+            }
+        }
+
+        // ---------------------------------------------------------------------------
+        // Internal value objects used only by ImportFromExcelAsync. Kept as nested
+        // types because they have no meaning outside this file.
+        // ---------------------------------------------------------------------------
+        private sealed record ValidatedSupplierRow(
+            int ExcelRowNumber,
+            string Name,
+            string Phone);
+
+        private sealed class RowInsertOutcome
+        {
+            public bool IsSuccess { get; private init; }
+            public SupplierDto? Value { get; private init; }
+            public string? ErrorColumn { get; private init; }
+            public string? ErrorMessage { get; private init; }
+
+            public static RowInsertOutcome Success(SupplierDto value)
+                => new() { IsSuccess = true, Value = value };
+
+            public static RowInsertOutcome Failure(string column, string message)
+                => new() { IsSuccess = false, ErrorColumn = column, ErrorMessage = message };
         }
 
         // =======================================================================

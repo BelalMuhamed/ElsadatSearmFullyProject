@@ -82,3 +82,17 @@ export interface AccountDetailsDtoReq {
   entryId: number | null;
   entryDate: string | null;
 }
+/**
+ * Payload for creating a new account.
+ * Mirrors the backend CreateAccountDto exactly:
+ *   - No accountCode (auto-generated server-side)
+ *   - No id (created by DB)
+ *   - No type (inherited from parent)
+ */
+export interface CreateAccountDto {
+  userId: string | null;
+  accountName: string;
+  parentAccountId: number | null;
+  isLeaf: boolean;
+  isActive: boolean;
+}

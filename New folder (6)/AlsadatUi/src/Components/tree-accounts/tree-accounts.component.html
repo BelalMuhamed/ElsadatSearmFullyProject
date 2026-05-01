@@ -21,6 +21,7 @@
         type="text"
         placeholder="ابحث باسم أو كود الحساب..."
         [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
         aria-label="بحث">
     </div>
 
@@ -28,6 +29,18 @@
       <input type="checkbox" [(ngModel)]="showInactive">
       <span>إظهار الحسابات غير النشطة</span>
     </label>
+
+    <!-- Expand / Collapse all -->
+    <div class="tree-actions">
+      <button mat-stroked-button class="ghost-btn" (click)="expandAll()" matTooltip="توسيع الكل">
+        <mat-icon>unfold_more</mat-icon>
+        <span>توسيع الكل</span>
+      </button>
+      <button mat-stroked-button class="ghost-btn" (click)="collapseAll()" matTooltip="طي الكل">
+        <mat-icon>unfold_less</mat-icon>
+        <span>طي الكل</span>
+      </button>
+    </div>
 
     <div class="legend">
       <span class="badge badge-system" matTooltip="حساب نظامي">
@@ -50,9 +63,10 @@
 
     <div class="tree-rows">
       <ng-container *ngFor="let account of flatAccounts; trackBy: trackById">
+        <!-- Render only visible rows (collapsed parents hide their subtrees). -->
         <div
+          *ngIf="shouldRender(account)"
           class="tree-row"
-          [class.visible]="isVisible(account)"
           [class.has-children]="hasChildren(account)"
           [class.is-system]="account.isSystemAccount"
           [class.is-inactive]="!account.isActive"

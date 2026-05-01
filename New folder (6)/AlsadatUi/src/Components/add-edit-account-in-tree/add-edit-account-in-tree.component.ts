@@ -8,10 +8,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TreeAccountsService } from '../../app/Services/tree-accounts.service';
-import { AccountDto, FilterationAccountsDto } from '../../app/models/TreeAccountDto';
+import {
+  AccountDto,
+  CreateAccountDto,
+  FilterationAccountsDto
+} from '../../app/models/TreeAccountDto';
 import Swal from 'sweetalert2';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-account-in-tree',
@@ -24,7 +28,8 @@ import { forkJoin } from 'rxjs';
     MatCheckboxModule,
     MatButtonModule,
     MatSelectModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './add-edit-account-in-tree.component.html',
   styleUrl: './add-edit-account-in-tree.component.css'
@@ -33,168 +38,160 @@ export class AddEditAccountInTreeComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+public readonly router = inject(Router);
   private service = inject(TreeAccountsService);
 
   form!: FormGroup;
   isEditMode = false;
   accountId!: number;
-  ParentAccounts:AccountDto[] = [];
-    filters:FilterationAccountsDto={
-      accountCode: null,
-      accountName: null,
-      type: null,
-      parentAccountId: null,
-      isLeaf: false,
-      isActive: true,
-      page: null,
-      pageSize: null
-      }
-ngOnInit(): void {
-  this.initForm();
+  ParentAccounts: AccountDto[] = [];
 
-  const id = this.route.snapshot.paramMap.get('id');
-  this.isEditMode = !!id;
+  // Loaded record (Edit mode only) — used for non-editable display fields like accountCode + type.
+  private loadedAccount: AccountDto | null = null;
 
-  // 1️⃣ أولًا نحمل كل الـ ParentAccounts
-  this.service.getAccounts(this.filters).subscribe(res => {
-    console.log(res.data);
+  filters: FilterationAccountsDto = {
+    accountCode: null,
+    accountName: null,
+    type: null,
+    parentAccountId: null,
+    isLeaf: false,
+    isActive: true,
+    page: null,
+    pageSize: null
+  };
 
-    this.ParentAccounts = res.data ?? [];
+  ngOnInit(): void {
+    this.initForm();
 
-    if (this.isEditMode && id) {
-      this.accountId = +id;
+    const id = this.route.snapshot.paramMap.get('id');
+    this.isEditMode = !!id;
 
-      // 2️⃣ بعد ما الـ options جاهزة، نحمل بيانات الحساب للتعديل
-      this.service.getByAccountId(this.accountId).subscribe(account => {
-        if (account.isSuccess && account.data) {
-          this.form.patchValue({
-            accountCode: account.data.accountCode,
-            accountName: account.data.accountName,
-            userId: account.data.userId,
-            type: account.data.type,
-            parentAccountId: account.data.parentAccountId ?? 0,
-            isLeaf: account.data.isLeaf,
-            isActive: account.data.isActive
-          });
-        }
-      });
-    } else {
-      // وضع الإضافة: القيمة الافتراضية للحساب الأب بعد تحميل الخيارات
-      this.form.patchValue({ parentAccountId: 0 });
-    }
-  });
-}
-onselectparent(id:any)
-{
-console.log(id);
+    this.service.getAccounts(this.filters).subscribe(res => {
+      this.ParentAccounts = res.data ?? [];
 
-}
- initForm() {
-  this.form = this.fb.group({
-    accountCode: ['', Validators.required],
-    accountName: ['', Validators.required],
-    userId: [''],
-    type: [ "", Validators.required],
-  parentAccountId: [0, Validators.required],
-    isLeaf: [true],
-    isActive: [true]
-  });
-}
-compareFn(a: number | null, b: number | null): boolean {
-
-  const numA = a ?? 0;
-  const numB = b ?? 0;
-  return numA === numB;
-}
-  loadAccount() {
-    this.service.getByAccountId(this.accountId).subscribe({
-      next: (res) => {
-        console.log(res.data);
-        if (res.isSuccess && res.data) {
-
-          this.form.patchValue(res.data);
-          console.log(res.data);
-
-console.log(this.form.value.parentAccountId);
-console.log(typeof this.form.value.parentAccountId);
-console.log(this.form.value.parentAccountId);
-        }
+      if (this.isEditMode && id) {
+        this.accountId = +id;
+        this.service.getByAccountId(this.accountId).subscribe(account => {
+          if (account.isSuccess && account.data) {
+            this.loadedAccount = account.data;
+            this.form.patchValue({
+              accountCode:     account.data.accountCode,         // shown disabled
+              accountName:     account.data.accountName,
+              userId:          account.data.userId,
+              type:            account.data.type,
+              parentAccountId: account.data.parentAccountId ?? 0,
+              isLeaf:          account.data.isLeaf,
+              isActive:        account.data.isActive
+            });
+          }
+        });
+      } else {
+        this.form.patchValue({ parentAccountId: 0 });
       }
     });
   }
 
-  submit() {
-    if (this.form.invalid) return;
+  /**
+   * Form schema:
+   *  - `accountCode` is purely for display in Edit mode. It is created as a
+   *     DISABLED control so it never gets submitted by `form.value`. On Create
+   *     mode the field is also disabled (and hidden in the template).
+   *  - `type` is included for display in Edit mode but is also disabled — it's
+   *     inherited from the parent server-side and must not be editable.
+   */
+  private initForm(): void {
+    this.form = this.fb.group({
+      accountCode:     [{ value: '', disabled: true }],     // always disabled — never submitted
+      accountName:     ['', [Validators.required, Validators.maxLength(200)]],
+      userId:          [''],
+      type:            [{ value: '', disabled: true }],     // inherited from parent server-side
+      parentAccountId: [0, Validators.required],
+      isLeaf:          [true],
+      isActive:        [true]
+    });
+  }
 
-    const payload = {
-      ...this.form.value,
-      id: this.isEditMode ? this.accountId : null
-    };
+  compareFn(a: number | null, b: number | null): boolean {
+    return (a ?? 0) === (b ?? 0);
+  }
+
+  /**
+   * Build the typed payload for create/update, excluding any field that must
+   * never leave the client (accountCode in particular).
+   * `getRawValue()` is needed because disabled controls are skipped by `value`.
+   */
+  private buildPayload(): CreateAccountDto | AccountDto {
+    const raw = this.form.getRawValue();
 
     if (this.isEditMode) {
-      this.service.updateAccount(payload).subscribe({
-        next: (res) => {
-                    console.log(res);
-
-          if (res.isSuccess) {
-
-            this.showSuccessAndNavigate();
-          }
-          else{
-             Swal.fire({
-        icon: 'error',
-        title: 'حدث خطأ',
-        text: res.message || 'حدث خطأ غير متوقع',
-        confirmButtonText: 'موافق'
-      });
-          }
-        },
-        error: (err) => {
-           Swal.fire({
-        icon: 'error',
-        title: 'حدث خطأ',
-        text: err?.error?.message || 'حدث خطأ غير متوقع',
-        confirmButtonText: 'موافق'
-      });
-        }
-      });
-    } else {
-      this.service.addAccount(payload).subscribe({
-        next: (res) => {
-          console.log(res.isSuccess);
-
-          if (res.isSuccess) {
-            this.showSuccessAndNavigate();
-          }
-           else{
-             Swal.fire({
-        icon: 'error',
-        title: 'حدث خطأ',
-        text: res.message || 'حدث خطأ غير متوقع',
-        confirmButtonText: 'موافق'
-      });
-          }
-        }
-        ,
-        error: (err) => {
-           Swal.fire({
-        icon: 'error',
-        title: 'حدث خطأ',
-        text: err?.error?.message || 'حدث خطأ غير متوقع',
-        confirmButtonText: 'موافق'
-      });
-        }
-      });
+      // PUT — keep id + (read-only) accountCode for traceability, but server will ignore code.
+      const editPayload: AccountDto = {
+        id:              this.accountId,
+        accountCode:     raw.accountCode,
+        userId:          raw.userId || null,
+        accountName:     raw.accountName,
+        type:            raw.type,
+        parentAccountId: raw.parentAccountId,
+        isLeaf:          raw.isLeaf,
+        isActive:        raw.isActive
+      };
+      return editPayload;
     }
+
+    // POST — strictly the create contract: NO id, NO accountCode, NO type.
+    const createPayload: CreateAccountDto = {
+      userId:          raw.userId || null,
+      accountName:     raw.accountName,
+      parentAccountId: raw.parentAccountId,
+      isLeaf:          raw.isLeaf,
+      isActive:        raw.isActive
+    };
+    return createPayload;
   }
-  private showSuccessAndNavigate() {
-  Swal.fire({
-    icon: 'success',
-    title: this.isEditMode ? 'تم التعديل بنجاح' : 'تمت الإضافة بنجاح',
-    confirmButtonText: 'موافق'
-  }).then(() => {
-    this.router.navigate(['/tree']);
-  });
-}
+
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const payload = this.buildPayload();
+
+    const request$ = this.isEditMode
+      ? this.service.updateAccount(payload as AccountDto)
+      : this.service.addAccount(payload as CreateAccountDto);
+
+    request$.subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.showSuccessAndNavigate();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'حدث خطأ',
+            text: res.message || 'حدث خطأ غير متوقع',
+            confirmButtonText: 'موافق'
+          });
+        }
+      },
+      error: (err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'حدث خطأ',
+          text: err?.error?.message || 'حدث خطأ غير متوقع',
+          confirmButtonText: 'موافق'
+        });
+      }
+    });
+  }
+
+  private showSuccessAndNavigate(): void {
+    Swal.fire({
+      icon: 'success',
+      title: this.isEditMode ? 'تم التعديل بنجاح' : 'تمت الإضافة بنجاح',
+      confirmButtonText: 'موافق'
+    }).then(() => {
+      this.router.navigate(['/tree']);
+    });
+  }
 }
