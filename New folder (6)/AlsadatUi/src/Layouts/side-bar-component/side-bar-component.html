@@ -91,11 +91,19 @@
  <ul *ngIf="StocksOpened">
     <li><a routerLink="stores/all"        routerLinkActive="active">عرض المخازن</a></li>
     <li><a routerLink="transactions/all"  routerLinkActive="active">سجل حركة المخازن</a></li>
-    <li><a routerLink="stock-transfer"    routerLinkActive="active">تحويل بين المخازن</a></li> 
+    <li><a routerLink="stock-transfer"    routerLinkActive="active">تحويل بين المخازن</a></li>
     <li><a routerLink="stocks"            routerLinkActive="active">المخزون</a></li>
   </ul>
 </li>
+<div class="dropdown-header" (click)="togglePlumbers()"*ngIf="hasRole([ 'Admin','Accountant'])" >
 
+  <span><mat-icon>plumbing</mat-icon> السباكون</span>
+  <mat-icon>{{ PlumbersOpened ? 'expand_less' : 'expand_more' }}</mat-icon>
+</div>
+<ul *ngIf="PlumbersOpened">
+  <li><a routerLink="plumber/all" routerLinkActive="active">عرض السباكين</a></li>
+  <li><a routerLink="plumber/add" routerLinkActive="active">إضافة سباك جديد</a></li>
+</ul>
 
 
 <li *ngIf="hasRole([ 'Admin','HR','Accountant'])">
@@ -147,9 +155,17 @@
 
 </li>
 <li>
-  <a (click)="logOut()">تسجيل الخروج</a>
+  <a routerLink="profile" routerLinkActive="active">
+    <mat-icon class="dd-icon">account_circle</mat-icon>
+    الملف الشخصي
+  </a>
 </li>
-
+<li class="logout-item">
+  <a class="logout-link" (click)="logOut()" role="button" tabindex="0">
+    <mat-icon class="dd-icon">logout</mat-icon>
+    <span>تسجيل الخروج</span>
+  </a>
+</li>
 
     </ul>
 

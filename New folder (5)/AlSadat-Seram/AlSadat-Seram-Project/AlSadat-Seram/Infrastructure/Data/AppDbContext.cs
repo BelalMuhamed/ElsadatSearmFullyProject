@@ -47,7 +47,8 @@ namespace Infrastructure.Data
         #region Users
         public DbSet<Distributor_Merchant_Agent> Distributors_MerchantsAndAgents { get; set; }
         public DbSet<Employee> Employee { get; set; }
-        public DbSet<Plumbers> Plumbers { get; set; }
+        //public DbSet<Plumbers> Plumbers { get; set; }
+        public DbSet<Plumber> Plumbers { get; set; }
         public DbSet<Representatives> Representatives { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Notification> Notifications { get; set; }
@@ -97,7 +98,6 @@ namespace Infrastructure.Data
                 .HasKey(s => new { s.ProductId,s.TransactionId });
 
             builder.Entity<Distributor_Merchant_Agent>().HasNoKey();
-            builder.Entity<Plumbers>().HasNoKey();
 
             builder.Entity<Previews>()
                 .HasOne(p => p.WarrantCertificate)
@@ -251,8 +251,7 @@ namespace Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             // ======== إصلاح مشكلة Plumbers (لأنها HasNoKey) ========
-            builder.Entity<Plumbers>()
-                .HasKey(p => p.Id); // إضافة Primary Key
+     
 
             builder.Entity<Supplier>(e =>
             {
@@ -282,7 +281,37 @@ namespace Infrastructure.Data
                 e.HasIndex(s => s.IsDeleted);
                 e.HasIndex(s => s.cityId);
             });
+            builder.Entity<Plumber>(e =>
+            {
+                e.Property(p => p.Name).IsRequired().HasMaxLength(200);
+                e.Property(p => p.phoneNumbers).IsRequired().HasMaxLength(50);
+                e.Property(p => p.address).HasMaxLength(500);
+                e.Property(p => p.LicenseNumber).HasMaxLength(50);
+                e.Property(p => p.Specialty).HasMaxLength(100);
 
+                // Many plumbers → optional one city, same convention as Supplier.
+                e.HasOne(p => p.city)
+                 .WithMany()
+                 .HasForeignKey(p => p.cityId)
+                 .IsRequired(false)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                // Performance: filtered/sorted columns
+                e.HasIndex(p => p.Name);
+                e.HasIndex(p => p.phoneNumbers);
+                e.HasIndex(p => p.IsDeleted);
+                e.HasIndex(p => p.cityId);
+
+                // Filtered unique index on LicenseNumber for ACTIVE plumbers only.
+                // LicenseNumber is nullable — many plumbers can have NULL — but two
+                // ACTIVE plumbers must never share the same non-null license number.
+                // The service-level duplicate guard is the primary defence; this DB
+                // constraint catches concurrent inserts that race past that guard.
+                e.HasIndex(p => p.LicenseNumber)
+                 .IsUnique()
+                 .HasFilter("[LicenseNumber] IS NOT NULL AND [IsDeleted] = 0")
+                 .HasDatabaseName("IX_Plumbers_LicenseNumber_ActiveUnique");
+            });
 
 
             builder.Entity<JournalEntries>()

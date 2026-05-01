@@ -1,0 +1,164 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center">السباكون</h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+
+@if (!isLoaded) {
+  <p class="text-center" style="color: var(--gold);">جاري التحميل...</p>
+} @else {
+
+  <!-- ===================== Toolbar ===================== -->
+  <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 my-2">
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="تصدير القائمة الحالية إلى Excel"
+      [disabled]="isExporting"
+      (click)="exportToExcel()">
+      <mat-icon>file_download</mat-icon>
+      {{ isExporting ? 'جاري التصدير...' : 'تصدير Excel' }}
+    </button>
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="تحميل قالب Excel"
+      (click)="downloadTemplate()">
+      <mat-icon>download</mat-icon>
+      تحميل قالب Excel
+    </button>
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      matTooltip="استيراد السباكين من ملف Excel"
+      (click)="openImportDialog()">
+      <mat-icon>upload_file</mat-icon>
+      استيراد Excel
+    </button>
+
+    <button
+      class="add-coupon-btn"
+      type="button"
+      [routerLink]="['/plumber/add']">
+      <mat-icon>add</mat-icon>
+      إضافة سباك جديد
+    </button>
+
+  </div>
+
+  <!-- ===================== Filter Form ===================== -->
+  <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+    <form [formGroup]="form" class="popup-form" (ngSubmit)="applyFilters()">
+
+      <div class="w-100 d-flex flex-wrap">
+
+        <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+          <mat-label>اسم السباك</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ms-2 custom-input-theme">
+          <mat-label>رقم الهاتف</mat-label>
+          <input matInput formControlName="phoneNumbers">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ms-2 custom-input-theme">
+          <mat-label>رقم الرخصة</mat-label>
+          <input matInput formControlName="licenseNumber">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ms-2 custom-input-theme">
+          <mat-label>التخصص</mat-label>
+          <mat-select formControlName="specialty">
+            <mat-option [value]="''">الكل</mat-option>
+            @for (sp of specialtyOptions; track sp) {
+              <mat-option [value]="sp">{{ sp }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="ms-2 custom-input-theme">
+          <mat-label>الحالة</mat-label>
+          <mat-select formControlName="isDeleted">
+            <mat-option [value]="null">الكل</mat-option>
+            <mat-option [value]="false">فعال</mat-option>
+            <mat-option [value]="true">موقوف</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <button mat-raised-button class="add-coupon-btn px-3 ms-2 m-0" (click)="applyFilters()" type="button">
+          <mat-icon>search</mat-icon> ابحث
+        </button>
+        <button mat-raised-button class="add-coupon-btn px-3 m-0" (click)="resetFilters()" type="button">
+          <mat-icon>refresh</mat-icon> إعادة تعيين
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===================== Table ===================== -->
+  <div class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      @for (col of columns; track col.key) {
+        <ng-container [matColumnDef]="col.key">
+          <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+          <td mat-cell *matCellDef="let element">
+            @switch (col.type) {
+
+              @case ('boolean') {
+                <mat-slide-toggle
+                  [checked]="!element.isDeleted"
+                  (change)="togglePlumberStatus(element, $event.checked)"
+                  [matTooltip]="element.isDeleted ? 'تفعيل السباك' : 'إيقاف السباك'"
+                  [attr.aria-label]="'حالة السباك ' + element.name"
+                  class="delete-toggle">
+                </mat-slide-toggle>
+              }
+
+              @case ('actions') {
+                <div class="action-buttons">
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    class="border-0 bg-transparent"
+                    [routerLink]="['/plumber/edit', element.id]"
+                    [disabled]="element.isDeleted"
+                    [matTooltip]="element.isDeleted ? 'قم بتفعيل السباك أولًا للتعديل' : 'تعديل السباك'"
+                    [attr.aria-label]="'تعديل السباك ' + element.name">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
+              }
+
+              @default {
+                <span>{{ element[col.key] ?? '—' }}</span>
+              }
+            }
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell text-center p-4" [attr.colspan]="displayedColumnKeys.length">
+          لا يوجد سباكون بالمعايير المحددة
+        </td>
+      </tr>
+    </table>
+
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="filters.pageSize ?? 10"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="onPageChange($event)"
+      aria-label="تنقل بين الصفحات">
+    </mat-paginator>
+  </div>
+}

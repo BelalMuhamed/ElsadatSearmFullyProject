@@ -1,0 +1,182 @@
+<div class="profile-page" dir="rtl">
+
+  <!-- ═══════════════════════ Page header ═══════════════════════ -->
+  <header class="page-header">
+    <div class="title-block">
+      <mat-icon class="title-icon">account_circle</mat-icon>
+      <h2 class="title">الملف الشخصي</h2>
+    </div>
+    <p class="subtitle">إدارة بيانات الحساب وكلمة المرور</p>
+  </header>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════ Loading state ═══════════════════════ -->
+  @if (isLoading()) {
+    <div class="loading-block">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>جاري تحميل البيانات…</span>
+    </div>
+  } @else {
+
+    <!-- ═══════════════════════ Tabs ═══════════════════════ -->
+    <mat-tab-group class="profile-tabs" animationDuration="200ms" mat-align-tabs="center">
+
+      <!-- ─────────── Tab 1: Personal info ─────────── -->
+      <mat-tab label="البيانات الشخصية">
+        <form [formGroup]="profileForm" class="tab-form" (ngSubmit)="submitProfile()">
+
+          <div class="form-grid">
+
+            <mat-form-field appearance="outline" class="custom-input-theme">
+              <mat-label>اسم المستخدم *</mat-label>
+              <input matInput formControlName="userName" maxlength="256" autocomplete="username">
+              <mat-hint>تغيير اسم المستخدم سيُسجّلك الخروج</mat-hint>
+              @if (userNameCtrl.touched) {
+                @if (userNameCtrl.hasError('required')) {
+                  <mat-error>اسم المستخدم مطلوب</mat-error>
+                } @else if (userNameCtrl.hasError('minlength')) {
+                  <mat-error>الحد الأدنى 3 أحرف</mat-error>
+                } @else if (userNameCtrl.hasError('maxlength')) {
+                  <mat-error>الحد الأقصى 256 حرفًا</mat-error>
+                }
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="custom-input-theme">
+              <mat-label>البريد الإلكتروني *</mat-label>
+              <input matInput type="email" formControlName="email" maxlength="256" autocomplete="email">
+              @if (emailCtrl.touched) {
+                @if (emailCtrl.hasError('required')) {
+                  <mat-error>البريد الإلكتروني مطلوب</mat-error>
+                } @else if (emailCtrl.hasError('email')) {
+                  <mat-error>صيغة البريد الإلكتروني غير صحيحة</mat-error>
+                } @else if (emailCtrl.hasError('maxlength')) {
+                  <mat-error>البريد الإلكتروني طويل جدًا</mat-error>
+                }
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="custom-input-theme">
+              <mat-label>رقم الهاتف</mat-label>
+              <input matInput formControlName="phoneNumber" maxlength="50" dir="ltr"
+                     placeholder="+201012345678" autocomplete="tel">
+              <mat-hint>اختياري</mat-hint>
+              @if (phoneNumberCtrl.touched && phoneNumberCtrl.hasError('maxlength')) {
+                <mat-error>رقم الهاتف طويل جدًا</mat-error>
+              }
+            </mat-form-field>
+
+          </div>
+
+          <div class="actions-row">
+            <button
+              type="submit"
+              mat-raised-button
+              class="primary-btn"
+              [disabled]="isSavingProfile() || profileForm.invalid || profileForm.pristine">
+              @if (isSavingProfile()) {
+                <mat-spinner diameter="18" class="inline-spinner"></mat-spinner>
+                <span>جاري الحفظ…</span>
+              } @else {
+                <mat-icon>save</mat-icon>
+                <span>حفظ التغييرات</span>
+              }
+            </button>
+          </div>
+
+        </form>
+      </mat-tab>
+
+      <!-- ─────────── Tab 2: Change password ─────────── -->
+      <mat-tab label="كلمة المرور">
+        <form [formGroup]="passwordForm" class="tab-form" (ngSubmit)="submitPassword()">
+
+          <div class="form-grid">
+
+            <mat-form-field appearance="outline" class="custom-input-theme">
+              <mat-label>كلمة المرور الحالية *</mat-label>
+              <input matInput
+                     [type]="showOldPassword() ? 'text' : 'password'"
+                     formControlName="oldPassword"
+                     autocomplete="current-password">
+              <button mat-icon-button matSuffix type="button"
+                      (click)="togglePasswordVisibility('old')"
+                      [attr.aria-label]="showOldPassword() ? 'إخفاء' : 'إظهار'">
+                <mat-icon>{{ showOldPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (oldPasswordCtrl.touched && oldPasswordCtrl.hasError('required')) {
+                <mat-error>كلمة المرور الحالية مطلوبة</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="custom-input-theme">
+              <mat-label>كلمة المرور الجديدة *</mat-label>
+              <input matInput
+                     [type]="showNewPassword() ? 'text' : 'password'"
+                     formControlName="newPassword"
+                     autocomplete="new-password">
+              <button mat-icon-button matSuffix type="button"
+                      (click)="togglePasswordVisibility('new')"
+                      [attr.aria-label]="showNewPassword() ? 'إخفاء' : 'إظهار'">
+                <mat-icon>{{ showNewPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-hint>الحد الأدنى 6 أحرف</mat-hint>
+              @if (newPasswordCtrl.touched) {
+                @if (newPasswordCtrl.hasError('required')) {
+                  <mat-error>كلمة المرور الجديدة مطلوبة</mat-error>
+                } @else if (newPasswordCtrl.hasError('minlength')) {
+                  <mat-error>كلمة المرور يجب ألا تقل عن 6 أحرف</mat-error>
+                }
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="custom-input-theme">
+              <mat-label>تأكيد كلمة المرور الجديدة *</mat-label>
+              <input matInput
+                     [type]="showConfirmPassword() ? 'text' : 'password'"
+                     formControlName="confirmPassword"
+                     autocomplete="new-password">
+              <button mat-icon-button matSuffix type="button"
+                      (click)="togglePasswordVisibility('confirm')"
+                      [attr.aria-label]="showConfirmPassword() ? 'إخفاء' : 'إظهار'">
+                <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (confirmPasswordCtrl.touched && confirmPasswordCtrl.hasError('required')) {
+                <mat-error>تأكيد كلمة المرور مطلوب</mat-error>
+              }
+            </mat-form-field>
+
+          </div>
+
+          @if (passwordForm.hasError('passwordsMismatch') &&
+               (passwordForm.get('confirmPassword')?.touched ?? false)) {
+            <div class="form-level-error">
+              <mat-icon>error_outline</mat-icon>
+              <span>كلمة المرور الجديدة وتأكيدها غير متطابقتين</span>
+            </div>
+          }
+
+          <div class="actions-row">
+            <button
+              type="submit"
+              mat-raised-button
+              class="primary-btn"
+              [disabled]="isSavingPassword() || passwordForm.invalid">
+              @if (isSavingPassword()) {
+                <mat-spinner diameter="18" class="inline-spinner"></mat-spinner>
+                <span>جاري التغيير…</span>
+              } @else {
+                <mat-icon>lock_reset</mat-icon>
+                <span>تغيير كلمة المرور</span>
+              }
+            </button>
+          </div>
+
+        </form>
+      </mat-tab>
+
+    </mat-tab-group>
+  }
+
+</div>

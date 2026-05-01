@@ -77,7 +77,8 @@ namespace Application.Services.contract
       public  IFinancialReportsService financialReports { get; }
       public  ISystemAccountGuard systemAccountGuard { get; }
        public IStoreTransactionValidator storeTransactionValidator { get; }
-
+        /// <summary>Plumber master-data service (no chart-of-accounts integration).</summary>
+       public IPlumberContract plumberService { get; }
 
 
 

@@ -23,6 +23,11 @@ reportsOpened = false;
   StocksOpened=false;
   hrOpened = false;
   leaveOpen = false;
+  PlumbersOpened = false;
+
+togglePlumbers(): void {
+  this.PlumbersOpened = !this.PlumbersOpened;
+}
 hasRole(allowedRoles: string[]): boolean {
   const userRoles = this._authService.getRoles();
   return userRoles.some(role => allowedRoles.includes(role));

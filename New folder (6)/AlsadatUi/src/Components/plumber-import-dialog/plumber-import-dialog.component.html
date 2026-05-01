@@ -1,0 +1,138 @@
+<div class="dialog-wrapper" dir="rtl">
+
+  <header class="dialog-header">
+    <h2>استيراد السباكين من Excel</h2>
+    <button mat-icon-button (click)="close()" aria-label="إغلاق">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <hr class="divider">
+
+  <!-- ============== Step: select ============== -->
+  @if (step() === 'select') {
+    <div class="dropzone"
+         [class.dragging]="isDragging()"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)">
+
+      @if (!selectedFile()) {
+        <mat-icon class="cloud">cloud_upload</mat-icon>
+        <p>اسحب وأفلت ملف Excel هنا، أو</p>
+        <label class="pick-btn">
+          اختر ملفًا
+          <input type="file" accept=".xlsx,.xls" hidden (change)="onFilePicked($event)">
+        </label>
+        <p class="hint">الحد الأقصى 5 ميجابايت — صيغة .xlsx أو .xls</p>
+      } @else {
+        <div class="picked-file">
+          <mat-icon>description</mat-icon>
+          <span class="filename">{{ selectedFile()!.name }}</span>
+          <span class="filesize">({{ (selectedFile()!.size / 1024 / 1024) | number:'1.2-2' }} MB)</span>
+          <button mat-icon-button (click)="removeFile()" matTooltip="إزالة">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="actions-row">
+      <button mat-stroked-button (click)="close()">إلغاء</button>
+      <button
+        mat-raised-button
+        class="primary-btn"
+        [disabled]="!selectedFile()"
+        (click)="startImport()">
+        <mat-icon>upload</mat-icon>
+        ابدأ الاستيراد
+      </button>
+    </div>
+  }
+
+  <!-- ============== Step: uploading ============== -->
+  @if (step() === 'uploading') {
+    <div class="uploading-block">
+      <p>جاري رفع الملف ومعالجته…</p>
+      <mat-progress-bar mode="determinate" [value]="progressPercent()"></mat-progress-bar>
+      <p class="percent">{{ progressPercent() }}%</p>
+    </div>
+  }
+
+  <!-- ============== Step: result ============== -->
+  @if (step() === 'result' && result()) {
+    <div class="result-block">
+
+      <div class="summary-row">
+        <div class="summary-card success">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <div class="num">{{ result()!.successCount }}</div>
+            <div class="lbl">صف ناجح</div>
+          </div>
+        </div>
+
+        <div class="summary-card failure">
+          <mat-icon>error</mat-icon>
+          <div>
+            <div class="num">{{ result()!.failedCount }}</div>
+            <div class="lbl">صف فاشل</div>
+          </div>
+        </div>
+
+        <div class="summary-card total">
+          <mat-icon>list_alt</mat-icon>
+          <div>
+            <div class="num">{{ result()!.totalRows }}</div>
+            <div class="lbl">إجمالي الصفوف</div>
+          </div>
+        </div>
+      </div>
+
+      @if (hasErrors()) {
+        <div class="errors-block">
+          <div class="errors-header">
+            <h3>تفاصيل الأخطاء</h3>
+            <button mat-stroked-button (click)="exportErrors()">
+              <mat-icon>download</mat-icon>
+              تصدير الأخطاء إلى Excel
+            </button>
+          </div>
+
+          <div class="errors-table-wrap">
+            <table mat-table [dataSource]="result()!.errors">
+
+              <ng-container matColumnDef="rowNumber">
+                <th mat-header-cell *matHeaderCellDef>الصف</th>
+                <td mat-cell *matCellDef="let e">{{ e.rowNumber }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="plumberName">
+                <th mat-header-cell *matHeaderCellDef>الاسم</th>
+                <td mat-cell *matCellDef="let e">{{ e.plumberName || '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="column">
+                <th mat-header-cell *matHeaderCellDef>العمود</th>
+                <td mat-cell *matCellDef="let e">{{ e.column }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="message">
+                <th mat-header-cell *matHeaderCellDef>الخطأ</th>
+                <td mat-cell *matCellDef="let e">{{ e.message }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="errorColumns"></tr>
+              <tr mat-row *matRowDef="let r; columns: errorColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      }
+
+      <div class="actions-row">
+        <button mat-raised-button class="primary-btn" (click)="close()">إغلاق</button>
+      </div>
+    </div>
+  }
+
+</div>
