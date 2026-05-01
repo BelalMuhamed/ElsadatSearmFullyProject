@@ -18,11 +18,20 @@ export class AuthLayout implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
   roles: string[] = [];
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,private swal: SwalService ) {
+
+  /** Controls visibility of the password field (show/hide toggle). */
+  showPassword = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private swal: SwalService
+  ) {
     this.loginForm = this.fb.group({
-  email: ['', [Validators.required]], // username أو phone
-  password: ['', [Validators.required, Validators.minLength(6)]]
-});
+      email: ['', [Validators.required]], // username أو phone
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
   }
 
   ngOnInit(): void {
@@ -32,78 +41,82 @@ export class AuthLayout implements OnInit {
     }
   }
 
+  /** Toggles the password input between masked and visible states. */
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   login() {
-     if (this.loginForm.invalid) {
-    this.loginForm.markAllAsTouched();
-    return;
-  }
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
 
-  if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) return;
 
-  this.isLoading = true;
+    this.isLoading = true;
 
-  const dto: loginDto = {
-    email: this.loginForm.value.email,
-    password: this.loginForm.value.password
-  };
+    const dto: loginDto = {
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password
+    };
 
-  this.authService.login(dto).subscribe({
-    next: (res) => {
-      console.log(res);
+    this.authService.login(dto).subscribe({
+      next: (res) => {
+        console.log(res);
 
-      this.isLoading = false;
+        this.isLoading = false;
 
-      // 🔥 Handle Result<T>
-      if (!res.isSuccess) {
-        this.swal.error(res.message || 'Invalid email or password');
-        return;
+        // 🔥 Handle Result<T>
+        if (!res.isSuccess) {
+          this.swal.error(res.message || 'Invalid email or password');
+          return;
+        }
+        this.roles = res.data?.roles || [];
+        // ✅ Save data
+        localStorage.setItem('refreshToken', res.data?.refreshToken ?? "");
+        localStorage.setItem('accessToken', res.data?.accessToken ?? "");
+        localStorage.setItem('userName', res.data?.userName ?? "");
+        localStorage.setItem('userEmail', res.data?.userMail ?? "");
+        localStorage.setItem('roles', JSON.stringify(res.data?.roles || []));
+
+        if (this.roles.includes('Admin'))
+          this.router.navigate(['/SalesInvoices']);
+        else if (this.roles.includes('HR'))
+          this.router.navigate(['/hr/employees']);
+        else if (this.roles.includes('Accountant'))
+          this.router.navigate(['/SalesInvoices']);
+        else if (this.roles.includes('StockManager'))
+          this.router.navigate(['/stocks']);
+        else
+          this.router.navigate(['/unauthorized']);
+      },
+
+      error: (err) => {
+        this.isLoading = false;
+
+        let message = '';
+
+        switch (err.status) {
+          case 0:
+            message = '🚫 لا يوجد اتصال بالسيرفر';
+            break;
+
+          case 401:
+            message = '❌ بيانات الدخول غير صحيحة';
+            break;
+
+          case 500:
+            message = '💥 خطأ في السيرفر';
+            break;
+
+          default:
+            message = err.error?.message || 'حدث خطأ غير متوقع';
+            break;
+        }
+
+        this.swal.error(message);
       }
-      this.roles=res.data?.roles || [];
-      // ✅ Save data
-      localStorage.setItem('refreshToken', res.data?.refreshToken ?? "");
-      localStorage.setItem('accessToken', res.data?.accessToken ?? "");
-      localStorage.setItem('userName', res.data?.userName ?? "");
-      localStorage.setItem('userEmail', res.data?.userMail ?? "");
-      localStorage.setItem('roles', JSON.stringify(res.data?.roles || []));
-      if(this.roles.includes('Admin'))
-        this.router.navigate(['/SalesInvoices']);
-      else if(this.roles.includes('HR'))
-        this.router.navigate(['/hr/employees']);
-      else if(this.roles.includes('Accountant'))
-        this.router.navigate(['/SalesInvoices']);
-      else if(this.roles.includes('StockManager'))
-        this.router.navigate(['/stocks']);
-      else
-        this.router.navigate(['/unauthorized']);
-
-    },
-
-   error: (err) => {
-  this.isLoading = false;
-
-  let message = '';
-
-  switch (err.status) {
-    case 0:
-      message = '🚫 لا يوجد اتصال بالسيرفر';
-      break;
-
-    case 401:
-      message = '❌ بيانات الدخول غير صحيحة';
-      break;
-
-    case 500:
-      message = '💥 خطأ في السيرفر';
-      break;
-
-    default:
-      message = err.error?.message || 'حدث خطأ غير متوقع';
-      break;
+    });
   }
-
-  this.swal.error(message);
-}
-  });
-}
 }

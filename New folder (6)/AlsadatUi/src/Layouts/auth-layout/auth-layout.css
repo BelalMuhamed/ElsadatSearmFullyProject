@@ -170,6 +170,59 @@ button:disabled {
   opacity: 1;
   text-decoration: underline;
 }
+/* ===== PASSWORD GROUP (with show/hide toggle) ===== */
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  /* leave room for the toggle icon on the right */
+  padding-right: 44px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  color: var(--text-color);
+  opacity: 0.55;
+
+  /* override the global gold gradient button styles */
+  box-shadow: none;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+  color: var(--gold);
+  transform: translateY(-50%);     /* keep vertical centering on hover */
+  box-shadow: none;
+}
+
+.toggle-password:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.toggle-password svg {
+  width: 18px;
+  height: 18px;
+}
 @keyframes floatGlow {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(30px); }
