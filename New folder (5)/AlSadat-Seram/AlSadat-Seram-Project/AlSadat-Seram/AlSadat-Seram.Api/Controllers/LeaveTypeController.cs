@@ -18,7 +18,7 @@ namespace AlSadat_Seram.Api.Controllers
             _Servicmanger = servicmanger;
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetAllLeaveTypes")]
         public async Task<IActionResult> GetAllLeaveTypes([FromQuery] PaginationParams paginationParams)
         {
@@ -26,7 +26,7 @@ namespace AlSadat_Seram.Api.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [HttpGet("GetActiveLeaveTypes")]
         //[AllowAnonymous]
         public async Task<IActionResult> GetActiveLeaveTypes()
@@ -37,7 +37,7 @@ namespace AlSadat_Seram.Api.Controllers
                 BadRequest(new { result.Message });
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [HttpGet("GetLeaveTypeById")]
         public async Task<IActionResult> GetLeaveTypeById(int id)
         {
@@ -47,7 +47,7 @@ namespace AlSadat_Seram.Api.Controllers
                 NotFound(new { result.Message });
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("AddLeaveType")]
         public async Task<IActionResult> AddLeaveType([FromBody] LeaveTypeDto leaveTypeDto)
         {
@@ -57,7 +57,7 @@ namespace AlSadat_Seram.Api.Controllers
                 BadRequest(new { result.Message });
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("UpdateLeaveType")]
         public async Task<IActionResult> UpdateLeaveType(int id,[FromBody] LeaveTypeDto leaveTypeDto)
         {
@@ -70,7 +70,7 @@ namespace AlSadat_Seram.Api.Controllers
                 BadRequest(new { result.Message });
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpDelete("SoftDeleteLeaveType")]
         public async Task<IActionResult> SoftDeleteLeaveType(int id)
         {
@@ -80,7 +80,7 @@ namespace AlSadat_Seram.Api.Controllers
                 BadRequest(new { result.Message });
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("RestoreLeaveType")]
         public async Task<IActionResult> RestoreLeaveType(int id)
         {
@@ -90,7 +90,7 @@ namespace AlSadat_Seram.Api.Controllers
                 BadRequest(new { result.Message });
         }
 
-        //[Authorize(Roles = "StaffOnly")]
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("CheckLeaveTypeUsage")]
         public async Task<IActionResult> CheckLeaveTypeUsage(int id)
         {

@@ -90,12 +90,20 @@ export class EmployeeAddComponent {
     ).subscribe({
       next: (res: any) => {
         const list = (res?.isSuccess ? res.data : res) || [];
-        const items = Array.isArray(list) ? list.filter((x: any) => !x.isDeleted) : [];
+        let items = Array.isArray(list) ? list.filter((x: any) => !x.isDeleted) : [];
+        const userRoles = this.authService.getRoles() || [];
+        if (!userRoles.includes('Admin')) {
+          items = items.filter((r: any) => ((r.roleName ?? r.role) + '') !== 'Admin');
+        }
         this.rolesRaw = items;
         this.roles = items.map((x: any) => x.roleName);
         this.filteredRoles = [...this.roles];
       },
-      error: () => { this.roles = ['Employee', 'Admin']; }
+      error: () => {
+        const userRoles = this.authService.getRoles() || [];
+        this.roles = ['Employee'];
+        if (userRoles.includes('Admin')) this.roles.push('Admin');
+      }
     });
   }
 

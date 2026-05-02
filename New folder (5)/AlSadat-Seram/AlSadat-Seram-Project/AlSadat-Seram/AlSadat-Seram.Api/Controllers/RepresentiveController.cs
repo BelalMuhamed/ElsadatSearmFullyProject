@@ -4,6 +4,7 @@ using Application.DTOs.RepresentativeDtos;
 using Application.Helper;
 using Application.Services.contract;
 using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AlSadat_Seram.Api.Controllers;
@@ -18,6 +19,7 @@ public class RepresentiveController:ControllerBase
     }
 
     #region Representives
+    [Authorize(Roles = "Admin,HR")]
     [HttpGet("GetAllRepresentives")]
     public async Task<ActionResult> GetAllRepresentives([FromQuery] PaginationParams paginationParams,[FromQuery] RepresentativeHelper search)
     {
@@ -31,6 +33,7 @@ public class RepresentiveController:ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [Authorize(Roles = "Admin,HR")]
     [HttpPost("AddNewRepresentive")]
     public async Task<ActionResult> AddNewRepresentive([FromBody] RepresentativeDTo DTo)
     {
@@ -46,6 +49,7 @@ public class RepresentiveController:ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [Authorize(Roles = "Admin,HR")]
     [HttpPut("UpdateRepresentive")]
     public async Task<ActionResult> UpdateRepresentive([FromBody] RepresentativeDTo DTo)
     {
@@ -61,6 +65,7 @@ public class RepresentiveController:ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [Authorize(Roles = "Admin,HR")]
     [HttpPut("SoftDeleteRepresentive")]
     public async Task<ActionResult> SoftDeleteRepresentive([FromBody]RepresentativeDTo DTo)
     {
@@ -76,6 +81,7 @@ public class RepresentiveController:ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [Authorize(Roles = "Admin,HR")]
     [HttpPut("RestoreRepresentive")]
     public async Task<ActionResult> RestoreRepresentive([FromBody] RepresentativeDTo DTo)
     {
@@ -95,6 +101,7 @@ public class RepresentiveController:ControllerBase
 
 
     #region RepresentiveAttendance
+    [Authorize(Roles = "Admin,HR")]
     [HttpGet("GetAllRepresentiveAttendance")]
     public async Task<IActionResult> GetAllRepresentiveAttendance([FromQuery] PaginationParams paginationParams, [FromQuery] RepresentativeAttendanceHelper search)
     {
@@ -108,6 +115,7 @@ public class RepresentiveController:ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [Authorize(Roles = "Admin,HR")]
     [HttpPut("UpdateRepresentiveAttendanceStatus")]
     public async Task<IActionResult> UpdateRepresentiveAttendanceStatus([FromBody] RepresentativeAttendanceDto DTo ,[FromQuery] AttendanceStatus status)
     {
@@ -123,6 +131,7 @@ public class RepresentiveController:ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [Authorize(Roles = "Admin,HR,Representative")]
     [HttpPost()]
     public async Task<IActionResult> CheckIn ([FromBody] RepresentativeAttendanceHelper pramter)
     {

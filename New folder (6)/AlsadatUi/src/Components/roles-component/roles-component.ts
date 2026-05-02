@@ -59,7 +59,12 @@ export class RolesComponent implements OnInit, AfterViewInit {
     this.authService.getAllRoles().subscribe({
       next: (res: any) => {
         if (res?.isSuccess) {
-          this.roles = res.data ?? [];
+          let list = res.data ?? [];
+          const userRoles = this.authService.getRoles() || [];
+          if (!userRoles.includes('Admin')) {
+            list = (list || []).filter((r: any) => ((r.roleName ?? r.role) + '') !== 'Admin');
+          }
+          this.roles = list;
           this.dataSource.data = this.roles;
         } else {
           Swal.fire('خطأ', res?.message ?? 'فشل تحميل الأدوار', 'error');

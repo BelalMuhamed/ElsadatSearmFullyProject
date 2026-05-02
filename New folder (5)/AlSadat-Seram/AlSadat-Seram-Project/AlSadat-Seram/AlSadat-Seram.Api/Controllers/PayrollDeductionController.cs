@@ -1,6 +1,7 @@
 ﻿using Application.CommonPagination;
 using Application.DTOs.PayrollDeductions;
 using Application.Services.contract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AlSadat_Seram.Api.Controllers
@@ -16,7 +17,7 @@ namespace AlSadat_Seram.Api.Controllers
             _ServiceManager = serviceManager;
         }
 
-        // إضافة خصم جديد
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("AddPayrollDeduction")]
         public async Task<IActionResult> AddPayrollDeduction([FromBody] PayrollDeductionsDto dto)
         {
@@ -25,14 +26,14 @@ namespace AlSadat_Seram.Api.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetAllPayrollDeductions")]
         public async Task<IActionResult> GetAllPayrollDeductions([FromQuery] PaginationParams paginationParams)
         {
             var result = await _ServiceManager.PayrollDeductionService.GetAllPayrollDeductionsAsync(paginationParams);
             return Ok(result);
         }
-
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetPayrollDeductionById")]
         public async Task<IActionResult> GetPayrollDeductionById(int id)
         {
@@ -42,7 +43,7 @@ namespace AlSadat_Seram.Api.Controllers
             return BadRequest(result);
         }
 
-        // تحديث خصم
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("UpdatePayrollDeduction")]
         public async Task<IActionResult> UpdatePayrollDeduction([FromBody] PayrollDeductionsDto dto)
         {
@@ -52,7 +53,7 @@ namespace AlSadat_Seram.Api.Controllers
             return BadRequest(result);
         }
 
-        // حذف خصم
+        [Authorize(Roles = "Admin,HR")]
         [HttpDelete("SoftDeletePayrollDeduction")]
         public async Task<IActionResult> SoftDeletePayrollDeduction(int id)
         {
@@ -61,7 +62,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-
+        [Authorize(Roles = "Admin,HR")]
         [HttpPut("RestorePayrollDeduction")]
         public async Task<IActionResult> RestorePayrollDeduction(int id)
         {
@@ -70,7 +71,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet("GetEmployeeDeductionsWithSummary")]
         public async Task<IActionResult> GetEmployeeDeductionsWithSummary(string empCode,[FromQuery] int? month = null, [FromQuery] int? year = null)
         {
@@ -79,7 +80,7 @@ namespace AlSadat_Seram.Api.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost("SearchPayrollDeductions")]
         public async Task<IActionResult> SearchPayrollDeductions( [FromBody] PayrollDeductionSearchDto searchDto,[FromQuery] PaginationParams paginationParams)
         {

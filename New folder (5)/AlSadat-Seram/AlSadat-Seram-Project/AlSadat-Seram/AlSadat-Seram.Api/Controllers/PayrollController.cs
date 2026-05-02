@@ -15,7 +15,7 @@ public class PayrollController:ControllerBase
     {
         _ServiceManager = serviceManager;
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("PreviewPayroll")]
     public async Task<IActionResult> PreviewPayrollAsync([FromQuery] GeneratePayrollRequestDto request)
     {
@@ -23,14 +23,14 @@ public class PayrollController:ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
 
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("PreviewBulkPayroll")]
     public async Task<IActionResult> PreviewBulkPayrollAsync([FromQuery] GenerateBulkPayrollRequestDto request)
     {
         var result = await _ServiceManager.EmployeePayrollService.PreviewBulkPayrollAsync(request);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpPost("GeneratePayroll")]
     //[Authorize(Roles = "HR,PayrollManager,Admin")]
     public async Task<IActionResult> GeneratePayroll([FromBody] GeneratePayrollRequestDto request)
@@ -38,7 +38,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.GeneratePayrollAsync(request);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpPost("GenerateBulkPayroll")]
     //[Authorize(Roles = "HR,PayrollManager,Admin")]
     public async Task<IActionResult> GenerateBulkPayroll([FromBody] GenerateBulkPayrollRequestDto request)
@@ -46,7 +46,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.GenerateBulkPayrollAsync(request);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpPost("PostToAccounting")]
     //[Authorize(Roles = "Accountant,Admin")]
     public async Task<IActionResult> PostToAccounting(int payrollId,bool confirmLoans)
@@ -54,7 +54,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.PostPayrollToAccountingAsync(payrollId, confirmLoans);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    [Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpPost("PostBulkToAccounting")]
     //[Authorize(Roles = "Accountant,Admin")]
     public async Task<IActionResult> PostBulkToAccounting([FromBody] List<int> payrollIds,bool confirmLoans)
@@ -62,7 +62,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.PostBulkPayrollToAccountingAsync(payrollIds,confirmLoans);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpPut("MarkAsPaid")]
     //[Authorize(Roles = "HR,PayrollManager,Admin")]
     public async Task<IActionResult> MarkAsPaid(int payrollId,[FromQuery] string paymentMethod,[FromQuery] string? paymentReference = null)
@@ -70,7 +70,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.MarkPayrollAsPaidAsync(payrollId,paymentMethod,paymentReference);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpPut("MarkBulkAsPaid")]
     //[Authorize(Roles = "HR,PayrollManager,Admin")]
     public async Task<IActionResult> MarkBulkAsPaid([FromBody] MarkPayrollPaidDto dto)
@@ -78,7 +78,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.MarkBulkPayrollAsPaidAsync(dto.PayrollIds,dto.PaymentMethod,dto.PaymentReference);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("GetPayrolls")]
     //[Authorize(Roles = "HR,PayrollManager,Admin,Accountant")]
     public async Task<IActionResult> GetPayrolls([FromQuery] PayrollFilterDto filter)
@@ -86,7 +86,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.GetPayrollsByFilterAsync(filter);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("ExportToExcel")]
     //[Authorize(Roles = "HR,PayrollManager,Admin,Accountant")]
     public async Task<IActionResult> ExportToExcel([FromQuery] PayrollFilterDto filter)
@@ -97,7 +97,7 @@ public class PayrollController:ControllerBase
 
         return File(result.Data.FileContent,result.Data.ContentType,result.Data.FileName);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("GetSummary")]
     //[Authorize(Roles = "HR,PayrollManager,Admin,Accountant")]
     public async Task<IActionResult> GetSummary(int month,int year)
@@ -105,7 +105,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.GetPayrollSummaryAsync(month,year);
         return result.IsSuccess ? Ok(result.Data) : BadRequest(result.Message);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("GetPayrollById")]
     //[Authorize(Roles = "HR,PayrollManager,Admin,Accountant,Employee")]
     public async Task<IActionResult> GetPayrollById(int id)
@@ -113,7 +113,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.GetPayrollByIdAsync(id);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("GetEmployeePayrolls")]
     //[Authorize(Roles = "HR,PayrollManager,Admin,Accountant,Employee")]
     public async Task<IActionResult> GetEmployeePayrolls(string employeeCode,[FromQuery] int? year = null)
@@ -128,7 +128,7 @@ public class PayrollController:ControllerBase
         var result = await _ServiceManager.EmployeePayrollService.GetEmployeePayrollsAsync(employeeCode,year);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
-    //[Authorize(Roles = "StaffOnly")]
+    [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpDelete("DeletePayroll")]
     public async Task<IActionResult> DeletePayrollAsync(int PayrollID)
     {
