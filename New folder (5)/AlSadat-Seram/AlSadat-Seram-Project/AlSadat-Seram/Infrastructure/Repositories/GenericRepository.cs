@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,8 +30,26 @@ namespace Infrastructure.Repositories
             _context.Entry(entity).State = EntityState.Detached;
         }
         //----------------------------------------------------------------
-        public async Task<T?> GetByIdAsync(int id)
+        //----------------------------------------------------------------
+        /// <summary>
+        /// Retrieves an entity by its primary key. Composite keys (ValueTuple) are unpacked
+        /// into EF Core's FindAsync(object[]) form; scalar keys pass through unchanged.
+        /// </summary>
+        public async Task<T?> GetByIdAsync(Tkey id)
         {
+            // Composite keys (e.g. Stock -> (int StoreId, int ProductId)) arrive as a ValueTuple.
+            // EF Core's FindAsync needs each key part as its own array element, in the same order
+            // the key was declared in OnModelCreating — passing the tuple itself as one value
+            // would not match a multi-column primary key.
+            if (id is ITuple compositeKey)
+            {
+                var keyValues = new object[compositeKey.Length];
+                for (var i = 0; i < compositeKey.Length; i++)
+                    keyValues[i] = compositeKey[i]!;
+
+                return await _context.Set<T>().FindAsync(keyValues);
+            }
+
             return await _context.Set<T>().FindAsync(id);
         }
         //----------------------------------------------------------------

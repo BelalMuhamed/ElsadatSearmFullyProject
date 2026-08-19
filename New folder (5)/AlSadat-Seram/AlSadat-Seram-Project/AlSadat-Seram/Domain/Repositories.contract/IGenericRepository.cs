@@ -11,7 +11,14 @@ namespace Domain.Repositories.contract
     public interface IGenericRepository<T, Tkey> where T : class where Tkey : IEquatable<Tkey>
     {
         Task<IReadOnlyList<T>> GetAllAsync();
-        Task<T?> GetByIdAsync(int id);
+
+        /// <summary>
+        /// Retrieves an entity by its primary key. For single-column keys, pass the scalar value
+        /// (e.g. an int or string id). For composite-key entities (e.g. Stock: StoreId + ProductId),
+        /// pass a ValueTuple in the exact order the key was declared in OnModelCreating,
+        /// e.g. GetByIdAsync((storeId, productId)).
+        /// </summary>
+        Task<T?> GetByIdAsync(Tkey id);
         Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate);
         Task<T> AddAsync(T entity);
         Task AddRangeAsync (IEnumerable<T> entities);

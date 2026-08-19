@@ -19,15 +19,21 @@ namespace Infrastructure.UnitOfWork
     {
         private readonly AppDbContext _Context = Context;
         private IDbContextTransaction? _transaction;
-        private readonly ConcurrentDictionary<string, object> _Repositories = new ConcurrentDictionary<string, object>();
+        private readonly ConcurrentDictionary<(Type EntityType, Type KeyType), object> _Repositories = new();
         //--------------------------------------------------------------------------------------
-        public IGenericRepository<T,Tkey> GetRepository<T, Tkey>()
+        public IGenericRepository<T, Tkey> GetRepository<T, Tkey>()
             where T : class
             where Tkey : IEquatable<Tkey>
         {
-            // Check If The Repository Already Exists In The Dictionary Or Add New Repository
-            return (IGenericRepository<T,Tkey>) _Repositories.GetOrAdd(typeof(T).Name,new GenericRepository<T,Tkey>(_Context));
-        }       
+            // Cache key includes BOTH the entity type and the key type. Caching by entity type alone
+            // (typeof(T).Name) breaks for entities requested with more than one Tkey within the same
+            // scoped UnitOfWork — e.g. Stock is requested as both GetRepository<Stock, int>() and
+            // GetRepository<Stock, (int,int)>() in this codebase — the old cache would return the
+            // first-cached instance and an InvalidCastException would be thrown on the second call.
+            return (IGenericRepository<T, Tkey>)_Repositories.GetOrAdd(
+                (typeof(T), typeof(Tkey)),
+                _ => new GenericRepository<T, Tkey>(_Context));
+        }
         //--------------------------------------------------------------------------------------
         public async Task<int> SaveChangesAsync() => await _Context.SaveChangesAsync();
         public async ValueTask DisposeAsync() => await _Context.DisposeAsync();
