@@ -1,4 +1,5 @@
-﻿using Domain.Common;
+﻿using Application.Services.contract.LocalizationService;
+using Domain.Common;
 using Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -11,15 +12,16 @@ public class ExceptionHandlingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    public ExceptionHandlingMiddleware(
-        RequestDelegate next,
-        ILogger<ExceptionHandlingMiddleware> logger)
+    // ILocalizationService is Scoped — it must NOT be a constructor parameter here,
+    // because middleware itself is constructed once as a singleton. It's injected
+    // per-request via the InvokeAsync method parameter instead (standard ASP.NET pattern).
+    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
         _logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, ILocalizationService localization)
     {
         try
         {
@@ -27,46 +29,38 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled Exception occurred");
-            await HandleExceptionAsync(context, ex);
+            _logger.LogError(ex, "Unhandled exception on {Method} {Path}", context.Request.Method, context.Request.Path);
+            await HandleExceptionAsync(context, ex, localization);
         }
     }
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+    private static async Task HandleExceptionAsync(HttpContext context, Exception ex, ILocalizationService localization)
     {
-        var response = context.Response;
-        response.ContentType = "application/json";
+        // Safety: if a response has already started streaming, we can't rewrite it.
+        if (context.Response.HasStarted)
+            return;
 
-        var statusCode = ex switch
-        {
-            BusinessException be => (int)be.StatusCode,
-            NotFoundException => 404,
-            UnauthorizedAccessException => 401,
-            ArgumentException => 400,
-            DbUpdateException => 409,
-            _ => 500
-        };
+        var (statusCode, messageKeyOrLiteral) = Map(ex);
+        var message = localization.Resolve(messageKeyOrLiteral);
 
-        string message = ex switch
-        {
-            BusinessException be => be.Message,
-            UnauthorizedAccessException uae when uae.Message.Contains("Google token") => "Invalid Google token",
-            NotFoundException => "Resource not found",
-            UnauthorizedAccessException => "Unauthorized access",
-            ArgumentException => "Bad request",
-            DbUpdateException => "Database conflict occurred",
-            _ => "An internal server error has occurred. Please try again later."
-        };
+        context.Response.Clear();
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = statusCode;
 
-        response.StatusCode = statusCode;
+        var result = Result<object>.Failure(message, (HttpStatusCode)statusCode);
 
-        var result = Result<string>.Failure(
-            message,
-            (HttpStatusCode)statusCode
-        );
-
-        var jsonResponse = JsonSerializer.Serialize(result);
-
-        await response.WriteAsync(jsonResponse);
+        await context.Response.WriteAsync(JsonSerializer.Serialize(result));
     }
+
+    private static (int StatusCode, string MessageKeyOrLiteral) Map(Exception ex) => ex switch
+    {
+        BusinessException be => ((int)be.StatusCode, be.MessageKey),
+        NotFoundException nf => (404, nf.MessageKey),
+        UnauthorizedAccessException uae when uae.Message.Contains("Google token") => (401, "Auth.InvalidGoogleToken"),
+        UnauthorizedAccessException => (401, "Common.Unauthorized"),
+        ArgumentException => (400, "Common.BadRequest"),
+        DbUpdateConcurrencyException => (409, "Common.DataConflict"),
+        DbUpdateException => (409, "Common.DataConflict"),
+        _ => (500, "Common.ServerError")
+    };
 }

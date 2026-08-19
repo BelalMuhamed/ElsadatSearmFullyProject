@@ -39,8 +39,7 @@ toggleStocks() {
   this.StocksOpened = !this.StocksOpened;
 }
 
-  currentTheme: 'light-mode' | 'dark-mode' = 'dark-mode';
-
+currentTheme: 'light-mode' | 'dark-mode' = 'light-mode';
   constructor(private renderer: Renderer2, private _authService:AuthService) {}
 
   toggle() {
@@ -50,14 +49,13 @@ toggleStocks() {
   onOpenedChange(opened: boolean) {
     this.isOpen = opened;
   }
-
-  ngOnInit(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const savedTheme = localStorage.getItem('theme');
-      this.currentTheme = savedTheme === 'light-mode' ? 'light-mode' : 'dark-mode';
-    }
-    this.applyTheme();
+ngOnInit(): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const savedTheme = localStorage.getItem('theme');
+    this.currentTheme = savedTheme === 'dark-mode' ? 'dark-mode' : 'light-mode';
   }
+  this.applyTheme();
+}
 
   toggleTheme(): void {
     this.currentTheme = this.currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode';

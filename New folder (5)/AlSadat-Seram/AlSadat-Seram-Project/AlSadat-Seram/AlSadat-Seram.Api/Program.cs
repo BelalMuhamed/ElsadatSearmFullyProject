@@ -1,14 +1,17 @@
 ﻿using AlSadat_Seram.Api.Middlewares;
 using Application.Mappings;
 using Application.Services.contract;
+using Application.Services.contract.LocalizationService;
 using Domain.Common;
 using Domain.Entities.Users;
 using Domain.UnitOfWork.Contract;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Infrastructure.Services.LocalizationServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -39,10 +42,11 @@ internal class Program
             options.AddPolicy("AllowFrontend", policy =>
             {
                 policy
-                    .WithOrigins(allowedOrigins)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
+                .SetIsOriginAllowed(origin =>
+                string.IsNullOrEmpty(origin) || // ✅ allow mobile apps
+                allowedOrigins.Contains(origin)) // ✅ allow Angular
+            .AllowAnyMethod()
+            .AllowAnyHeader();
             });
         });
         #region Role-Based Authorization Policies
@@ -56,6 +60,20 @@ internal class Program
             options.Filters.Add(new AuthorizeFilter(policy));
         });
         #endregion
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState
+                    .Where(kvp => kvp.Value?.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray());
+
+                var result = Domain.Common.Result<object>.ValidationFailure(errors);
+                return new BadRequestObjectResult(result);
+            };
+        });
         #region Global CORS Policy
         builder.Services.AddIdentity<ApplicationUser,ApplicationRole>(options =>
         {
@@ -159,7 +177,8 @@ internal class Program
         builder.Services.AddScoped(typeof(IExcelReaderService), typeof(ExcelReaderService));
 
         builder.Services.AddScoped(typeof(IServiceManager),typeof(ServiceManager));
-
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ILocalizationService, LocalizationService>();
         #region Global Rate Limiting
         builder.Services.AddRateLimiter(options =>
         {

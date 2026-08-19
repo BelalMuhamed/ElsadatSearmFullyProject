@@ -8,6 +8,12 @@
     <h3 class="mt-2 text-center mx-5 ">القائمة الرئيسية    </h3>
 
     <ul class="mt-3">
+      <li>
+  <a routerLink="profile" routerLinkActive="active">
+    <mat-icon class="dd-icon">account_circle</mat-icon>
+    الملف الشخصي
+  </a>
+</li>
 
        <li *ngIf="hasRole(['Accountant', 'Admin','StockManager'])">
         <a routerLink="SalesInvoices" routerLinkActive="active">فواتير البيع</a>
@@ -154,12 +160,7 @@
       </ul>
 
 </li>
-<li>
-  <a routerLink="profile" routerLinkActive="active">
-    <mat-icon class="dd-icon">account_circle</mat-icon>
-    الملف الشخصي
-  </a>
-</li>
+
 <li class="logout-item">
   <a class="logout-link" (click)="logOut()" role="button" tabindex="0">
     <mat-icon class="dd-icon">logout</mat-icon>

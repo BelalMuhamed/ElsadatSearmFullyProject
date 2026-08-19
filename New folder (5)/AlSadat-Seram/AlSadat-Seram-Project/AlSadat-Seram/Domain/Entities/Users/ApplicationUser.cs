@@ -44,6 +44,7 @@ namespace Domain.Entities.Users
 
         // ----------- ICollection From RepresentativeCashTransactions  ---------------------------------
         public virtual ICollection<RepresentativeCashTransactions> RepresentativeCashTransactions { get; set; } = [];
+        public string PreferredLanguage { get; set; } = "ar"; // "ar" | "en"
     }
 }
 
