@@ -46,6 +46,13 @@ namespace Application.DTOs.FinanceDtos
         public bool isActive { get; set; }
         public decimal debit { get; set; }
         public decimal credit { get; set; }
+        /// <summary>
+        /// Balance in the account's natural direction, computed server-side by
+        /// AccountBalanceCalculator. Positive means the account has a balance on its
+        /// normal side: a customer owes us, or we owe a supplier.
+        /// The client must use this rather than re-deriving it from debit/credit.
+        /// </summary>
+        public decimal balance { get; set; }
     }
 
     public class AccountDetailsDtoReq

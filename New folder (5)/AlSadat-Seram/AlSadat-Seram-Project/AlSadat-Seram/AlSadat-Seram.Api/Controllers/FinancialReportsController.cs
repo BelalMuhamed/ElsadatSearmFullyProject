@@ -28,7 +28,7 @@ namespace AlSadat_Seram.Api.Controllers
 
         /// <summary>أرصدة العملاء (المدينون)</summary>
         [HttpGet("customers/balances")]
-        public async Task<IActionResult> GetCustomerBalances([FromQuery] DateRangeReq req)
+        public async Task<IActionResult> GetCustomerBalances([FromQuery] PartyBalancesReq req)
         {
             var result = await _serviceManager.financialReports.GetCustomerBalancesAsync(req);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
@@ -36,7 +36,7 @@ namespace AlSadat_Seram.Api.Controllers
 
         /// <summary>أرصدة الموردين (الدائنون)</summary>
         [HttpGet("suppliers/balances")]
-        public async Task<IActionResult> GetSupplierBalances([FromQuery] DateRangeReq req)
+        public async Task<IActionResult> GetSupplierBalances([FromQuery] PartyBalancesReq req)
         {
             var result = await _serviceManager.financialReports.GetSupplierBalancesAsync(req);
             return result.IsSuccess ? Ok(result) : BadRequest(result);

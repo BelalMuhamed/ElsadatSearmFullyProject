@@ -52,15 +52,35 @@ namespace Application.DTOs.FinanceDtos.Reports
         public string accountCode { get; set; } = default!;
         public string accountName { get; set; } = default!;
         public string? userId { get; set; }
+        /// <summary>Cumulative debits from inception through asOfDate.</summary>
         public decimal totalDebit { get; set; }
+        /// <summary>Cumulative credits from inception through asOfDate.</summary>
         public decimal totalCredit { get; set; }
-        /// <summary>Positive = party owes us (receivable). Negative = we owe party (payable).</summary>
+
+        /// <summary>Balance in the account's natural direction as at (fromDate - 1 tick).
+        /// Zero when fromDate is not supplied.</summary>
+        public decimal openingBalance { get; set; }
+        /// <summary>Debits inside [fromDate, asOfDate]. Equals totalDebit when fromDate is null.</summary>
+        public decimal periodDebit { get; set; }
+        /// <summary>Credits inside [fromDate, asOfDate]. Equals totalCredit when fromDate is null.</summary>
+        public decimal periodCredit { get; set; }
+        /// <summary>Cumulative balance through asOfDate, in the account's natural direction.
+        /// This is the authoritative figure and is never reduced by fromDate.</summary>
+        public decimal closingBalance { get; set; }
+
+        /// <summary>Alias of <see cref="closingBalance"/>, retained so existing clients
+        /// keep working. Positive = the account has a balance on its normal side:
+        /// for a customer, they owe us; for a supplier, we owe them.</summary>
         public decimal balance { get; set; }
         public DateTime? lastTransactionDate { get; set; }
     }
 
     public sealed class PartyBalancesReportDto
     {
+        /// <summary>Cut-off actually applied to the balances.</summary>
+        public DateTime asOfDate { get; set; }
+        /// <summary>Movement-window start actually applied. Null = since inception.</summary>
+        public DateTime? fromDate { get; set; }
         public decimal totalReceivables { get; set; }   // For customers
         public decimal totalPayables { get; set; }      // For suppliers
         public List<PartyBalanceDto> parties { get; set; } = new();

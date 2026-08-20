@@ -5,6 +5,7 @@
 // Uses projection (.Select) and AsNoTracking for performance.
 // All queries filter by JournalEntry.IsPosted == true (mirrors your existing convention).
 
+using Application.Common;
 using Application.DTOs.FinanceDtos.Reports;
 using Application.Services.contract.Finance;
 using Domain.Common;
@@ -98,22 +99,51 @@ namespace Infrastructure.Services.FinanceService
         // ============================================================
         // 2. CUSTOMER BALANCES
         // ============================================================
-        public Task<Result<PartyBalancesReportDto>> GetCustomerBalancesAsync(DateRangeReq req)
-            => GetPartyBalancesAsync(SystemAccountCode.ReceivablesParent, isReceivables: true, req);
+        public Task<Result<PartyBalancesReportDto>> GetCustomerBalancesAsync(PartyBalancesReq req)
+            => GetPartyBalancesAsync(SystemAccountCode.ReceivablesParent, req);
 
         // ============================================================
         // 3. SUPPLIER BALANCES
         // ============================================================
-        public Task<Result<PartyBalancesReportDto>> GetSupplierBalancesAsync(DateRangeReq req)
-            => GetPartyBalancesAsync(SystemAccountCode.SuppliersParent, isReceivables: false, req);
+        public Task<Result<PartyBalancesReportDto>> GetSupplierBalancesAsync(PartyBalancesReq req)
+            => GetPartyBalancesAsync(SystemAccountCode.SuppliersParent, req);
 
+        /// <summary>
+        /// Party (customer / supplier) balances.
+        /// <para>
+        /// A BALANCE is cumulative from inception through <c>asOfDate</c>. It must never be
+        /// restricted by a lower date bound — that turns the figure into a period movement and
+        /// makes a payment or a reversal appear to push the balance negative when the original
+        /// invoice happens to fall outside the requested window.
+        /// </para>
+        /// <para>
+        /// <c>fromDate</c> is optional and affects ONLY the movement columns
+        /// (openingBalance / periodDebit / periodCredit). It never affects closingBalance.
+        /// </para>
+        /// <para>
+        /// Direction comes from each account's own <see cref="AccountTypes"/> via
+        /// <see cref="AccountBalanceCalculator"/>, not from a caller-supplied flag —
+        /// the account already carries that information.
+        /// </para>
+        /// </summary>
         private async Task<Result<PartyBalancesReportDto>> GetPartyBalancesAsync(
-            SystemAccountCode parentCode, bool isReceivables, DateRangeReq req)
+            SystemAccountCode parentCode, PartyBalancesReq req)
         {
             try
             {
                 var parent = await _systemGuard.GetBySystemCodeAsync(parentCode);
-                var (from, to) = NormalizeRange(req.fromDate, req.toDate);
+
+                // Cut-off for the balance. Whole of the given day is included.
+                // Falls back to toDate so pre-existing clients keep working, then to today.
+                // NOTE: NormalizeRange is deliberately NOT used here — its one-month default
+                // lower bound is exactly what made this report wrong.
+                var asOf = (req.asOfDate ?? req.toDate ?? DateTime.UtcNow)
+                           .Date.AddDays(1).AddTicks(-1);
+
+                // Movement-window start. Null => opening is zero and the period covers
+                // the whole history. Kept nullable so the lifted comparison below
+                // degrades to "false" (SQL: EntryDate < NULL => NULL => ELSE branch).
+                DateTime? windowStart = req.fromDate?.Date;
 
                 // Find all sub-accounts under the parent (recursive — but typically one level deep)
                 var allAccounts = await _unitOfWork
@@ -122,20 +152,23 @@ namespace Infrastructure.Services.FinanceService
 
                 var partyAccountIds = CollectDescendantIds(parent.Id, allAccounts);
 
+                // ONE round trip: cumulative totals through asOf, plus the pre-window
+                // (opening) slice via conditional sums, so the movement columns cost nothing extra.
                 var totals = await _unitOfWork
                     .GetRepository<JournalEntryDetails, int>()
                     .GetQueryable()
                     .AsNoTracking()
                     .Where(d => partyAccountIds.Contains(d.AccountId)
                                 && d.JournalEntry.IsPosted == true
-                                && d.JournalEntry.EntryDate >= from
-                                && d.JournalEntry.EntryDate <= to)
+                                && d.JournalEntry.EntryDate <= asOf)
                     .GroupBy(d => d.AccountId)
                     .Select(g => new
                     {
                         accountId = g.Key,
-                        debit = g.Sum(x => x.Debit),
-                        credit = g.Sum(x => x.Credit),
+                        cumulativeDebit = g.Sum(x => x.Debit),
+                        cumulativeCredit = g.Sum(x => x.Credit),
+                        openingDebit = g.Sum(x => x.JournalEntry.EntryDate < windowStart ? x.Debit : 0m),
+                        openingCredit = g.Sum(x => x.JournalEntry.EntryDate < windowStart ? x.Credit : 0m),
                         lastDate = g.Max(x => x.JournalEntry.EntryDate)
                     })
                     .ToListAsync();
@@ -147,31 +180,47 @@ namespace Infrastructure.Services.FinanceService
                 var rows = partyAccounts.Select(a =>
                 {
                     var t = totals.FirstOrDefault(x => x.accountId == a.Id);
-                    var debit = t?.debit ?? 0m;
-                    var credit = t?.credit ?? 0m;
-                    // Receivables: balance = debit - credit (positive means customer owes us)
-                    // Payables:    balance = credit - debit (positive means we owe supplier)
-                    var balance = isReceivables ? debit - credit : credit - debit;
+
+                    var cumulativeDebit = t?.cumulativeDebit ?? 0m;
+                    var cumulativeCredit = t?.cumulativeCredit ?? 0m;
+                    var openingDebit = t?.openingDebit ?? 0m;
+                    var openingCredit = t?.openingCredit ?? 0m;
+
+                    // Direction from the account itself — Assets/Expenses debit-normal,
+                    // Liabilities/Equity/Income credit-normal.
+                    var closing = AccountBalanceCalculator
+                        .NormalBalance(a.Type, cumulativeDebit, cumulativeCredit);
+                    var opening = AccountBalanceCalculator
+                        .NormalBalance(a.Type, openingDebit, openingCredit);
+
                     return new PartyBalanceDto
                     {
                         accountId = a.Id,
                         accountCode = a.AccountCode,
                         accountName = a.AccountName,
                         userId = a.UserId,
-                        totalDebit = debit,
-                        totalCredit = credit,
-                        balance = balance,
+                        totalDebit = cumulativeDebit,
+                        totalCredit = cumulativeCredit,
+                        openingBalance = opening,
+                        periodDebit = cumulativeDebit - openingDebit,
+                        periodCredit = cumulativeCredit - openingCredit,
+                        closingBalance = closing,
+                        balance = closing,
                         lastTransactionDate = t?.lastDate
                     };
                 })
-                .Where(r => r.balance != 0)
-                .OrderByDescending(r => r.balance)
+                .Where(r => req.includeZeroBalances || r.closingBalance != 0)
+                .OrderByDescending(r => r.closingBalance)
                 .ToList();
+
+                var isDebitNormal = AccountBalanceCalculator.IsDebitNormal(parent.Type);
 
                 return Result<PartyBalancesReportDto>.Success(new PartyBalancesReportDto
                 {
-                    totalReceivables = isReceivables ? rows.Sum(r => r.balance) : 0m,
-                    totalPayables = isReceivables ? 0m : rows.Sum(r => r.balance),
+                    asOfDate = asOf,
+                    fromDate = req.fromDate,
+                    totalReceivables = isDebitNormal ? rows.Sum(r => r.closingBalance) : 0m,
+                    totalPayables = isDebitNormal ? 0m : rows.Sum(r => r.closingBalance),
                     parties = rows
                 });
             }

@@ -179,6 +179,12 @@ namespace Infrastructure.Services.FinanceService
                 var debit = details.Sum(d => d.Debit);
                 var credit = details.Sum(d => d.Credit);
 
+                // Balance in the account's natural direction. Shared with the
+                // financial-reports service so the two screens can never disagree:
+                // Assets/Expenses => debit - credit, Liabilities/Equity/Income => credit - debit.
+                var balance = Application.Common.AccountBalanceCalculator
+                    .NormalBalance(account.Type, debit, credit);
+
                 // 4️⃣ Map to DTO
                 var dto = new DisAndMerchAccountDto
                 {
@@ -190,7 +196,8 @@ namespace Infrastructure.Services.FinanceService
                     isLeaf = account.IsLeaf,
                     isActive = account.IsActive,
                     debit = debit,
-                    credit = credit
+                    credit = credit,
+                    balance = balance
                 };
 
                 return Result<DisAndMerchAccountDto>.Success(dto);
