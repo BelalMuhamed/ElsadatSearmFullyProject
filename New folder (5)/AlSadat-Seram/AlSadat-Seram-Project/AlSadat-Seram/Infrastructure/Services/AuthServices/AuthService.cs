@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Authentcation;
+using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.GoogleAuthService;
@@ -19,9 +20,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Services.AuthServices;
 public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _jwtService,AppDbContext _context
-    ,IGoogleAuthService _googleAuthService, RoleManager<ApplicationRole> _roleManager , ICurrentUserService _currentUserService) :IAuthService
+    ,IGoogleAuthService _googleAuthService, RoleManager<ApplicationRole> _roleManager , ICurrentUserService _currentUserService, IUserPermissionService _userPermissionService) :IAuthService
 {
     private RefreshToken GenerateRefreshToken(string ipAddress)
+
     {
         return new RefreshToken
         {
@@ -83,7 +85,7 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
 
         var accessToken = await _jwtService.GenerateToken(user);
         var roles = await _userManager.GetRolesAsync(user);
-
+        var permissions = await _userPermissionService.GetUserPermissionsAsync(user.Id);
         var refreshToken = new RefreshToken
         {
             Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
@@ -103,8 +105,9 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
             userMail = user.Email,
             accessToken = accessToken,
             refreshToken = refreshToken.Token,
-            accessTokenExpiresAt = DateTime.UtcNow.AddMinutes(30),
-            roles = roles.ToList(), 
+            roles = roles.ToList(),
+            permissions = permissions,
+            accessTokenExpiresAt = DateTime.UtcNow.AddMinutes(5), // was hardcoded AddMinutes(30) — now matches the token's real exp claim 
 
         };
 
@@ -126,7 +129,7 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
             return Result<AuthResponse>.Failure("Refresh token is invalid or expired",HttpStatusCode.Unauthorized);
 
         var accessToken = await _jwtService.GenerateToken(user);
-
+        var permissions = await _userPermissionService.GetUserPermissionsAsync(user.Id);
         var newRefreshToken = GenerateRefreshToken(ipAddress);
         user.RefreshTokens.Add(newRefreshToken);
 
@@ -137,7 +140,10 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
         var response = new AuthResponse
         {
             accessToken = accessToken,
-            refreshToken = newRefreshToken.Token
+            refreshToken = newRefreshToken.Token,
+            roles = roles.ToList(),
+            permissions = permissions,
+            accessTokenExpiresAt = DateTime.UtcNow.AddMinutes(5)
         };
 
         return Result<AuthResponse>.Success(response, "Token Refreshed Successfuly", HttpStatusCode.OK);
@@ -161,6 +167,7 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
             CreatedByIp = ipAddress,
             Expires = DateTime.UtcNow.AddDays(7),
             User = user
+
         };
 
         user.RefreshTokens.Add(refreshToken);

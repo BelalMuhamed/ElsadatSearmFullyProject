@@ -1,4 +1,5 @@
 ﻿using Application.Services.contract;
+using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
 using Application.Services.contract.BillDiscountsServiceContract;
 using Application.Services.contract.ChangeLogService;
@@ -32,6 +33,7 @@ using Domain.Entities.Invoices;
 using Domain.Entities.Users;
 using Domain.UnitOfWork.Contract;
 using Infrastructure.Data;
+using Infrastructure.Services.Authorization;
 using Infrastructure.Services.AuthServices;
 using Infrastructure.Services.ChangeLogServices;
 using Infrastructure.Services.CollectionRepresentiveRateServices;
@@ -121,7 +123,8 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<ISystemAccountGuard> _systemGuard;
     private readonly Lazy<IStoreTransactionValidator> _StoreTransactionValidator;
 
-
+    private readonly Lazy<IPermissionCatalogService> _PermissionCatalogService;
+    private readonly Lazy<IUserPermissionService> _UserPermissionService;
     public ServiceManager(
     IUnitOfWork UnitOfWork,
     RoleManager<ApplicationRole> RoleManager,
@@ -132,11 +135,13 @@ public class ServiceManager: IServiceManager
     IMapper Mapper,
     ILoggerFactory loggerFactory, IExcelReaderService ExcelReader)
     {
-        // Initialize the services using Lazy<T> to defer their creation until they are accessed  
-        _CurrentUserService = new Lazy<ICurrentUserService>(() => new CurrentUserService(HttpContextAccessor,loggerFactory.CreateLogger<CurrentUserService>()));
-        _JwtService = new Lazy<IJwtService>(() => new JwtService(jwtSettings,UserManager));
+        // new
+        _UserPermissionService = new Lazy<IUserPermissionService>(() => new UserPermissionService(Context));
+        _PermissionCatalogService = new Lazy<IPermissionCatalogService>(() => new PermissionCatalogService(Context));
+        _CurrentUserService = new Lazy<ICurrentUserService>(() => new CurrentUserService(HttpContextAccessor, loggerFactory.CreateLogger<CurrentUserService>()));
+        _JwtService = new Lazy<IJwtService>(() => new JwtService(jwtSettings, UserManager, _UserPermissionService.Value));
         _GoogleAuthService = new Lazy<IGoogleAuthService>(() => new GoogleAuthService(UserManager));
-        _AuthService = new Lazy<IAuthService>(() => new AuthService(UserManager,_JwtService.Value,Context,_GoogleAuthService.Value , RoleManager , _CurrentUserService.Value));
+        _AuthService = new Lazy<IAuthService>(() => new AuthService(UserManager,_JwtService.Value,Context,_GoogleAuthService.Value , RoleManager , _CurrentUserService.Value, _UserPermissionService.Value));
         _ChangeLogService = new Lazy<IChangeLogService>(()=> new ChangeLogService(_CurrentUserService.Value));
         _NotificationService = new Lazy<INotificationService>(() => new NotificationService(UnitOfWork,Mapper,_CurrentUserService.Value));
         _PayrollDeductionService = new Lazy<IPayrollDeductionService>(() => new PayrollDeductionService(UnitOfWork, _CurrentUserService.Value)); 
@@ -177,6 +182,7 @@ public class ServiceManager: IServiceManager
         _EmployeePayrollService = new Lazy<IEmployeePayrollService>(() => new PayrollService(UnitOfWork, _CurrentUserService.Value,_EmployeeService.Value,loggerFactory.CreateLogger<PayrollService>(),_RepresentativeService.Value));
         _EmployeeLoanService = new Lazy<IEmployeeLoanService>(() => new EmployeeLoanService(UnitOfWork, _CurrentUserService.Value,loggerFactory.CreateLogger<EmployeeLoanService>()));
         _EmployeeLeaveService = new Lazy<IEmployeeLeaveService>(() => new EmployeeLeaveService(UnitOfWork,_CurrentUserService.Value,UserManager));
+
         _EmployeeBonusService = new Lazy<IEmployeeBonusService>(() => new EmployeeBonusService(UnitOfWork, _CurrentUserService.Value));    
         _RepresentativeAttendanceService = new Lazy<IRepresentativeAttendanceService>(() => new RepresentativeAttendanceService(UnitOfWork,_CurrentUserService.Value,UserManager));
         _warehouseInventoryReportService = new Lazy<IWarehouseInventoryReportService>(
@@ -242,4 +248,6 @@ public class ServiceManager: IServiceManager
 
     public IStoreTransactionValidator storeTransactionValidator => _StoreTransactionValidator.Value;
     public IPlumberContract plumberService => _PlumberService.Value;
+    public IPermissionCatalogService PermissionCatalogService => _PermissionCatalogService.Value;
+    public IUserPermissionService UserPermissionService => _UserPermissionService.Value;
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities;
+using Domain.Entities.Authorization;
 using Domain.Entities.copounModel;
 using Domain.Entities.Finance;
 using Domain.Entities.HR;
@@ -72,8 +73,11 @@ namespace Infrastructure.Data
         public DbSet<JournalEntryDetails> journalEntriesDetails { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ChartOfAccounts> Accounts { get; set; }
+        public DbSet<Domain.Entities.Authorization.Module> Modules { get; set; }
+        public DbSet<Domain.Entities.Authorization.Permission> Permissions { get; set; }
+        public DbSet<Domain.Entities.Authorization.UserPermission> UserPermissions { get; set; }
 
-  
+
         public DbSet<SalesInvoiceItemStoresQuantities> SalesInvoiceItemStoresQuantities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -87,6 +91,29 @@ namespace Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // in OnModelCreating
+            builder.Entity<UserPermission>()
+                .HasKey(up => new { up.UserId, up.PermissionId });
+
+            builder.Entity<UserPermission>()
+                .HasOne(up => up.User)
+                .WithMany()
+                .HasForeignKey(up => up.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserPermission>()
+                .HasOne(up => up.Permission)
+                .WithMany(p => p.UserPermissions)
+                .HasForeignKey(up => up.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Permission>()
+                .HasIndex(p => new { p.ModuleId, p.Name })
+                .IsUnique();
+
+            builder.Entity<Module>()
+                .HasIndex(m => m.Name)
+                .IsUnique();
             builder.Entity<JournalEntries>()
            .Property(x => x.IsPosted)
            .HasDefaultValue(true);

@@ -1,4 +1,5 @@
-﻿using Application.Services.contract.JwtService;
+﻿using Application.Services.contract.Authorization;
+using Application.Services.contract.JwtService;
 using Domain.Common;
 using Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
@@ -15,21 +16,28 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Services.JwtServices;
-public class JwtService:IJwtService
+// new
+public class JwtService : IJwtService
 {
     private readonly JwtSettings _jwtSettings;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserPermissionService _userPermissionService;
 
-    public JwtService(IOptions<JwtSettings> jwtSettings,UserManager<ApplicationUser> userManager)
+    public JwtService(
+        IOptions<JwtSettings> jwtSettings,
+        UserManager<ApplicationUser> userManager,
+        IUserPermissionService userPermissionService)
     {
         _jwtSettings = jwtSettings.Value;
         _userManager = userManager;
+        _userPermissionService = userPermissionService;
     }
 
     public async Task<string> GenerateToken(ApplicationUser user)
     {
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles = await _userManager.GetRolesAsync(user);
+        var permissions = await _userPermissionService.GetUserPermissionsAsync(user.Id);
 
         var claims = new List<Claim>
     {
@@ -49,11 +57,19 @@ public class JwtService:IJwtService
         new Claim("FullName", user.FullName)
     };
 
+        // new
         // إضافة الـ Roles
-        foreach(var role in roles)
+        foreach (var role in roles)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role)); 
+            claims.Add(new Claim(ClaimTypes.Role, role));
             claims.Add(new Claim("role", role));
+        }
+
+        // NEW — one "permission" claim per granted "Module.Action" string.
+        // Admin needs none of these — PermissionAuthorizationHandler bypasses on role.
+        foreach (var permission in permissions)
+        {
+            claims.Add(new Claim("permission", permission));
         }
 
         claims.AddRange(userClaims);

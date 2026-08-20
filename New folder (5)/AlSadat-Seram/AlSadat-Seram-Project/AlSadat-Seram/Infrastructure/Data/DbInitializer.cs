@@ -282,7 +282,26 @@ namespace Infrastructure.Data
 
             }
 
+            if (!context.Set<Domain.Entities.Authorization.Module>().Any())
+            {
+                var employeesModule = new Domain.Entities.Authorization.Module { Name = EmployeePermissions.ModuleName };
+                context.Set<Domain.Entities.Authorization.Module>().Add(employeesModule);
+                await context.SaveChangesAsync();
 
+                context.Set<Domain.Entities.Authorization.Permission>().AddRange(
+                    new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "View", Description = "View employees" },
+                    new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "Create", Description = "Create employees" },
+                    new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "Update", Description = "Update employees" },
+                    new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "Delete", Description = "Soft-delete/restore employees" },
+                    new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "AssignPermissions", Description = "Manage employee permissions" }
+                );
+                await context.SaveChangesAsync();
+
+                // Deliberately NO UserPermissions rows here — deny-by-default (Decision 8).
+                // Your seeded HR demo user will need Employees.* granted explicitly via
+                // PUT api/Permission/user/{hrUserId} after this migration runs, or they will
+                // lose access to Employee Management until you do.
+            }
             // =============================================================================
             // File: Infrastructure/Data/DbInitializer.cs  (UPDATE the seeded accounts block)
             // =============================================================================

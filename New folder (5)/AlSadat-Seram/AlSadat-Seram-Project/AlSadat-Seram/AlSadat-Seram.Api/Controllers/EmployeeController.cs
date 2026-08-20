@@ -2,22 +2,26 @@
 using Application.DTOs.EmployeeSalary;
 using Application.Helper;
 using Application.Services.contract;
+using Application.Services.contract.LocalizationService;
+using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+// new
 namespace AlSadat_Seram.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class EmployeeController:ControllerBase
+public class EmployeeController : BaseApiController
 {
     private readonly IServiceManager _ServiceManager;
 
-    public EmployeeController(IServiceManager serviceManager)
+    public EmployeeController(IServiceManager serviceManager, ILocalizationService localization)
+        : base(localization)
     {
         _ServiceManager = serviceManager;
     }
-    [Authorize(Roles = "Admin,HR")]
+    [Authorize(Policy = EmployeePermissions.View)]
     [HttpGet("GetAllEmployees")]
     public async Task<IActionResult> GetAllEmployees([FromQuery] PaginationParams paginationParams)
     {
@@ -25,14 +29,14 @@ public class EmployeeController:ControllerBase
         var result = await _ServiceManager.EmployeeService.GetAllEmployeeAsync(paginationParams);      
         return Ok(result);
     }
-    [Authorize(Roles = "Admin,HR")]
+    [Authorize(Policy = EmployeePermissions.View)]
     [HttpGet("GetAllActiveEmployee")]
     public async Task<IActionResult> GetAllActiveEmployee([FromQuery] PaginationParams paginationParams)
     {
         var result = await _ServiceManager.EmployeeService.GetAllActiveEmployeeAsync(paginationParams);
         return Ok(result);
     }
-    [Authorize(Roles = "Admin,HR")]
+    [Authorize(Policy = EmployeePermissions.View)]
     [HttpGet("GetEmployeeByFilterAsync")]
     public async Task<IActionResult> GetEmployeeByFilterAsync([FromQuery] PaginationParams paginationParams ,[FromQuery] EmployeeHelper search)
     {
@@ -46,41 +50,35 @@ public class EmployeeController:ControllerBase
         var result = await _ServiceManager.EmployeeService.GetEmployeeSalaryByYearAndMonth(EmpCode, Month, Year);
         return Ok(result);
     }
-    [Authorize(Roles = "Admin,HR")]
+    // new
+    [Authorize(Policy = EmployeePermissions.Create)]
     [HttpPost("AddNewEmployee")]
     public async Task<IActionResult> AddNewEmployee([FromBody] EmployeeDTo DTo)
     {
         var result = await _ServiceManager.EmployeeService.AddEmployeeAsync(DTo);
-        if(result.IsSuccess)
-            return Ok("Add Employee Successful");
-        return BadRequest(result);
+        return HandleResult(result);
     }
-    [Authorize(Roles = "Admin,HR")]
+    [Authorize(Policy = EmployeePermissions.Update)]
     [HttpPut("UpdateEmployee")]
     public async Task<IActionResult> UpdateEmployee ([FromBody] EmployeeDTo DTo)
     {
         var result = await _ServiceManager.EmployeeService.UpdateEmployeeAsync(DTo);
-        if(result.IsSuccess)
-            return Ok("Update Employee Successful");
-        return BadRequest(result);
+        return HandleResult(result);
     }
-    [Authorize(Roles = "Admin,HR")]
+    [Authorize(Policy = EmployeePermissions.Delete)]
     [HttpPut("SoftDeleteEmployee")]
     public async Task<IActionResult> SoftDeleteEmployee([FromBody] EmployeeDTo DTo)
     {
         var result = await _ServiceManager.EmployeeService.SoftDeleteEmployeeAsync(DTo);
-            if(result.IsSuccess)
-            return Ok("Done Soft Delete Employee Successful");
-        return BadRequest(result);
+            return HandleResult(result);
     }
-    [Authorize(Roles = "Admin,HR")]
+    [Authorize(Policy = EmployeePermissions.Delete)]
     [HttpPut("RestoreEmployee")]
     public async Task<IActionResult> RestoreEmployee([FromBody] EmployeeDTo DTo)
     {
         var result = await _ServiceManager.EmployeeService.RestoreEmployeeAsync(DTo);
-        if(result.IsSuccess)
-            return Ok("Done Restore Employee Successful");
-        return BadRequest(result);
+        return HandleResult(result);
+
     }
     [Authorize(Roles = "Admin,HR,Accountant")]
     [HttpGet("GetMonthlySalarySummary")]

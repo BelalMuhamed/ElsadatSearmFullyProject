@@ -11,6 +11,7 @@ namespace Application.DTOs.Authentcation
         public string token { get; set; } = string.Empty;
         public string ipAddress { get; set; }
     }
+    // new
     public class AuthResponse
     {
         public string userName { get; set; }
@@ -18,6 +19,7 @@ namespace Application.DTOs.Authentcation
         public string accessToken { get; set; } = string.Empty;
         public string refreshToken { get; set; } = string.Empty;
         public List<string> roles { get; set; }
+        public List<string> permissions { get; set; } = new();
         public DateTime accessTokenExpiresAt { get; set; }
     }
 }

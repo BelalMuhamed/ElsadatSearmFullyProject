@@ -11,7 +11,6 @@ using Infrastructure.Services.LocalizationServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +50,21 @@ internal class Program
         });
         #region Role-Based Authorization Policies
 
-        builder.Services.AddAuthorization();
+        // new
+        #region Role-Based + Permission-Based Authorization Policies
+
+        builder.Services.AddAuthorization(options =>
+        {
+            // Static/fixed catalog (Decision 5) — one named policy per EmployeePermissions
+            // constant, registered explicitly rather than via a dynamic policy provider.
+            foreach (var permission in Domain.Common.EmployeePermissions.All)
+            {
+                options.AddPolicy(permission, policy =>
+                    policy.Requirements.Add(new Infrastructure.Authorization.PermissionRequirement(permission)));
+            }
+        });
+        builder.Services.AddSingleton<IAuthorizationHandler, Infrastructure.Authorization.PermissionAuthorizationHandler>();
+
         builder.Services.AddControllers(options =>
         {
             var policy = new AuthorizationPolicyBuilder()
@@ -60,20 +73,8 @@ internal class Program
             options.Filters.Add(new AuthorizeFilter(policy));
         });
         #endregion
-        builder.Services.Configure<ApiBehaviorOptions>(options =>
-        {
-            options.InvalidModelStateResponseFactory = context =>
-            {
-                var errors = context.ModelState
-                    .Where(kvp => kvp.Value?.Errors.Count > 0)
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray());
+        #endregion
 
-                var result = Domain.Common.Result<object>.ValidationFailure(errors);
-                return new BadRequestObjectResult(result);
-            };
-        });
         #region Global CORS Policy
         builder.Services.AddIdentity<ApplicationUser,ApplicationRole>(options =>
         {

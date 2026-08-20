@@ -1,4 +1,5 @@
-﻿using Application.Services.contract.AuthService;
+﻿using Application.Services.contract.Authorization;
+using Application.Services.contract.AuthService;
 using Application.Services.contract.BillDiscountsServiceContract;
 using Application.Services.contract.ChangeLogService;
 using Application.Services.contract.CollectionRepresentiveRateService;
@@ -79,6 +80,8 @@ namespace Application.Services.contract
        public IStoreTransactionValidator storeTransactionValidator { get; }
         /// <summary>Plumber master-data service (no chart-of-accounts integration).</summary>
        public IPlumberContract plumberService { get; }
+        public IPermissionCatalogService PermissionCatalogService { get; }
+        public IUserPermissionService UserPermissionService { get; }
 
 
 
