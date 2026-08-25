@@ -38,6 +38,13 @@ namespace Infrastructure.Services
         {
             var AddedProduct = FromDto(product);
 
+            // Audit identity is resolved EXCLUSIVELY from the token, never from the
+            // DTO. AddedProduct.CreateAt already defaults via the entity's own
+            // property initializer, but we set it explicitly here too so the
+            // create and edit paths are symmetric and neither depends on a
+            // client-supplied timestamp.
+            AddedProduct.CreateBy = currentUserService.UserId;
+            AddedProduct.CreateAt = DateTime.UtcNow;
 
             await unitOfWork.GetRepository<Products, int>().AddAsync(AddedProduct);
         }
@@ -48,8 +55,11 @@ namespace Infrastructure.Services
             UpdatedProduct.Name = dto.name;
             UpdatedProduct.SellingPrice = dto.sellingPrice;
             UpdatedProduct.PointPerUnit = dto.pointPerUnit;
-            UpdatedProduct.UpdateBy = dto.updateBy;
-            UpdatedProduct.UpdateAt = dto.updateAt;
+            // Audit identity resolved from the token (ICurrentUserService), never
+            // from dto.updateBy — that field was previously a raw client-supplied
+            // string (localStorage userName|userEmail on the Angular side).
+            UpdatedProduct.UpdateBy = currentUserService.UserId;
+            UpdatedProduct.UpdateAt = DateTime.UtcNow;
             UpdatedProduct.IsDeleted = dto.isDeleted;
             UpdatedProduct.productCode = dto.productCode;
             UpdatedProduct.DeleteBy = dto.deleteBy;

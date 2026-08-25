@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Authorization;
 using Application.Services.contract;
+using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.LocalizationService;
 using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -13,8 +14,11 @@ namespace AlSadat_Seram.Api.Controllers
     {
         private readonly IServiceManager _serviceManager;
 
-        public PermissionController(IServiceManager serviceManager, ILocalizationService localization)
-            : base(localization)
+        public PermissionController(
+            IServiceManager serviceManager,
+            ILocalizationService localization,
+            ICurrentUserService currentUser)
+            : base(localization, currentUser)
         {
             _serviceManager = serviceManager;
         }

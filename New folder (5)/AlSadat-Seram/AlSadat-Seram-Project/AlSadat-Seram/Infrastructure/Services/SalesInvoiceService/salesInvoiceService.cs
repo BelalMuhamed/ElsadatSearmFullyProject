@@ -443,7 +443,16 @@ namespace Infrastructure.Services.SalesInvoiceService
                 #endregion
 
                 #region WithdrawPoints
-                var CurrentUser = await unitOfWork.GetRepository<ApplicationUser, string>().FindAsync(u => req.updateBy.Contains(u.FullName));
+                // Audit identity resolved from the token via the already-injected
+                // ICurrentUserService, never from req.updateBy — that field was a
+                // client-supplied string previously matched with a Contains() scan
+                // over every user's FullName, which is both wrong (substring match,
+                // first-match-wins) and forgeable (the client controls req.updateBy).
+                var currentUserId = currentUserService.UserId;
+                if (string.IsNullOrEmpty(currentUserId))
+                    return Result<string>.Failure("يجب تسجيل الدخول أولاً", HttpStatusCode.Unauthorized);
+
+                var CurrentUser = await unitOfWork.GetRepository<ApplicationUser, string>().GetByIdAsync(currentUserId);
                 if(CurrentUser == null)
                     return Result<string>.Failure("لا يمكن ايجاد المستخدم الحالي في قاعدة البيانات", HttpStatusCode.BadRequest);
 

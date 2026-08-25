@@ -24,9 +24,13 @@ namespace Infrastructure.Services
     public class PurchaseInvoiceService : IPurchaseInvoiceContract
     {
         private readonly IUnitOfWork unitOfWork;
-        public PurchaseInvoiceService(IUnitOfWork unitOfWork)
+        private readonly Application.Services.contract.CurrentUserService.ICurrentUserService _currentUserService;
+        public PurchaseInvoiceService(
+            IUnitOfWork unitOfWork,
+            Application.Services.contract.CurrentUserService.ICurrentUserService currentUserService)
         {
             this.unitOfWork = unitOfWork;
+            _currentUserService = currentUserService;
         }
         //public async Task<Result<string>> AddNewPurchaseInvoice(PurchaseInvoiceDtos dto)
         //{
@@ -783,7 +787,9 @@ namespace Infrastructure.Services
                 invoice.TaxPrecentage = dto.taxPrecentage;
                 invoice.DeleteStatus = (PurchaseInvoivceDeleteStatus)dto.deleteStatus;
                 invoice.SettledStatus = (PurchaseInvoivceStoresStatus)dto.settledStatus;
-                invoice.UpdateBy = dto.updatedBy;
+                // Audit identity resolved from the token, never from dto.updatedBy
+                // (that field was a raw client-supplied "userName|userEmail" string).
+                invoice.UpdateBy = _currentUserService.UserId;
                 invoice.UpdateAt = DateTime.UtcNow;
                 // Remove old items
                 if (dto.items.Count > 0)

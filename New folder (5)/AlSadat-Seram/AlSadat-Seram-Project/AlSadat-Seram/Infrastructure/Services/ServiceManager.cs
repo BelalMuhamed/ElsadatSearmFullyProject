@@ -167,7 +167,7 @@ public class ServiceManager: IServiceManager
         _PlumberService = new Lazy<IPlumberContract>(() => new PlumberService(UnitOfWork));
         _journalEntry = new Lazy<IJounalEntryContract>(() => new JournalEntryService(UnitOfWork));
         _journalEntryDetails = new Lazy<IjournalEntryDetails>(() => new JournalEntryDetailsService(UnitOfWork));
-        _purchaseInvoiceService = new Lazy<IPurchaseInvoiceContract>(() => new PurchaseInvoiceService(UnitOfWork));
+        _purchaseInvoiceService = new Lazy<IPurchaseInvoiceContract>(() => new PurchaseInvoiceService(UnitOfWork, _CurrentUserService.Value));
        
         _DistributorsAndMerchantsService = new Lazy<IDistributorsAndMerchantsService>(() => new DistributorsAndMerchantsService(UnitOfWork,UserManager,this, _CurrentUserService.Value, ExcelReader));
         _CoponCollectionRepresentiveRateService = new Lazy<ICoponCollectionRepresentiveRateService>(() => new CoponCollectionRepresentiveRateService(UnitOfWork , _CurrentUserService.Value));

@@ -2,6 +2,7 @@
 using Application.DTOs.EmployeeSalary;
 using Application.Helper;
 using Application.Services.contract;
+using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.LocalizationService;
 using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -16,8 +17,11 @@ public class EmployeeController : BaseApiController
 {
     private readonly IServiceManager _ServiceManager;
 
-    public EmployeeController(IServiceManager serviceManager, ILocalizationService localization)
-        : base(localization)
+    public EmployeeController(
+        IServiceManager serviceManager,
+        ILocalizationService localization,
+        ICurrentUserService currentUser)
+        : base(localization, currentUser)
     {
         _ServiceManager = serviceManager;
     }
