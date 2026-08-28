@@ -23,20 +23,21 @@ namespace AlSadat_Seram.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
-            var result = await serviceManager.AuthService.LoginAsync(request.email,request.password);
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var result = await serviceManager.AuthService.LoginAsync(request.email, request.password, ipAddress);
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
                 return Unauthorized(result);
 
             return Ok(result);
-
         }
         // ========================= REFRESH TOKEN ======================
         [AllowAnonymous]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenDto request)
         {
-            var result = await serviceManager.AuthService.RefreshTokenAsync(request.token, request.ipAddress);
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var result = await serviceManager.AuthService.RefreshTokenAsync(request.token, ipAddress);
             if (!result.IsSuccess) return Unauthorized(result);
             return Ok(result);
         }

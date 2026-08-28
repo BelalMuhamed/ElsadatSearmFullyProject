@@ -9,7 +9,6 @@ namespace Application.DTOs.Authentcation
     public class RefreshTokenDto
     {
         public string token { get; set; } = string.Empty;
-        public string ipAddress { get; set; }
     }
     // new
     public class AuthResponse

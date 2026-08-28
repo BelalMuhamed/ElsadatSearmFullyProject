@@ -147,8 +147,9 @@ internal class Program
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtSettings["Key"])),
 
-                RoleClaimType = ClaimTypes.Role,   
-                NameClaimType = ClaimTypes.NameIdentifier
+                RoleClaimType = ClaimTypes.Role,
+                NameClaimType = ClaimTypes.NameIdentifier,
+                ClockSkew = TimeSpan.FromSeconds(30)
             };
         });
         //.AddJwtBearer(options =>
@@ -198,32 +199,22 @@ internal class Program
 
         var app = builder.Build();
         await app.SeedDatabaseAsync();
-
-        app.Use(async (context,next) =>
+        app.Use(async (context, next) =>
         {
-            // تسجيل كل طلب API
-            if(context.Request.Path.StartsWithSegments("/api"))
+            if (context.Request.Path.StartsWithSegments("/api"))
             {
                 var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
 
-                // تسجيل معلومات الطلب
                 logger.LogInformation("🌐 API Request: {Method} {Path}",
-                    context.Request.Method,context.Request.Path);
+                    context.Request.Method, context.Request.Path);
 
-                var authHeader = context.Request.Headers["Authorization"].ToString();
-
-                logger.LogInformation("🔑 Auth Header: {Header}",
-                    string.IsNullOrEmpty(authHeader)
-                        ? "EMPTY"
-                        : authHeader.Length > 50
-                            ? authHeader.Substring(0, 50) + "..."
-                            : authHeader);
+                var hasAuthHeader = context.Request.Headers.ContainsKey("Authorization");
+                logger.LogInformation("🔑 Auth header present: {HasAuthHeader}", hasAuthHeader);
 
                 await next();
 
-                // تسجيل الرد
                 logger.LogInformation("📤 API Response: {StatusCode} for {Path}",
-                    context.Response.StatusCode,context.Request.Path);
+                    context.Response.StatusCode, context.Request.Path);
             }
             else
             {
@@ -234,7 +225,7 @@ internal class Program
 
 
         // Configure the HTTP request pipeline.
-        if(app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();

@@ -9,6 +9,8 @@ namespace AlSadat_Seram.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,Accountant,HR")]
+
     public class CollectionRepresentiveRateController : ControllerBase
     {
         private readonly IServiceManager _ServiceManager;

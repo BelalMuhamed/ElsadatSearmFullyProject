@@ -33,55 +33,20 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
             CreatedByIp = ipAddress
         };
     }
-    //-------------------------------------------------------------------------
-    //public async Task<Result<string>> RegisterAsync(RegisterDto request)
-    //{
-    //    var userExists = await _userManager.FindByEmailAsync(request.Email);
-    //    if(userExists != null)
-    //    {
-    //        return Result<string>.Failure("A user with this email already exists.",HttpStatusCode.Conflict);
-    //    }
-
-    //    var user = new ApplicationUser
-    //    {
-    //        UserName = request.Email,
-    //        Email = request.Email,
-    //        FirstName = request.FirstName,
-    //        LastName = request.LastName
-    //    };
-
-    //    var result = await _userManager.CreateAsync(user,request.Password);
-
-    //    if(!result.Succeeded)
-    //    {
-    //        var errorMessage = string.Join(", ",result.Errors.Select(e => e.Description));
-    //        return Result<string>.Failure(errorMessage,HttpStatusCode.BadRequest);
-    //    }
-
-    //    var roleResult = await _userManager.AddToRoleAsync(user,"User");
-    //    if(!roleResult.Succeeded)
-    //    {
-    //        var errorMessage = string.Join(", ",roleResult.Errors.Select(e => e.Description));
-    //        return Result<string>.Failure(errorMessage,HttpStatusCode.BadRequest);
-    //    }
-
-    //    return Result<string>.Success("User registered successfully",HttpStatusCode.Created);
-    //}
-    //-------------------------------------------------------------------------
-    public async Task<Result<AuthResponse>> LoginAsync(string email,string password)
+    public async Task<Result<AuthResponse>> LoginAsync(string email, string password, string ipAddress)
     {
         var user = await _userManager.Users
             .Include(u => u.RefreshTokens)
-            .SingleOrDefaultAsync(u => u.Email == email  || u.PhoneNumber==email || u.UserName==email);
-        if(user==null)
+            .SingleOrDefaultAsync(u => u.Email == email || u.PhoneNumber == email || u.UserName == email);
+
+        if (user == null)
             return Result<AuthResponse>.Failure("مستخدم غير موجود", HttpStatusCode.Unauthorized);
-        if (user.IsDeleted) 
-        {
+
+        if (user.IsDeleted)
             return Result<AuthResponse>.Failure("تم ايقاف هذا الحساب من قبل الادمن ", HttpStatusCode.Unauthorized);
-        }
-        var x = await _userManager.CheckPasswordAsync(user, password);
-        if ( !await _userManager.CheckPasswordAsync(user,password))
-            return Result<AuthResponse>.Failure("مشكلة في الباسورد ",HttpStatusCode.Unauthorized);
+
+        if (!await _userManager.CheckPasswordAsync(user, password))
+            return Result<AuthResponse>.Failure("مشكلة في الباسورد ", HttpStatusCode.Unauthorized);
 
         var accessToken = await _jwtService.GenerateToken(user);
         var roles = await _userManager.GetRolesAsync(user);
@@ -91,8 +56,7 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
             Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
             Expires = DateTime.UtcNow.AddDays(7),
             Created = DateTime.UtcNow,
-            CreatedByIp = "user-ip-or-placeholder",
-
+            CreatedByIp = ipAddress,
             User = user
         };
 
@@ -107,27 +71,29 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
             refreshToken = refreshToken.Token,
             roles = roles.ToList(),
             permissions = permissions,
-            accessTokenExpiresAt = DateTime.UtcNow.AddMinutes(5), // was hardcoded AddMinutes(30) — now matches the token's real exp claim 
-
+            accessTokenExpiresAt = DateTime.UtcNow.AddMinutes(5),
         };
 
         return Result<AuthResponse>.Success(response, "تم تسجيل الدخول بنجاح ", HttpStatusCode.OK);
     }
-    //-------------------------------------------------------------------------
-    public async Task<Result<AuthResponse>> RefreshTokenAsync(string refreshToken,string ipAddress)
+    public async Task<Result<AuthResponse>> RefreshTokenAsync(string refreshToken, string ipAddress)
     {
-        var user = _userManager.Users
+        var user = await _userManager.Users
             .Include(u => u.RefreshTokens)
-            .SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
-        var roles = await _userManager.GetRolesAsync(user);
+            .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
+
         if (user == null)
-            return Result<AuthResponse>.Failure("Invalid refresh token",HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.Failure("Invalid refresh token", HttpStatusCode.Unauthorized);
+
+        if (user.IsDeleted)
+            return Result<AuthResponse>.Failure("تم ايقاف هذا الحساب من قبل الادمن ", HttpStatusCode.Unauthorized);
 
         var token = user.RefreshTokens.Single(x => x.Token == refreshToken);
 
-        if(token.IsExpired || token.Revoked != null)
-            return Result<AuthResponse>.Failure("Refresh token is invalid or expired",HttpStatusCode.Unauthorized);
+        if (token.IsExpired || token.Revoked != null)
+            return Result<AuthResponse>.Failure("Refresh token is invalid or expired", HttpStatusCode.Unauthorized);
 
+        var roles = await _userManager.GetRolesAsync(user);
         var accessToken = await _jwtService.GenerateToken(user);
         var permissions = await _userPermissionService.GetUserPermissionsAsync(user.Id);
         var newRefreshToken = GenerateRefreshToken(ipAddress);
@@ -147,8 +113,7 @@ public class AuthService(UserManager<ApplicationUser> _userManager,IJwtService _
         };
 
         return Result<AuthResponse>.Success(response, "Token Refreshed Successfuly", HttpStatusCode.OK);
-    }
-    //-------------------------------------------------------------------------
+    }    //-------------------------------------------------------------------------
     public async Task<Result<AuthResponse>> LoginWithGoogleAsync(GoogleSignInVM model, string ipAddress)
     {
         var userResult = await _googleAuthService.GoogleSignInAsync(model);
