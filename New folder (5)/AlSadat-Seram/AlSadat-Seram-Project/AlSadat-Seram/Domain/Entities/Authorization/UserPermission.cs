@@ -19,7 +19,9 @@ namespace Domain.Entities.Authorization
 
         public DateTime GrantedAt { get; set; } = DateTime.UtcNow;
 
-        /// <summary>Audit trail — who granted this. Nullable because seed-time grants (if any) have no actor.</summary>
+        /// <summary>Audit trail — who granted this. Nullable because seed-time grants have no actor.
+        /// NO ACTION on delete — deleting an admin must not delete the grants they issued.</summary>
         public string? GrantedByUserId { get; set; }
+        public virtual ApplicationUser? GrantedByUser { get; set; }
     }
 }

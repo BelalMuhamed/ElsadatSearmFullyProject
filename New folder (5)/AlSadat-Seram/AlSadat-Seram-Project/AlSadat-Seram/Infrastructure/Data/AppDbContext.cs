@@ -76,7 +76,7 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Authorization.Module> Modules { get; set; }
         public DbSet<Domain.Entities.Authorization.Permission> Permissions { get; set; }
         public DbSet<Domain.Entities.Authorization.UserPermission> UserPermissions { get; set; }
-
+        public DbSet<Domain.Entities.Auth.AuthAuditLog> AuthAuditLogs { get; set; }
 
         public DbSet<SalesInvoiceItemStoresQuantities> SalesInvoiceItemStoresQuantities { get; set; }
 
@@ -91,6 +91,85 @@ namespace Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // ── Modules & Permissions: stable codes ─────────────────────────────
+            builder.Entity<Domain.Entities.Authorization.Module>()
+                .HasIndex(m => m.Code)
+                .IsUnique();
+
+            builder.Entity<Domain.Entities.Authorization.Permission>()
+                .HasIndex(p => p.Code)
+                .IsUnique();
+
+            // ── UserPermission.GrantedByUserId: real FK, NO ACTION on delete ───
+            builder.Entity<Domain.Entities.Authorization.UserPermission>()
+                .HasOne(up => up.GrantedByUser)
+                .WithMany()
+                .HasForeignKey(up => up.GrantedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // ── AspNetUserRoles: exactly one role per user (R-5) ────────────────
+            builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>()
+                .HasIndex(ur => ur.UserId)
+                .IsUnique();
+
+            // ── ApplicationUser: phone required+unique, full name bounded ──────
+            builder.Entity<ApplicationUser>()
+                .Property(u => u.PhoneNumber)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            builder.Entity<ApplicationUser>()
+                .HasIndex(u => u.PhoneNumber)
+                .IsUnique();
+
+            builder.Entity<ApplicationUser>()
+                .Property(u => u.FullName)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            // ── ApplicationUser.DepartmentId shadow FK: dropped (D-2) ───────────
+            // The existing HasOne(Department, null).WithMany("Employee").HasForeignKey("DepartmentId")
+            // configuration is REMOVED, not added — delete that block wherever it currently
+            // appears in this file (it configures a shadow property, not a declared one).
+
+            // ── Employee / Representatives: enforce true 1:1 with ApplicationUser (D-1) ─
+            builder.Entity<Domain.Entities.Users.Employee>()
+                .HasIndex(e => e.UserId)
+                .IsUnique();
+
+            builder.Entity<Domain.Entities.Users.Representatives>()
+                .HasIndex(r => r.UserId)
+                .IsUnique();
+
+            // ── RefreshTokens: new shape ─────────────────────────────────────────
+            builder.Entity<RefreshToken>()
+                .HasIndex(t => t.TokenHash)
+                .IsUnique();
+
+            builder.Entity<RefreshToken>()
+                .HasIndex(t => t.FamilyId);
+
+            builder.Entity<RefreshToken>()
+                .HasOne(t => t.ReplacedByToken)
+                .WithMany()
+                .HasForeignKey(t => t.ReplacedByTokenId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // ── AuthAuditLog ─────────────────────────────────────────────────────
+            builder.Entity<Domain.Entities.Auth.AuthAuditLog>()
+                .HasIndex(a => new { a.UserId, a.OccurredAt });
+
+            builder.Entity<Domain.Entities.Auth.AuthAuditLog>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Domain.Entities.Auth.AuthAuditLog>()
+                .HasOne(a => a.ActorUser)
+                .WithMany()
+                .HasForeignKey(a => a.ActorUserId)
+                .OnDelete(DeleteBehavior.NoAction);
             // in OnModelCreating
             builder.Entity<UserPermission>()
                 .HasKey(up => new { up.UserId, up.PermissionId });

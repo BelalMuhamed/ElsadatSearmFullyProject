@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
@@ -15,8 +11,9 @@ namespace Infrastructure.Data
             using var scope = app.ApplicationServices.CreateScope();
 
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-            await DbInitializer.SeedAsync(context);
+            await DbInitializer.SeedAsync(context, configuration);
         }
     }
 }
