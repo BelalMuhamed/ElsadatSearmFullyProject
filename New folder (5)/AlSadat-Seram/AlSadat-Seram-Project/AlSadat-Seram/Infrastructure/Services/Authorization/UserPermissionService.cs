@@ -50,9 +50,9 @@ namespace Infrastructure.Services.Authorization
                     {
                         id = p.Id,
                         name = p.Name,
-                        qualifiedName = $"{m.Name}.{p.Name}",
+                        qualifiedName = p.Code,
                         description = p.Description,
-                        isGranted = granted.Contains($"{m.Name}.{p.Name}")
+                        isGranted = granted.Contains(p.Code)
                     }).ToList()
                 }).ToList()
             };

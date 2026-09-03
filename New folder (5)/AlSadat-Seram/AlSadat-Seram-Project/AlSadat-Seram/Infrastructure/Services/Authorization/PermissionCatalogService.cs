@@ -38,7 +38,7 @@ namespace Infrastructure.Services.Authorization
                         {
                             id = p.Id,
                             name = p.Name,
-                            qualifiedName = $"{m.Name}.{p.Name}",
+                            qualifiedName = p.Code,
                             description = p.Description
                         }).ToList()
                 }).ToList()

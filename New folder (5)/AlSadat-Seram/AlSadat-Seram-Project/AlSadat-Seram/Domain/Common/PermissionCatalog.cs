@@ -13,10 +13,11 @@ public sealed class PermissionCatalog : IPermissionCatalog
     public PermissionCatalog()
     {
         Modules = new List<ModulePermissions>
-        {
-            EmployeePermissions.Module,
-            // Add one line per module as each is confirmed — see Part B.
-        };
+    {
+        EmployeePermissions.Module,
+        GeneralSettingsPermissions.Module,
+        // Add one line per module as each is confirmed.
+    };
 
         AllPermissions = Modules.SelectMany(m => m.Permissions).ToList();
     }
