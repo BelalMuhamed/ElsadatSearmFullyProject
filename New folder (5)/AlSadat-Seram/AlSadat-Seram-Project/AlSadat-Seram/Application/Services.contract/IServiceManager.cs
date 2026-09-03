@@ -15,7 +15,6 @@ using Application.Services.contract.EmployeePayroll;
 using Application.Services.contract.EmployeeSalaryAdjustment;
 using Application.Services.contract.EmployeeService;
 using Application.Services.contract.Finance;
-using Application.Services.contract.GoogleAuthService;
 using Application.Services.contract.JwtService;
 using Application.Services.contract.LeaveType;
 using Application.Services.contract.NotificationService;
@@ -32,10 +31,10 @@ namespace Application.Services.contract
     public interface IServiceManager
     {
         //  Define all the services that the service manager will provide
-        public IAuthService AuthService { get; }
+        public IAuthenticationService AuthService { get; }
+        public IUserSessionService UserSessionService { get; }
         public IChangeLogService ChangeLogService { get; }
         public ICurrentUserService CurrentUserService { get; }
-        public IGoogleAuthService GoogleAuthService { get; }
         public IJwtService JwtService { get; }
         public INotificationService NotificationService { get; }
         //public INotificationDispatcher NotificationDispatcher { get; }
@@ -47,7 +46,7 @@ namespace Application.Services.contract
         public IBillDiscount BillService { get; }
         public IEmployeeService EmployeeService { get; }
         public IProductService ProductService { get; }
-        public IGovernrateCaontract  GovernrateService { get; }
+        public IGovernrateCaontract GovernrateService { get; }
         public ICityContract CityContract { get; }
         public IDistributorsAndMerchantsService DistributorsAndMerchantsService { get; }
         public ICollectionRepresentiveRateService CollectionRepresentiveRateService { get; }
@@ -75,15 +74,12 @@ namespace Application.Services.contract
         public IJounalEntryContract journalEntry { get; }
         public IWarehouseInventoryReportService warehouseInventoryReportService { get; }
 
-      public  IFinancialReportsService financialReports { get; }
-      public  ISystemAccountGuard systemAccountGuard { get; }
-       public IStoreTransactionValidator storeTransactionValidator { get; }
+        public IFinancialReportsService financialReports { get; }
+        public ISystemAccountGuard systemAccountGuard { get; }
+        public IStoreTransactionValidator storeTransactionValidator { get; }
         /// <summary>Plumber master-data service (no chart-of-accounts integration).</summary>
-       public IPlumberContract plumberService { get; }
+        public IPlumberContract plumberService { get; }
         public IPermissionCatalogService PermissionCatalogService { get; }
         public IUserPermissionService UserPermissionService { get; }
-
-
-
     }
 }

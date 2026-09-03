@@ -85,8 +85,19 @@ namespace Infrastructure.Services.ProfileServices
             var newUserName = (request.userName ?? string.Empty).Trim();
             var newEmail = (request.email ?? string.Empty).Trim();
             var newPhone = string.IsNullOrWhiteSpace(request.phoneNumber)
-                ? null
-                : request.phoneNumber.Trim();
+       ? null
+       : request.phoneNumber.Trim();
+
+            // ---- 2b) Validate required fields per domain rules BEFORE any persistence
+            // attempt. ApplicationUser.PhoneNumber is NOT NULL at the database level
+            // (Phase 1 schema change) — a null/empty value here must fail as a clean,
+            // actionable Result<T> validation error, never reach SaveChangesAsync and
+            // surface as a DbUpdateException / generic 500.
+            if (string.IsNullOrWhiteSpace(newPhone))
+                return Result<UpdateProfileResponse>.Failure(
+                    "رقم الهاتف مطلوب ولا يمكن أن يكون فارغًا", HttpStatusCode.BadRequest);
+
+            // ---- 3) Detect what actually changed (case-insensitive comparisons)
 
             // ---- 3) Detect what actually changed (case-insensitive comparisons)
             var response = new UpdateProfileResponse

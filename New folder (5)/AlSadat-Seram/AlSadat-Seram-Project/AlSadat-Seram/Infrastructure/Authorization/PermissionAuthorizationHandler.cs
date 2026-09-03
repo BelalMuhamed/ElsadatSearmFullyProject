@@ -1,4 +1,5 @@
-﻿using Domain.Common;
+﻿using Infrastructure.Authorization;
+using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Infrastructure.Authorization

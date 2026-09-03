@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.DTOs.Authentcation
 {
@@ -10,14 +7,14 @@ namespace Application.DTOs.Authentcation
     {
         public string token { get; set; } = string.Empty;
     }
-    // new
+
     public class AuthResponse
     {
-        public string userName { get; set; }
-        public string userMail { get; set; }
+        public string userName { get; set; } = string.Empty;
+        public string userMail { get; set; } = string.Empty;
         public string accessToken { get; set; } = string.Empty;
         public string refreshToken { get; set; } = string.Empty;
-        public List<string> roles { get; set; }
+        public string role { get; set; } = string.Empty;
         public List<string> permissions { get; set; } = new();
         public DateTime accessTokenExpiresAt { get; set; }
     }

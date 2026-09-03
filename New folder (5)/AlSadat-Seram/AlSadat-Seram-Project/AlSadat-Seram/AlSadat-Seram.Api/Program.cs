@@ -20,7 +20,6 @@ using QuestPDF.Infrastructure;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
-
 internal class Program
 {
     private static async Task Main(string[] args)
@@ -85,6 +84,9 @@ internal class Program
             options.Password.RequireNonAlphanumeric = false;
             options.Password.RequiredLength = 6;
             options.User.RequireUniqueEmail = true;
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+            options.Lockout.AllowedForNewUsers = true;
 
         })
         .AddEntityFrameworkStores<AppDbContext>()
@@ -148,26 +150,30 @@ internal class Program
                 ValidAudience = jwtSettings["Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtSettings["Key"])),
-
-                RoleClaimType = ClaimTypes.Role,
-                NameClaimType = ClaimTypes.NameIdentifier,
+                RoleClaimType = "role",
+                NameClaimType = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Name,
                 ClockSkew = TimeSpan.FromSeconds(30)
             };
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = async context =>
+                {
+                    context.HandleResponse();
+                    context.Response.StatusCode = 401;
+                    context.Response.ContentType = "application/json";
+                    var result = Result<object>.Failure("Unauthorized", System.Net.HttpStatusCode.Unauthorized);
+                    await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result));
+                },
+                OnForbidden = async context =>
+                {
+                    context.Response.StatusCode = 403;
+                    context.Response.ContentType = "application/json";
+                    var result = Result<object>.Failure("Forbidden", System.Net.HttpStatusCode.Forbidden);
+                    await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result));
+                }
+            };
         });
-        //.AddJwtBearer(options =>
-        // {
-        //     options.TokenValidationParameters = new TokenValidationParameters
-        //     {
-        //         ValidateIssuer = true,
-        //         ValidateAudience = true,
-        //         ValidateLifetime = true,
-        //         ValidateIssuerSigningKey = true,
-        //         ValidIssuer = jwtSettings["Issuer"],
-        //         ValidAudience = jwtSettings["Audience"],
-        //         IssuerSigningKey = new SymmetricSecurityKey(
-        //             Encoding.UTF8.GetBytes(jwtSettings["Key"]))
-        //     };
-        // });
+        builder.Services.Configure<AuthSessionOptions>(builder.Configuration.GetSection("Auth"));
         #endregion
         QuestPDF.Settings.License = LicenseType.Community;
         builder.Services.AddControllers();

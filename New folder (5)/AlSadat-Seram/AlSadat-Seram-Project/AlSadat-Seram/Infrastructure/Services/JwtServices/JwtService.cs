@@ -1,90 +1,55 @@
-﻿using Application.Services.contract.Authorization;
-using Application.Services.contract.JwtService;
+﻿using Application.Services.contract.JwtService;
 using Domain.Common;
-using Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Services.JwtServices;
-// new
+
 public class JwtService : IJwtService
 {
     private readonly JwtSettings _jwtSettings;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUserPermissionService _userPermissionService;
 
-    public JwtService(
-        IOptions<JwtSettings> jwtSettings,
-        UserManager<ApplicationUser> userManager,
-        IUserPermissionService userPermissionService)
+    public JwtService(IOptions<JwtSettings> jwtSettings)
     {
         _jwtSettings = jwtSettings.Value;
-        _userManager = userManager;
-        _userPermissionService = userPermissionService;
     }
 
-    public async Task<string> GenerateToken(ApplicationUser user)
+    public AccessTokenResult GenerateToken(TokenGenerationRequest request)
     {
-        var userClaims = await _userManager.GetClaimsAsync(user);
-        var roles = await _userManager.GetRolesAsync(user);
-        var permissions = await _userPermissionService.GetUserPermissionsAsync(user.Id);
-
         var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        
-        new Claim("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier", user.Id.ToString()),
-
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(JwtRegisteredClaimNames.Name, user.FullName),
-        
-
-        new Claim("UserId", user.Id.ToString()),
-        new Claim("UserEmail", user.Email ?? ""),
-        new Claim("UserName", user.UserName ?? user.Email ?? ""),
-        new Claim("FullName", user.FullName)
-    };
-
-        // new
-        // إضافة الـ Roles
-        foreach (var role in roles)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-            claims.Add(new Claim("role", role));
-        }
+            new(JwtRegisteredClaimNames.Sub, request.UserId),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Email, request.Email ?? string.Empty),
+            new(JwtRegisteredClaimNames.Name, request.UserName ?? string.Empty),
+            new("role", request.Role)
+        };
 
-        // NEW — one "permission" claim per granted "Module.Action" string.
-        // Admin needs none of these — PermissionAuthorizationHandler bypasses on role.
-        foreach (var permission in permissions)
-        {
-            claims.Add(new Claim("permission", permission));
-        }
+        if (request.IsSuperAdmin)
+            claims.Add(new Claim(AppClaimTypes.SuperAdmin, "true"));
 
-        claims.AddRange(userClaims);
+        foreach (var permission in request.Permissions)
+            claims.Add(new Claim(AppClaimTypes.Permission, permission));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-        var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var expiresAtUtc = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes);
 
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes),
+            notBefore: DateTime.UtcNow,
+            expires: expiresAtUtc,
             signingCredentials: creds
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new AccessTokenResult(new JwtSecurityTokenHandler().WriteToken(token), expiresAtUtc);
     }
 }

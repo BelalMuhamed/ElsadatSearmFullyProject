@@ -1,185 +1,61 @@
 ﻿using Application.DTOs.Authentcation;
-using Application.Services.contract;
+using Application.Services.contract.AuthService;
+using Application.Services.contract.CurrentUserService;
+using Application.Services.contract.LocalizationService;
+using Domain.Common;
+using Infrastructure.Services.AuthServices;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AlSadat_Seram.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseApiController
     {
-        private readonly IServiceManager serviceManager;
+        private readonly IAuthenticationService _authenticationService;
 
-        public AuthController(IServiceManager ServiceManager)
+        public AuthController(
+            IAuthenticationService authenticationService,
+            ILocalizationService localization,
+            ICurrentUserService currentUser)
+            : base(localization, currentUser)
         {
-            serviceManager = ServiceManager;
+            _authenticationService = authenticationService;
         }
-        // ========================= LOGIN ==============================
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            var result = await serviceManager.AuthService.LoginAsync(request.email, request.password, ipAddress);
-
-            if (!result.IsSuccess)
-                return Unauthorized(result);
-
-            return Ok(result);
+            var result = await _authenticationService.LoginAsync(request.email, request.password, ipAddress);
+            return HandleResult(result);
         }
-        // ========================= REFRESH TOKEN ======================
+
         [AllowAnonymous]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenDto request)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            var result = await serviceManager.AuthService.RefreshTokenAsync(request.token, ipAddress);
-            if (!result.IsSuccess) return Unauthorized(result);
-            return Ok(result);
+            var result = await _authenticationService.RefreshTokenAsync(request.token, ipAddress);
+            return HandleResult(result);
         }
-        // ========================= LOGOUT =============================
-        [AllowAnonymous]
+
+        [Authorize]
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout([FromBody] LogoutDto request)
+        public async Task<IActionResult> Logout([FromBody] RefreshTokenDto request)
         {
-            var result = await serviceManager.AuthService.LogoutAsync(request);
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-        // ========================= ROLES ==============================
-        // -------- Get All Roles --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpGet("roles")]
-        public async Task<IActionResult> GetAllRoles()
-        {
-            var result = await serviceManager.AuthService.GetAllRolesAsync();
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-        // -------- Get Inactive Roles --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpGet("roles/inactive")]
-        public async Task<IActionResult> GetInactiveRoles()
-        {
-            var result = await serviceManager.AuthService.GetInactiveRolesAsync();
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-        // -------- Get Soft Deleted Roles --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpGet("roles/deleted")]
-        public async Task<IActionResult> GetSoftDeletedRoles()
-        {
-            var result = await serviceManager.AuthService.GetSoftDeletedRolesAsync();
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-        // -------- Get Role By ID --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpGet("roles/{id}")]
-        public async Task<IActionResult> GetRoleById(string id)
-        {
-            var result = await serviceManager.AuthService.GetRoleByIdAsync(id);
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
+            var result = await _authenticationService.LogoutAsync(request.token);
+            return HandleResult(result);
         }
 
-        // -------- Create Role --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpPost("roles")]
-        public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequestDTO dto)
+        [Authorize]
+        [HttpPost("logout-all")]
+        public async Task<IActionResult> LogoutAll()
         {
-            var result = await serviceManager.AuthService.CreateRoleAsync(dto);
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
+            var result = await _authenticationService.LogoutAllAsync(RequireCurrentUserId());
+            return HandleResult(result);
         }
-
-        // -------- Update Role --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpPut("roles/{id}")]
-        public async Task<IActionResult> UpdateRole(string id,[FromBody] CreateRoleRequestDTO dto)
-        {
-            var result = await serviceManager.AuthService.UpdateRoleAsync(id,dto);
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-
-        // -------- Soft Delete Role --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpDelete("roles/{id}")]
-        public async Task<IActionResult> SoftDeleteRole(string id)
-        {
-            var result = await serviceManager.AuthService.SoftDeleteRoleAsync(id);
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-
-        // -------- Restore Role --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpPut("roles/restore/{id}")]
-        public async Task<IActionResult> RestoreRole(string id)
-        {
-            var result = await serviceManager.AuthService.RestoreRoleAsync(id);
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-
-        // -------- Hard Delete Role --------
-        [Authorize(Roles = "Admin,HR")]
-        [HttpDelete("roles/hard/{id}")]
-        public async Task<IActionResult> DeleteRolePermanently(string id)
-        {
-            var result = await serviceManager.AuthService.HardDeleteRoleAsync(id);
-
-            if(!result.IsSuccess)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-        // ==================== LOGIN WITH GOOGLE =====================
-        //[Authorize(Roles = "HR")]
-        //[HttpPost("login/google")]
-        //public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleSignInVM model)
-        //{
-        //    var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-        //    var result = await serviceManager.AuthService.LoginWithGoogleAsync(model,ip);
-
-        //    if(!result.IsSuccess)
-        //        return Unauthorized(result);
-
-        //    return Ok(result);
-        //}
-
     }
 }

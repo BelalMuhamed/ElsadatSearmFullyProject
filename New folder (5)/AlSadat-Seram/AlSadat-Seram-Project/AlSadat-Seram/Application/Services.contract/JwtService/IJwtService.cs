@@ -1,12 +1,18 @@
-﻿using Domain.Entities.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Application.Services.contract.JwtService;
+
+public sealed record TokenGenerationRequest(
+    string UserId,
+    string UserName,
+    string Email,
+    string Role,
+    bool IsSuperAdmin,
+    IReadOnlyCollection<string> Permissions);
+
+public sealed record AccessTokenResult(string Token, DateTime ExpiresAtUtc);
+
 public interface IJwtService
 {
-    Task<string> GenerateToken(ApplicationUser user);
+    AccessTokenResult GenerateToken(TokenGenerationRequest request);
 }
