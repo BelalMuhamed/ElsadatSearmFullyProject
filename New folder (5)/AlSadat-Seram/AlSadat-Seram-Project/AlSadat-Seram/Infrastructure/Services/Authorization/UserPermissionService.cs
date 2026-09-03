@@ -26,7 +26,7 @@ namespace Infrastructure.Services.Authorization
         {
             return await _context.Set<UserPermission>()
                 .Where(up => up.UserId == userId)
-                .Select(up => up.Permission.Module.Name + "." + up.Permission.Name)
+                .Select(up => up.Permission.Code)
                 .ToListAsync(ct);
         }
 

@@ -56,13 +56,15 @@ internal class Program
         {
             // Static/fixed catalog (Decision 5) — one named policy per EmployeePermissions
             // constant, registered explicitly rather than via a dynamic policy provider.
-            foreach (var permission in Domain.Common.EmployeePermissions.All)
+            var permissionCatalog = new Domain.Common.PermissionCatalog();
+            foreach (var permission in permissionCatalog.AllPermissions)
             {
-                options.AddPolicy(permission, policy =>
-                    policy.Requirements.Add(new Infrastructure.Authorization.PermissionRequirement(permission)));
+                options.AddPolicy(permission.Code, policy =>
+                    policy.Requirements.Add(new Infrastructure.Authorization.PermissionRequirement(permission.Code)));
             }
         });
         builder.Services.AddSingleton<IAuthorizationHandler, Infrastructure.Authorization.PermissionAuthorizationHandler>();
+        builder.Services.AddSingleton<Domain.Common.IPermissionCatalog, Domain.Common.PermissionCatalog>();
 
         builder.Services.AddControllers(options =>
         {

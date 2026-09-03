@@ -59,12 +59,12 @@ namespace Infrastructure.Data
             var seededRoleIds = await SeedRolesAsync(context);
             await SeedUserRolesAsync(context, seededUserIds, seededRoleIds);
 
-            await SeedEmployeePermissionsAsync(context);
+            await SeedPermissionCatalogAsync(context, new PermissionCatalog());
+
             await SeedAccountsAsync(context);
             await SeedBillDiscountsAsync(context);
             await SeedCouponsAsync(context);
         }
-
         private static async Task SeedLocationsAsync(AppDbContext context)
         {
             if (context.Governrate.Any())
@@ -235,28 +235,79 @@ namespace Infrastructure.Data
             await context.SaveChangesAsync();
         }
 
-        private static async Task SeedEmployeePermissionsAsync(AppDbContext context)
+        /// <summary>
+        /// Idempotent upsert-by-code (P-10): inserts any Module/Permission not yet
+        /// in the database, updates Name/Description/IsBaseline on ones that already
+        /// exist, and NEVER deletes — a permission missing from the catalog today but
+        /// present in the database is logged as an orphan, not removed, because
+        /// removal would silently revoke every UserPermission row referencing it.
+        /// </summary>
+        private static async Task SeedPermissionCatalogAsync(AppDbContext context, IPermissionCatalog catalog)
         {
-            if (context.Set<Domain.Entities.Authorization.Module>().Any())
-                return;
+            var existingModules = await context.Set<Domain.Entities.Authorization.Module>()
+                .ToDictionaryAsync(m => m.Code);
 
-            var employeesModule = new Domain.Entities.Authorization.Module { Name = EmployeePermissions.ModuleName };
-            context.Set<Domain.Entities.Authorization.Module>().Add(employeesModule);
+            foreach (var moduleDefinition in catalog.Modules)
+            {
+                if (!existingModules.TryGetValue(moduleDefinition.ModuleCode, out var moduleEntity))
+                {
+                    moduleEntity = new Domain.Entities.Authorization.Module
+                    {
+                        Code = moduleDefinition.ModuleCode,
+                        Name = moduleDefinition.ModuleName,
+                        SortOrder = moduleDefinition.SortOrder
+                    };
+                    context.Set<Domain.Entities.Authorization.Module>().Add(moduleEntity);
+                    await context.SaveChangesAsync(); // need moduleEntity.Id for the permission FK below
+                    existingModules[moduleEntity.Code] = moduleEntity;
+                }
+                else
+                {
+                    moduleEntity.Name = moduleDefinition.ModuleName;
+                    moduleEntity.SortOrder = moduleDefinition.SortOrder;
+                }
+            }
             await context.SaveChangesAsync();
 
-            context.Set<Domain.Entities.Authorization.Permission>().AddRange(
-                new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "View", Description = "View employees" },
-                new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "Create", Description = "Create employees" },
-                new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "Update", Description = "Update employees" },
-                new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "Delete", Description = "Soft-delete/restore employees" },
-                new Domain.Entities.Authorization.Permission { ModuleId = employeesModule.Id, Name = "AssignPermissions", Description = "Manage employee permissions" }
-            );
+            var existingPermissions = await context.Set<Domain.Entities.Authorization.Permission>()
+                .ToDictionaryAsync(p => p.Code);
+
+            foreach (var moduleDefinition in catalog.Modules)
+            {
+                var moduleEntity = existingModules[moduleDefinition.ModuleCode];
+
+                foreach (var permissionDefinition in moduleDefinition.Permissions)
+                {
+                    if (!existingPermissions.TryGetValue(permissionDefinition.Code, out var permissionEntity))
+                    {
+                        context.Set<Domain.Entities.Authorization.Permission>().Add(new Domain.Entities.Authorization.Permission
+                        {
+                            Code = permissionDefinition.Code,
+                            Name = permissionDefinition.Name,
+                            Description = permissionDefinition.Description,
+                            IsBaseline = permissionDefinition.IsBaseline,
+                            ModuleId = moduleEntity.Id
+                        });
+                    }
+                    else
+                    {
+                        permissionEntity.Name = permissionDefinition.Name;
+                        permissionEntity.Description = permissionDefinition.Description;
+                        permissionEntity.IsBaseline = permissionDefinition.IsBaseline;
+                    }
+                }
+            }
             await context.SaveChangesAsync();
 
-            // Deliberately NO UserPermissions rows here — deny-by-default (Decision 8).
-            // Your seeded HR demo user will need Employees.* granted explicitly via
-            // PUT api/Permission/user/{hrUserId} after this migration runs, or they will
-            // lose access to Employee Management until you do.
+            // Orphan report — permissions present in the DB but no longer declared
+            // in code. Never auto-deleted (would cascade-delete UserPermissions).
+            var catalogCodes = catalog.AllPermissions.Select(p => p.Code).ToHashSet();
+            var orphans = existingPermissions.Values.Where(p => !catalogCodes.Contains(p.Code)).ToList();
+            if (orphans.Count > 0)
+            {
+                Console.WriteLine($"[Seed] WARNING: {orphans.Count} permission(s) exist in the database " +
+                    $"but are no longer declared in code: {string.Join(", ", orphans.Select(o => o.Code))}");
+            }
         }
 
         private static async Task SeedAccountsAsync(AppDbContext context)

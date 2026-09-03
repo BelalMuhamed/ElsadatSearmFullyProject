@@ -1,14 +1,13 @@
-﻿using Infrastructure.Authorization;
-using Domain.Common;
+﻿using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Infrastructure.Authorization
 {
     /// <summary>
-    /// Backs every [Authorize(Policy = EmployeePermissions.X)] check.
-    /// Reads the "permission" claims already on the validated JWT principal — no DB
-    /// call here, because permissions are baked into the access token at login/refresh
-    /// time (see JwtService). Admin bypasses everything (Decision 3).
+    /// Backs every [Authorize(Policy = ...)] permission check. Reads claims already
+    /// on the validated JWT principal — no DB call here. super_admin bypasses
+    /// everything; it's a claim, not a role-name check, so renaming the Admin role
+    /// can never silently break this bypass.
     /// </summary>
     public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {
@@ -16,20 +15,17 @@ namespace Infrastructure.Authorization
             AuthorizationHandlerContext context,
             PermissionRequirement requirement)
         {
-            if (context.User.IsInRole(AppRoles.Admin))
+            if (context.User.HasClaim(AppClaimTypes.SuperAdmin, "true"))
             {
                 context.Succeed(requirement);
                 return Task.CompletedTask;
             }
 
-            if (context.User.HasClaim("permission", requirement.Permission))
+            if (context.User.HasClaim(AppClaimTypes.Permission, requirement.Permission))
             {
                 context.Succeed(requirement);
             }
 
-            // No explicit Fail() — ASP.NET Core fails closed by default when no
-            // handler succeeds, and an explicit Fail() would short-circuit any other
-            // handler registered against the same policy in the future.
             return Task.CompletedTask;
         }
     }

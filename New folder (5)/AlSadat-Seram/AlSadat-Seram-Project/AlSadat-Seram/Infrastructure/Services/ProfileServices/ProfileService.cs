@@ -99,6 +99,17 @@ namespace Infrastructure.Services.ProfileServices
 
             // ---- 3) Detect what actually changed (case-insensitive comparisons)
 
+            // ---- 2b) Validate required fields per domain rules BEFORE any persistence
+            // attempt. ApplicationUser.PhoneNumber is NOT NULL at the database level
+            // (Phase 1 schema change) — a null/empty value here must fail as a clean,
+            // actionable Result<T> validation error, never reach SaveChangesAsync and
+            // surface as a DbUpdateException / generic 500.
+            if (string.IsNullOrWhiteSpace(newPhone))
+                return Result<UpdateProfileResponse>.Failure(
+                    "رقم الهاتف مطلوب ولا يمكن أن يكون فارغًا", HttpStatusCode.BadRequest);
+
+            // ---- 3) Detect what actually changed (case-insensitive comparisons)
+
             // ---- 3) Detect what actually changed (case-insensitive comparisons)
             var response = new UpdateProfileResponse
             {

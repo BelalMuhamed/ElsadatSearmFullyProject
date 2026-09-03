@@ -91,6 +91,7 @@ internal class EmployeeService : IEmployeeService
                     return Result<string>.Failure($"فشل إضافة الأدوار: {errors}");
                 }
             }
+
             var employee = new Employee
             {
                 UserId = user.Id,
