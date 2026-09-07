@@ -22,6 +22,51 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Auth.AuthAuditLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ActorUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AttemptedIdentifier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Detail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Succeeded")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("UserId", "OccurredAt");
+
+                    b.ToTable("AuthAuditLogs");
+                });
+
             modelBuilder.Entity("Domain.Entities.Authorization.Module", b =>
                 {
                     b.Property<int>("Id")
@@ -30,11 +75,21 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -50,8 +105,15 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBaseline")
+                        .HasColumnType("bit");
 
                     b.Property<int>("ModuleId")
                         .HasColumnType("int");
@@ -61,6 +123,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.HasIndex("ModuleId", "Name")
                         .IsUnique();
@@ -80,9 +145,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GrantedByUserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "PermissionId");
+
+                    b.HasIndex("GrantedByUserId");
 
                     b.HasIndex("PermissionId");
 
@@ -1923,15 +1990,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeleteBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -1939,12 +1997,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdateBy")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1998,7 +2050,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
@@ -2024,7 +2077,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -2062,6 +2117,9 @@ namespace Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -2179,7 +2237,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ManagerEmployeeCode");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Employee");
                 });
@@ -2228,31 +2287,57 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime>("AbsoluteExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedByIp")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Expires")
+                    b.Property<string>("DeviceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("Revoked")
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("ReplacedByTokenId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("RevokedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RevokedByIp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Token")
+                    b.Property<int?>("RevokedReason")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecurityStampSnapshot")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(900)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FamilyId");
+
+                    b.HasIndex("ReplacedByTokenId");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -2328,7 +2413,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("RepresentativesCode");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Representatives");
                 });
@@ -2491,6 +2577,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
@@ -2513,6 +2602,23 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Auth.AuthAuditLog", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.ApplicationUser", "ActorUser")
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Domain.Entities.Users.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ActorUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.Authorization.Permission", b =>
                 {
                     b.HasOne("Domain.Entities.Authorization.Module", "Module")
@@ -2526,6 +2632,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Authorization.UserPermission", b =>
                 {
+                    b.HasOne("Domain.Entities.Users.ApplicationUser", "GrantedByUser")
+                        .WithMany()
+                        .HasForeignKey("GrantedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Domain.Entities.Authorization.Permission", "Permission")
                         .WithMany("UserPermissions")
                         .HasForeignKey("PermissionId")
@@ -2537,6 +2648,8 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("GrantedByUser");
 
                     b.Navigation("Permission");
 
@@ -3059,11 +3172,18 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Users.RefreshToken", b =>
                 {
+                    b.HasOne("Domain.Entities.Users.RefreshToken", "ReplacedByToken")
+                        .WithMany()
+                        .HasForeignKey("ReplacedByTokenId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Domain.Entities.Users.ApplicationUser", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ReplacedByToken");
 
                     b.Navigation("User");
                 });
