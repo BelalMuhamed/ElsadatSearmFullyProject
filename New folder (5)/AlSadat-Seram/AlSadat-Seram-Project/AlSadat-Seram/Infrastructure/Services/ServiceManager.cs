@@ -133,62 +133,64 @@ public class ServiceManager : IServiceManager
     IOptions<JwtSettings> jwtSettings,
     IOptions<AuthSessionOptions> sessionOptions,
     IMapper Mapper,
-    ILoggerFactory loggerFactory, IExcelReaderService ExcelReader)
+    ILoggerFactory loggerFactory, IExcelReaderService ExcelReader, ICurrentUserService currentUserService, IJwtService jwtService, IAuthenticationService authService, IUserSessionService userSessionService, IUserPermissionService userPermissionService, IPermissionCatalogService   permissionCatalogService )
     {
         // new
-        _UserPermissionService = new Lazy<IUserPermissionService>(() => new UserPermissionService(Context));
-        _PermissionCatalogService = new Lazy<IPermissionCatalogService>(() => new PermissionCatalogService(Context));
-        _CurrentUserService = new Lazy<ICurrentUserService>(() => new CurrentUserService(HttpContextAccessor, loggerFactory.CreateLogger<CurrentUserService>()));
-        _JwtService = new Lazy<IJwtService>(() => new JwtService(jwtSettings));
-        _AuthenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(
-            UserManager, SignInManager, _JwtService.Value, Context, _UserPermissionService.Value, sessionOptions));
-        _UserSessionService = new Lazy<IUserSessionService>(() => new UserSessionService(Context));
-        _ChangeLogService = new Lazy<IChangeLogService>(() => new ChangeLogService(_CurrentUserService.Value));
-        _NotificationService = new Lazy<INotificationService>(() => new NotificationService(UnitOfWork, Mapper, _CurrentUserService.Value));
-        _PayrollDeductionService = new Lazy<IPayrollDeductionService>(() => new PayrollDeductionService(UnitOfWork, _CurrentUserService.Value));
-        //_NotificationDispatcher = new Lazy<INotificationDispatcher>(() => new NotificationDispatcher(UnitOfWork,Mapper,_CurrentUserService.Value));
-        _ProfileService = new Lazy<IProfileService>(() => new ProfileService(Mapper, UserManager, _CurrentUserService.Value));
-        _salesInvoiceService = new Lazy<IsalesInvoiceService>(() => new salesInvoiceService(UnitOfWork, _CurrentUserService.Value));
-        _CopounService = new Lazy<ICopounService>(() => new CopounService(UnitOfWork));
-        _BillDiscountService = new Lazy<IBillDiscount>(() => new BillsDiscountSr(UnitOfWork));
-        _ProductService = new Lazy<IProductService>(() => new ProductServcie(UnitOfWork, _CurrentUserService.Value, excelReader));
-        // مفيش أي:
-        _StoreTransactionValidator = new Lazy<IStoreTransactionValidator>(() => new StoreTransactionValidator(UnitOfWork));
-        _StoreTransactionService = new Lazy<IStoreTransactionService>(() => new StoreTransactionService(UnitOfWork, _StoreTransactionValidator.Value));
-        _StoreService = new Lazy<IStore>(() => new StoreService(UnitOfWork));
-        _GovernrateService = new Lazy<IGovernrateCaontract>(() => new GovernrateService(UnitOfWork));
-        _CityService = new Lazy<ICityContract>(() => new CityService(UnitOfWork));
-        _stockService = new Lazy<IStockService>(() => new StockService(UnitOfWork));
-        _systemGuard = new Lazy<ISystemAccountGuard>(() => new SystemAccountGuard(UnitOfWork));
-        _financialReports = new Lazy<IFinancialReportsService>(
-            () => new FinancialReportsService(UnitOfWork, _systemGuard.Value));
-        _treeService = new Lazy<ITreeAccounts>(() => new TreeAccountsService(UnitOfWork, _systemGuard.Value));
-        _supplierService = new Lazy<ISupplierContract>(
-    () => new SupplierService(UnitOfWork, ExcelReader, this));
-        _PlumberService = new Lazy<IPlumberContract>(() => new PlumberService(UnitOfWork));
-        _journalEntry = new Lazy<IJounalEntryContract>(() => new JournalEntryService(UnitOfWork));
-        _journalEntryDetails = new Lazy<IjournalEntryDetails>(() => new JournalEntryDetailsService(UnitOfWork));
-        _purchaseInvoiceService = new Lazy<IPurchaseInvoiceContract>(() => new PurchaseInvoiceService(UnitOfWork, _CurrentUserService.Value));
+        _UserPermissionService = new Lazy<IUserPermissionService>(
+            () => new UserPermissionService(Context, UserManager, _CurrentUserService.Value));
+        _PermissionCatalogService = new Lazy<IPermissionCatalogService>(() => permissionCatalogService);
+        
+            _CurrentUserService = new Lazy<ICurrentUserService>(() => currentUserService);
+            _JwtService = new Lazy<IJwtService>(() => jwtService);
+            _AuthenticationService = new Lazy<IAuthenticationService>(() => authService);
+            _UserSessionService = new Lazy<IUserSessionService>(() => userSessionService);
+            _ChangeLogService = new Lazy<IChangeLogService>(() => new ChangeLogService(_CurrentUserService.Value));
+            _NotificationService = new Lazy<INotificationService>(() => new NotificationService(UnitOfWork, Mapper, _CurrentUserService.Value));
+            _PayrollDeductionService = new Lazy<IPayrollDeductionService>(() => new PayrollDeductionService(UnitOfWork, _CurrentUserService.Value));
+            //_NotificationDispatcher = new Lazy<INotificationDispatcher>(() => new NotificationDispatcher(UnitOfWork,Mapper,_CurrentUserService.Value));
+            _ProfileService = new Lazy<IProfileService>(() => new ProfileService(Mapper, UserManager, _CurrentUserService.Value));
+            _salesInvoiceService = new Lazy<IsalesInvoiceService>(() => new salesInvoiceService(UnitOfWork, _CurrentUserService.Value));
+            _CopounService = new Lazy<ICopounService>(() => new CopounService(UnitOfWork));
+            _BillDiscountService = new Lazy<IBillDiscount>(() => new BillsDiscountSr(UnitOfWork));
+            _ProductService = new Lazy<IProductService>(() => new ProductServcie(UnitOfWork, _CurrentUserService.Value, ExcelReader));
+            // مفيش أي:
+            _StoreTransactionValidator = new Lazy<IStoreTransactionValidator>(() => new StoreTransactionValidator(UnitOfWork));
+            _StoreTransactionService = new Lazy<IStoreTransactionService>(() => new StoreTransactionService(UnitOfWork, _StoreTransactionValidator.Value));
+            _StoreService = new Lazy<IStore>(() => new StoreService(UnitOfWork));
+            _GovernrateService = new Lazy<IGovernrateCaontract>(() => new GovernrateService(UnitOfWork));
+            _CityService = new Lazy<ICityContract>(() => new CityService(UnitOfWork));
+            _stockService = new Lazy<IStockService>(() => new StockService(UnitOfWork));
+            _systemGuard = new Lazy<ISystemAccountGuard>(() => new SystemAccountGuard(UnitOfWork));
+            _financialReports = new Lazy<IFinancialReportsService>(
+                () => new FinancialReportsService(UnitOfWork, _systemGuard.Value));
+            _treeService = new Lazy<ITreeAccounts>(() => new TreeAccountsService(UnitOfWork, _systemGuard.Value));
+            _supplierService = new Lazy<ISupplierContract>(
+        () => new SupplierService(UnitOfWork, ExcelReader, this));
+            _PlumberService = new Lazy<IPlumberContract>(() => new PlumberService(UnitOfWork));
+            _journalEntry = new Lazy<IJounalEntryContract>(() => new JournalEntryService(UnitOfWork));
+            _journalEntryDetails = new Lazy<IjournalEntryDetails>(() => new JournalEntryDetailsService(UnitOfWork));
+            _purchaseInvoiceService = new Lazy<IPurchaseInvoiceContract>(() => new PurchaseInvoiceService(UnitOfWork, _CurrentUserService.Value));
 
-        _DistributorsAndMerchantsService = new Lazy<IDistributorsAndMerchantsService>(() => new DistributorsAndMerchantsService(UnitOfWork, UserManager, this, _CurrentUserService.Value, ExcelReader));
-        _CoponCollectionRepresentiveRateService = new Lazy<ICoponCollectionRepresentiveRateService>(() => new CoponCollectionRepresentiveRateService(UnitOfWork, _CurrentUserService.Value));
-        _EmployeeAttendanceService = new Lazy<IEmployeeAttendanceService>(() => new EmployeeAttendanceService(UnitOfWork, _CurrentUserService.Value, UserManager));
-        _EmployeeService = new Lazy<IEmployeeService>(() => new EmployeeService(UserManager, _CurrentUserService.Value, UnitOfWork, RoleManager));
-        _RepresentativeService = new Lazy<IRepresentativeService>(() => new RepresentativeService(UnitOfWork, _CurrentUserService.Value, UserManager, RoleManager));
-        _CollectionRepresentiveRateService = new Lazy<ICollectionRepresentiveRateService>(() => new CollectionRepresentiveRateService(UnitOfWork, _CurrentUserService.Value));
-        _PublicHolidayService = new Lazy<IPublicHolidayService>(() => new PublicHolidayService(UnitOfWork, _CurrentUserService.Value));
-        _DepartmentService = new Lazy<IDepartmentService>(() => new DepartmentService(UnitOfWork, _CurrentUserService.Value));
-        _LeaveTypeService = new Lazy<ILeaveTypeService>(() => new LeaveTypeService(UnitOfWork, _CurrentUserService.Value));
-        _EmployeeSalaryAdjustmentService = new Lazy<IEmployeeSalaryAdjustmentService>(() => new EmployeeSalaryAdjustmentService(UnitOfWork, _CurrentUserService.Value));
-        _EmployeePayrollService = new Lazy<IEmployeePayrollService>(() => new PayrollService(UnitOfWork, _CurrentUserService.Value, _EmployeeService.Value, loggerFactory.CreateLogger<PayrollService>(), _RepresentativeService.Value));
-        _EmployeeLoanService = new Lazy<IEmployeeLoanService>(() => new EmployeeLoanService(UnitOfWork, _CurrentUserService.Value, loggerFactory.CreateLogger<EmployeeLoanService>()));
-        _EmployeeLeaveService = new Lazy<IEmployeeLeaveService>(() => new EmployeeLeaveService(UnitOfWork, _CurrentUserService.Value, UserManager));
+            _DistributorsAndMerchantsService = new Lazy<IDistributorsAndMerchantsService>(() => new DistributorsAndMerchantsService(UnitOfWork, UserManager, this, _CurrentUserService.Value, ExcelReader));
+            _CoponCollectionRepresentiveRateService = new Lazy<ICoponCollectionRepresentiveRateService>(() => new CoponCollectionRepresentiveRateService(UnitOfWork, _CurrentUserService.Value));
+            _EmployeeAttendanceService = new Lazy<IEmployeeAttendanceService>(() => new EmployeeAttendanceService(UnitOfWork, _CurrentUserService.Value, UserManager));
+            _EmployeeService = new Lazy<IEmployeeService>(() => new EmployeeService(UserManager, _CurrentUserService.Value, UnitOfWork, RoleManager));
+            _RepresentativeService = new Lazy<IRepresentativeService>(() => new RepresentativeService(UnitOfWork, _CurrentUserService.Value, UserManager, RoleManager));
+            _CollectionRepresentiveRateService = new Lazy<ICollectionRepresentiveRateService>(() => new CollectionRepresentiveRateService(UnitOfWork, _CurrentUserService.Value));
+            _PublicHolidayService = new Lazy<IPublicHolidayService>(() => new PublicHolidayService(UnitOfWork, _CurrentUserService.Value));
+            _DepartmentService = new Lazy<IDepartmentService>(() => new DepartmentService(UnitOfWork, _CurrentUserService.Value));
+            _LeaveTypeService = new Lazy<ILeaveTypeService>(() => new LeaveTypeService(UnitOfWork, _CurrentUserService.Value));
+            _EmployeeSalaryAdjustmentService = new Lazy<IEmployeeSalaryAdjustmentService>(() => new EmployeeSalaryAdjustmentService(UnitOfWork, _CurrentUserService.Value));
+            _EmployeePayrollService = new Lazy<IEmployeePayrollService>(() => new PayrollService(UnitOfWork, _CurrentUserService.Value, _EmployeeService.Value, loggerFactory.CreateLogger<PayrollService>(), _RepresentativeService.Value));
+            _EmployeeLoanService = new Lazy<IEmployeeLoanService>(() => new EmployeeLoanService(UnitOfWork, _CurrentUserService.Value, loggerFactory.CreateLogger<EmployeeLoanService>()));
+            _EmployeeLeaveService = new Lazy<IEmployeeLeaveService>(() => new EmployeeLeaveService(UnitOfWork, _CurrentUserService.Value, UserManager));
 
-        _EmployeeBonusService = new Lazy<IEmployeeBonusService>(() => new EmployeeBonusService(UnitOfWork, _CurrentUserService.Value));
-        _RepresentativeAttendanceService = new Lazy<IRepresentativeAttendanceService>(() => new RepresentativeAttendanceService(UnitOfWork, _CurrentUserService.Value, UserManager));
-        _warehouseInventoryReportService = new Lazy<IWarehouseInventoryReportService>(
-            () => new WarehouseInventoryReportService(UnitOfWork));
-        excelReader = ExcelReader;
+            _EmployeeBonusService = new Lazy<IEmployeeBonusService>(() => new EmployeeBonusService(UnitOfWork, _CurrentUserService.Value));
+            _RepresentativeAttendanceService = new Lazy<IRepresentativeAttendanceService>(() => new RepresentativeAttendanceService(UnitOfWork, _CurrentUserService.Value, UserManager));
+            _warehouseInventoryReportService = new Lazy<IWarehouseInventoryReportService>(
+                () => new WarehouseInventoryReportService(UnitOfWork));
+            excelReader = ExcelReader;
+        
     }
     // Properties to access the services
     public IAuthenticationService AuthService => _AuthenticationService.Value;

@@ -101,14 +101,14 @@ public class AuthenticationService(
         if (user == null)
         {
             await LogAuthEventAsync(AuthEventType.LoginFailed, null, identifier, false, ipAddress, "Unknown identifier");
-            return Result<AuthResponse>.Failure("بيانات الدخول غير صحيحة", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("بيانات الدخول غير صحيحة", HttpStatusCode.Unauthorized);
         }
 
         if (user.IsDeleted)
         {
-            // Same generic message as any other failure — do not reveal account state (H-3).
+            // Same generic message as any other FailureKey — do not reveal account state (H-3).
             await LogAuthEventAsync(AuthEventType.LoginFailed, user.Id, identifier, false, ipAddress, "Account deactivated");
-            return Result<AuthResponse>.Failure("بيانات الدخول غير صحيحة", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("بيانات الدخول غير صحيحة", HttpStatusCode.Unauthorized);
         }
 
         var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
@@ -116,13 +116,13 @@ public class AuthenticationService(
         if (signInResult.IsLockedOut)
         {
             await LogAuthEventAsync(AuthEventType.AccountLockedOut, user.Id, identifier, false, ipAddress);
-            return Result<AuthResponse>.Failure("تم قفل الحساب مؤقتًا بسبب محاولات دخول متكررة. حاول مرة أخرى لاحقًا", HttpStatusCode.Locked);
+            return Result<AuthResponse>.FailureKey("تم قفل الحساب مؤقتًا بسبب محاولات دخول متكررة. حاول مرة أخرى لاحقًا", HttpStatusCode.Locked);
         }
 
         if (!signInResult.Succeeded)
         {
             await LogAuthEventAsync(AuthEventType.LoginFailed, user.Id, identifier, false, ipAddress, "Wrong password");
-            return Result<AuthResponse>.Failure("بيانات الدخول غير صحيحة", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("بيانات الدخول غير صحيحة", HttpStatusCode.Unauthorized);
         }
 
         var result = await IssueTokensAsync(user, ipAddress);
@@ -139,7 +139,7 @@ public class AuthenticationService(
             .FirstOrDefaultAsync(t => t.TokenHash == tokenHash);
 
         if (existing == null)
-            return Result<AuthResponse>.Failure("Invalid refresh token", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("Invalid refresh token", HttpStatusCode.Unauthorized);
 
         // Reuse detection: presenting an already-revoked token means the token was
         // stolen and the legitimate flow already rotated past it — revoke the whole
@@ -159,15 +159,15 @@ public class AuthenticationService(
             await _context.SaveChangesAsync();
             await LogAuthEventAsync(AuthEventType.RefreshTokenReuseDetected, existing.UserId, null, false, ipAddress);
 
-            return Result<AuthResponse>.Failure("Refresh token is invalid or expired", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("Refresh token is invalid or expired", HttpStatusCode.Unauthorized);
         }
 
         if (existing.IsExpired)
-            return Result<AuthResponse>.Failure("Refresh token is invalid or expired", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("Refresh token is invalid or expired", HttpStatusCode.Unauthorized);
 
         var user = existing.User;
         if (user == null)
-            return Result<AuthResponse>.Failure("Invalid refresh token", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("Invalid refresh token", HttpStatusCode.Unauthorized);
 
         if (user.IsDeleted)
         {
@@ -175,7 +175,7 @@ public class AuthenticationService(
             existing.RevokedByIp = ipAddress;
             existing.RevokedReason = Domain.Entities.Users.RevokedReason.UserDeactivated;
             await _context.SaveChangesAsync();
-            return Result<AuthResponse>.Failure("تم ايقاف هذا الحساب من قبل الادمن", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("تم ايقاف هذا الحساب من قبل الادمن", HttpStatusCode.Unauthorized);
         }
 
         if (existing.SecurityStampSnapshot != (user.SecurityStamp ?? string.Empty))
@@ -184,7 +184,7 @@ public class AuthenticationService(
             existing.RevokedByIp = ipAddress;
             existing.RevokedReason = Domain.Entities.Users.RevokedReason.RoleChanged;
             await _context.SaveChangesAsync();
-            return Result<AuthResponse>.Failure("Refresh token is invalid or expired", HttpStatusCode.Unauthorized);
+            return Result<AuthResponse>.FailureKey("Refresh token is invalid or expired", HttpStatusCode.Unauthorized);
         }
 
         // Rotate: mint new tokens, revoke this one, keep the family.
@@ -212,15 +212,30 @@ public class AuthenticationService(
             AbsoluteExpiresAt = existing.AbsoluteExpiresAt // never extended (S-2/A-1)
         };
 
+
+        await using var tx = await _context.Database.BeginTransactionAsync();
+
+        var claimed = await _context.RefreshTokens
+            .Where(t => t.Id == existing.Id && t.RevokedAt == null)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(t => t.RevokedAt, DateTime.UtcNow)
+                .SetProperty(t => t.RevokedByIp, ipAddress)
+                .SetProperty(t => t.RevokedReason, RevokedReason.Rotated));
+
+        if (claimed == 0)
+        {
+            await tx.RollbackAsync();
+            return Result<AuthResponse>.FailureKey("Auth.InvalidRefreshToken", HttpStatusCode.Unauthorized);
+        }
+
         _context.RefreshTokens.Add(newRefreshToken);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();          // newRefreshToken.Id is real now
 
-        existing.RevokedAt = DateTime.UtcNow;
-        existing.RevokedByIp = ipAddress;
-        existing.RevokedReason = Domain.Entities.Users.RevokedReason.Rotated;
-        existing.ReplacedByTokenId = newRefreshToken.Id;
-        await _context.SaveChangesAsync();
+        await _context.RefreshTokens
+            .Where(t => t.Id == existing.Id)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.ReplacedByTokenId, newRefreshToken.Id));
 
+        await tx.CommitAsync();
         var response = new AuthResponse
         {
             userName = user.FullName,
@@ -242,7 +257,7 @@ public class AuthenticationService(
         var token = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.TokenHash == tokenHash);
 
         if (token == null)
-            return Result<string>.Failure("Invalid refresh token", HttpStatusCode.BadRequest);
+            return Result<string>.FailureKey("Invalid refresh token", HttpStatusCode.BadRequest);
 
         token.RevokedAt = DateTime.UtcNow;
         token.RevokedReason = Domain.Entities.Users.RevokedReason.Logout;

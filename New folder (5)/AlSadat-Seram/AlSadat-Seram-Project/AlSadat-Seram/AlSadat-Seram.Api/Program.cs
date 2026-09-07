@@ -1,12 +1,20 @@
 ﻿using AlSadat_Seram.Api.Middlewares;
 using Application.Mappings;
 using Application.Services.contract;
+using Application.Services.contract.Authorization;
+using Application.Services.contract.AuthService;
+using Application.Services.contract.CurrentUserService;
+using Application.Services.contract.JwtService;
 using Application.Services.contract.LocalizationService;
 using Domain.Common;
 using Domain.Entities.Users;
 using Domain.UnitOfWork.Contract;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Infrastructure.Services.Authorization;
+using Infrastructure.Services.AuthServices;
+using Infrastructure.Services.CurrentUserServices;
+using Infrastructure.Services.JwtServices;
 using Infrastructure.Services.LocalizationServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -66,13 +74,20 @@ internal class Program
         builder.Services.AddSingleton<IAuthorizationHandler, Infrastructure.Authorization.PermissionAuthorizationHandler>();
         builder.Services.AddSingleton<Domain.Common.IPermissionCatalog, Domain.Common.PermissionCatalog>();
 
+        builder.Host.UseDefaultServiceProvider(o =>
+        {
+            o.ValidateOnBuild = true;
+            o.ValidateScopes = true;
+        });
+
         builder.Services.AddControllers(options =>
         {
-            var policy = new AuthorizationPolicyBuilder()
-                             .RequireAuthenticatedUser()
-                             .Build();
-            options.Filters.Add(new AuthorizeFilter(policy));
-        });
+            options.Filters.Add(new AuthorizeFilter(
+                new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build()));
+        })
+        .AddControllersAsServices();
         #endregion
         #endregion
 
@@ -178,7 +193,6 @@ internal class Program
         builder.Services.Configure<AuthSessionOptions>(builder.Configuration.GetSection("Auth"));
         #endregion
         QuestPDF.Settings.License = LicenseType.Community;
-        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -189,6 +203,12 @@ internal class Program
         builder.Services.AddScoped(typeof(IExcelReaderService), typeof(ExcelReaderService));
 
         builder.Services.AddScoped(typeof(IServiceManager),typeof(ServiceManager));
+        builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+        builder.Services.AddScoped<IJwtService, JwtService>();
+        builder.Services.AddScoped<IUserPermissionService, UserPermissionService>();
+        builder.Services.AddScoped<IPermissionCatalogService, PermissionCatalogService>();
+        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddScoped<IUserSessionService, UserSessionService>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ILocalizationService, LocalizationService>();
         #region Global Rate Limiting

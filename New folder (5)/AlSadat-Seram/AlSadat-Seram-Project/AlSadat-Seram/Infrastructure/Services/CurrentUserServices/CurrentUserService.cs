@@ -30,7 +30,8 @@ public class CurrentUserService : ICurrentUserService
 
     private bool _resolved;
     private string? _userId;
-
+    public string? IpAddress
+    => _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
     public CurrentUserService(
         IHttpContextAccessor httpContextAccessor,
         ILogger<CurrentUserService> logger)

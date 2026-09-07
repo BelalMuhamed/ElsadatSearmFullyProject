@@ -40,7 +40,12 @@ namespace Domain.Common
 
         public static Result<T> Success(T data, HttpStatusCode statusCode)
             => new() { IsSuccess = true, Data = data, StatusCode = statusCode };
-
+        /// <summary>
+        /// Localized success — pass a key from LocalizationResources instead of a literal string.
+        /// Mirrors FailureKey; resolved at the API boundary by BaseApiController.HandleResult.
+        /// </summary>
+        public static Result<T> SuccessKey(string messageKey, T data, HttpStatusCode statusCode = HttpStatusCode.OK)
+            => new() { IsSuccess = true, Data = data, MessageKey = messageKey, StatusCode = statusCode };
         public static Result<T> Failure(string message, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
             => new() { IsSuccess = false, Message = message, StatusCode = statusCode };
 

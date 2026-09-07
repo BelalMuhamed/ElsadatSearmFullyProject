@@ -23,7 +23,45 @@ namespace Infrastructure.Services.LocalizationServices
             ["Common.PermissionDenied"] = ("ليس لديك الصلاحية للقيام بهذا الإجراء", "You do not have permission to perform this action"),
             ["Common.ModuleNotAssigned"] = ("ليس لديك صلاحية الوصول لهذا القسم", "You do not have access to this module"),
             ["Permission.AssignedSuccessfully"] = ("تم تحديث صلاحيات المستخدم بنجاح", "User permissions updated successfully"),
+            ["Auth.UserNotFound"] = ("المستخدم غير موجود", "User not found"),
+            ["Permission.TargetMustBeEmployee"] = ("الصلاحيات تُمنح للموظفين فقط", "Permissions can only be granted to employees"),
+            ["Permission.UnknownPermissionId"] = ("توجد صلاحية غير معروفة ضمن الطلب", "The request contains an unknown permission"),
+            ["Permission.NotDelegable"] = ("لا يمكن تفويض هذه الصلاحية", "This permission cannot be delegated"),
+            ["Auth.InvalidRefreshToken"] = ("رمز التحديث غير صالح أو منتهي", "Refresh token is invalid or expired"),
+            ["Auth.InvalidCredentials"] =
+    ("بيانات الدخول غير صحيحة", "Invalid credentials"),
 
+            ["Auth.AccountLocked"] =
+    ("تم قفل الحساب مؤقتًا بسبب محاولات دخول متكررة",
+     "Account temporarily locked"),
+
+            ["Auth.AccountDeactivated"] =
+    ("تم إيقاف هذا الحساب",
+     "This account has been deactivated"),
+
+            ["Auth.InvalidRefreshToken"] =
+    ("رمز التحديث غير صالح أو منتهي",
+     "Refresh token is invalid or expired"),
+
+            ["Auth.LoggedOut"] =
+    ("تم تسجيل الخروج بنجاح",
+     "Logged out successfully"),
+
+            ["Auth.LoggedOutAllDevices"] =
+    ("تم تسجيل الخروج من جميع الأجهزة",
+     "Logged out from all devices"),
+
+            ["Auth.RoleNotAssignable"] =
+    ("لا يمكن إسناد هذا الدور",
+     "This role cannot be assigned"),
+
+            ["Permission.TargetMustBeEmployee"] =
+    ("الصلاحيات تُمنح للموظفين فقط",
+     "Permissions can only be granted to employees"),
+
+            ["Permission.NotDelegable"] =
+    ("لا يمكن تفويض هذه الصلاحية",
+     "This permission cannot be delegated"),
             // ---- Example: Supplier module (add the rest as you migrate it) ----
             // ["Supplier.DuplicatePhone"] = ("رقم الهاتف مستخدم بالفعل", "Phone number already in use"),
         };

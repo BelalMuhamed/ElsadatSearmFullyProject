@@ -15,7 +15,9 @@ public interface ICurrentUserService
     /// <summary>ApplicationUser.Id resolved from the token's NameIdentifier /
     /// sub claim. Null when the request is unauthenticated.</summary>
     string? UserId { get; }
-
+    /// <summary>Remote IP of the current request, for audit rows. Null outside a request.
+    /// Reflects the proxy address until UseForwardedHeaders is configured.</summary>
+    string? IpAddress { get; }
     ClaimsPrincipal? UserPrincipal { get; }
 
     /// <summary>True when the current request carries an authenticated principal.</summary>
