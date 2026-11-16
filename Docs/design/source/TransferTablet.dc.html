@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تحويل بين مخزنين — تابلت</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; display: flex; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(800px 500px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <nav aria-label="القائمة الرئيسية" style="flex: 0 0 76px; background: #100D09; border-left: 1px solid rgba(255,232,190,0.07); display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 0">
+    <img src="/_blob/19bc09a635205694f89e681947df045d" alt="Sadat Searm" style="width: 38px; height: 30px; object-fit: contain; margin-bottom: 10px">
+    <a href="#" aria-label="الرئيسية" title="الرئيسية" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #BDB29E; background: rgba(255,240,210,0.04)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg></a>
+    <a href="#" aria-label="المخازن" aria-current="page" title="المخازن" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #1A1408; background: #E0B43A"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5 12 12l9-4.5M12 12v9"></path></svg></a>
+    <a href="#" aria-label="المشتريات" title="المشتريات" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #BDB29E; background: rgba(255,240,210,0.04)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11h10.2L20 7H6.2M9 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM17 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"></path></svg></a>
+    <a href="#" aria-label="مساحتي" title="مساحتي" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #BDB29E; background: rgba(255,240,210,0.04)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8zM4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"></path></svg></a>
+    <span style="flex: 1"></span>
+    <span aria-label="عمرو جلال" style="width: 44px; height: 44px; border-radius: 13px; background: linear-gradient(135deg, #F3D35A, #B8870F); color: #1A1408; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">عج</span>
+  </nav>
+
+  <main style="flex: 1; min-width: 0; padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <h1 style="margin: 0; font-size: 22px; font-weight: 700">تحويل بين مخزنين</h1>
+        <span style="font-size: 13px; color: #BDB29E">عمرو جلال · أمين مخزن القاهرة</span>
+      </div>
+      <button type="button" style="height: 48px; padding: 0 18px; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 14px 'IBM Plex Sans Arabic', sans-serif">إلغاء</button>
+    </div>
+
+    <div style="display: flex; align-items: stretch; gap: 12px">
+      <button type="button" style="flex: 1; text-align: right; padding: 16px 18px; border-radius: 18px; border: 1px solid rgba(255,232,190,0.14); background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(22,19,14,0.9)); color: #F6F1E7; font-family: inherit; display: flex; flex-direction: column; gap: 4px; cursor: pointer"><span style="font-size: 12.5px; color: #BDB29E; font-weight: 600">من</span><span style="font-size: 18px; font-weight: 700">مخزن المصنع · السادات</span><span style="font-size: 12.5px; color: #978C78">اضغط تغيّر</span></button>
+      <button type="button" aria-label="بدّل المخزنين" style="flex: 0 0 56px; border-radius: 16px; border: 1px solid rgba(240,200,80,0.35); background: rgba(224,180,58,0.08); color: #F0C850; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4l4 4-4 4M20 8H8M8 20l-4-4 4-4M4 16h12"></path></svg></button>
+      <button type="button" style="flex: 1; text-align: right; padding: 16px 18px; border-radius: 18px; border: 2px solid #E0B43A; background: rgba(224,180,58,0.07); color: #F6F1E7; font-family: inherit; display: flex; flex-direction: column; gap: 4px; cursor: pointer"><span style="font-size: 12.5px; color: #F0C850; font-weight: 600">إلى</span><span style="font-size: 18px; font-weight: 700">مخزن القاهرة</span><span style="font-size: 12.5px; color: #978C78">مخزنك</span></button>
+    </div>
+
+    <label style="display: flex; align-items: center; gap: 12px; height: 56px; box-sizing: border-box; padding: 0 16px; border-radius: 16px; border: 1px dashed rgba(240,200,80,0.4); background: rgba(224,180,58,0.04); color: #F0C850">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">ضيف منتج</span>
+      <input placeholder="ضيف منتج — بيظهر بس اللي ليه رصيد في السادات" style="flex: 1; min-width: 0; border: 0; background: transparent; outline: none; color: #F6F1E7; font: 500 15px 'IBM Plex Sans Arabic', sans-serif">
+    </label>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px; background: linear-gradient(127deg, rgba(42,35,25,0.92), rgba(22,19,14,0.88)); border: 1px solid rgba(255,232,190,0.08)">
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">خلاط حوض كروم «نايل»</span><span style="font-size: 13px; color: #978C78">متاح في السادات ٣٢</span></div>
+        <div role="group" aria-label="كمية خلاط نايل" style="display: flex; align-items: center; gap: 6px">
+          <button type="button" aria-label="قلّل" style="width: 48px; height: 48px; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #F6F1E7; font-size: 22px">−</button>
+          <input aria-label="الكمية" value="٢٠" style="width: 72px; height: 48px; box-sizing: border-box; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.04); color: #F6F1E7; font: 700 18px 'IBM Plex Sans Arabic', sans-serif; text-align: center">
+          <button type="button" aria-label="زوّد" style="width: 48px; height: 48px; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #F6F1E7; font-size: 22px">+</button>
+        </div>
+        <button type="button" aria-label="شيل السطر" style="width: 48px; height: 48px; border-radius: 14px; border: 0; background: transparent; color: #978C78; font-size: 18px">✕</button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px; background: linear-gradient(127deg, rgba(42,35,25,0.92), rgba(22,19,14,0.88)); border: 1px solid rgba(255,232,190,0.08)">
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">سيفون مدفون «سلِم»</span><span style="font-size: 13px; color: #978C78">متاح في السادات ٤٠</span></div>
+        <div role="group" aria-label="كمية السيفون" style="display: flex; align-items: center; gap: 6px">
+          <button type="button" aria-label="قلّل" style="width: 48px; height: 48px; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #F6F1E7; font-size: 22px">−</button>
+          <input aria-label="الكمية" value="١٠" style="width: 72px; height: 48px; box-sizing: border-box; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.04); color: #F6F1E7; font: 700 18px 'IBM Plex Sans Arabic', sans-serif; text-align: center">
+          <button type="button" aria-label="زوّد" style="width: 48px; height: 48px; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #F6F1E7; font-size: 22px">+</button>
+        </div>
+        <button type="button" aria-label="شيل السطر" style="width: 48px; height: 48px; border-radius: 14px; border: 0; background: transparent; color: #978C78; font-size: 18px">✕</button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px; background: rgba(239,100,97,0.06); border: 1px solid rgba(239,100,97,0.45)">
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">بانيو أكريليك ١٧٠ سم</span><span id="bath-e" style="font-size: 13px; color: #F28683; font-weight: 600">متاح ٢٦ بس — قلّل الكمية</span></div>
+        <div role="group" aria-label="كمية البانيو" style="display: flex; align-items: center; gap: 6px">
+          <button type="button" aria-label="قلّل" style="width: 48px; height: 48px; border-radius: 14px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #F6F1E7; font-size: 22px">−</button>
+          <input aria-label="الكمية" aria-invalid="true" aria-describedby="bath-e" value="٣٠" style="width: 72px; height: 48px; box-sizing: border-box; border-radius: 14px; border: 1px solid #EF6461; background: rgba(239,100,97,0.08); color: #F6F1E7; font: 700 18px 'IBM Plex Sans Arabic', sans-serif; text-align: center">
+          <button type="button" aria-label="زوّد" disabled="" style="width: 48px; height: 48px; border-radius: 14px; border: 1px dashed rgba(255,232,190,0.12); background: transparent; color: #6E6556; font-size: 22px">+</button>
+        </div>
+        <button type="button" aria-label="شيل السطر" style="width: 48px; height: 48px; border-radius: 14px; border: 0; background: transparent; color: #978C78; font-size: 18px">✕</button>
+      </div>
+    </div>
+
+    <span style="flex: 1"></span>
+    <div style="display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: 20px; background: linear-gradient(127deg, rgba(48,40,28,0.97), rgba(24,20,14,0.95)); border: 1px solid rgba(240,200,80,0.2)">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 2px"><b style="font-size: 16px">٣ أصناف · ٦٠ قطعة</b><span style="font-size: 13px; color: #F28683">سطر واحد محتاج تصليح قبل التأكيد</span></div>
+      <button type="button" disabled="" style="height: 56px; padding: 0 24px; border-radius: 16px; border: 1px dashed rgba(240,200,80,0.35); background: rgba(224,180,58,0.06); color: #8F7F55; font: 700 16px 'IBM Plex Sans Arabic', sans-serif">أكّد التحويل واطبع الإذن</button>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1024,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

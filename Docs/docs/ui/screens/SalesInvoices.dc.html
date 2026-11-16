@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>فواتير البيع</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+th{font-weight:600;text-align:right}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <dc-import name="Sidebar" active="sales" item="invoices" theme="dark" hint-size="264px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">المبيعات › فواتير البيع</nav>
+          <h1 style="margin: 0; font-size: 22px; font-weight: 700">فواتير البيع</h1>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button type="button" style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">تصدير Excel / PDF</button>
+          <a href="InvoiceCreate.dc.html" style="height: 40px; padding: 0 18px; border-radius: 12px; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 6px 18px rgba(224,180,58,0.2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            فاتورة جديدة
+          </a>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+        <button type="button" aria-pressed="false" style="text-align: right; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(255,232,190,0.08); background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); color: #F6F1E7; font-family: inherit; display: flex; flex-direction: column; gap: 4px; cursor: pointer"><span style="font-size: 12px; color: #CFC5B2; font-weight: 600">مسودة</span><span style="font-size: 20px; font-weight: 700">٧ <span style="font-size: 12.5px; color: #978C78; font-weight: 500">· ١٨٤٬٦٠٠ ج.م</span></span></button>
+        <button type="button" aria-pressed="false" style="text-align: right; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(255,232,190,0.08); background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); color: #F6F1E7; font-family: inherit; display: flex; flex-direction: column; gap: 4px; cursor: pointer"><span style="font-size: 12px; color: #5FD9A2; font-weight: 600">مؤكدة</span><span style="font-size: 20px; font-weight: 700">١٤٢ <span style="font-size: 12.5px; color: #978C78; font-weight: 500">· ١٫٢٨ مليون</span></span></button>
+        <button type="button" aria-pressed="false" style="text-align: right; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(242,153,74,0.30); background: rgba(242,153,74,0.06); color: #F6F1E7; font-family: inherit; display: flex; flex-direction: column; gap: 4px; cursor: pointer"><span style="font-size: 12px; color: #F5A862; font-weight: 600">طلب إلغاء معلّق</span><span style="font-size: 20px; font-weight: 700">٢ <span style="font-size: 12.5px; color: #978C78; font-weight: 500">· ٥١٬٩٠٠ ج.م</span></span></button>
+        <button type="button" aria-pressed="false" style="text-align: right; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(255,232,190,0.08); background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); color: #F6F1E7; font-family: inherit; display: flex; flex-direction: column; gap: 4px; cursor: pointer"><span style="font-size: 12px; color: #F28683; font-weight: 600">ملغاة</span><span style="font-size: 20px; font-weight: 700">٣ <span style="font-size: 12.5px; color: #978C78; font-weight: 500">· الشهر ده</span></span></button>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
+        <label style="flex: 0 1 280px; min-width: 200px; height: 40px; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 12px; background: rgba(255,240,210,0.04); border: 1px solid rgba(255,232,190,0.12); color: #BDB29E">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM20 20l-3.5-3.5"></path></svg>
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">رقم الفاتورة أو العميل</span>
+          <input placeholder="رقم الفاتورة أو اسم العميل" style="flex: 1; min-width: 0; border: 0; background: transparent; outline: none; color: #F6F1E7; font: 500 13px 'IBM Plex Sans Arabic', sans-serif">
+        </label>
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">الحالة: الكل ▾</button>
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">العميل: الكل ▾</button>
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">الفترة: أكتوبر ٢٠٢٦ ▾</button>
+      </div>
+
+      <div style="border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9) 0%, rgba(22,19,14,0.85) 100%); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 900px">
+            <thead>
+              <tr style="color: #978C78; font-size: 12px">
+                <th style="padding: 14px 20px 10px">الرقم</th>
+                <th style="padding: 14px 12px 10px">العميل</th>
+                <th style="padding: 14px 12px 10px">التاريخ</th>
+                <th style="padding: 14px 12px 10px; text-align: left">الصافي</th>
+                <th style="padding: 14px 12px 10px; text-align: left">النقاط</th>
+                <th style="padding: 14px 12px 10px">الحالة</th>
+                <th style="padding: 14px 12px 10px">آخر تعديل</th>
+                <th style="padding: 14px 20px 10px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">إجراءات</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)">
+                <td style="padding: 13px 20px"><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font: 500 13px 'IBM Plex Mono', monospace">INV-1038</bdi></a></td>
+                <td style="padding: 13px 12px"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">مؤسسة النور للأدوات الصحية</span><span style="font-size: 12px; color: #978C78">تاجر · طنطا</span></div></td>
+                <td style="padding: 13px 12px; color: #CFC5B2">١٤ أكتوبر</td>
+                <td style="padding: 13px 12px; text-align: left; font-weight: 600">٤٢٬٣٠٠</td>
+                <td style="padding: 13px 12px; text-align: left; color: #5ED3D0">٤٢٠</td>
+                <td style="padding: 13px 12px"><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(242,153,74,0.12); border: 1px solid rgba(242,153,74,0.4); color: #F5A862">طلب إلغاء</span></td>
+                <td style="padding: 13px 12px; font-size: 12.5px; color: #BDB29E">محمد سعيد · من ٥ س</td>
+                <td style="padding: 13px 20px"><div style="display: flex; gap: 6px; justify-content: flex-end"><button type="button" style="height: 32px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">راجع الطلب</button><button type="button" aria-label="إجراءات تانية للفاتورة INV-1038" style="width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.12); background: transparent; color: #BDB29E">⋯</button></div></td>
+              </tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)">
+                <td style="padding: 13px 20px"><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font: 500 13px 'IBM Plex Mono', monospace">INV-1031</bdi></a></td>
+                <td style="padding: 13px 12px"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">معرض الأمانة للسيراميك</span><span style="font-size: 12px; color: #978C78">وكيل · شبين الكوم</span></div></td>
+                <td style="padding: 13px 12px; color: #CFC5B2">١١ أكتوبر</td>
+                <td style="padding: 13px 12px; text-align: left; font-weight: 600">٩٬٦٠٠</td>
+                <td style="padding: 13px 12px; text-align: left; color: #5ED3D0">٩٦</td>
+                <td style="padding: 13px 12px"><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(242,153,74,0.12); border: 1px solid rgba(242,153,74,0.4); color: #F5A862">طلب إلغاء</span></td>
+                <td style="padding: 13px 12px; font-size: 12.5px; color: #BDB29E">ندى كمال · امبارح</td>
+                <td style="padding: 13px 20px"><div style="display: flex; gap: 6px; justify-content: flex-end"><button type="button" style="height: 32px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">راجع الطلب</button><button type="button" aria-label="إجراءات تانية للفاتورة INV-1031" style="width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.12); background: transparent; color: #BDB29E">⋯</button></div></td>
+              </tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)">
+                <td style="padding: 13px 20px"><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font: 500 13px 'IBM Plex Mono', monospace">INV-1042</bdi></a></td>
+                <td style="padding: 13px 12px"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">الحاج سيد عبد الرحمن</span><span style="font-size: 12px; color: #978C78">تاجر · السادات</span></div></td>
+                <td style="padding: 13px 12px; color: #CFC5B2">النهارده</td>
+                <td style="padding: 13px 12px; text-align: left; font-weight: 600">٢٨٬٧٥٠</td>
+                <td style="padding: 13px 12px; text-align: left; color: #978C78">٢٨٨</td>
+                <td style="padding: 13px 12px"><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(200,190,170,0.08); border: 1px solid rgba(200,190,170,0.25); color: #CFC5B2">مسودة</span></td>
+                <td style="padding: 13px 12px; font-size: 12.5px; color: #BDB29E">محمد سعيد · ١٠:١٢ ص</td>
+                <td style="padding: 13px 20px"><div style="display: flex; gap: 6px; justify-content: flex-end"><a href="InvoiceConfirm.dc.html" style="height: 32px; padding: 0 14px; border-radius: 10px; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 12.5px 'IBM Plex Sans Arabic', sans-serif; text-decoration: none; display: inline-flex; align-items: center">تأكيد</a><button type="button" aria-label="إجراءات تانية للفاتورة INV-1042" style="width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.12); background: transparent; color: #BDB29E">⋯</button></div></td>
+              </tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)">
+                <td style="padding: 13px 20px"><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font: 500 13px 'IBM Plex Mono', monospace">INV-1040</bdi></a></td>
+                <td style="padding: 13px 12px"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">شركة الدلتا للتوزيع</span><span style="font-size: 12px; color: #978C78">موزّع · المنصورة</span></div></td>
+                <td style="padding: 13px 12px; color: #CFC5B2">١٨ أكتوبر</td>
+                <td style="padding: 13px 12px; text-align: left; font-weight: 600">١٢١٬٨٥٩</td>
+                <td style="padding: 13px 12px; text-align: left; color: #5ED3D0">١٬١٦٤</td>
+                <td style="padding: 13px 12px"><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(60,201,138,0.12); border: 1px solid rgba(60,201,138,0.35); color: #5FD9A2">مؤكدة</span></td>
+                <td style="padding: 13px 12px; font-size: 12.5px; color: #BDB29E">هشام عادل · امبارح</td>
+                <td style="padding: 13px 20px"><div style="display: flex; gap: 6px; justify-content: flex-end"><button type="button" style="height: 32px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">اطبع A4</button><button type="button" aria-label="إجراءات تانية للفاتورة INV-1040" style="width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.12); background: transparent; color: #BDB29E">⋯</button></div></td>
+              </tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)">
+                <td style="padding: 13px 20px"><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font: 500 13px 'IBM Plex Mono', monospace">INV-1036</bdi></a></td>
+                <td style="padding: 13px 12px"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">محلات أبو زيد للأدوات الصحية</span><span style="font-size: 12px; color: #978C78">تاجر · المحلة</span></div></td>
+                <td style="padding: 13px 12px; color: #CFC5B2">١٣ أكتوبر</td>
+                <td style="padding: 13px 12px; text-align: left; font-weight: 600">٦٬٢٠٠</td>
+                <td style="padding: 13px 12px; text-align: left; color: #978C78">—</td>
+                <td style="padding: 13px 12px"><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(239,100,97,0.10); border: 1px solid rgba(239,100,97,0.35); color: #F28683">ملغاة</span></td>
+                <td style="padding: 13px 12px; font-size: 12.5px; color: #BDB29E">هشام عادل · ١٣ أكتوبر</td>
+                <td style="padding: 13px 20px"><div style="display: flex; gap: 6px; justify-content: flex-end"><button type="button" style="height: 32px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.16); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">القيد العكسي</button><button type="button" aria-label="إجراءات تانية للفاتورة INV-1036" style="width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.12); background: transparent; color: #BDB29E">⋯</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 20px; border-top: 1px solid rgba(255,232,190,0.07); font-size: 12.5px; color: #978C78">
+          <span>الصافي بالجنيه · النقاط الرمادي لسه متنزلتش لأن الفاتورة مش مؤكدة</span>
+          <span>١–٥ من ٥</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

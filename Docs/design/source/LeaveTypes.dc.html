@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>أنواع الإجازات والعطلات الرسمية</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.mn{padding:10px;border-radius:12px;background:rgba(255,240,210,.03);border:1px solid rgba(255,232,190,.06);display:flex;flex-direction:column;gap:6px}.mn .d{display:flex;flex-wrap:wrap;gap:3px}.mn .d i{width:9px;height:9px;border-radius:2px;background:rgba(255,240,210,.08)}.mn .d i.h{background:#E0B43A}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="admin" item="leavetypes" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="stack"><nav aria-label="المسار" class="crumb">الإدارة › الإجازات والعطلات</nav><h1 class="h1">أنواع الإجازات والعطلات الرسمية</h1><p class="sub">«الإجازات الثانوية» اسم كان ملخبط — بقى «العطلات الرسمية»</p></div>
+      <div class="split">
+        <section class="card clip grow" aria-labelledby="lt-h">
+          <div class="pad-h between"><h2 id="lt-h" class="h2">أنواع الإجازات</h2><button type="button" class="btn sm p">+ نوع</button></div>
+          <div class="tbl-wrap">
+            <table class="tbl" style="min-width: 560px">
+              <thead><tr><th>بالعربي</th><th>بالإنجليزي</th><th class="num">أيام في السنة</th><th>مدفوعة</th><th><span class="sr-only">تعديل</span></th></tr></thead>
+              <tbody>
+                <tr><td class="sb">اعتيادية</td><td dir="ltr" style="text-align: right">Annual</td><td class="num">٢١</td><td><span class="chip c-ok">مدفوعة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr><td class="sb">عارضة</td><td dir="ltr" style="text-align: right">Casual</td><td class="num">٦</td><td><span class="chip c-ok">مدفوعة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr><td class="sb">مرضية</td><td dir="ltr" style="text-align: right">Sick</td><td class="num">١٥</td><td><span class="chip c-ok">مدفوعة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr><td class="sb">بدون مرتب</td><td dir="ltr" style="text-align: right">Unpaid</td><td class="num muted">مفتوح</td><td><span class="chip c-neu">مش مدفوعة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section class="card pad stack g12" style="flex: 1 1 440px" aria-labelledby="hd-h">
+          <div class="between"><h2 id="hd-h" class="h2">العطلات الرسمية ٢٠٢٦</h2><button type="button" class="btn sm p">+ عطلة</button></div>
+          <div class="li"><span class="sb">عيد القوات المسلحة</span><span class="dim">٦ أكتوبر</span></div>
+          <div class="li"><span class="sb">عيد الميلاد المجيد</span><span class="dim">٧ يناير</span></div>
+          <div class="li"><span class="sb">عيد الثورة</span><span class="dim">٢٥ يناير</span></div>
+          <div class="li"><span class="sb">عيد الفطر</span><span class="dim">٢٠ – ٢٢ مارس</span></div>
+          <div class="li"><span class="sb">عيد العمال</span><span class="dim">١ مايو</span></div>
+          <div class="li"><span class="sb">عيد الأضحى</span><span class="dim">٢٦ – ٢٩ مايو</span></div>
+          <span class="lbl" style="margin-top: 4px">السنة على بعضها</span>
+          <div role="img" aria-label="تقويم السنة والعطلات متعلّمة بالدهبي" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px">
+            <sc-for list="{{months}}" as="m" hint-placeholder-count="12"><div class="mn"><span class="fs12 soft sb">{{m.name}}</span><div class="d"><sc-for list="{{m.days}}" as="d" hint-placeholder-count="30"><i class="{{d}}"></i></sc-for></div></div></sc-for>
+          </div>
+          <span class="hint">التواريخ بتتغير كل سنة للأعياد — اتأكد منها أول السنة</span>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const names = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    const len = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const hol = { 0: [7, 25], 2: [20, 21, 22], 4: [1, 26, 27, 28, 29], 9: [6] };
+    const months = names.map((name, i) => {
+      const days = [];
+      for (let d = 1; d <= len[i]; d++) days.push((hol[i] || []).includes(d) ? 'h' : '');
+      return { name, days };
+    });
+    return { months };
+  }
+}
+</script>
+</body>
+</html>

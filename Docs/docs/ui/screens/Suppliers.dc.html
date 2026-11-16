@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الموردين</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="purchases" item="suppliers" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head">
+        <div class="stack"><nav aria-label="المسار" class="crumb">المشتريات › الموردين</nav><h1 class="h1">الموردين</h1><p class="sub">١٤ مورد · علينا ليهم ٤٨٦٬٢٠٠ ج.م</p></div>
+        <div class="row"><button type="button" class="btn">استيراد ▾</button><button type="button" class="btn">تصدير</button><button type="button" class="btn p">+ مورد جديد</button></div>
+      </div>
+      <div class="row">
+        <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM20 20l-3.5-3.5"></path></svg><span class="sr-only">دوّر</span><input placeholder="الاسم أو الموبايل"></label>
+        <button type="button" class="filter">المدينة ▾</button><button type="button" class="filter on">علينا ليهم بس ✕</button>
+      </div>
+      <section class="card clip">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>المورد</th><th>الموبايل</th><th>المدينة</th><th>بيورّد</th><th class="num">الرصيد</th><th>آخر فاتورة</th><th>الحالة</th></tr></thead>
+            <tbody>
+              <tr><td><a href="SupplierProfile.dc.html" class="sb" style="text-decoration: none; color: #F6F1E7">مصنع الشرق للخلاطات</a></td><td><bdi dir="ltr" class="mono">01001122334</bdi></td><td>العاشر من رمضان</td><td class="dim">خلاطات · سيفونات · شطّافات</td><td class="num"><b>علينا ٢١٤٬٨٠٠</b></td><td class="dim">١٦ أكتوبر · مسودة</td><td class="ok">نشط</td></tr>
+              <tr><td><a href="#" class="sb" style="text-decoration: none; color: #F6F1E7">شركة النيل للخزف</a></td><td><bdi dir="ltr" class="mono">01223344990</bdi></td><td>بني سويف</td><td class="dim">خامات سيراميك</td><td class="num"><b>علينا ١٤٢٬٦٠٠</b></td><td class="dim">١٥ أكتوبر · مسودة</td><td class="ok">نشط</td></tr>
+              <tr><td><a href="#" class="sb" style="text-decoration: none; color: #F6F1E7">مؤسسة الأمل للبلاستيك</a></td><td><bdi dir="ltr" class="mono">01099001122</bdi></td><td>السادات</td><td class="dim">كراتين وتغليف</td><td class="num"><b>علينا ٦٨٬٤٠٠</b></td><td class="dim">١٢ أكتوبر</td><td class="ok">نشط</td></tr>
+              <tr><td><a href="#" class="sb" style="text-decoration: none; color: #F6F1E7">الدولية للمعادن</a></td><td><bdi dir="ltr" class="mono">01557788990</bdi></td><td>الإسكندرية</td><td class="dim">خامات كروم</td><td class="num"><b>علينا ٦٠٬٤٠٠</b></td><td class="dim">٢٨ سبتمبر</td><td class="ok">نشط</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tfoot"><span>الإضافة والتعديل في لوحة جانبية زي العملاء · الملف صفحة كاملة</span><span>٤ من ١٤ · فلتر «علينا ليهم»</span></div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

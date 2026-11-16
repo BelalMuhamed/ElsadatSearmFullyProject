@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>طلب إجازة — موبايل</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 844px; max-width: 520px; margin: 0 auto; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: linear-gradient(170deg, #17130D 0%, #0E0B08 100%); display: flex; flex-direction: column">
+  <header style="display: flex; align-items: center; gap: 10px; padding: 14px 16px">
+    <a href="MySpaceMobile.dc.html" aria-label="رجوع لمساحتي" style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.12); background: rgba(255,240,210,0.04); color: #EDE5D6; display: flex; align-items: center; justify-content: center; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></a>
+    <h1 style="margin: 0; font-size: 19px; font-weight: 700">إجازاتي</h1>
+  </header>
+
+  <main style="padding: 4px 16px 24px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <div style="padding: 12px; border-radius: 16px; background: rgba(224,180,58,0.08); border: 1px solid rgba(240,200,80,0.3); display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11.5px; color: #CFC5B2">اعتيادية</span><b style="font-size: 18px">١١</b></div>
+      <div style="padding: 12px; border-radius: 16px; background: linear-gradient(127deg, rgba(42,35,25,0.92), rgba(22,19,14,0.88)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11.5px; color: #BDB29E">عارضة</span><b style="font-size: 18px">٤</b></div>
+      <div style="padding: 12px; border-radius: 16px; background: linear-gradient(127deg, rgba(42,35,25,0.92), rgba(22,19,14,0.88)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11.5px; color: #BDB29E">مرضية</span><b style="font-size: 18px">١٥</b></div>
+    </div>
+
+    <form style="padding: 16px; border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.92), rgba(22,19,14,0.88)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 15px; font-weight: 700">طلب جديد</h2>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span id="lt" style="font-size: 12.5px; font-weight: 600; color: #CFC5B2">النوع</span>
+        <div role="radiogroup" aria-labelledby="lt" style="display: flex; padding: 3px; border-radius: 12px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12)">
+          <button type="button" role="radio" aria-checked="true" style="flex: 1; height: 40px; border: 0; border-radius: 9px; background: #F6F1E7; color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif">اعتيادية</button>
+          <button type="button" role="radio" aria-checked="false" style="flex: 1; height: 40px; border: 0; border-radius: 9px; background: transparent; color: #BDB29E; font: 600 13.5px 'IBM Plex Sans Arabic', sans-serif">عارضة</button>
+          <button type="button" role="radio" aria-checked="false" style="flex: 1; height: 40px; border: 0; border-radius: 9px; background: transparent; color: #BDB29E; font: 600 13.5px 'IBM Plex Sans Arabic', sans-serif">مرضية</button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="lf" style="font-size: 12.5px; font-weight: 600; color: #CFC5B2">من</label><input id="lf" value="الخميس ٢٢ أكتوبر" style="height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.04); color: #F6F1E7; font: 600 14px 'IBM Plex Sans Arabic', sans-serif; padding: 0 12px"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="lto" style="font-size: 12.5px; font-weight: 600; color: #CFC5B2">لحد</label><input id="lto" value="الأحد ٢٥ أكتوبر" style="height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid #E0B43A; box-shadow: 0 0 0 3px rgba(224,180,58,0.18); background: rgba(255,240,210,0.04); color: #F6F1E7; font: 600 14px 'IBM Plex Sans Arabic', sans-serif; padding: 0 12px"></div>
+      </div>
+      <div role="status" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 12px; background: rgba(60,201,138,0.07); border: 1px solid rgba(60,201,138,0.25); font-size: 13.5px">
+        <span><b>٣ أيام شغل</b> <span style="color: #978C78">· الجمعة مش محسوبة</span></span>
+        <span style="color: #5FD9A2; font-weight: 600">هيفضل ٨</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><label for="ln" style="font-size: 12.5px; font-weight: 600; color: #CFC5B2">ملاحظة <span style="font-weight: 500; color: #978C78">· اختياري</span></label><textarea id="ln" rows="2" style="resize: none; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.04); color: #F6F1E7; font: 500 14px 'IBM Plex Sans Arabic', sans-serif; padding: 10px 12px">فرح أختي في أسيوط</textarea></div>
+      <button type="button" style="height: 52px; border-radius: 14px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 16px 'IBM Plex Sans Arabic', sans-serif">ابعتي الطلب</button>
+    </form>
+
+    <section aria-labelledby="my-h" style="display: flex; flex-direction: column; gap: 8px">
+      <h2 id="my-h" style="margin: 4px 0 0; font-size: 15px; font-weight: 700">طلباتي</h2>
+      <div style="padding: 12px 14px; border-radius: 16px; background: rgba(242,153,74,0.06); border: 1px solid rgba(242,153,74,0.3); display: flex; align-items: center; gap: 10px">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px"><b style="font-size: 13.5px">عارضة · يوم ٢ نوفمبر</b><span style="font-size: 12px; color: #F5A862">مستني موافقة · من امبارح</span></div>
+        <button type="button" style="height: 40px; padding: 0 12px; border-radius: 11px; border: 1px solid rgba(255,232,190,0.16); background: transparent; color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">إلغاء الطلب</button>
+      </div>
+      <div style="padding: 12px 14px; border-radius: 16px; background: linear-gradient(127deg, rgba(42,35,25,0.92), rgba(22,19,14,0.88)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 2px"><b style="font-size: 13.5px">اعتيادية · ١٣ أكتوبر</b><span style="font-size: 12px; color: #5FD9A2">اتوافق عليها · هشام عادل</span></div>
+      <div style="padding: 12px 14px; border-radius: 16px; background: linear-gradient(127deg, rgba(42,35,25,0.92), rgba(22,19,14,0.88)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 2px"><b style="font-size: 13.5px">اعتيادية · ٢٨ – ٣٠ سبتمبر</b><span style="font-size: 12px; color: #F28683">اترفضت · «نهاية الربع، محتاجينك في الجرد»</span></div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

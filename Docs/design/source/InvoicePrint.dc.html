@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>طباعة الفاتورة</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}
+.paper{background:#FFFFFF;color:#111;box-shadow:0 30px 80px rgba(0,0,0,.6);font-family:'IBM Plex Sans Arabic',sans-serif}
+.paper table{width:100%;border-collapse:collapse;font-size:12px}
+.paper th{background:#F1F1F1;font-weight:700;text-align:right;padding:7px 8px;border:1px solid #BBB}
+.paper td{padding:7px 8px;border:1px solid #BBB}
+.paper .n{text-align:left}
+</style>
+</helmet>
+<div class="sr board" dir="rtl" style="min-height: 1100px; display: flex; flex-direction: column; gap: 20px">
+  <div class="card between" style="padding: 14px 18px">
+    <div class="row" style="gap: 14px">
+      <a href="InvoiceDetail.dc.html" class="btn sm g">← رجوع للفاتورة</a>
+      <div class="stack"><b class="fs14">طباعة <bdi dir="ltr" class="mono">INV-1040</bdi></b><span class="fs12 muted">أبيض وأسود · مفيش خط أصغر من 9pt</span></div>
+    </div>
+    <div class="row">
+      <div role="radiogroup" aria-label="نوع المستند" class="seg"><button type="button" role="radio" aria-checked="true">فاتورة عميل</button><button type="button" role="radio" aria-checked="false">إذن صرف مخزن</button></div>
+      <div role="radiogroup" aria-label="الورق" class="seg"><button type="button" role="radio" aria-checked="true">A4</button><button type="button" role="radio" aria-checked="false">A5</button></div>
+      <button type="button" class="btn">PDF</button>
+      <button type="button" class="btn p">اطبع</button>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; justify-content: center; padding: 10px 0 20px">
+    <article class="paper" aria-label="معاينة فاتورة A4" style="width: 640px; min-height: 905px; padding: 40px 44px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+      <header style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #111; padding-bottom: 14px">
+        <div style="display: flex; gap: 12px; align-items: center">
+          <img src="/_blob/19bc09a635205694f89e681947df045d" alt="Sadat Searm" style="width: 64px; height: 48px; object-fit: contain; filter: grayscale(1) brightness(0.2)">
+          <div style="display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: #333">
+            <b style="font-size: 16px; color: #111">السادات سيرم للأدوات الصحية</b>
+            <span>مدينة السادات · المنطقة الصناعية الثالثة</span>
+            <span>س.ت ١٢٣٤٥ · بطاقة ضريبية <bdi dir="ltr">412-588-901</bdi></span>
+          </div>
+        </div>
+        <div style="text-align: left; display: flex; flex-direction: column; gap: 3px; font-size: 11px">
+          <b style="font-size: 18px">فاتورة بيع</b>
+          <span dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">INV-1040</span>
+          <span>١٨ / ١٠ / ٢٠٢٦</span>
+        </div>
+      </header>
+      <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; font-size: 12px">
+        <span><b>العميل:</b> شركة الدلتا للتوزيع</span><span><b>النوع:</b> موزّع</span>
+        <span><b>العنوان:</b> المنصورة · شارع الجيش</span><span><b>الموبايل:</b> <bdi dir="ltr">01224455667</bdi></span>
+      </section>
+      <table>
+        <thead><tr><th style="width: 28px">م</th><th>الصنف</th><th class="n">الكمية</th><th class="n">السعر</th><th class="n">الإجمالي</th></tr></thead>
+        <tbody>
+          <tr><td>١</td><td>قاعدة تواليت «رويال» أبيض <span style="color: #555">RY-110</span></td><td class="n">٤٠</td><td class="n">١٬٤٥٠</td><td class="n">٥٨٬٠٠٠</td></tr>
+          <tr><td>٢</td><td>حوض حمام «لوتس» ٦٠ سم <span style="color: #555">LT-060</span></td><td class="n">٣٠</td><td class="n">٦٨٠</td><td class="n">٢٠٬٤٠٠</td></tr>
+          <tr><td>٣</td><td>خلاط حوض كروم «نايل» <span style="color: #555">NL-200</span></td><td class="n">٤٠</td><td class="n">٥٢٠</td><td class="n">٢٠٬٨٠٠</td></tr>
+          <tr><td>٤</td><td>شطّاف «أكوا» <span style="color: #555">AQ-015</span></td><td class="n">١٢٠</td><td class="n">١٤٠</td><td class="n">١٦٬٨٠٠</td></tr>
+        </tbody>
+      </table>
+      <section style="align-self: flex-start; width: 270px; display: flex; flex-direction: column; gap: 5px; font-size: 12px">
+        <div style="display: flex; justify-content: space-between"><span>إجمالي الأصناف</span><span>١١٦٬٠٠٠</span></div>
+        <div style="display: flex; justify-content: space-between"><span>خصم أول ٥٪</span><span>−٥٬٨٠٠</span></div>
+        <div style="display: flex; justify-content: space-between"><span>خصم تاني ٣٪</span><span>−٣٬٣٠٦</span></div>
+        <div style="display: flex; justify-content: space-between"><span>ضريبة ١٤٪</span><span>+١٤٬٩٦٥</span></div>
+        <div style="display: flex; justify-content: space-between; border-top: 2px solid #111; padding-top: 6px; font-size: 15px"><b>الصافي</b><b>١٢١٬٨٥٩ ج.م</b></div>
+        <span style="font-size: 11px; color: #444">مائة وواحد وعشرون ألفًا وثمانمائة وتسعة وخمسون جنيهًا لا غير</span>
+      </section>
+      <div style="font-size: 11px; color: #333; border: 1px dashed #999; padding: 8px 10px">نقاط الولاء من الفاتورة دي: ١٬١٦٤ نقطة · رصيدك بعدها ٩٬٤٢٠ نقطة</div>
+      <footer style="margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; font-size: 11px; text-align: center; padding-top: 30px">
+        <div style="border-top: 1px solid #111; padding-top: 6px">المحاسب</div>
+        <div style="border-top: 1px solid #111; padding-top: 6px">أمين المخزن</div>
+        <div style="border-top: 1px solid #111; padding-top: 6px">استلام العميل</div>
+      </footer>
+      <div style="display: flex; justify-content: space-between; font-size: 9pt; color: #555"><span>طبعها هشام عادل · ١٩ / ١٠ / ٢٠٢٦ ١١:٤٠</span><span>صفحة ١ من ١</span></div>
+    </article>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

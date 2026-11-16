@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>معاينة جديدة</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.q{width:72px;height:36px}.rep{padding:12px;border-radius:14px;border:1px solid rgba(255,232,190,.14);background:rgba(255,240,210,.03);display:flex;gap:10px;align-items:center;cursor:pointer}.rep.on{border:2px solid #E0B43A;background:rgba(224,180,58,.07)}</style>
+</helmet>
+<div class="sr" dir="rtl" style="min-height: 1000px">
+  <div class="sr-side"><dc-import name="Sidebar" active="loyalty" item="inspections" theme="dark" hint-size="264px,1000px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="stack"><nav aria-label="المسار" class="crumb">المعاينات والولاء › المعاينات › جديدة</nav><h1 class="h1">معاينة جديدة</h1><p class="sub">السبّاك اتصل · اكتب اللي اتركّب وفين، واختار المندوب اللي هيروح</p></div>
+      <div class="split">
+        <div class="grow stack g16">
+          <section class="card pad stack g12" aria-labelledby="ic-home">
+            <h2 id="ic-home" class="h2">صاحب البيت والمكان</h2>
+            <div class="grid2">
+              <div class="field"><label for="ic-n" class="lbl">الاسم <span class="req">*</span></label><input id="ic-n" class="inp" value="أ. نبيل فرج"></div>
+              <div class="field"><label for="ic-m" class="lbl">الموبايل <span class="req">*</span></label><input id="ic-m" class="inp ltr" value="01014455667"><span class="hint">هيوصله رابط شهادة الضمان بعد القبول</span></div>
+              <div class="field"><label for="ic-c" class="lbl">المدينة <span class="req">*</span></label><select id="ic-c" class="inp"><option>طنطا · الغربية</option></select></div>
+              <div class="field"><label for="ic-a" class="lbl">العنوان</label><input id="ic-a" class="inp" value="شارع الحلو، عمارة ١٢، الدور الرابع"></div>
+            </div>
+          </section>
+          <section class="card pad stack g12" aria-labelledby="ic-ppl">
+            <h2 id="ic-ppl" class="h2">السبّاك والتاجر</h2>
+            <div class="grid2">
+              <div class="field"><label for="ic-p" class="lbl">السبّاك <span class="req">*</span></label><input id="ic-p" class="inp" value="محمود رجب"><span class="hint">ليه حساب · ٤٠ نقطة · <button type="button" class="btn t sm" style="height: auto; padding: 0">سبّاك جديد سريع</button></span></div>
+              <div class="field"><label for="ic-mr" class="lbl">اشترى من <span class="req">*</span></label><input id="ic-mr" class="inp" value="مؤسسة النور للأدوات الصحية"><span class="hint">تاجر · رصيد نقاطه ٢٬٣١٠ — كفاية للمعاينة دي</span></div>
+            </div>
+          </section>
+          <section class="card clip" aria-labelledby="ic-pr">
+            <div class="pad-h between"><h2 id="ic-pr" class="h2">المنتجات اللي اتركّبت</h2><span class="fs13 dim">٣ أصناف · ٩ قطع · <b class="pts">٨٤ نقطة</b> · = كوبون واحد و٢٤ نقطة</span></div>
+            <div class="tbl-wrap">
+              <table class="tbl" style="min-width: 560px">
+                <thead><tr><th>المنتج</th><th>الكمية</th><th class="num">نقاط القطعة</th><th class="num">النقاط</th><th><span class="sr-only">حذف</span></th></tr></thead>
+                <tbody>
+                  <tr><td class="sb">قاعدة تواليت «رويال» أبيض</td><td><input aria-label="الكمية" class="inp q" value="٢"></td><td class="num">١٢</td><td class="num pts">٢٤</td><td><button type="button" class="ibtn" aria-label="احذف">✕</button></td></tr>
+                  <tr><td class="sb">سيفون مدفون «سلِم»</td><td><input aria-label="الكمية" class="inp q" value="٢"></td><td class="num">١٠</td><td class="num pts">٢٠</td><td><button type="button" class="ibtn" aria-label="احذف">✕</button></td></tr>
+                  <tr><td class="sb">خلاط حوض كروم «نايل»</td><td><input aria-label="الكمية" class="inp q" value="٥"></td><td class="num">٨</td><td class="num pts">٤٠</td><td><button type="button" class="ibtn" aria-label="احذف">✕</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="padding: 12px 20px 16px; border-top: 1px solid rgba(255,232,190,.07)"><label class="search" style="border-style: dashed; border-color: rgba(240,200,80,.4); color: #F0C850"><span aria-hidden="true">＋</span><span class="sr-only">ضيف منتج</span><input placeholder="ضيف منتج…"></label></div>
+          </section>
+        </div>
+        <aside class="aside">
+          <section class="card pad stack g12" aria-labelledby="ic-rep">
+            <div class="between"><h2 id="ic-rep" class="h2">المندوب</h2><span class="fs12 muted">مناديب طنطا الأول</span></div>
+            <label class="rep on"><input type="radio" name="rep" checked="" class="chk"><span class="avatar" aria-hidden="true">كس</span><span class="stack" style="flex: 1"><b class="fs13">كريم سامي</b><span class="fs12 muted">طنطا · ٢ معاينة النهارده</span></span></label>
+            <label class="rep"><input type="radio" name="rep" class="chk"><span class="avatar blue" aria-hidden="true">مح</span><span class="stack" style="flex: 1"><b class="fs13">مصطفى حمدي</b><span class="fs12 muted">طنطا · ٤ معاينات النهارده</span></span></label>
+            <label class="rep"><input type="radio" name="rep" class="chk"><span class="avatar teal" aria-hidden="true">مع</span><span class="stack" style="flex: 1"><b class="fs13">محمود عبد الله</b><span class="fs12 muted">المحلة · ١ معاينة</span></span></label>
+            <div class="grid2"><div class="field"><label for="ic-d" class="lbl">الميعاد</label><input id="ic-d" class="inp" value="النهارده"></div><div class="field"><label for="ic-t" class="lbl">الساعة</label><input id="ic-t" class="inp" value="٢:٠٠ م"></div></div>
+          </section>
+          <div class="note neu"><span>بعد الحفظ هيوصل إشعار لـ <b>كريم سامي</b> و<b>مؤسسة النور</b>، ولمحمود رجب على التطبيق.</span></div>
+          <button type="button" class="btn p lg w">احفظ وخصّص للمندوب</button>
+          <span class="fs12 muted" style="text-align: center">المندوب كمان يقدر يعمل معاينة لنفسه من الموبايل</span>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

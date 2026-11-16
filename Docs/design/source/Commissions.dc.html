@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>نسب العمولات</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.c{width:110px;height:36px}.tier{display:grid;grid-template-columns:28px 1fr 1fr 1fr 40px;gap:10px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,232,190,.07)}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="reps" item="commissions" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="stack"><nav aria-label="المسار" class="crumb">المناديب › نسب العمولات</nav><h1 class="h1">نسب العمولات</h1><p class="sub">الجداول كانت موجودة بس محدش عارف هي بتأثر على إيه — دلوقتي فيه حاسبة بتوريك النتيجة وانت بتعدّل</p></div>
+      <div class="split">
+        <div class="grow stack g16">
+          <section class="card pad stack" aria-labelledby="cm-h">
+            <div class="between" style="margin-bottom: 4px"><h2 id="cm-h" class="h2">شرائح عمولة التحصيل</h2><button type="button" class="btn sm">+ شريحة</button></div>
+            <div class="tier fs12 muted" style="border-top: 0"><span></span><span>من (ج.م)</span><span>لحد (ج.م)</span><span>النسبة</span><span></span></div>
+            <div class="tier"><span class="muted">١</span><input aria-label="من" class="inp c" value="٠"><input aria-label="لحد" class="inp c" value="٥٠٬٠٠٠"><input aria-label="النسبة" class="inp c" value="١٪"><button type="button" class="ibtn" aria-label="احذف الشريحة">✕</button></div>
+            <div class="tier"><span class="muted">٢</span><input aria-label="من" class="inp c" value="٥٠٬٠٠١"><input aria-label="لحد" class="inp c" value="١٥٠٬٠٠٠"><input aria-label="النسبة" class="inp c" value="١٫٥٪"><button type="button" class="ibtn" aria-label="احذف الشريحة">✕</button></div>
+            <div class="tier" style="background: rgba(239,100,97,.05)"><span class="bad">٣</span><div class="stack"><input aria-label="من" aria-invalid="true" aria-describedby="t3e" class="inp c err" value="١٤٠٬٠٠٠"><span id="t3e" class="errt">بيدخل جوه الشريحة ٢ — ابدأ من ١٥٠٬٠٠١</span></div><input aria-label="لحد" class="inp c" value="—"><input aria-label="النسبة" class="inp c" value="٢٪"><button type="button" class="ibtn" aria-label="احذف الشريحة">✕</button></div>
+          </section>
+          <section class="card pad stack" aria-labelledby="cc-h">
+            <div class="between" style="margin-bottom: 4px"><h2 id="cc-h" class="h2">شرائح الكوبونات اللي صرفها</h2><button type="button" class="btn sm">+ شريحة</button></div>
+            <div class="tier fs12 muted" style="border-top: 0; grid-template-columns: 28px 1fr 1fr 40px"><span></span><span>من عدد كوبونات</span><span>بياخد (ج.م)</span><span></span></div>
+            <div class="tier" style="grid-template-columns: 28px 1fr 1fr 40px"><span class="muted">١</span><input aria-label="من" class="inp c" value="٢٠"><input aria-label="المبلغ" class="inp c" value="٥٠٠"><button type="button" class="ibtn" aria-label="احذف">✕</button></div>
+            <div class="tier" style="grid-template-columns: 28px 1fr 1fr 40px"><span class="muted">٢</span><input aria-label="من" class="inp c" value="٥٠"><input aria-label="المبلغ" class="inp c" value="١٬٥٠٠"><button type="button" class="ibtn" aria-label="احذف">✕</button></div>
+          </section>
+        </div>
+        <aside class="aside">
+          <section class="card hi pad stack g12" aria-labelledby="calc-h">
+            <h2 id="calc-h" class="h2">حاسبة سريعة</h2>
+            <div class="field"><label for="calc-a" class="lbl">لو حصّل</label><input id="calc-a" class="inp focus" value="٥٠٬٠٠٠"></div>
+            <div class="field"><label for="calc-c" class="lbl">وصرف كوبونات</label><input id="calc-c" class="inp" value="٢٤"></div>
+            <div class="li"><span>عمولة التحصيل · شريحة ١</span><b>٥٠٠</b></div>
+            <div class="li"><span>عمولة الكوبونات · شريحة ١</span><b>٥٠٠</b></div>
+            <div class="li"><b>هياخد</b><b class="gold" style="font-size: 22px">١٬٠٠٠ ج.م</b></div>
+          </section>
+          <div class="note bad" role="alert"><span>مينفعش تحفظ والشرايح متداخلة.</span></div>
+          <button type="button" class="btn p lg w" disabled="">احفظ النسب</button>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

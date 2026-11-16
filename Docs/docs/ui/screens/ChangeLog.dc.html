@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>سجل التغييرات</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.old{color:#F28683;text-decoration:line-through;text-decoration-color:rgba(242,134,131,.5)}.new{color:#5FD9A2}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="admin" item="changelog" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head"><div class="stack"><nav aria-label="المسار" class="crumb">الإدارة › سجل التغييرات</nav><h1 class="h1">سجل التغييرات</h1><p class="sub">مين غيّر إيه وإمتى — للمراجعة والمحاسبة</p></div><button type="button" class="btn">تصدير</button></div>
+      <div class="row"><button type="button" class="filter">المستخدم: الكل ▾</button><button type="button" class="filter">الشاشة: الكل ▾</button><button type="button" class="filter on">آخر ٧ أيام ✕</button><label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM20 20l-3.5-3.5"></path></svg><span class="sr-only">دوّر</span><input placeholder="رقم مستند أو اسم"></label></div>
+      <section class="card clip">
+        <div class="tbl-wrap">
+          <table class="tbl" style="min-width: 960px">
+            <thead><tr><th>إمتى</th><th>مين</th><th>الشاشة</th><th>إيه اللي اتغير</th><th>قبل ← بعد</th><th><span class="sr-only">فتح</span></th></tr></thead>
+            <tbody>
+              <tr><td class="dim">النهارده ١١:٤٢</td><td class="sb">هشام عادل</td><td>الخصومات العامة</td><td>الخصم التاني</td><td><span class="old">٢٪</span> ← <span class="new">٣٪</span></td><td><a href="GeneralDiscounts.dc.html" class="btn sm g">افتح</a></td></tr>
+              <tr><td class="dim">النهارده ١٠:١٢</td><td class="sb">محمد سعيد</td><td>فواتير البيع</td><td>عمل مسودة <bdi dir="ltr" class="mono">INV-1042</bdi></td><td class="faint">—</td><td><a href="#" class="btn sm g">افتح</a></td></tr>
+              <tr><td class="dim">النهارده ٩:٠٥</td><td class="sb">هشام عادل</td><td>صلاحيات مستخدم</td><td>محمد سعيد · مرتجعات البيع</td><td><span class="new">+ تأكيد</span> · <span class="old">فواتير البيع · حذف</span></td><td><a href="UserPermissions.dc.html" class="btn sm g">افتح</a></td></tr>
+              <tr><td class="dim">امبارح ٥:١٠</td><td class="sb">هشام عادل</td><td>المستخدمين</td><td>وقف حساب عبير بدوي</td><td><span class="old">نشط</span> ← <span class="new">موقوف</span> · «سابت الشغل»</td><td><a href="Users.dc.html" class="btn sm g">افتح</a></td></tr>
+              <tr><td class="dim">امبارح ٩:٢٠</td><td class="sb">محمد سعيد</td><td>فواتير البيع</td><td>عدّل مسودة <bdi dir="ltr" class="mono">INV-1040</bdi> · كمية «لوتس»</td><td><span class="old">٢٤</span> ← <span class="new">٣٠</span></td><td><a href="InvoiceDetail.dc.html" class="btn sm g">افتح</a></td></tr>
+              <tr><td class="dim">١٧ أكتوبر</td><td class="sb">منى عبد الله</td><td>المنتجات</td><td>سعر بيع «نايل»</td><td><span class="old">٤٩٠</span> ← <span class="new">٥٢٠</span></td><td><a href="ProductCard.dc.html" class="btn sm g">افتح</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tfoot"><span>السجل مبيتمسحش ولا يتعدل</span><span>١–٦ من ٤١٢</span></div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

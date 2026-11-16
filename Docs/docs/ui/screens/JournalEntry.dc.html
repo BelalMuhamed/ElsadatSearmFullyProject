@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>قيد يومية</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+th{font-weight:600;text-align:right}
+.f{height:40px;box-sizing:border-box;border-radius:10px;border:1px solid rgba(255,232,190,0.14);background:rgba(255,240,210,0.04);color:#F6F1E7;font:500 13.5px 'IBM Plex Sans Arabic',sans-serif;padding:0 10px;width:100%}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <dc-import name="Sidebar" active="accounts" item="journal" theme="dark" hint-size="264px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">الحسابات › القيود اليومية › قيد جديد</nav>
+        <h1 style="margin: 0; font-size: 22px; font-weight: 700">قيد يدوي جديد</h1>
+        <p style="margin: 0; font-size: 13px; color: #BDB29E">للحاجات اللي ملهاش سند — القبض والصرف ليهم شاشات أسهل</p>
+      </div>
+
+      <section style="padding: 18px 20px; border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="jd" style="font-size: 12px; font-weight: 600; color: #CFC5B2">التاريخ</label><input id="jd" class="f" value="١٩ أكتوبر ٢٠٢٦"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="jt" style="font-size: 12px; font-weight: 600; color: #CFC5B2">نوع المرجع</label><select id="jt" class="f"><option>مصروفات تشغيل</option><option>تسوية</option><option>قيد افتتاحي</option></select></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="jr" style="font-size: 12px; font-weight: 600; color: #CFC5B2">رقم المرجع <span style="color: #978C78; font-weight: 500">· اختياري</span></label><input id="jr" class="f" dir="ltr" value="BILL-7712" style="text-align: right; font-family: 'IBM Plex Mono', monospace"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2"><label for="jn" style="font-size: 12px; font-weight: 600; color: #CFC5B2">البيان</label><input id="jn" class="f" value="مصاريف شحن وصيانة عربيات التوزيع — الأسبوع التالت"></div>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+        <section aria-labelledby="jl-h" style="flex: 999 1 620px; min-width: 0; border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9) 0%, rgba(22,19,14,0.85) 100%); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+          <h2 id="jl-h" style="margin: 0; padding: 16px 20px 6px; font-size: 15px; font-weight: 700">السطور</h2>
+          <div style="overflow-x: auto">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 700px">
+              <thead><tr style="color: #978C78; font-size: 12px"><th style="padding: 10px 20px 8px; width: 34%">الحساب</th><th style="padding: 10px 8px 8px">البيان</th><th style="padding: 10px 8px 8px; width: 120px">مدين</th><th style="padding: 10px 8px 8px; width: 120px">دائن</th><th style="padding: 10px 20px 8px 8px; width: 36px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">حذف</span></th></tr></thead>
+              <tbody>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding: 10px 20px"><div class="f" style="display: flex; align-items: center; gap: 8px"><bdi dir="ltr" style="font: 500 12px 'IBM Plex Mono', monospace; color: #978C78">5201</bdi>مصروفات نقل وشحن</div></td><td style="padding: 10px 8px"><input aria-label="البيان" class="f" value="شحن طلبية الدلتا"></td><td style="padding: 10px 8px"><input aria-label="مدين" class="f" value="٣٬٢٠٠"></td><td style="padding: 10px 8px"><input aria-label="دائن" class="f" value=""></td><td style="padding: 10px 20px 10px 8px"><button type="button" aria-label="احذف السطر" style="width: 30px; height: 30px; border: 0; background: transparent; color: #978C78">✕</button></td></tr>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding: 10px 20px"><div class="f" style="display: flex; align-items: center; gap: 8px"><bdi dir="ltr" style="font: 500 12px 'IBM Plex Mono', monospace; color: #978C78">5105</bdi>صيانة عربيات التوزيع</div></td><td style="padding: 10px 8px"><input aria-label="البيان" class="f" value="تغيير زيت وفرامل"></td><td style="padding: 10px 8px"><input aria-label="مدين" class="f" value="١٬٨٤٠"></td><td style="padding: 10px 8px"><input aria-label="دائن" class="f" value=""></td><td style="padding: 10px 20px 10px 8px"><button type="button" aria-label="احذف السطر" style="width: 30px; height: 30px; border: 0; background: transparent; color: #978C78">✕</button></td></tr>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding: 10px 20px"><div class="f" style="display: flex; align-items: center; gap: 8px"><bdi dir="ltr" style="font: 500 12px 'IBM Plex Mono', monospace; color: #978C78">1101</bdi>الخزنة الرئيسية</div></td><td style="padding: 10px 8px"><input aria-label="البيان" class="f" value="المدفوع كاش"></td><td style="padding: 10px 8px"><input aria-label="مدين" class="f" value=""></td><td style="padding: 10px 8px"><input aria-label="دائن" class="f" value="٤٬٩٢٠" style="border-color: #E0B43A; box-shadow: 0 0 0 3px rgba(224,180,58,0.18)"></td><td style="padding: 10px 20px 10px 8px"><button type="button" aria-label="احذف السطر" style="width: 30px; height: 30px; border: 0; background: transparent; color: #978C78">✕</button></td></tr>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td colspan="5" style="padding: 10px 20px"><button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px dashed rgba(240,200,80,0.4); background: transparent; color: #F0C850; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">+ سطر جديد</button></td></tr>
+              </tbody>
+              <tfoot>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.12); background: rgba(255,240,210,0.03)"><td colspan="2" style="padding: 14px 20px; font-weight: 700">الإجمالي</td><td style="padding: 14px 8px; font-weight: 700">٥٬٠٤٠</td><td style="padding: 14px 8px; font-weight: 700">٤٬٩٢٠</td><td></td></tr>
+              </tfoot>
+            </table>
+          </div>
+        </section>
+
+        <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+          <div role="status" style="padding: 18px 20px; border-radius: 20px; background: rgba(239,100,97,0.08); border: 1px solid rgba(239,100,97,0.4); display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 12.5px; color: #CFC5B2; font-weight: 600">الميزان</span>
+            <span style="font-size: 26px; font-weight: 700; color: #F28683">الفرق ١٢٠</span>
+            <span style="font-size: 13px; color: #CFC5B2; line-height: 1.7">المدين أكبر من الدائن بـ ١٢٠ ج.م. الخزنة دافعة ٥٬٠٤٠ مش ٤٬٩٢٠؟</span>
+          </div>
+          <button type="button" disabled="" aria-describedby="post-r" style="height: 50px; border-radius: 12px; border: 1px dashed rgba(240,200,80,0.35); background: rgba(224,180,58,0.06); color: #8F7F55; font: 700 15px 'IBM Plex Sans Arabic', sans-serif">رحّل القيد</button>
+          <span id="post-r" style="font-size: 12.5px; color: #978C78; text-align: center">مقفول لحد ما المدين يساوي الدائن</span>
+          <button type="button" style="height: 44px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #EDE5D6; font: 600 13.5px 'IBM Plex Sans Arabic', sans-serif">احفظ كمسودة</button>
+          <p style="margin: 0; font-size: 12.5px; color: #978C78; line-height: 1.7; padding: 0 4px">القيود اللي طلعت من فاتورة أو سند أو مرتب مش بتتعدل من هنا — بتفتح لمصدرها.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

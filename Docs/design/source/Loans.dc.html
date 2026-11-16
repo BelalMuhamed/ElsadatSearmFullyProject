@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>القروض</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.ln{display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;text-decoration:none;color:#EDE5D6}.ln.on{background:rgba(224,180,58,.12);box-shadow:inset 0 0 0 1px rgba(240,200,80,.35)}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="hr" item="loans" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head"><div class="stack"><nav aria-label="المسار" class="crumb">الموارد البشرية › القروض</nav><h1 class="h1">القروض والأقساط</h1><p class="sub">٦ قروض مفتوحة · ١٤٬٥٠٠ ج.م أقساط الشهر ده</p></div><button type="button" class="btn p">+ قرض لموظف</button></div>
+      <div class="split">
+        <nav class="card" aria-label="القروض" style="flex: 1 1 280px; max-width: 320px; padding: 10px; display: flex; flex-direction: column; gap: 2px">
+          <a href="#" class="ln"><span class="avatar" aria-hidden="true">مح</span><span class="stack" style="flex: 1"><b class="fs13">مصطفى حمدي</b><span class="fs12 warn">طلب جديد · ١٠٬٠٠٠ على ١٠ شهور</span></span></a>
+          <a href="#" aria-current="true" class="ln on"><span class="avatar" aria-hidden="true">عج</span><span class="stack" style="flex: 1"><b class="fs13">عمرو جلال</b><span class="fs12 muted">١٨٬٠٠٠ · فاضل ١٢٬٠٠٠</span></span><span class="chip c-warn">متأخر</span></a>
+          <a href="#" class="ln"><span class="avatar" aria-hidden="true">سن</span><span class="stack" style="flex: 1"><b class="fs13">سامح نبيل</b><span class="fs12 muted">٦٬٠٠٠ · فاضل ٢٬٠٠٠</span></span></a>
+          <a href="#" class="ln"><span class="avatar" aria-hidden="true">أف</span><span class="stack" style="flex: 1"><b class="fs13">أحمد فتحي</b><span class="fs12 muted">١٠٬٠٠٠ · فاضل ٨٬٠٠٠</span></span></a>
+        </nav>
+        <section class="card clip grow" aria-labelledby="ln-h">
+          <div class="pad between" style="padding-bottom: 8px">
+            <div class="stack"><h2 id="ln-h" class="h2">قرض عمرو جلال</h2><span class="fs13 dim">١٨٬٠٠٠ ج.م على ١٢ قسط × ١٬٥٠٠ · اتوافق ١ مايو</span></div>
+            <div class="row"><button type="button" class="btn sm">دفعة يدوي</button></div>
+          </div>
+          <div class="bar" role="img" aria-label="اتدفع ٤ من ١٢" style="margin: 0 20px 14px; height: 8px"><i style="width: 33%; background: #3CC98A"></i><i style="width: 8.3%; background: #F2994A"></i></div>
+          <div class="tbl-wrap">
+            <table class="tbl" style="min-width: 560px">
+              <thead><tr><th>القسط</th><th>مستحق</th><th class="num">المبلغ</th><th>الحالة</th><th>اتدفع إزاي</th></tr></thead>
+              <tbody>
+                <tr><td>١ – ٤</td><td class="dim">يونيو – سبتمبر</td><td class="num">٦٬٠٠٠</td><td><span class="chip c-ok">اتدفع</span></td><td class="dim">خصم من المرتب</td></tr>
+                <tr class="err"><td>٥</td><td>أكتوبر</td><td class="num">١٬٥٠٠</td><td><span class="chip c-warn">اتأجل</span></td><td class="warn fs13">اتشال من رواتب أكتوبر · هيتضاف لنوفمبر</td></tr>
+                <tr><td>٦</td><td>نوفمبر</td><td class="num">١٬٥٠٠ <span class="fs12 warn">+ ١٬٥٠٠</span></td><td><span class="chip c-neu">جاي</span></td><td class="faint">—</td></tr>
+                <tr><td>٧ – ١٢</td><td class="dim">ديسمبر – مايو</td><td class="num">٩٬٠٠٠</td><td><span class="chip c-neu">جاي</span></td><td class="faint">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tfoot"><span>اتدفع ٦٬٠٠٠ · فاضل ١٢٬٠٠٠</span><span>«دفعة يدوي» لو دفع كاش في الخزنة</span></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

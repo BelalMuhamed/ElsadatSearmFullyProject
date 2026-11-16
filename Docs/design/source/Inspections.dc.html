@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>لوحة المعاينات</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <dc-import name="Sidebar" active="loyalty" item="inspections" theme="dark" hint-size="264px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">المعاينات والولاء › المعاينات</nav>
+          <h1 style="margin: 0; font-size: 22px; font-weight: 700">المعاينات</h1>
+          <p style="margin: 0; font-size: 13px; color: #BDB29E">٣٠ معاينة في أكتوبر · ٥ مسودات متأخرة أكتر من يومين</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <div role="group" aria-label="طريقة العرض" style="display: flex; padding: 3px; border-radius: 12px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12)">
+            <button type="button" aria-pressed="true" style="height: 32px; padding: 0 14px; border: 0; border-radius: 9px; background: #F6F1E7; color: #1A1408; font: 700 13px 'IBM Plex Sans Arabic', sans-serif">لوحة</button>
+            <button type="button" aria-pressed="false" style="height: 32px; padding: 0 14px; border: 0; border-radius: 9px; background: transparent; color: #BDB29E; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">جدول</button>
+          </div>
+          <button type="button" style="height: 40px; padding: 0 18px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 6px 18px rgba(224,180,58,0.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>معاينة جديدة</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(240,200,80,0.4); background: rgba(224,180,58,0.08); color: #F0C850; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif; display: inline-flex; align-items: center; gap: 6px">المحافظة: الغربية والمنوفية <span aria-label="شيل الفلتر">✕</span></button>
+        <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">المندوب ▾</button>
+        <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">السبّاك ▾</button>
+        <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">التاجر ▾</button>
+        <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">أكتوبر ٢٠٢٦ ▾</button>
+      </div>
+
+      <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; align-items: flex-start">
+
+        <section aria-label="مجدولة" style="flex: 1 0 236px; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 18px; background: rgba(255,240,210,0.025); border: 1px solid rgba(255,232,190,0.06)">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 2px 4px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #5AA9F0"></span><h2 style="margin: 0; font-size: 13.5px; font-weight: 700; flex: 1">مجدولة</h2><span style="font-size: 12.5px; color: #978C78">٨</span></div>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0421</bdi><span style="color: #7DBBF4">النهارده ٢:٠٠ م</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">شقة أ. نبيل فرج · طنطا</span>
+            <span style="font-size: 12px; color: #BDB29E">السبّاك: محمود رجب · التاجر: مؤسسة النور</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #CFC5B2">٣ أصناف · <b style="color: #5ED3D0">٨٤ نقطة</b></span><span title="كريم سامي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(224,180,58,0.16); color: #F0C850; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">كس</span></div>
+          </a>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0423</bdi><span style="color: #7DBBF4">بكرة ١٠:٣٠ ص</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">فيلا م. هاني صبري · شبين الكوم</span>
+            <span style="font-size: 12px; color: #BDB29E">السبّاك: إبراهيم شوقي · التاجر: معرض الأمانة</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #CFC5B2">١١ منتج · <b style="color: #5ED3D0">٢١٠ نقطة</b></span><span title="أحمد فتحي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(90,169,240,0.16); color: #7DBBF4; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">أف</span></div>
+          </a>
+          <button type="button" style="height: 34px; border-radius: 10px; border: 0; background: transparent; color: #978C78; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">+ ٦ كمان</button>
+        </section>
+
+        <section aria-label="مسودة" style="flex: 1 0 236px; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 18px; background: rgba(255,240,210,0.025); border: 1px solid rgba(255,232,190,0.06)">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 2px 4px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #A89F8F"></span><h2 style="margin: 0; font-size: 13.5px; font-weight: 700; flex: 1">مسودة</h2><span style="font-size: 12.5px; color: #978C78">٥</span></div>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(242,153,74,0.4); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0398</bdi><span style="height: 22px; padding: 0 8px; border-radius: 999px; background: rgba(242,153,74,0.14); color: #F5A862; font-weight: 700; display: inline-flex; align-items: center">متأخرة · ٤ أيام</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">عمارة الحاج فتحي · المحلة</span>
+            <span style="font-size: 12px; color: #BDB29E">السبّاك: سعيد الشامي (من غير حساب)</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #CFC5B2">٧ منتجات · ٢ من غير صورة</span><span title="كريم سامي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(224,180,58,0.16); color: #F0C850; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">كس</span></div>
+          </a>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0417</bdi><span style="color: #978C78">امبارح</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">شقة أ. رانيا سمير · السادات</span>
+            <span style="font-size: 12px; color: #BDB29E">السبّاك: عادل حسن · التاجر: الحاج سيد</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #CFC5B2">٤ منتجات · <b style="color: #5ED3D0">٤٨ نقطة</b></span><span title="أحمد فتحي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(90,169,240,0.16); color: #7DBBF4; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">أف</span></div>
+          </a>
+        </section>
+
+        <section aria-label="مستنية موافقة التحويل" style="flex: 1 0 236px; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 18px; background: rgba(242,153,74,0.04); border: 1px solid rgba(242,153,74,0.16)">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 2px 4px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #F2994A"></span><h2 style="margin: 0; font-size: 13.5px; font-weight: 700; flex: 1">مستنية موافقة التحويل</h2><span style="font-size: 12.5px; color: #978C78">٤</span></div>
+          <a href="InspectionDetail.dc.html" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(240,200,80,0.35); box-shadow: 0 0 0 3px rgba(224,180,58,0.10); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0412</bdi><span style="color: #978C78">من ساعتين</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">شقة د. أمل الشربيني · طنطا</span>
+            <span style="font-size: 12px; color: #BDB29E">السبّاك: محمود رجب · التاجر: الحاج سيد</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #CFC5B2">٩ منتجات · <b style="color: #5ED3D0">٢٤٠ نقطة</b></span><span title="كريم سامي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(224,180,58,0.16); color: #F0C850; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">كس</span></div>
+          </a>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0415</bdi><span style="color: #978C78">من ٤ ساعات</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">شقة أ. كريم يسري · شبين الكوم</span>
+            <span style="font-size: 12px; color: #F28683">رصيد التاجر مش كفاية (١٢٠ من ١٨٠)</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #CFC5B2">٦ منتجات · <b style="color: #5ED3D0">١٨٠ نقطة</b></span><span title="أحمد فتحي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(90,169,240,0.16); color: #7DBBF4; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">أف</span></div>
+          </a>
+        </section>
+
+        <section aria-label="مقبولة" style="flex: 1 0 236px; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 18px; background: rgba(255,240,210,0.025); border: 1px solid rgba(255,232,190,0.06)">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 2px 4px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #3CC98A"></span><h2 style="margin: 0; font-size: 13.5px; font-weight: 700; flex: 1">مقبولة</h2><span style="font-size: 12.5px; color: #978C78">١١</span></div>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0409</bdi><span style="color: #978C78">١٧ أكتوبر</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">شقة أ. سامح عزت · السادات</span>
+            <span style="font-size: 12px; color: #BDB29E">السبّاك: عادل حسن · ضمان <bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace">W-2210</bdi></span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #5FD9A2">٣ كوبونات اتصرفت كاش</span><span title="كريم سامي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(224,180,58,0.16); color: #F0C850; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">كس</span></div>
+          </a>
+          <button type="button" style="height: 34px; border-radius: 10px; border: 0; background: transparent; color: #978C78; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">+ ١٠ كمان</button>
+        </section>
+
+        <section aria-label="مرفوضة" style="flex: 1 0 236px; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 18px; background: rgba(255,240,210,0.025); border: 1px solid rgba(255,232,190,0.06)">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 2px 4px"><span style="width: 9px; height: 9px; border-radius: 50%; background: #EF6461"></span><h2 style="margin: 0; font-size: 13.5px; font-weight: 700; flex: 1">مرفوضة</h2><span style="font-size: 12.5px; color: #978C78">٢</span></div>
+          <a href="#" style="text-decoration: none; color: inherit; padding: 12px; border-radius: 14px; background: linear-gradient(127deg, rgba(42,35,25,0.95), rgba(26,22,16,0.92)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 8px">
+            <div style="display: flex; justify-content: space-between; font-size: 12px"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #978C78">INS-0401</bdi><span style="color: #978C78">١٢ أكتوبر</span></div>
+            <span style="font-size: 13.5px; font-weight: 700">محل أ. وائل حمدي · المحلة</span>
+            <span style="font-size: 12px; color: #F28683">السبب: التركيب مش مطابق — تسريب في الخلاط</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px"><span style="color: #978C78">٠ نقطة</span><span title="أحمد فتحي" style="width: 26px; height: 26px; border-radius: 8px; background: rgba(90,169,240,0.16); color: #7DBBF4; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">أف</span></div>
+          </a>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>مرتجع شراء</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.q{width:72px;height:36px}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="purchases" item="preturns" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head">
+        <div class="stack">
+          <nav aria-label="المسار" class="crumb">المشتريات › فواتير الشراء › <bdi dir="ltr" class="mono">PUR-0216</bdi> › مرتجع</nav>
+          <h1 class="h1">مرتجع لمصنع الشرق للخلاطات</h1>
+          <p class="sub">من فاتورة <bdi dir="ltr" class="mono">PUR-0216</bdi> · اتسكّنت في مخزن القاهرة ٧ أكتوبر</p>
+        </div>
+      </div>
+      <div class="split">
+        <section class="card clip grow" aria-labelledby="pr-h">
+          <div class="pad-h between">
+            <h2 id="pr-h" class="h2">الأصناف اللي هترجع</h2>
+            <div class="field" style="flex-direction: row; align-items: center; gap: 10px"><label for="pr-wh" class="lbl">هتطلع من</label><select id="pr-wh" class="inp" style="width: 220px"><option>مخزن القاهرة</option></select></div>
+          </div>
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>المنتج</th><th class="num">اتشرى</th><th class="num">متاح في القاهرة</th><th>هترجّع</th><th class="num">سعر الشراء</th><th class="num">القيمة</th></tr></thead>
+              <tbody>
+                <tr class="sel"><td class="sb">سيفون مدفون «سلِم»</td><td class="num">٤٠</td><td class="num">١٨</td><td><input aria-label="هترجّع من سلم" class="inp q focus" value="٦"></td><td class="num">٦٢٠</td><td class="num b">٣٬٧٢٠</td></tr>
+                <tr><td><div class="stack"><span class="sb muted">خلاط حوض كروم «نايل»</span><span class="fs12 bad">نفد من القاهرة — مينفعش يرجع منها</span></div></td><td class="num muted">٦٠</td><td class="num bad">٠</td><td><input aria-label="هترجّع من نايل" class="inp q ro" value="٠" disabled=""></td><td class="num muted">٣٥٠</td><td class="num muted">—</td></tr>
+                <tr><td class="sb">شطّاف «أكوا»</td><td class="num">٣٠٠</td><td class="num">٢١٠</td><td><input aria-label="هترجّع من أكوا" class="inp q" value="٠"></td><td class="num">٨٢</td><td class="num muted">٠</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tfoot"><span>الكمية مش بتعدّي المتاح في المخزن ولا اللي اتشرى</span></div>
+        </section>
+        <aside class="aside">
+          <div class="field"><label for="pr-why" class="lbl">السبب <span class="req">*</span></label><textarea id="pr-why" class="inp" rows="2">٦ سيفون وصلوا الكبّاس فيهم مكسور</textarea></div>
+          <section class="card hi pad stack g8">
+            <h2 class="h2">القيد</h2>
+            <div class="grid3 fs13" style="grid-template-columns: 1fr auto auto; gap: 8px 14px">
+              <span class="fs12 muted">الحساب</span><span class="fs12 muted">مدين</span><span class="fs12 muted">دائن</span>
+              <span>مصنع الشرق للخلاطات</span><b>٤٬٢٤١</b><span class="faint">—</span>
+              <span>المخزون · القاهرة</span><span class="faint">—</span><b>٣٬٧٢٠</b>
+              <span>ضريبة المشتريات</span><span class="faint">—</span><b>٥٢١</b>
+            </div>
+            <span class="chip c-ok" style="align-self: flex-start">متوازن</span>
+          </section>
+          <div class="note neu"><span>بعد التأكيد بيطلع <b>إذن صرف</b> للطباعة يمشي مع البضاعة، وعمرو جلال يوصله إشعار.</span></div>
+          <button type="button" class="btn p lg w">أكّد المرتجع واطبع الإذن</button>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

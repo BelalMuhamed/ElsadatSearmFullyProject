@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>ملف المنتج وكارت الصنف</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+th{font-weight:600;text-align:right}
+td{padding:11px 8px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <dc-import name="Sidebar" active="stores" item="products" theme="dark" hint-size="264px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 18px">
+      <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">المخازن › المنتجات › خلاط حوض كروم «نايل»</nav>
+      <div style="display: flex; gap: 18px; align-items: center; flex-wrap: wrap">
+        <span aria-hidden="true" style="width: 84px; height: 84px; border-radius: 20px; background: linear-gradient(160deg, #3D4148, #22252B); position: relative; flex: 0 0 84px"><span style="position: absolute; inset: 26px 18px 24px; border-radius: 10px 10px 30px 30px; background: linear-gradient(180deg, #E9EBEE, #9AA1AB)"></span></span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 260px">
+          <h1 style="margin: 0; font-size: 22px; font-weight: 700">خلاط حوض كروم «نايل»</h1>
+          <span dir="ltr" style="font-size: 13px; color: #BDB29E; text-align: right">Nile Chrome Basin Mixer</span>
+          <span style="font-size: 13px; color: #BDB29E"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace">NL-200</bdi> · خلاطات · سعر البيع ٥٢٠ ج.م · <b style="color: #5ED3D0">٨ نقاط</b> للقطعة</span>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <button type="button" style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">عدّل المنتج</button>
+          <button type="button" style="height: 40px; padding: 0 18px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif">حوّل لمخزن تاني</button>
+        </div>
+      </div>
+
+      <div role="list" aria-label="الرصيد في كل مخزن" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+        <a role="listitem" href="#" style="text-decoration: none; color: inherit; padding: 14px 16px; border-radius: 16px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #BDB29E">المصنع · السادات</span><span style="font-size: 22px; font-weight: 700">٣٢</span><span style="font-size: 12px; color: #5FD9A2">سليم · الحد ٢٠</span></a>
+        <a role="listitem" href="#" aria-current="true" style="text-decoration: none; color: inherit; padding: 14px 16px; border-radius: 16px; background: rgba(239,100,97,0.08); border: 2px solid rgba(239,100,97,0.55); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #CFC5B2">القاهرة · معروض تحت</span><span style="font-size: 22px; font-weight: 700; color: #F28683">٠</span><span style="font-size: 12px; color: #F28683">نفد من ١٨ أكتوبر</span></a>
+        <a role="listitem" href="#" style="text-decoration: none; color: inherit; padding: 14px 16px; border-radius: 16px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #BDB29E">طنطا</span><span style="font-size: 22px; font-weight: 700">٦</span><span style="font-size: 12px; color: #F28683">حرج · الحد ٢٠</span></a>
+        <a role="listitem" href="#" style="text-decoration: none; color: inherit; padding: 14px 16px; border-radius: 16px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #BDB29E">الإسكندرية</span><span style="font-size: 22px; font-weight: 700">٢٨</span><span style="font-size: 12px; color: #5FD9A2">سليم · الحد ٢٠</span></a>
+      </div>
+
+      <section aria-labelledby="kc-h" style="border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9) 0%, rgba(22,19,14,0.85) 100%); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 16px 20px 6px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h2 id="kc-h" style="margin: 0; font-size: 15px; font-weight: 700">كارت الصنف · مخزن القاهرة</h2><span style="font-size: 12.5px; color: #978C78">كل حركة بالترتيب، والرصيد المتراكم بعدها</span></div>
+          <div style="display: flex; gap: 8px">
+            <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(240,200,80,0.4); background: rgba(224,180,58,0.08); color: #F0C850; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">المخزن: القاهرة ▾</button>
+            <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">أكتوبر ٢٠٢٦ ▾</button>
+            <button type="button" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">اطبع</button>
+          </div>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 780px">
+            <thead><tr style="color: #978C78; font-size: 12px"><th style="padding: 12px 20px 8px">التاريخ</th><th style="padding: 12px 8px 8px">الحركة</th><th style="padding: 12px 8px 8px">المستند</th><th style="padding: 12px 8px 8px; text-align: left">وارد</th><th style="padding: 12px 8px 8px; text-align: left">صادر</th><th style="padding: 12px 8px 8px; text-align: left">الرصيد</th><th style="padding: 12px 20px 8px 8px">مين</th></tr></thead>
+            <tbody>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07); background: rgba(255,240,210,0.03)"><td style="padding-right: 20px; color: #CFC5B2">١ أكتوبر</td><td style="font-weight: 600">رصيد أول المدة</td><td style="color: #6E6556">—</td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left; font-weight: 700">٢٤</td><td style="padding-left: 20px; color: #6E6556">—</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; color: #CFC5B2">٤ أكتوبر</td><td>بيع</td><td><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">INV-1015</bdi></a></td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left; color: #F28683">٨</td><td style="text-align: left">١٦</td><td style="padding-left: 20px; font-size: 12.5px; color: #BDB29E">محمد سعيد</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; color: #CFC5B2">٧ أكتوبر</td><td>تحويل وارد من السادات</td><td><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">TR-0088</bdi></a></td><td style="text-align: left; color: #5FD9A2">٢٠</td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left">٣٦</td><td style="padding-left: 20px; font-size: 12.5px; color: #BDB29E">عمرو جلال</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; color: #CFC5B2">١١ أكتوبر</td><td>بيع</td><td><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">INV-1029</bdi></a></td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left; color: #F28683">١٢</td><td style="text-align: left">٢٤</td><td style="padding-left: 20px; font-size: 12.5px; color: #BDB29E">ندى كمال</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; color: #CFC5B2">١٤ أكتوبر</td><td>مرتجع بيع</td><td><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">RET-0046</bdi></a></td><td style="text-align: left; color: #5FD9A2">٢</td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left">٢٦</td><td style="padding-left: 20px; font-size: 12.5px; color: #BDB29E">محمد سعيد</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07); background: rgba(242,153,74,0.05)"><td style="padding-right: 20px; color: #CFC5B2">١٦ أكتوبر</td><td>فرق جرد</td><td><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">CNT-0012</bdi></a></td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left; color: #F5A862">١</td><td style="text-align: left">٢٥</td><td style="padding-left: 20px; font-size: 12.5px; color: #BDB29E">عمرو جلال</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; color: #CFC5B2">١٧ أكتوبر</td><td>بيع</td><td><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">INV-1035</bdi></a></td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left; color: #F28683">١٥</td><td style="text-align: left">١٠</td><td style="padding-left: 20px; font-size: 12.5px; color: #BDB29E">محمد سعيد</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; color: #CFC5B2">١٨ أكتوبر</td><td>تحويل صادر لطنطا</td><td><a href="#" style="text-decoration: none"><bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">TR-0094</bdi></a></td><td style="text-align: left; color: #6E6556">—</td><td style="text-align: left; color: #F28683">١٠</td><td style="text-align: left; font-weight: 700; color: #F28683">٠</td><td style="padding-left: 20px; font-size: 12.5px; color: #BDB29E">عمرو جلال</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

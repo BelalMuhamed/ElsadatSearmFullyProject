@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><link rel="stylesheet" href="./assets/fonts.css">
+<meta charset="utf-8">
+<title>الإشعارات والتصدير</title>
+
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"><style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+</style></head>
+<body>
+
+
+<div dir="rtl" style="min-height: 900px; box-sizing: border-box; padding: 36px 40px 48px; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 85% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%); display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; flex-direction: column; gap: 4px">
+    <h1 style="margin: 0; font-size: 24px; font-weight: 700">مكوّنين بيتكرروا في كل شاشة</h1>
+    <p style="margin: 0; font-size: 13.5px; color: #BDB29E">لوحة الإشعارات من الجرس، وقايمة التصدير من أي جدول — نفس الشكل في كل مكان</p>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+    <section role="dialog" aria-labelledby="nt-h" style="flex: 0 1 420px; min-width: 320px; border-radius: 20px; background: linear-gradient(180deg, #221D15 0%, #17130D 100%); border: 1px solid rgba(255,232,190,0.12); box-shadow: 0 24px 60px rgba(0,0,0,0.45); overflow: hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 18px">
+        <h2 id="nt-h" style="margin: 0; font-size: 16px; font-weight: 700">الإشعارات</h2>
+        <button type="button" style="height: 32px; padding: 0 10px; border: 0; background: transparent; color: #F0C850; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">علّم الكل مقروء</button>
+      </div>
+      <div role="tablist" aria-label="الإشعارات" style="display: flex; gap: 4px; padding: 0 14px; border-bottom: 1px solid rgba(255,232,190,0.08)">
+        <button role="tab" aria-selected="true" type="button" style="height: 40px; padding: 0 10px; border: 0; border-bottom: 2px solid #F0C850; background: transparent; color: #F6F1E7; font: 700 13px 'IBM Plex Sans Arabic', sans-serif">غير مقروء · ٣</button>
+        <button role="tab" aria-selected="false" type="button" style="height: 40px; padding: 0 10px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #BDB29E; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">الكل</button>
+      </div>
+      <ul style="list-style: none; margin: 0; padding: 0">
+        <li style="display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid rgba(255,232,190,0.06); background: rgba(224,180,58,0.04)">
+          <span aria-hidden="true" style="width: 36px; height: 36px; flex: 0 0 36px; border-radius: 11px; background: rgba(90,169,240,0.14); color: #7DBBF4; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4zM4 10h16M8 15h3"></path></svg></span>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 13.5px; line-height: 1.6"><b>محمود عبد الله</b> صرف ٢١٬٦٠٠ ج.م كاش لسعيد الشامي</span>
+            <span style="font-size: 12px; color: #978C78">تأكيد خزنة · من ٤٠ دقيقة</span>
+            <div style="display: flex; gap: 8px"><button type="button" style="height: 32px; padding: 0 14px; border-radius: 9px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 12.5px 'IBM Plex Sans Arabic', sans-serif">تأكيد</button><button type="button" style="height: 32px; padding: 0 12px; border-radius: 9px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #EDE5D6; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">افتح</button></div>
+          </div>
+          <span aria-label="غير مقروء" style="width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #F0C850"></span>
+        </li>
+        <li style="display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid rgba(255,232,190,0.06); background: rgba(224,180,58,0.04)">
+          <span aria-hidden="true" style="width: 36px; height: 36px; flex: 0 0 36px; border-radius: 11px; background: rgba(239,100,97,0.14); color: #F28683; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5 12 12l9-4.5M12 12v9"></path></svg></span>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 13.5px; line-height: 1.6"><b>خلاط «نايل»</b> نفد من مخزن القاهرة</span>
+            <span style="font-size: 12px; color: #978C78">المخزون · من ساعتين</span>
+          </div>
+          <span aria-label="غير مقروء" style="width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #F0C850"></span>
+        </li>
+        <li style="display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid rgba(255,232,190,0.06); background: rgba(224,180,58,0.04)">
+          <span aria-hidden="true" style="width: 36px; height: 36px; flex: 0 0 36px; border-radius: 11px; background: rgba(242,153,74,0.14); color: #F5A862; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2zM9 8h6M9 12h6"></path></svg></span>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 13.5px; line-height: 1.6"><b>محمد سعيد</b> طلب إلغاء فاتورة <bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">INV-1038</bdi></span>
+            <span style="font-size: 12px; color: #978C78">موافقات · من ٥ ساعات</span>
+          </div>
+          <span aria-label="غير مقروء" style="width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: #F0C850"></span>
+        </li>
+        <li style="display: flex; gap: 12px; padding: 14px 18px; opacity: 0.62">
+          <span aria-hidden="true" style="width: 36px; height: 36px; flex: 0 0 36px; border-radius: 11px; background: rgba(60,201,138,0.12); color: #5FD9A2; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"></path></svg></span>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 13.5px; line-height: 1.6">التصدير جاهز: <bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px">فواتير-البيع_2026-10-18.xlsx</bdi></span>
+            <span style="font-size: 12px; color: #978C78">امبارح · <a href="#" style="text-decoration: none">حمّل</a></span>
+          </div>
+        </li>
+      </ul>
+      <a href="#" style="display: block; text-align: center; padding: 14px; border-top: 1px solid rgba(255,232,190,0.08); text-decoration: none; font-size: 13px; font-weight: 600">كل الإشعارات</a>
+    </section>
+
+    <section role="dialog" aria-labelledby="ex-h" style="flex: 0 1 460px; min-width: 320px; border-radius: 20px; background: linear-gradient(180deg, #221D15 0%, #17130D 100%); border: 1px solid rgba(255,232,190,0.12); box-shadow: 0 24px 60px rgba(0,0,0,0.45); padding: 20px; display: flex; flex-direction: column; gap: 16px">
+      <h2 id="ex-h" style="margin: 0; font-size: 16px; font-weight: 700">تصدير فواتير البيع</h2>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span id="ex-f" style="font-size: 12.5px; font-weight: 600; color: #CFC5B2">الشكل</span>
+        <div role="radiogroup" aria-labelledby="ex-f" style="display: flex; padding: 3px; border-radius: 12px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12)">
+          <button type="button" role="radio" aria-checked="true" style="flex: 1; height: 36px; border: 0; border-radius: 9px; background: #F6F1E7; color: #1A1408; font: 700 13px 'IBM Plex Sans Arabic', sans-serif">Excel</button>
+          <button type="button" role="radio" aria-checked="false" style="flex: 1; height: 36px; border: 0; border-radius: 9px; background: transparent; color: #BDB29E; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">PDF</button>
+          <button type="button" role="radio" aria-checked="false" style="flex: 1; height: 36px; border: 0; border-radius: 9px; background: transparent; color: #BDB29E; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">صورة PNG</button>
+        </div>
+      </div>
+      <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-size: 12.5px; font-weight: 600; color: #CFC5B2; margin-bottom: 6px">إيه اللي يتصدّر</legend>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px"><input type="radio" name="sc" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">الصفحة الحالية <span style="color: #978C78">· ٢٥ فاتورة</span></label>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px"><input type="radio" name="sc" checked="" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">كل النتايج بالفلاتر دي <span style="color: #978C78">· ١٤٢ فاتورة</span></label>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #6E6556"><input type="radio" name="sc" disabled="" style="width: 16px; height: 16px; margin: 0px;">المحددين بس <span>· محددتش حاجة</span></label>
+      </fieldset>
+      <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+        <legend style="font-size: 12.5px; font-weight: 600; color: #CFC5B2; margin-bottom: 6px">الأعمدة <span style="font-weight: 500; color: #978C78">· الظاهرة دلوقتي متعلّمة</span></legend>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; font-size: 13px">
+          <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" checked="" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">الرقم</label>
+          <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" checked="" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">العميل</label>
+          <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" checked="" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">التاريخ</label>
+          <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" checked="" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">الصافي</label>
+          <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" checked="" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">الحالة</label>
+          <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" style="accent-color: rgb(224, 180, 58); width: 16px; height: 16px; margin: 0px;">الخصومات</label>
+        </div>
+      </fieldset>
+      <div style="padding: 10px 12px; border-radius: 12px; background: rgba(255,240,210,0.04); font-size: 12.5px; color: #BDB29E; line-height: 1.7">
+        اسم الملف: <bdi dir="ltr" style="font-family: 'IBM Plex Mono', monospace; color: #F6F1E7">فواتير-البيع_2026-10-19.xlsx</bdi><br>
+        فيه اللوجو، الفلاتر المستخدمة، ومين صدّره وإمتى.
+      </div>
+      <div style="display: flex; gap: 10px">
+        <button type="button" style="flex: 1; height: 46px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 14px 'IBM Plex Sans Arabic', sans-serif">صدّر ١٤٢ فاتورة</button>
+        <button type="button" style="height: 46px; padding: 0 16px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #EDE5D6; font: 600 13.5px 'IBM Plex Sans Arabic', sans-serif">إلغاء</button>
+      </div>
+      <span style="font-size: 12px; color: #978C78">أكتر من ٥٬٠٠٠ صف؟ بيتعمل في الخلفية ويوصلك إشعار بزرار التحميل.</span>
+    </section>
+  </div>
+</div>
+
+
+
+
+</body></html>

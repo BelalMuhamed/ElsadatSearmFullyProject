@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>شجرة الحسابات</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}
+.tree{list-style:none;margin:0;padding:0}
+.tree .n{display:flex;align-items:center;gap:8px;min-height:38px;padding:0 10px;border-radius:10px;font-size:13.5px;cursor:pointer}
+.tree .n:hover{background:rgba(255,240,210,.04)}
+.tree .n.on{background:rgba(224,180,58,.12);box-shadow:inset 0 0 0 1px rgba(240,200,80,.35)}
+.tree .cd{font:500 12px 'IBM Plex Mono',monospace;color:#978C78;min-width:44px}
+.tree .bal{margin-right:auto;font-size:12.5px;color:#BDB29E}
+.tree .ch{width:16px;color:#978C78;font-size:11px;text-align:center}
+.lock{color:#978C78}
+</style>
+</helmet>
+<div class="sr" dir="rtl" style="min-height: 960px">
+  <div class="sr-side"><dc-import name="Sidebar" active="accounts" item="coa" theme="dark" hint-size="264px,960px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head">
+        <div class="stack"><nav aria-label="المسار" class="crumb">الحسابات › شجرة الحسابات</nav><h1 class="h1">شجرة الحسابات</h1><p class="sub">الترتيب بالأرقام مش بالحروف · الحسابات اللي عليها قفل بيعملها السيستم ومتتمسحش</p></div>
+        <button type="button" class="btn p">+ حساب فرعي</button>
+      </div>
+      <div class="split">
+        <section class="card grow" style="padding: 14px" aria-label="الشجرة">
+          <div class="row" style="margin-bottom: 10px"><label class="search" style="flex: 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM20 20l-3.5-3.5"></path></svg><span class="sr-only">دوّر بالاسم أو الكود</span><input placeholder="دوّر بالاسم أو الكود"></label><button type="button" class="btn sm g">افتح الكل</button><button type="button" class="btn sm g">اقفل الكل</button></div>
+          <ul class="tree" role="tree" aria-label="شجرة الحسابات">
+            <li role="treeitem" aria-expanded="true"><div class="n"><span class="ch">▾</span><span class="cd">1</span><b>الأصول</b><span class="bal">٢٫٨٤ مليون</span></div>
+              <ul class="tree" role="group" style="padding-right: 22px">
+                <li role="treeitem" aria-expanded="true"><div class="n"><span class="ch">▾</span><span class="cd">11</span><span class="sb">الأصول المتداولة</span><span class="bal">٢٫٢١ مليون</span></div>
+                  <ul class="tree" role="group" style="padding-right: 22px">
+                    <li role="treeitem"><div class="n"><span class="ch"></span><span class="cd">1101</span>الخزنة الرئيسية<span class="lock" title="حساب نظامي" aria-label="حساب نظامي"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"></path></svg></span><span class="bal">٣١٢٬٤٠٠</span></div></li>
+                    <li role="treeitem"><div class="n"><span class="ch"></span><span class="cd">1102</span>البنك الأهلي · جاري<span class="bal">٥٨٤٬٠٠٠</span></div></li>
+                    <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">1103</span>العملاء<span class="lock" aria-label="حساب نظامي"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"></path></svg></span><span class="bal">٦٢١٬٨٠٠</span></div></li>
+                    <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">1104</span>المخزون<span class="lock" aria-label="حساب نظامي"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"></path></svg></span><span class="bal">١٫١٤ مليون</span></div></li>
+                    <li role="treeitem" aria-expanded="true" aria-selected="true"><div class="n on"><span class="ch">▾</span><span class="cd">1105</span><b>عهد المناديب</b><span class="lock" aria-label="حساب نظامي"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"></path></svg></span><span class="bal">٧٣٬٠٠٠</span></div>
+                      <ul class="tree" role="group" style="padding-right: 22px">
+                        <li role="treeitem"><div class="n"><span class="ch"></span><span class="cd">110501</span>كريم سامي<span class="bal">١٨٬٠٠٠</span></div></li>
+                        <li role="treeitem"><div class="n"><span class="ch"></span><span class="cd">110502</span>أحمد فتحي<span class="bal">٢٥٬٠٠٠</span></div></li>
+                        <li role="treeitem"><div class="n"><span class="ch"></span><span class="cd">110503</span>محمود عبد الله<span class="bal">٣٠٬٠٠٠</span></div></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">12</span><span class="sb">الأصول الثابتة</span><span class="bal">٦٣٠٬٠٠٠</span></div></li>
+              </ul>
+            </li>
+            <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">2</span><b>الخصوم</b><span class="bal">٦١٢٬٤٠٠</span></div></li>
+            <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">3</span><b>حقوق الملكية</b><span class="bal">١٫٩ مليون</span></div></li>
+            <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">4</span><b>الإيرادات</b><span class="bal">١٫٣١ مليون</span></div></li>
+            <li role="treeitem" aria-expanded="true"><div class="n"><span class="ch">▾</span><span class="cd">5</span><b>المصروفات</b><span class="bal">٩٦٤٬٠٠٠</span></div>
+              <ul class="tree" role="group" style="padding-right: 22px">
+                <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">51</span>مصروفات تشغيل<span class="bal">٩٨٬٢٠٠</span></div></li>
+                <li role="treeitem"><div class="n"><span class="ch">▸</span><span class="cd">52</span>مصروفات بيع وتوزيع<span class="bal">٢٨٬٤٠٠</span></div></li>
+                <li role="treeitem"><div class="n"><span class="ch"></span><span class="cd">53</span>هدايا<span class="lock" aria-label="حساب نظامي"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"></path></svg></span><span class="bal">١٢٬٣٠٠</span></div></li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <aside class="aside">
+          <section class="card hi pad stack g8">
+            <div class="row" style="gap: 8px"><bdi dir="ltr" class="mono muted">1105</bdi><h2 class="h2">عهد المناديب</h2><span class="chip c-neu">نظامي</span></div>
+            <div class="li"><span>الرصيد</span><b style="font-size: 20px">٧٣٬٠٠٠ ج.م</b></div>
+            <div class="li"><span>النوع</span><span>مدين · أصل متداول</span></div>
+            <div class="li"><span>حسابات فرعية</span><span>٣ · بتتعمل لوحدها مع كل مندوب جديد</span></div>
+            <div class="li" style="border-bottom: 0"><span class="fs12 muted">مينفعش يتمسح ولا يتغير كوده، لأن السيستم بيقيد عليه مع كل صرف كاش وكل تسليم للخزنة</span></div>
+            <div class="row"><a href="#" class="btn p">عرض الحركة</a><button type="button" class="btn">تعديل الاسم</button></div>
+          </section>
+          <div class="note neu"><span>«عرض الحركة» بيفتح كشف حساب بالرصيد المتراكم، وأي سطر بيفتح مستنده.</span></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

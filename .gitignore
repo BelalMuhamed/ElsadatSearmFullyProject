@@ -1,0 +1,3 @@
+# local build/test logs that Claude reads from the PC (not committed)
+/build.log
+/test.log

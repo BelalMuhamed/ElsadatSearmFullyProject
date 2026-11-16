@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تقارير الموارد البشرية</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.hm{display:grid;grid-template-columns:120px repeat(19,minmax(0,1fr));gap:3px;font-size:11.5px;align-items:center}.hm i{display:block;height:22px;border-radius:4px}</style>
+</helmet>
+<div class="sr" dir="rtl" style="min-height: 960px">
+  <div class="sr-side"><dc-import name="Sidebar" active="reports" item="hr" theme="dark" hint-size="264px,960px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head">
+        <div class="stack"><nav aria-label="المسار" class="crumb">التقارير › الموارد البشرية</nav><h1 class="h1">الحضور وتكلفة الرواتب</h1><p class="sub">مين بيتأخر، وبندفع كام في كل قسم؟ · الموظفين بس — المناديب ملهمش مواعيد</p></div>
+        <div class="row"><button type="button" class="filter on">أكتوبر ٢٠٢٦ ▾</button><button type="button" class="filter">القسم: الكل ▾</button><button type="button" class="btn p">تصدير ▾</button></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span>نسبة الحضور</span><b class="ok">٩٤٪</b><small>٣٠ موظف</small></div>
+        <div class="kpi"><span>ساعات تأخير</span><b class="warn">٢٢</b><small>أكتر حد: عمرو جلال ٦ س</small></div>
+        <div class="kpi"><span>إجازات</span><b>١٤ يوم</b><small>٣ مستنية موافقة</small></div>
+        <div class="kpi gold"><span>تكلفة الرواتب</span><b>٤١٢٬٨٠٠</b><small>▲ ٢٪ عن سبتمبر</small></div>
+      </div>
+      <section class="card pad stack g12" aria-labelledby="hm-h">
+        <div class="between"><h2 id="hm-h" class="h2">الحضور يوم بيوم</h2><span class="row fs12 soft" style="gap: 12px"><span class="row" style="gap: 5px"><i style="width: 12px; height: 12px; border-radius: 3px; background: rgba(60,201,138,.45)"></i>حاضر</span><span class="row" style="gap: 5px"><i style="width: 12px; height: 12px; border-radius: 3px; background: rgba(242,153,74,.6)"></i>متأخر</span><span class="row" style="gap: 5px"><i style="width: 12px; height: 12px; border-radius: 3px; background: rgba(239,100,97,.6)"></i>غايب</span><span class="row" style="gap: 5px"><i style="width: 12px; height: 12px; border-radius: 3px; background: rgba(90,169,240,.5)"></i>إجازة</span><span class="row" style="gap: 5px"><i style="width: 12px; height: 12px; border-radius: 3px; background: rgba(255,240,210,.07)"></i>عطلة</span></span></div>
+        <div class="hm" role="img" aria-label="خريطة حضور ٦ موظفين لأول ١٩ يوم في أكتوبر">
+          <span></span>
+          <sc-for list="{{days}}" as="d" hint-placeholder-count="19"><span class="muted" style="text-align: center">{{d}}</span></sc-for>
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+            <span class="sb" style="font-size: 12.5px">{{r.name}}</span>
+            <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="19"><i style="{{c}}"></i></sc-for>
+          </sc-for>
+        </div>
+      </section>
+      <section class="card clip">
+        <div class="pad-h"><h2 class="h2">تكلفة الرواتب حسب القسم</h2></div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>القسم</th><th class="num">عدد</th><th class="num">أغسطس</th><th class="num">سبتمبر</th><th class="num">أكتوبر</th><th style="width: 30%">من الإجمالي</th></tr></thead>
+            <tbody>
+              <tr><td class="sb">المناديب</td><td class="num">١٢</td><td class="num dim">١١٢٬٤٠٠</td><td class="num dim">١١٤٬٠٠٠</td><td class="num b">١١٦٬٤٠٠</td><td><div class="bar" style="height: 8px"><i style="width: 28%; background: #E0B43A"></i></div></td></tr>
+              <tr><td class="sb">المصنع والإنتاج</td><td class="num">١٤</td><td class="num dim">١٢٨٬٠٠٠</td><td class="num dim">١٢٩٬٦٠٠</td><td class="num b">١٣١٬٢٠٠</td><td><div class="bar" style="height: 8px"><i style="width: 32%; background: #E0B43A"></i></div></td></tr>
+              <tr><td class="sb">المخازن</td><td class="num">٨</td><td class="num dim">٧٢٬٨٠٠</td><td class="num dim">٧٢٬٨٠٠</td><td class="num b">٧٤٬٤٠٠</td><td><div class="bar" style="height: 8px"><i style="width: 18%; background: #E0B43A"></i></div></td></tr>
+              <tr><td class="sb">الحسابات والإدارة</td><td class="num">٨</td><td class="num dim">٨٨٬٢٠٠</td><td class="num dim">٨٨٬٢٠٠</td><td class="num b">٩٠٬٨٠٠</td><td><div class="bar" style="height: 8px"><i style="width: 22%; background: #E0B43A"></i></div></td></tr>
+            </tbody>
+            <tfoot><tr><td>الإجمالي</td><td class="num">٤٢</td><td class="num">٤٠١٬٤٠٠</td><td class="num">٤٠٤٬٦٠٠</td><td class="num">٤١٢٬٨٠٠</td><td></td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const ar = (n) => String(n).replace(/[0-9]/g, (c) => '٠١٢٣٤٥٦٧٨٩'[c]);
+    const days = []; for (let d = 1; d <= 19; d++) days.push(ar(d));
+    const C = { p: 'rgba(60,201,138,.45)', l: 'rgba(242,153,74,.6)', a: 'rgba(239,100,97,.6)', v: 'rgba(90,169,240,.5)', h: 'rgba(255,240,210,.07)' };
+    const fri = (d) => (d + 5) % 7 === 0;
+    const mk = (spec) => { const out = []; for (let d = 1; d <= 19; d++) { let k = fri(d) || d === 6 ? 'h' : (spec[d] || 'p'); out.push('background: ' + C[k] + ';'); } return out; };
+    const rows = [
+      { name: 'منى عبد الله', cells: mk({ 13: 'v' }) },
+      { name: 'عمرو جلال', cells: mk({ 7: 'l', 12: 'l', 14: 'l' }) },
+      { name: 'نورا حسين', cells: mk({ 8: 'a', 15: 'l' }) },
+      { name: 'سامح نبيل', cells: mk({ 7: 'l' }) },
+      { name: 'يوسف هاني', cells: mk({ 1: 'v', 3: 'v' }) },
+      { name: 'نهى عادل', cells: mk({}) }
+    ];
+    return { days, rows };
+  }
+}
+</script>
+</body>
+</html>

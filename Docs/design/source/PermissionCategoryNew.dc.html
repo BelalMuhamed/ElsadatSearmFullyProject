@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>فئة صلاحيات جديدة</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+.mx td.c{text-align:center;padding:9px 6px}
+.mx td.c input{width:18px;height:18px;accent-color:#E0B43A;margin:0}
+.mx td.add{background:rgba(60,201,138,.10);box-shadow:inset 0 0 0 1px rgba(60,201,138,.45)}
+.mx td.na{color:#4F473C}
+.pick{padding:14px;border-radius:14px;border:1px solid rgba(255,232,190,.14);background:rgba(255,240,210,.03);display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.pick.on{border:2px solid #E0B43A;background:rgba(224,180,58,.07)}
+</style>
+</helmet>
+<div class="sr" dir="rtl" style="min-height: 1000px">
+  <div class="sr-side"><dc-import name="Sidebar" active="admin" item="categories" theme="dark" hint-size="264px,1000px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head">
+        <div class="stack">
+          <nav aria-label="المسار" class="crumb">الإدارة › فئات الصلاحيات › فئة جديدة</nav>
+          <h1 class="h1">فئة صلاحيات جديدة</h1>
+          <p class="sub">اعمل الفئة مرة واحدة، وبعدها أي موظف جديد ياخدها بضغطة</p>
+        </div>
+        <a href="Permissions.dc.html" class="btn">رجوع للفئات</a>
+      </div>
+
+      <div class="split">
+        <div class="grow stack g16">
+          <section class="card pad stack g16" aria-labelledby="pc-basic">
+            <h2 id="pc-basic" class="h2">بيانات الفئة</h2>
+            <div class="grid2">
+              <div class="field">
+                <label for="pc-name" class="lbl">اسم الفئة <span class="req">*</span></label>
+                <input id="pc-name" class="inp focus" value="مسؤول مشتريات">
+                <span class="hint">بيظهر في صفحة المستخدمين وفي ملف الموظف</span>
+              </div>
+              <div class="field">
+                <label for="pc-desc" class="lbl">وصف قصير</label>
+                <input id="pc-desc" class="inp" value="بيعمل فواتير الشراء ويستلم البضاعة ويتابع الموردين">
+              </div>
+            </div>
+            <fieldset style="margin: 0; padding: 0; border: 0" class="stack g8">
+              <legend class="lbl" style="margin-bottom: 8px">تبدأ منين؟</legend>
+              <div class="grid3">
+                <label class="pick"><input type="radio" name="from" class="chk" style="margin-top: 2px"><span class="stack"><b class="fs14">فاضية</b><span class="fs12 muted">مفيش ولا صلاحية غير الأساسية</span></span></label>
+                <label class="pick on"><input type="radio" name="from" checked="" class="chk" style="margin-top: 2px"><span class="stack"><b class="fs14">انسخ من فئة موجودة</b><span class="fs12 muted">وعدّل عليها</span></span></label>
+                <div class="field" style="justify-content: flex-end">
+                  <label for="pc-src" class="lbl">الفئة اللي هتتنسخ</label>
+                  <select id="pc-src" class="inp"><option>أمين مخزن · ٢٢ صلاحية</option></select>
+                </div>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="card clip" aria-labelledby="pc-mx">
+            <div class="between" style="padding: 16px 20px">
+              <div class="stack"><h2 id="pc-mx" class="h2">الصلاحيات</h2><span class="fs12 muted">الخانة الخضرا = زيادة عن «أمين مخزن» · النقطة = مالهاش معنى للشاشة دي</span></div>
+              <label class="search" style="min-width: 240px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM20 20l-3.5-3.5"></path></svg><span class="sr-only">دوّر في الصلاحيات</span><input placeholder="دوّر في الصلاحيات"></label>
+            </div>
+            <div class="tbl-wrap">
+              <table class="tbl mx" style="min-width: 820px; font-size: 13px">
+                <thead><tr style="text-align: center"><th style="text-align: right">الشاشة</th><th>عرض</th><th>إضافة</th><th>تعديل</th><th>حذف</th><th>تأكيد</th><th>موافقة</th><th>تصدير</th><th>طباعة</th></tr></thead>
+                <tbody>
+                  <tr class="grp"><td colspan="9"><div class="row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BDB29E" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="transform: rotate(180deg)"><path d="m6 9 6 6 6-6"></path></svg><span>المشتريات</span><span class="fs12 muted" style="font-weight: 500">١٦ من ١٨ · كلها زيادة</span><span class="spacer"></span><button type="button" class="btn sm g">حدد المجموعة كلها</button></div></td></tr>
+                  <tr><td style="padding-right: 44px">فواتير الشراء</td>
+                    <td class="c add"><input type="checkbox" checked="" aria-label="فواتير الشراء · عرض"></td><td class="c add"><input type="checkbox" checked="" aria-label="فواتير الشراء · إضافة"></td><td class="c add"><input type="checkbox" checked="" aria-label="فواتير الشراء · تعديل"></td><td class="c"><input type="checkbox" aria-label="فواتير الشراء · حذف"></td>
+                    <td class="c add"><span style="display: inline-flex; gap: 4px; align-items: center"><input type="checkbox" checked="" aria-label="فواتير الشراء · تأكيد — حساسة"><span aria-hidden="true" class="warn fs12">▲</span></span></td><td class="c na">·</td><td class="c add"><input type="checkbox" checked="" aria-label="فواتير الشراء · تصدير"></td><td class="c add"><input type="checkbox" checked="" aria-label="فواتير الشراء · طباعة"></td></tr>
+                  <tr><td style="padding-right: 44px">مرتجعات الشراء</td>
+                    <td class="c add"><input type="checkbox" checked="" aria-label="مرتجعات الشراء · عرض"></td><td class="c add"><input type="checkbox" checked="" aria-label="مرتجعات الشراء · إضافة"></td><td class="c add"><input type="checkbox" checked="" aria-label="مرتجعات الشراء · تعديل"></td><td class="c"><input type="checkbox" aria-label="مرتجعات الشراء · حذف"></td>
+                    <td class="c add"><span style="display: inline-flex; gap: 4px; align-items: center"><input type="checkbox" checked="" aria-label="مرتجعات الشراء · تأكيد — حساسة"><span aria-hidden="true" class="warn fs12">▲</span></span></td><td class="c na">·</td><td class="c add"><input type="checkbox" checked="" aria-label="مرتجعات الشراء · تصدير"></td><td class="c add"><input type="checkbox" checked="" aria-label="مرتجعات الشراء · طباعة"></td></tr>
+                  <tr><td style="padding-right: 44px">الموردين</td>
+                    <td class="c add"><input type="checkbox" checked="" aria-label="الموردين · عرض"></td><td class="c add"><input type="checkbox" checked="" aria-label="الموردين · إضافة"></td><td class="c add"><input type="checkbox" checked="" aria-label="الموردين · تعديل"></td><td class="c na">·</td><td class="c na">·</td><td class="c na">·</td><td class="c add"><input type="checkbox" checked="" aria-label="الموردين · تصدير"></td><td class="c na">·</td></tr>
+
+                  <tr class="grp"><td colspan="9"><div class="row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BDB29E" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="transform: rotate(180deg)"><path d="m6 9 6 6 6-6"></path></svg><span>المخازن</span><span class="fs12 muted" style="font-weight: 500">١٢ من ١٦ · منسوخة من أمين مخزن</span><span class="spacer"></span><button type="button" class="btn sm g">شيل المجموعة كلها</button></div></td></tr>
+                  <tr><td style="padding-right: 44px">المخزون</td><td class="c"><input type="checkbox" checked="" aria-label="المخزون · عرض"></td><td class="c na">·</td><td class="c na">·</td><td class="c na">·</td><td class="c na">·</td><td class="c na">·</td><td class="c"><input type="checkbox" checked="" aria-label="المخزون · تصدير"></td><td class="c"><input type="checkbox" checked="" aria-label="المخزون · طباعة"></td></tr>
+                  <tr><td style="padding-right: 44px">المنتجات</td><td class="c"><input type="checkbox" checked="" aria-label="المنتجات · عرض"></td><td class="c"><input type="checkbox" checked="" aria-label="المنتجات · إضافة"></td><td class="c"><input type="checkbox" checked="" aria-label="المنتجات · تعديل"></td><td class="c"><input type="checkbox" aria-label="المنتجات · حذف"></td><td class="c na">·</td><td class="c na">·</td><td class="c"><input type="checkbox" checked="" aria-label="المنتجات · تصدير"></td><td class="c na">·</td></tr>
+                  <tr><td style="padding-right: 44px">التحويلات</td><td class="c"><input type="checkbox" checked="" aria-label="التحويلات · عرض"></td><td class="c"><input type="checkbox" checked="" aria-label="التحويلات · إضافة"></td><td class="c"><input type="checkbox" aria-label="التحويلات · تعديل"></td><td class="c"><input type="checkbox" aria-label="التحويلات · حذف"></td><td class="c"><input type="checkbox" checked="" aria-label="التحويلات · تأكيد"></td><td class="c na">·</td><td class="c na">·</td><td class="c"><input type="checkbox" checked="" aria-label="التحويلات · طباعة"></td></tr>
+
+                  <tr class="grp"><td colspan="9"><div class="row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BDB29E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg><span>الحسابات</span><span class="fs12 muted" style="font-weight: 500">٢ من ٢٠ · سندات الصرف عرض بس</span></div></td></tr>
+                  <tr class="grp"><td colspan="9"><div class="row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BDB29E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg><span>مساحتي</span><span class="fs12 muted" style="font-weight: 500">٤ من ٤ · أساسية لكل الناس، متتشالش</span></div></td></tr>
+                  <tr class="grp"><td colspan="9"><div class="row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BDB29E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg><span>المبيعات · الولاء · المناديب · الموارد البشرية · التقارير · الإدارة</span><span class="fs12 muted" style="font-weight: 500">٤ من ٩٤ · تقارير المخازن</span></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <aside class="aside" aria-labelledby="pc-sum">
+          <section class="card hi pad stack g12">
+            <h2 id="pc-sum" class="h2">ملخص الفئة</h2>
+            <div class="between"><span class="soft fs13">الصلاحيات</span><b style="font-size: 26px">٣٨</b></div>
+            <div class="bar" role="img" aria-label="٢٢ منسوخة و١٦ زيادة"><i style="width: 58%; background: #A89F8F"></i><i style="width: 42%; background: #3CC98A"></i></div>
+            <div class="row fs12 soft"><span class="row" style="gap: 6px"><i class="dot" style="background: #A89F8F"></i>٢٢ من أمين مخزن</span><span class="row" style="gap: 6px"><i class="dot" style="background: #3CC98A"></i>١٦ زيادة</span></div>
+            <div class="li" style="flex-direction: column; align-items: stretch; gap: 6px">
+              <span class="warn sb fs13">٣ صلاحيات حساسة</span>
+              <span class="fs12 soft">تأكيد فواتير الشراء · تأكيد مرتجعات الشراء · تأكيد التحويلات</span>
+              <span class="fs12 muted">دي بتعمل قيود في الحسابات — اتأكد إن الفئة محتاجاها فعلًا.</span>
+            </div>
+            <div class="li" style="border-bottom: 0"><span class="soft fs13">مستخدمين عليها</span><span class="muted fs13">لسه مفيش</span></div>
+          </section>
+          <div class="note neu">بعد الحفظ، ادّي الفئة لأي مستخدم من صفحة <b>المستخدمين</b>، وتقدر تزوّد أو تشيل صلاحيات لكل واحد لوحده من غير ما تلمس الفئة.</div>
+          <button type="button" class="btn p lg w">احفظ الفئة · ٣٨ صلاحية</button>
+          <button type="button" class="btn g w">إلغاء</button>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

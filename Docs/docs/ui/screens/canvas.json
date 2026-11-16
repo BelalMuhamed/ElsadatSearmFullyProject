@@ -1,0 +1,851 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Approvals.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٩ · مركز الموافقات",
+      "w": 1440,
+      "x": 0,
+      "y": 1820
+    },
+    "Attendance.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٥٧ · الحضور في صفحة واحدة",
+      "w": 1440,
+      "x": 1520,
+      "y": 11740
+    },
+    "ChangeLog.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٧٨ · سجل التغييرات",
+      "w": 1440,
+      "x": 4560,
+      "y": 17224
+    },
+    "ChartOfAccounts.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٣٩ · شجرة الحسابات",
+      "w": 1440,
+      "x": 4560,
+      "y": 7560
+    },
+    "Commissions.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٥٥ · نسب العمولات",
+      "w": 1440,
+      "x": 4560,
+      "y": 10360
+    },
+    "CompanySettings.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٧٥ · بيانات الشركة للطباعة",
+      "w": 1440,
+      "x": 0,
+      "y": 17224
+    },
+    "CouponSettings.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٥١ · إعدادات الكوبونات",
+      "w": 1440,
+      "x": 14150,
+      "y": 8940
+    },
+    "CustomerProfile.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٢٧ · ملف العميل",
+      "w": 1440,
+      "x": 7600,
+      "y": 4760
+    },
+    "Customers.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢٦ · العملاء + لوحة الإضافة",
+      "w": 1440,
+      "x": 6080,
+      "y": 4760
+    },
+    "Dashboard.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "title": "٣ · الرئيسية — ليل",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "DashboardCustomize.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٥ · تخصيص الرئيسية",
+      "w": 1440,
+      "x": 6080,
+      "y": 0
+    },
+    "DashboardLight.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "title": "٤ · الرئيسية — نهار",
+      "w": 1440,
+      "x": 4560,
+      "y": 0
+    },
+    "Deductions.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٦١ · الخصومات",
+      "w": 1440,
+      "x": 7600,
+      "y": 11740
+    },
+    "DesignSystem.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٨ · نظام التصميم",
+      "w": 1440,
+      "x": 10640,
+      "y": 0
+    },
+    "EmployeeProfile.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٥٦ · ملف الموظف",
+      "w": 1440,
+      "x": 0,
+      "y": 11740
+    },
+    "Expenses.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٤٠ · مصروفات الشركة",
+      "w": 1440,
+      "x": 6080,
+      "y": 7560
+    },
+    "ForgotPassword.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢ · نسيت كلمة المرور",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "GeneralDiscounts.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢١ · الخصومات العامة",
+      "w": 1440,
+      "x": 9120,
+      "y": 3240
+    },
+    "GiftsSettlement.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٤٨ · تسوية الهدايا والنجوم",
+      "w": 1440,
+      "x": 10640,
+      "y": 8940
+    },
+    "GiftsStock.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٤٧ · مخزون الهدايا",
+      "w": 1440,
+      "x": 9120,
+      "y": 8940
+    },
+    "GlobalSearch.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٦ · البحث الشامل Ctrl+K",
+      "w": 1440,
+      "x": 7600,
+      "y": 0
+    },
+    "ImportReview.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٧٤ · استيراد من Excel — المراجعة",
+      "w": 1440,
+      "x": 6080,
+      "y": 15804
+    },
+    "InspectionCreate.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٤٢ · معاينة جديدة وتخصيصها",
+      "w": 1440,
+      "x": 1520,
+      "y": 8940
+    },
+    "InspectionDetail.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٤٣ · تفاصيل المعاينة",
+      "w": 1440,
+      "x": 3040,
+      "y": 8940
+    },
+    "Inspections.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٤١ · لوحة المعاينات",
+      "w": 1440,
+      "x": 0,
+      "y": 8940
+    },
+    "InvoiceConfirm.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "١٧ · تأكيد الفاتورة وصرف البضاعة",
+      "w": 1440,
+      "x": 3040,
+      "y": 3240
+    },
+    "InvoiceCreate.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "١٦ · فاتورة بيع جديدة",
+      "w": 1440,
+      "x": 1520,
+      "y": 3240
+    },
+    "InvoiceDetail.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "١٨ · تفاصيل الفاتورة وطلب الإلغاء",
+      "w": 1440,
+      "x": 4560,
+      "y": 3240
+    },
+    "InvoicePrint.dc.html": {
+      "expand": "fill",
+      "h": 1100,
+      "title": "١٩ · طباعة الفاتورة A4 / A5",
+      "w": 1440,
+      "x": 6080,
+      "y": 3240
+    },
+    "JournalEntry.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣٨ · قيد يومية",
+      "w": 1440,
+      "x": 3040,
+      "y": 7560
+    },
+    "LeaveMobile.dc.html": {
+      "expand": "fill",
+      "h": 844,
+      "title": "٦٣ · إجازاتي",
+      "w": 390,
+      "x": 470,
+      "y": 13120
+    },
+    "LeaveTypes.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٧٧ · أنواع الإجازات والعطلات",
+      "w": 1440,
+      "x": 3040,
+      "y": 17224
+    },
+    "Leaves.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٥٨ · الإجازات",
+      "w": 1440,
+      "x": 3040,
+      "y": 11740
+    },
+    "Loans.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٦٠ · القروض والأقساط",
+      "w": 1440,
+      "x": 6080,
+      "y": 11740
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "١ · الدخول",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "Messages.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٦٧ · الرسايل الداخلية",
+      "w": 1440,
+      "x": 3040,
+      "y": 14384
+    },
+    "MySpaceMobile.dc.html": {
+      "expand": "fill",
+      "h": 844,
+      "title": "٦٢ · مساحتي",
+      "w": 390,
+      "x": 0,
+      "y": 13120
+    },
+    "Notifications.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٦٥ · لوحة الإشعارات + التصدير",
+      "w": 1440,
+      "x": 0,
+      "y": 14384
+    },
+    "NotificationsAll.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٦٦ · كل الإشعارات",
+      "w": 1440,
+      "x": 1520,
+      "y": 14384
+    },
+    "OfferCreate.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٦٨ · عرض جديد",
+      "w": 1440,
+      "x": 4560,
+      "y": 14384
+    },
+    "OfferDetail.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٦٩ · متابعة العرض",
+      "w": 1440,
+      "x": 6080,
+      "y": 14384
+    },
+    "PaymentVoucher.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣٧ · سند صرف لمورد",
+      "w": 1440,
+      "x": 1520,
+      "y": 7560
+    },
+    "Payroll.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٥٩ · رواتب الشهر",
+      "w": 1440,
+      "x": 4560,
+      "y": 11740
+    },
+    "PayslipMobile.dc.html": {
+      "expand": "fill",
+      "h": 844,
+      "title": "٦٤ · مرتباتي وقروضي",
+      "w": 390,
+      "x": 940,
+      "y": 13120
+    },
+    "PermissionCategoryNew.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "١٣ · فئة صلاحيات جديدة",
+      "w": 1440,
+      "x": 6080,
+      "y": 1820
+    },
+    "Permissions.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "١٢ · فئات الصلاحيات",
+      "w": 1440,
+      "x": 4560,
+      "y": 1820
+    },
+    "PlumberProfile.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٤٦ · ملف السبّاك",
+      "w": 1440,
+      "x": 7600,
+      "y": 8940
+    },
+    "PointsRequests.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٤٤ · طلبات تحويل النقاط للسبّاكين",
+      "w": 1440,
+      "x": 4560,
+      "y": 8940
+    },
+    "PointsTransfer.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٤٥ · تحويل نقاط بين عميلين",
+      "w": 1440,
+      "x": 6080,
+      "y": 8940
+    },
+    "ProductCard.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣٢ · ملف المنتج وكارت الصنف",
+      "w": 1440,
+      "x": 3040,
+      "y": 6180
+    },
+    "Products.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣١ · المنتجات + لوحة الإضافة",
+      "w": 1440,
+      "x": 1520,
+      "y": 6180
+    },
+    "PurchaseConfirm.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢٤ · تأكيد واستلام فاتورة شراء",
+      "w": 1440,
+      "x": 3040,
+      "y": 4760
+    },
+    "PurchaseCreate.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٢٣ · فاتورة شراء جديدة",
+      "w": 1440,
+      "x": 1520,
+      "y": 4760
+    },
+    "PurchaseInvoices.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢٢ · فواتير الشراء",
+      "w": 1440,
+      "x": 0,
+      "y": 4760
+    },
+    "PurchaseReturn.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢٥ · مرتجع شراء",
+      "w": 1440,
+      "x": 4560,
+      "y": 4760
+    },
+    "ReceiptVoucher.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣٦ · سند قبض",
+      "w": 1440,
+      "x": 0,
+      "y": 7560
+    },
+    "Regions.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٧٦ · المناطق",
+      "w": 1440,
+      "x": 1520,
+      "y": 17224
+    },
+    "RepProfile.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٥٢ · ملف المندوب والعهدة والموقع",
+      "w": 1440,
+      "x": 0,
+      "y": 10360
+    },
+    "Reports.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٧٠ · تقرير رحلة النقاط",
+      "w": 1440,
+      "x": 0,
+      "y": 15804
+    },
+    "ReportsFinancial.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٧١ · التقارير المالية — قائمة الدخل",
+      "w": 1440,
+      "x": 1520,
+      "y": 15804
+    },
+    "ReportsHR.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٧٣ · تقارير الموارد البشرية",
+      "w": 1440,
+      "x": 4560,
+      "y": 15804
+    },
+    "ReportsSales.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "٧٢ · تقارير المبيعات والمخازن",
+      "w": 1440,
+      "x": 3040,
+      "y": 15804
+    },
+    "RepsMap.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٥٤ · المناديب على الخريطة",
+      "w": 1440,
+      "x": 3040,
+      "y": 10360
+    },
+    "SalesInvoices.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "١٥ · فواتير البيع",
+      "w": 1440,
+      "x": 0,
+      "y": 3240
+    },
+    "SalesReturn.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢٠ · مرتجع بيع جزئي",
+      "w": 1440,
+      "x": 7600,
+      "y": 3240
+    },
+    "Sidebar.dc.html": {
+      "h": 900,
+      "title": "مكوّن · القائمة الجانبية",
+      "w": 264,
+      "x": 0,
+      "y": 18644
+    },
+    "States.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "١٤ · الحالات: ممنوع، خطأ، فاضي، تحميل",
+      "w": 1440,
+      "x": 7600,
+      "y": 1820
+    },
+    "Stock.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣٠ · مصفوفة المخزون",
+      "w": 1440,
+      "x": 0,
+      "y": 6180
+    },
+    "StockCount.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٣٤ · الجرد",
+      "w": 1440,
+      "x": 5664,
+      "y": 6180
+    },
+    "SupplierProfile.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٢٩ · ملف المورد",
+      "w": 1440,
+      "x": 10640,
+      "y": 4760
+    },
+    "Suppliers.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٢٨ · الموردين",
+      "w": 1440,
+      "x": 9120,
+      "y": 4760
+    },
+    "Topbar.dc.html": {
+      "h": 68,
+      "title": "مكوّن · الشريط العلوي",
+      "w": 1176,
+      "x": 344,
+      "y": 18644
+    },
+    "TransferTablet.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣٣ · تحويل بين مخزنين — تابلت",
+      "w": 1024,
+      "x": 4560,
+      "y": 6180
+    },
+    "Treasury.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٥٣ · تأكيدات الخزنة",
+      "w": 1440,
+      "x": 1520,
+      "y": 10360
+    },
+    "UserPermissions.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "١١ · صلاحيات مستخدم بعينه",
+      "w": 1440,
+      "x": 3040,
+      "y": 1820
+    },
+    "UserProfile.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٧ · ملفي الشخصي وتفضيلاتي",
+      "w": 1440,
+      "x": 9120,
+      "y": 0
+    },
+    "Users.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "١٠ · المستخدمين",
+      "w": 1440,
+      "x": 1520,
+      "y": 1820
+    },
+    "Warehouses.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "٣٥ · المخازن",
+      "w": 1440,
+      "x": 7184,
+      "y": 6180
+    },
+    "Warranty.dc.html": {
+      "expand": "fill",
+      "h": 960,
+      "title": "٤٩ · شهادات الضمان",
+      "w": 1440,
+      "x": 12160,
+      "y": 8940
+    },
+    "WarrantyVerify.dc.html": {
+      "expand": "fill",
+      "h": 844,
+      "title": "٥٠ · التحقق من الضمان — QR",
+      "w": 390,
+      "x": 13680,
+      "y": 8940
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-19T08:45:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "r1": {
+      "kind": "title1",
+      "maxW": 8000,
+      "text": "الدخول والحساب والشكل العام — ثيمين من نفس الـ tokens",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "r10": {
+      "kind": "title1",
+      "maxW": 1330,
+      "text": "مساحتي — نفس الويب على الموبايل",
+      "w": 240,
+      "x": 0,
+      "y": 12820
+    },
+    "r11": {
+      "kind": "title1",
+      "maxW": 7520,
+      "text": "الإشعارات والرسايل والعروض",
+      "w": 240,
+      "x": 0,
+      "y": 14084
+    },
+    "r12": {
+      "kind": "title1",
+      "maxW": 7520,
+      "text": "التقارير والاستيراد — قالب واحد لكل التقارير",
+      "w": 240,
+      "x": 0,
+      "y": 15504
+    },
+    "r13": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "الإعدادات وسجل التغييرات",
+      "w": 240,
+      "x": 0,
+      "y": 16924
+    },
+    "r14": {
+      "kind": "title1",
+      "maxW": 1520,
+      "text": "المكوّنات المشتركة",
+      "w": 240,
+      "x": 0,
+      "y": 18344
+    },
+    "r2": {
+      "kind": "title1",
+      "maxW": 8000,
+      "text": "الموافقات والمستخدمين والصلاحيات",
+      "w": 240,
+      "x": 0,
+      "y": 1520
+    },
+    "r3": {
+      "kind": "title1",
+      "maxW": 8000,
+      "text": "المبيعات — مسودة ← مؤكدة ← ملغاة",
+      "w": 240,
+      "x": 0,
+      "y": 2940
+    },
+    "r4": {
+      "kind": "title1",
+      "maxW": 8000,
+      "text": "المشتريات والعملاء والموردين — نفس شكل البيع",
+      "w": 240,
+      "x": 0,
+      "y": 4460
+    },
+    "r5": {
+      "kind": "title1",
+      "maxW": 8000,
+      "text": "المخازن — الويب على الديسكتوب والتابلت",
+      "w": 240,
+      "x": 0,
+      "y": 5880
+    },
+    "r6": {
+      "kind": "title1",
+      "maxW": 7520,
+      "text": "الحسابات — سندات بدل القيد اليدوي",
+      "w": 240,
+      "x": 0,
+      "y": 7260
+    },
+    "r7": {
+      "kind": "title1",
+      "maxW": 8000,
+      "text": "المعاينات والولاء — قلب السيستم",
+      "w": 240,
+      "x": 0,
+      "y": 8640
+    },
+    "r8": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "المناديب والخزنة",
+      "w": 240,
+      "x": 0,
+      "y": 10060
+    },
+    "r9": {
+      "kind": "title1",
+      "maxW": 8000,
+      "text": "الموارد البشرية — المناديب من غير ساعات عمل",
+      "w": 240,
+      "x": 0,
+      "y": 11440
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "ForgotPassword.dc.html",
+    "Dashboard.dc.html",
+    "DashboardLight.dc.html",
+    "DashboardCustomize.dc.html",
+    "GlobalSearch.dc.html",
+    "UserProfile.dc.html",
+    "DesignSystem.dc.html",
+    "Approvals.dc.html",
+    "Users.dc.html",
+    "UserPermissions.dc.html",
+    "Permissions.dc.html",
+    "PermissionCategoryNew.dc.html",
+    "States.dc.html",
+    "SalesInvoices.dc.html",
+    "InvoiceCreate.dc.html",
+    "InvoiceConfirm.dc.html",
+    "InvoiceDetail.dc.html",
+    "InvoicePrint.dc.html",
+    "SalesReturn.dc.html",
+    "GeneralDiscounts.dc.html",
+    "PurchaseInvoices.dc.html",
+    "PurchaseCreate.dc.html",
+    "PurchaseConfirm.dc.html",
+    "PurchaseReturn.dc.html",
+    "Customers.dc.html",
+    "CustomerProfile.dc.html",
+    "Suppliers.dc.html",
+    "SupplierProfile.dc.html",
+    "Stock.dc.html",
+    "Products.dc.html",
+    "ProductCard.dc.html",
+    "TransferTablet.dc.html",
+    "StockCount.dc.html",
+    "Warehouses.dc.html",
+    "ReceiptVoucher.dc.html",
+    "PaymentVoucher.dc.html",
+    "JournalEntry.dc.html",
+    "ChartOfAccounts.dc.html",
+    "Expenses.dc.html",
+    "Inspections.dc.html",
+    "InspectionCreate.dc.html",
+    "InspectionDetail.dc.html",
+    "PointsRequests.dc.html",
+    "PointsTransfer.dc.html",
+    "PlumberProfile.dc.html",
+    "GiftsStock.dc.html",
+    "GiftsSettlement.dc.html",
+    "Warranty.dc.html",
+    "WarrantyVerify.dc.html",
+    "CouponSettings.dc.html",
+    "RepProfile.dc.html",
+    "Treasury.dc.html",
+    "RepsMap.dc.html",
+    "Commissions.dc.html",
+    "EmployeeProfile.dc.html",
+    "Attendance.dc.html",
+    "Leaves.dc.html",
+    "Payroll.dc.html",
+    "Loans.dc.html",
+    "Deductions.dc.html",
+    "MySpaceMobile.dc.html",
+    "LeaveMobile.dc.html",
+    "PayslipMobile.dc.html",
+    "Notifications.dc.html",
+    "NotificationsAll.dc.html",
+    "Messages.dc.html",
+    "OfferCreate.dc.html",
+    "OfferDetail.dc.html",
+    "Reports.dc.html",
+    "ReportsFinancial.dc.html",
+    "ReportsSales.dc.html",
+    "ReportsHR.dc.html",
+    "ImportReview.dc.html",
+    "CompanySettings.dc.html",
+    "Regions.dc.html",
+    "LeaveTypes.dc.html",
+    "ChangeLog.dc.html",
+    "Sidebar.dc.html",
+    "Topbar.dc.html"
+  ],
+  "pages": [],
+  "title": "Sadat Searm — UI Redesign"
+}

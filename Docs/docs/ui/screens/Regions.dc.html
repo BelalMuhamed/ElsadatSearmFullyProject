@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>المناطق</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.gv{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;text-decoration:none;color:#EDE5D6}.gv.on{background:rgba(224,180,58,.12);box-shadow:inset 0 0 0 1px rgba(240,200,80,.35)}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="admin" item="regions" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head"><div class="stack"><nav aria-label="المسار" class="crumb">الإدارة › المناطق</nav><h1 class="h1">المناطق</h1><p class="sub">المحافظات وتحتها المدن في صفحة واحدة بدل صفحتين · كل اسم باللغتين</p></div><div class="row"><button type="button" class="btn">استيراد ▾</button><button type="button" class="btn p">+ محافظة</button></div></div>
+      <div class="split">
+        <nav class="card" aria-label="المحافظات" style="flex: 1 1 260px; max-width: 300px; padding: 10px; display: flex; flex-direction: column; gap: 2px">
+          <a href="#" class="gv"><span class="stack" style="flex: 1"><b class="fs13">القاهرة</b><span dir="ltr" class="fs12 muted" style="text-align: right">Cairo</span></span><span class="fs12 muted">٤ مدن</span></a>
+          <a href="#" class="gv"><span class="stack" style="flex: 1"><b class="fs13">الدقهلية</b><span dir="ltr" class="fs12 muted" style="text-align: right">Dakahlia</span></span><span class="fs12 muted">٥ مدن</span></a>
+          <a href="#" aria-current="true" class="gv on"><span class="stack" style="flex: 1"><b class="fs13">الغربية</b><span dir="ltr" class="fs12 muted" style="text-align: right">Gharbia</span></span><span class="fs12 muted">٦ مدن</span></a>
+          <a href="#" class="gv"><span class="stack" style="flex: 1"><b class="fs13">المنوفية</b><span dir="ltr" class="fs12 muted" style="text-align: right">Menoufia</span></span><span class="fs12 muted">٥ مدن</span></a>
+          <a href="#" class="gv"><span class="stack" style="flex: 1"><b class="fs13">الإسكندرية</b><span dir="ltr" class="fs12 muted" style="text-align: right">Alexandria</span></span><span class="fs12 muted">٢ مدينة</span></a>
+        </nav>
+        <section class="card clip grow" aria-labelledby="ct-h">
+          <div class="pad-h between"><div class="row"><h2 id="ct-h" class="h2">مدن الغربية</h2><button type="button" class="btn sm g">تعديل المحافظة</button></div><button type="button" class="btn sm p">+ مدينة</button></div>
+          <div class="tbl-wrap">
+            <table class="tbl" style="min-width: 560px">
+              <thead><tr><th>بالعربي</th><th>بالإنجليزي</th><th class="num">عملاء</th><th class="num">مناديب</th><th><span class="sr-only">إجراءات</span></th></tr></thead>
+              <tbody>
+                <tr><td class="sb">طنطا</td><td dir="ltr" style="text-align: right">Tanta</td><td class="num">١٨</td><td class="num">٢</td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr><td class="sb">المحلة الكبرى</td><td dir="ltr" style="text-align: right">El Mahalla El Kubra</td><td class="num">١١</td><td class="num">١</td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr><td class="sb">كفر الزيات</td><td dir="ltr" style="text-align: right">Kafr El Zayat</td><td class="num">٥</td><td class="num">١</td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr><td class="sb">زفتى</td><td dir="ltr" style="text-align: right">Zefta</td><td class="num">٣</td><td class="num">—</td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr><td class="sb">السنطة</td><td dir="ltr" style="text-align: right">El Santa</td><td class="num">٢</td><td class="num">—</td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+                <tr class="sel"><td><input aria-label="اسم المدينة بالعربي" class="inp focus" value="سمنود" style="height: 36px"></td><td><input aria-label="اسم المدينة بالإنجليزي" class="inp" dir="ltr" placeholder="Samannoud" style="height: 36px; text-align: left"></td><td class="num faint">—</td><td class="num faint">—</td><td><div class="row"><button type="button" class="btn sm p">حفظ</button><button type="button" class="btn sm g">إلغاء</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tfoot"><span>المدينة اللي عليها عملاء مينفعش تتمسح — ممكن تتوقف بس</span></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

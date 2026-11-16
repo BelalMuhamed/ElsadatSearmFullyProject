@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تقرير رحلة النقاط</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+th{font-weight:600;text-align:right}
+td{padding:11px 8px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 1000px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <dc-import name="Sidebar" active="reports" item="loyalty" theme="dark" hint-size="264px,1000px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">التقارير › الولاء والمناديب</nav>
+          <h1 style="margin: 0; font-size: 22px; font-weight: 700">رحلة النقاط</h1>
+          <p style="margin: 0; font-size: 13.5px; color: #BDB29E">النقاط اللي نزلت من الفواتير — كام منها وصل للسبّاكين، وكام اتصرف فعلًا؟</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <button type="button" style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">احفظ الفلاتر</button>
+          <button type="button" style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">اطبع</button>
+          <button type="button" style="height: 40px; padding: 0 16px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif">تصدير ▾</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 10px 12px; border-radius: 16px; background: rgba(255,240,210,0.03); border: 1px solid rgba(255,232,190,0.08)">
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(240,200,80,0.4); background: rgba(224,180,58,0.08); color: #F0C850; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">١ – ١٩ أكتوبر ٢٠٢٦ ▾</button>
+        <label style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: #CFC5B2"><input type="checkbox" checked="" style="width: 16px; height: 16px; accent-color: #E0B43A; margin: 0">قارن بنفس الفترة من سبتمبر</label>
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">المحافظة: الكل ▾</button>
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">المندوب: الكل ▾</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px">
+        <a href="#" style="text-decoration: none; color: inherit; padding: 16px; border-radius: 18px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #BDB29E; font-weight: 600">نزلت من الفواتير</span><b style="font-size: 22px">٤٢٬٨٠٠</b><span style="font-size: 12px; color: #5FD9A2">▲ ١١٪ عن سبتمبر</span></a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 16px; border-radius: 18px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #BDB29E; font-weight: 600">وصلت للسبّاكين</span><b style="font-size: 22px; color: #5ED3D0">١٨٬٤٢٠</b><span style="font-size: 12px; color: #5FD9A2">٤٣٪ · كانت ٣٨٪</span></a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 16px; border-radius: 18px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #BDB29E; font-weight: 600">كوبونات اتصرفت</span><b style="font-size: 22px">٢٤١ <span style="font-size: 13px; color: #978C78; font-weight: 500">من ٣٠٧</span></b><span style="font-size: 12px; color: #BDB29E">٧٨٪ من اللي اتولّد</span></a>
+        <a href="#" style="text-decoration: none; color: inherit; padding: 16px; border-radius: 18px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: #BDB29E; font-weight: 600">هدايا ونجوم لسه متسوّتش</span><b style="font-size: 22px; color: #F5A862">٨٦ كوبون <span style="font-size: 13px; color: #978C78; font-weight: 500">+ ٢١٤ نجمة</span></b><span style="font-size: 12px; color: #978C78">عند ٢٧ سبّاك</span></a>
+      </div>
+
+      <section aria-labelledby="fn-h" style="padding: 20px; border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px"><h2 id="fn-h" style="margin: 0; font-size: 15px; font-weight: 700">النقطة بتروح فين؟</h2><span style="font-size: 12px; color: #978C78">بالنقاط · الكوبون = ٦٠ نقطة · اضغط أي مرحلة تفتح تفاصيلها</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <a href="#" style="text-decoration: none; color: inherit; display: grid; grid-template-columns: 170px 1fr 110px; gap: 14px; align-items: center"><span style="font-size: 13.5px; font-weight: 600">اتصدرت للعملاء</span><span style="height: 30px; border-radius: 8px; background: rgba(224,180,58,0.55); width: 100%"></span><b style="font-size: 14px; text-align: left">٤٢٬٨٠٠</b></a>
+          <a href="#" style="text-decoration: none; color: inherit; display: grid; grid-template-columns: 170px 1fr 110px; gap: 14px; align-items: center"><span style="font-size: 13.5px; font-weight: 600">اتحولت للسبّاكين</span><span style="height: 30px; border-radius: 8px; background: rgba(57,195,192,0.55); width: 43%"></span><b style="font-size: 14px; text-align: left">١٨٬٤٢٠ <span style="color: #978C78; font-weight: 500">٤٣٪</span></b></a>
+          <a href="#" style="text-decoration: none; color: inherit; display: grid; grid-template-columns: 170px 1fr 110px; gap: 14px; align-items: center"><span style="font-size: 13.5px; font-weight: 600">بقت كوبونات</span><span style="height: 30px; border-radius: 8px; background: rgba(57,195,192,0.38); width: 43%"></span><b style="font-size: 14px; text-align: left">٣٠٧ كوبون</b></a>
+          <a href="#" style="text-decoration: none; color: inherit; display: grid; grid-template-columns: 170px 1fr 110px; gap: 14px; align-items: center"><span style="font-size: 13.5px; font-weight: 600">اتصرفت</span><span style="height: 30px; border-radius: 8px; background: rgba(60,201,138,0.5); width: 34%"></span><b style="font-size: 14px; text-align: left">٢٤١ كوبون <span style="color: #978C78; font-weight: 500">٣٤٪</span></b></a>
+        </div>
+        <p style="margin: 0; font-size: 13px; color: #CFC5B2; line-height: 1.7; padding: 10px 14px; border-radius: 12px; background: rgba(255,240,210,0.04)">أكبر فاقد بين التاجر والسبّاك: <b>٢٤٬٣٨٠ نقطة</b> لسه عند التجار. أغلبها عند ٣ تجار في الغربية مبيوافقوش على طلبات التحويل.</p>
+      </section>
+
+      <section aria-labelledby="rp-h" style="border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+        <h2 id="rp-h" style="margin: 0; padding: 16px 20px 6px; font-size: 15px; font-weight: 700">حسب المندوب</h2>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 700px">
+            <thead><tr style="color: #978C78; font-size: 12px"><th style="padding: 10px 20px 8px">المندوب</th><th style="padding: 10px 8px 8px; text-align: left">معاينات</th><th style="padding: 10px 8px 8px; text-align: left">نسبة القبول</th><th style="padding: 10px 8px 8px; text-align: left">نقاط اتحولت</th><th style="padding: 10px 20px 8px 8px; text-align: left">كوبونات صرفها</th></tr></thead>
+            <tbody>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px"><a href="#" style="text-decoration: none; color: #F6F1E7; font-weight: 600">كريم سامي</a></td><td style="text-align: left">١١</td><td style="text-align: left; color: #5FD9A2">٩١٪</td><td style="text-align: left; color: #5ED3D0">٧٬٢٠٠</td><td style="padding-left: 20px; text-align: left">٩٨</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px"><a href="#" style="text-decoration: none; color: #F6F1E7; font-weight: 600">أحمد فتحي</a></td><td style="text-align: left">٩</td><td style="text-align: left; color: #F5A862">٧٨٪</td><td style="text-align: left; color: #5ED3D0">٥٬٨٨٠</td><td style="padding-left: 20px; text-align: left">٧٢</td></tr>
+              <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px"><a href="#" style="text-decoration: none; color: #F6F1E7; font-weight: 600">محمود عبد الله</a></td><td style="text-align: left">٧</td><td style="text-align: left; color: #5FD9A2">٨٦٪</td><td style="text-align: left; color: #5ED3D0">٥٬٣٤٠</td><td style="padding-left: 20px; text-align: left">٧١</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

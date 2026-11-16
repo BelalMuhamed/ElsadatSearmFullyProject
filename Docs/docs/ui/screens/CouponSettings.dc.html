@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>إعدادات الكوبونات</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.big{display:flex;align-items:center;height:72px;border-radius:16px;border:1px solid #E0B43A;box-shadow:0 0 0 3px rgba(224,180,58,.18);background:rgba(255,240,210,.04);padding:0 20px;gap:12px;max-width:340px}.big input{flex:1;min-width:0;border:0;background:transparent;outline:none;color:#F6F1E7;font:700 34px 'IBM Plex Sans Arabic',sans-serif}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="loyalty" item="coupons" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="stack"><nav aria-label="المسار" class="crumb">المعاينات والولاء › إعدادات الكوبونات</nav><h1 class="h1">إعدادات الكوبونات</h1><p class="sub">الرقم ٦٠ كان مكتوب جوه الكود — دلوقتي بيتغير من هنا ويستخدمه السيستم كله</p></div>
+      <div class="split">
+        <section class="card pad grow stack g16" aria-labelledby="cp-h">
+          <h2 id="cp-h" class="h2">نقاط الكوبون</h2>
+          <div class="field"><label for="cp-n" class="lbl">كام نقطة = كوبون واحد</label><div class="big"><input id="cp-n" value="٥٠"><span class="dim fs14">نقطة</span></div><span class="hint">الحالي ٦٠</span></div>
+          <div class="note warn" role="alert"><span><b>هتغيّر من ٦٠ لـ ٥٠.</b> التغيير بيأثر على الحسابات الجاية بس: الكوبونات اللي اتولدت قبل كده مش هتتغير، وأي نقاط في أرصدة السبّاكين هتتحسب بالرقم الجديد من أول تحويل جاي.</span></div>
+          <div class="row"><button type="button" class="btn p">أيوه، غيّر لـ ٥٠</button><button type="button" class="btn g">رجّع ٦٠</button></div>
+        </section>
+        <aside class="aside" style="flex-basis: 260px">
+          <div class="card pad stack g8"><span class="lbl">مثال بالرقم الجديد</span><span class="fs13 soft">معاينة فيها ٢٤٠ نقطة</span><div class="li"><span>بـ ٦٠</span><b>٤ كوبونات</b></div><div class="li"><span>بـ ٥٠</span><b class="gold">٤ كوبونات + ٤٠ نقطة</b></div></div>
+        </aside>
+      </div>
+      <section class="card clip" aria-labelledby="cc-h">
+        <div class="pad-h between"><h2 id="cc-h" class="h2">فئات الكوبونات</h2><button type="button" class="btn sm">+ فئة</button></div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>الفئة</th><th>السبّاك بياخد إيه</th><th class="num">المبلغ</th><th class="num">النجوم</th><th>الحالة</th><th><span class="sr-only">تعديل</span></th></tr></thead>
+            <tbody>
+              <tr><td class="sb">كاش</td><td class="dim">فلوس فورًا من المندوب · مسودة لحد تأكيد الخزنة</td><td class="num b">١٬٢٠٠ ج.م</td><td class="num">١</td><td><span class="chip c-ok">شغالة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+              <tr><td class="sb">هدايا</td><td class="dim">بيتضاف لرصيد الهدايا ويتسوّى بأصناف من مخزون الهدايا</td><td class="num muted">—</td><td class="num">٢</td><td><span class="chip c-ok">شغالة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+              <tr><td class="sb">مختلط</td><td class="dim">جزء كاش من المندوب، والباقي نجوم في رصيده</td><td class="num b">٩٠٠ ج.م</td><td class="num">١</td><td><span class="chip c-ok">شغالة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+              <tr><td class="sb muted">كاش رمضان</td><td class="faint">عرض موسمي</td><td class="num muted">١٬٥٠٠ ج.م</td><td class="num muted">٣</td><td><span class="chip c-neu">موقوفة</span></td><td><button type="button" class="btn sm g">تعديل</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tfoot"><span>النجوم ملهاش قيمة فلوس في السيستم — بتتسوّى يدوي من «تسوية الهدايا والنجوم»</span></div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

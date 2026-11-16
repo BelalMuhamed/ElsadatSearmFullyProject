@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>القائمة الجانبية</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<nav aria-label="القائمة الرئيسية" dir="rtl" style="{{rootStyle}}">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px">
+    <img src="/_blob/19bc09a635205694f89e681947df045d" alt="" style="width: 36px; height: 28px; object-fit: contain">
+    <div style="display: flex; flex-direction: column; line-height: 1.3">
+      <span dir="ltr" style="{{brandStyle}}">Sadat Searm</span>
+      <span style="{{mutedSmall}}">الإدارة والتشغيل</span>
+    </div>
+  </div>
+  <div style="{{divider}}"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 12px; flex: 1">
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="11">
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="{{g.current}}" style="{{g.rowStyle}}">
+          <span style="{{g.chipStyle}}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{g.d}}"></path></svg>
+          </span>
+          <span style="flex: 1">{{g.label}}</span>
+          <sc-if value="{{g.hasBadge}}" hint-placeholder-val="{{false}}">
+            <span style="{{badgeStyle}}">{{g.badge}}</span>
+          </sc-if>
+          <sc-if value="{{g.hasChildren}}" hint-placeholder-val="{{true}}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{g.chevStyle}}"><path d="m6 9 6 6 6-6"></path></svg>
+          </sc-if>
+        </a>
+        <sc-if value="{{g.open}}" hint-placeholder-val="{{false}}">
+          <div style="{{subWrap}}">
+            <sc-for list="{{g.children}}" as="c" hint-placeholder-count="4">
+              <a href="#" aria-current="{{c.current}}" style="{{c.style}}">
+                <span style="{{c.dotStyle}}"></span>
+                <span style="flex: 1">{{c.label}}</span>
+                <sc-if value="{{c.hasBadge}}" hint-placeholder-val="{{false}}">
+                  <span style="{{badgeStyle}}">{{c.badge}}</span>
+                </sc-if>
+              </a>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="{{divider}}"></div>
+  <div style="display: flex; align-items: center; gap: 10px; padding: 14px 8px 4px">
+    <span style="{{avatarStyle}}">هع</span>
+    <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.4">
+      <span style="{{nameStyle}}">هشام عادل</span>
+      <span style="{{mutedSmall}}">الإدارة · كل الصلاحيات</span>
+    </div>
+    <button type="button" aria-label="تصغير القائمة" title="تصغير القائمة" style="{{collapseStyle}}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM9 4v16M15 10l-2 2 2 2"></path></svg>
+    </button>
+  </div>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["home","me","sales","purchases","stores","loyalty","reps","accounts","hr","reports","admin"],"default":"home"},"item":{"editor":"text","default":""},"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":264,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const light = this.props.theme === 'light';
+    const t = light ? {
+      bg: '#FFFFFF', line: '#ECE4D4', text: '#2A2418', text2: '#5E5544', text3: '#6F6553',
+      onBg: '#FBF3DE', onText: '#7A5A0C', chip: '#F5EFE2', chipOn: '#F3D35A', chipOnText: '#1A1408',
+      subOn: '#FBF3DE', subOnText: '#7A5A0C', badgeBg: '#B4570C', badgeText: '#FFFFFF', dot: '#C9BFAE', dotOn: '#B8870F'
+    } : {
+      bg: '#100D09', line: 'rgba(255,232,190,0.07)', text: '#EDE5D6', text2: '#BDB29E', text3: '#978C78',
+      onBg: 'rgba(224,180,58,0.10)', onText: '#F6F1E7', chip: 'rgba(255,240,210,0.05)', chipOn: '#E0B43A', chipOnText: '#1A1408',
+      subOn: 'rgba(224,180,58,0.12)', subOnText: '#F0C850', badgeBg: '#F2994A', badgeText: '#1A1408', dot: 'rgba(255,232,190,0.22)', dotOn: '#F0C850'
+    };
+    const active = this.props.active ?? 'home';
+    const item = this.props.item ?? '';
+    const P = {
+      home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
+      me: 'M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8zM4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5',
+      sales: 'M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2zM9 8h6M9 12h6',
+      purchases: 'M3 4h2l2.4 11h10.2L20 7H6.2M9 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM17 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z',
+      stores: 'M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5 12 12l9-4.5M12 12v9',
+      loyalty: 'M12 3a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM8.5 14 7 21l5-3 5 3-1.5-7',
+      reps: 'M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21zM12 7a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z',
+      accounts: 'M3 7a2 2 0 0 1 2-2h13v4M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2zM16 13.3a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z',
+      hr: 'M9 4.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM2.5 20c0-3.5 2.9-5.5 6.5-5.5s6.5 2 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.9.7 3 2.4 3 5.2',
+      reports: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
+      admin: 'M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6zM9 12l2 2 4-4'
+    };
+    const G = [
+      { key: 'home', label: 'الرئيسية', children: [] },
+      { key: 'me', label: 'مساحتي', children: [['att', 'حضوري'], ['leave', 'إجازاتي'], ['pay', 'مرتبي وقروضي'], ['profile', 'ملفي وتفضيلاتي']] },
+      { key: 'sales', label: 'المبيعات', badge: '٣', children: [['invoices', 'فواتير البيع'], ['new', 'فاتورة جديدة'], ['returns', 'مرتجعات البيع'], ['customers', 'العملاء'], ['discounts', 'الخصومات العامة']] },
+      { key: 'purchases', label: 'المشتريات', children: [['pinvoices', 'فواتير الشراء'], ['pnew', 'فاتورة شراء جديدة'], ['preturns', 'مرتجعات الشراء'], ['suppliers', 'الموردين']] },
+      { key: 'stores', label: 'المخازن', children: [['stock', 'المخزون'], ['products', 'المنتجات'], ['transfers', 'التحويلات'], ['count', 'الجرد'], ['warehouses', 'المخازن']] },
+      { key: 'loyalty', label: 'المعاينات والولاء', badge: '٧', children: [['inspections', 'المعاينات', '٥'], ['points', 'طلبات تحويل النقاط', '٢'], ['ptransfer', 'تحويل نقاط بين العملاء'], ['plumbers', 'السبّاكين'], ['gifts', 'مخزون الهدايا'], ['settle', 'تسوية الهدايا والنجوم'], ['warranty', 'شهادات الضمان'], ['coupons', 'إعدادات الكوبونات']] },
+      { key: 'reps', label: 'المناديب', badge: '٤', children: [['reps', 'المناديب'], ['treasury', 'تأكيدات الخزنة', '٤'], ['map', 'المناديب على الخريطة'], ['commissions', 'نسب العمولات']] },
+      { key: 'accounts', label: 'الحسابات', children: [['receipts', 'سندات القبض'], ['payments', 'سندات الصرف'], ['journal', 'القيود اليومية'], ['coa', 'شجرة الحسابات'], ['expenses', 'مصروفات الشركة']] },
+      { key: 'hr', label: 'الموارد البشرية', children: [['employees', 'الموظفين'], ['attendance', 'الحضور'], ['leaves', 'الإجازات'], ['payroll', 'المرتبات'], ['loans', 'القروض'], ['deductions', 'الخصومات']] },
+      { key: 'reports', label: 'التقارير', children: [['financial', 'المالية'], ['sales', 'المبيعات والمخازن'], ['loyalty', 'الولاء والمناديب'], ['hr', 'الموارد البشرية'], ['saved', 'تقاريري المحفوظة']] },
+      { key: 'admin', label: 'الإدارة', children: [['users', 'المستخدمين'], ['categories', 'فئات الصلاحيات'], ['offers', 'العروض'], ['settings', 'بيانات الشركة'], ['regions', 'المناطق'], ['leavetypes', 'الإجازات والعطلات'], ['changelog', 'سجل التغييرات']] }
+    ];
+    const font = "font-family: 'IBM Plex Sans Arabic', sans-serif;";
+    const groups = G.map((g) => {
+      const on = g.key === active;
+      return {
+        label: g.label, d: P[g.key], badge: g.badge || '', hasBadge: !!g.badge && !on,
+        current: on && !item ? 'page' : 'false',
+        hasChildren: g.children.length > 0, open: on && g.children.length > 0,
+        rowStyle: font + 'display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; ' +
+          (on ? 'background: ' + t.onBg + '; color: ' + t.onText + '; font-weight: 700;' : 'color: ' + t.text2 + '; font-weight: 500;'),
+        chipStyle: 'width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; ' +
+          (on ? 'background: ' + t.chipOn + '; color: ' + t.chipOnText + ';' : 'background: ' + t.chip + '; color: ' + t.text2 + ';'),
+        chevStyle: 'color: ' + t.text3 + '; transform: ' + (on ? 'rotate(180deg)' : 'none') + ';',
+        children: g.children.map((c) => {
+          const cOn = on && c[0] === item;
+          return {
+            label: c[1], badge: c[2] || '', hasBadge: !!c[2], current: cOn ? 'page' : 'false',
+            style: font + 'display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 10px; text-decoration: none; font-size: 13px; ' +
+              (cOn ? 'background: ' + t.subOn + '; color: ' + t.subOnText + '; font-weight: 700;' : 'color: ' + t.text2 + '; font-weight: 500;'),
+            dotStyle: 'width: 6px; height: 6px; border-radius: 50%; background: ' + (cOn ? t.dotOn : t.dot) + ';'
+          };
+        })
+      };
+    });
+    return {
+      groups,
+      rootStyle: font + 'width: 100%; min-height: 900px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; padding: 20px 14px; background: ' + t.bg + '; color: ' + t.text + '; border-left: 1px solid ' + t.line + ';',
+      brandStyle: 'font-size: 15px; font-weight: 700; color: ' + t.text + ';',
+      mutedSmall: 'font-size: 11.5px; color: ' + t.text3 + ';',
+      divider: 'height: 1px; background: ' + t.line + '; margin: 0 6px;',
+      subWrap: 'display: flex; flex-direction: column; gap: 1px; padding: 4px 22px 8px 0; margin-right: 22px; border-right: 1px solid ' + t.line + ';',
+      badgeStyle: 'min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: ' + t.badgeBg + '; color: ' + t.badgeText + '; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;',
+      avatarStyle: 'width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #F3D35A, #B8870F); color: #1A1408; font-size: 13px; font-weight: 700; flex: 0 0 36px;',
+      nameStyle: 'font-size: 13.5px; font-weight: 700; color: ' + t.text + ';',
+      collapseStyle: 'width: 34px; height: 34px; border-radius: 10px; border: 1px solid ' + t.line + '; background: transparent; color: ' + t.text2 + '; display: flex; align-items: center; justify-content: center; cursor: pointer;'
+    };
+  }
+}
+</script>
+</body>
+</html>

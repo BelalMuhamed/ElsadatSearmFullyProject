@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الحضور</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+th{font-weight:600;text-align:right}
+td{padding:12px 8px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <dc-import name="Sidebar" active="hr" item="attendance" theme="dark" hint-size="264px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">الموارد البشرية › الحضور</nav>
+          <h1 style="margin: 0; font-size: 22px; font-weight: 700">الحضور</h1>
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button type="button" style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">استيراد من Excel</button>
+          <button type="button" style="height: 40px; padding: 0 18px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif">تسجيل يدوي</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
+        <div role="tablist" aria-label="مين" style="display: flex; padding: 3px; border-radius: 12px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12)">
+          <button role="tab" aria-selected="false" type="button" style="height: 34px; padding: 0 16px; border: 0; border-radius: 9px; background: transparent; color: #BDB29E; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">الموظفين · ٣٠</button>
+          <button role="tab" aria-selected="true" type="button" style="height: 34px; padding: 0 16px; border: 0; border-radius: 9px; background: #F6F1E7; color: #1A1408; font: 700 13px 'IBM Plex Sans Arabic', sans-serif">المناديب · ١٢</button>
+        </div>
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">النهارده · الاثنين ١٩ أكتوبر ▾</button>
+        <button type="button" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">الحالة: الكل ▾</button>
+        <span style="flex: 1"></span>
+        <span style="font-size: 12.5px; color: #978C78">١١ سجّلوا النهارده · ١ لسه مسجلش</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+        <section style="flex: 999 1 600px; min-width: 0; border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9) 0%, rgba(22,19,14,0.85) 100%); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+          <div style="overflow-x: auto">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 680px">
+              <thead><tr style="color: #978C78; font-size: 12px"><th style="padding: 14px 20px 10px">المندوب</th><th style="padding: 14px 8px 10px">أول دخول</th><th style="padding: 14px 8px 10px">آخر ظهور</th><th style="padding: 14px 8px 10px">الحالة</th><th style="padding: 14px 8px 10px">مكان الدخول</th><th style="padding: 14px 20px 10px 8px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">إجراء</span></th></tr></thead>
+              <tbody>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; font-weight: 600">كريم سامي</td><td>٨:٤٢ ص</td><td style="color: #CFC5B2">١١:٣٥ ص</td><td><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(60,201,138,0.12); border: 1px solid rgba(60,201,138,0.35); color: #5FD9A2">حاضر</span></td><td><a href="#" style="text-decoration: none; font-size: 12.5px">طنطا · سيجر</a></td><td style="padding-left: 20px"><button type="button" style="height: 32px; padding: 0 10px; border-radius: 9px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12px 'IBM Plex Sans Arabic', sans-serif">غيّر الحالة</button></td></tr>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; font-weight: 600">أحمد فتحي</td><td>٩:٣٨ ص</td><td style="color: #CFC5B2">١١:٢٠ ص</td><td><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(60,201,138,0.12); border: 1px solid rgba(60,201,138,0.35); color: #5FD9A2">حاضر</span></td><td><a href="#" style="text-decoration: none; font-size: 12.5px">شبين الكوم</a></td><td style="padding-left: 20px"><button type="button" style="height: 32px; padding: 0 10px; border-radius: 9px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12px 'IBM Plex Sans Arabic', sans-serif">غيّر الحالة</button></td></tr>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07); background: rgba(239,100,97,0.05)"><td style="padding-right: 20px; font-weight: 600">محمود عبد الله</td><td style="color: #6E6556">—</td><td style="color: #6E6556">—</td><td><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(239,100,97,0.10); border: 1px solid rgba(239,100,97,0.35); color: #F28683">لسه مسجلش</span></td><td style="font-size: 12.5px; color: #978C78">آخر موقع امبارح ٦:١٠ م</td><td style="padding-left: 20px"><button type="button" style="height: 32px; padding: 0 10px; border-radius: 9px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12px 'IBM Plex Sans Arabic', sans-serif">غيّر الحالة</button></td></tr>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; font-weight: 600">مصطفى حمدي</td><td>١٠:١٥ ص</td><td style="color: #CFC5B2">١١:٠٢ ص</td><td><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(60,201,138,0.12); border: 1px solid rgba(60,201,138,0.35); color: #5FD9A2">حاضر</span></td><td><a href="#" style="text-decoration: none; font-size: 12.5px">المحلة الكبرى</a></td><td style="padding-left: 20px"><button type="button" style="height: 32px; padding: 0 10px; border-radius: 9px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12px 'IBM Plex Sans Arabic', sans-serif">غيّر الحالة</button></td></tr>
+                <tr style="border-top: 1px solid rgba(255,232,190,0.07)"><td style="padding-right: 20px; font-weight: 600">إسلام رفعت</td><td>٨:٣٠ ص</td><td style="color: #CFC5B2">١٠:٤٨ ص</td><td><span style="height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; background: rgba(90,169,240,0.12); border: 1px solid rgba(90,169,240,0.38); color: #7DBBF4">مأمورية</span></td><td><a href="#" style="text-decoration: none; font-size: 12.5px">السادات · المصنع</a></td><td style="padding-left: 20px"><button type="button" style="height: 32px; padding: 0 10px; border-radius: 9px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12px 'IBM Plex Sans Arabic', sans-serif">غيّر الحالة</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding: 12px 20px 14px; border-top: 1px solid rgba(255,232,190,0.07); font-size: 12.5px; color: #978C78">المناديب ملهمش ساعات عمل ثابتة، فمفيش «تأخير» ولا خصم ساعات — الحضور هنا معناه إنه فتح التطبيق وسجّل من موقعه. تاب الموظفين بس هو اللي فيه مواعيد وتأخير. تغيير الحالة بيطلب سبب ويتسجل مين غيّرها.</div>
+        </section>
+
+        <section aria-labelledby="map-h" style="flex: 1 1 320px; min-width: 0; border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9), rgba(22,19,14,0.85)); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+          <h2 id="map-h" style="margin: 0; padding: 14px 18px; font-size: 15px; font-weight: 700">أماكن الدخول النهارده</h2>
+          <div role="img" aria-label="خريطة الدلتا عليها ٤ مناديب سجلوا حضور" style="height: 260px; position: relative; background: #1E1A14">
+            <svg width="100%" height="260" viewBox="0 0 340 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M20 230 C80 160 120 110 170 40M170 40 C200 100 260 150 320 210M60 70 C140 90 220 80 300 60M40 160 C120 150 220 170 320 140" stroke="rgba(255,232,190,0.12)" stroke-width="6" fill="none"></path><path d="M150 0 C140 80 180 150 160 260" stroke="rgba(90,169,240,0.18)" stroke-width="10" fill="none"></path></svg>
+            <span title="كريم سامي · طنطا" style="position: absolute; top: 110px; left: 46%; width: 14px; height: 14px; border-radius: 50%; background: #3CC98A; box-shadow: 0 0 0 5px rgba(60,201,138,0.2)"></span>
+            <span title="أحمد فتحي · شبين الكوم" style="position: absolute; top: 150px; left: 30%; width: 14px; height: 14px; border-radius: 50%; background: #3CC98A; box-shadow: 0 0 0 5px rgba(60,201,138,0.2)"></span>
+            <span title="مصطفى حمدي · المحلة" style="position: absolute; top: 76px; left: 58%; width: 14px; height: 14px; border-radius: 50%; background: #3CC98A; box-shadow: 0 0 0 5px rgba(60,201,138,0.2)"></span>
+            <span title="إسلام رفعت · السادات" style="position: absolute; top: 205px; left: 22%; width: 14px; height: 14px; border-radius: 50%; background: #5AA9F0; box-shadow: 0 0 0 5px rgba(90,169,240,0.2)"></span>
+          </div>
+          <div style="padding: 12px 18px; font-size: 12.5px; color: #978C78">النقطة بلون حالة المندوب · اضغط عليها تفتح ملفه</div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

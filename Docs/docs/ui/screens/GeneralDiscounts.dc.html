@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الخصومات العامة</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.pct{display:flex;align-items:center;height:56px;border-radius:14px;border:1px solid rgba(255,232,190,.14);background:rgba(255,240,210,.04);padding:0 16px;gap:8px}.pct input{flex:1;min-width:0;border:0;background:transparent;outline:none;color:#F6F1E7;font:700 22px 'IBM Plex Sans Arabic',sans-serif}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="sales" item="discounts" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="stack"><nav aria-label="المسار" class="crumb">المبيعات › الخصومات العامة</nav><h1 class="h1">الخصومات العامة</h1>
+        <p class="sub" style="max-width: 720px">التلات خصومات دول بيتملوا لوحدهم في أي فاتورة بيع <b style="color: #F6F1E7">للعميل اللي مالوش خصومات خاصة</b>. العميل اللي ليه خصم خاص بياخد بتاعه هو. وأي قيمة تتعدّل وقت عمل الفاتورة.</p>
+      </div>
+      <div class="split">
+        <section class="card pad grow stack g16" aria-labelledby="gd-h">
+          <h2 id="gd-h" class="h2">النسب</h2>
+          <div class="grid3">
+            <div class="field"><label for="gd1" class="lbl">الخصم الأول</label><div class="pct"><input id="gd1" value="٥"><span class="dim fs14">٪</span></div></div>
+            <div class="field"><label for="gd2" class="lbl">الخصم التاني</label><div class="pct" style="border-color: #E0B43A; box-shadow: 0 0 0 3px rgba(224,180,58,.18)"><input id="gd2" value="٣"><span class="dim fs14">٪</span></div><span class="hint">كان ٢٪ · اتغير دلوقتي</span></div>
+            <div class="field"><label for="gd3" class="lbl">الخصم التالت</label><div class="pct"><input id="gd3" value="٠"><span class="dim fs14">٪</span></div></div>
+          </div>
+          <div class="note info"><span>الخصومات بتتحسب <b>ورا بعض</b> مش بتتجمع: ٥٪ وبعدها ٣٪ = ٧٫٨٥٪ مش ٨٪.</span></div>
+          <div class="card pad stack g8" style="background: rgba(255,240,210,.03)">
+            <span class="lbl">مثال على فاتورة ١٠٬٠٠٠ ج.م</span>
+            <div class="li"><span>بعد الخصم الأول ٥٪</span><span>٩٬٥٠٠</span></div>
+            <div class="li"><span>بعد الخصم التاني ٣٪</span><span>٩٬٢١٥</span></div>
+            <div class="li"><span>بعد الخصم التالت ٠٪</span><span>٩٬٢١٥</span></div>
+            <div class="li"><b>قبل الضريبة</b><b class="gold">٩٬٢١٥ ج.م</b></div>
+          </div>
+        </section>
+        <aside class="aside">
+          <section class="card pad stack g8">
+            <h2 class="h2">مين هيتأثر؟</h2>
+            <div class="li"><span>عملاء بالخصم العام</span><b>٤١</b></div>
+            <div class="li"><span>عملاء ليهم خصم خاص</span><b class="muted">١٢ · مش هيتأثروا</b></div>
+            <div class="li" style="border-bottom: 0"><span class="fs12 muted">الفواتير اللي اتعملت قبل كده مش بتتغير — التغيير للجاي بس.</span></div>
+          </section>
+          <section class="card pad stack">
+            <h2 class="h2" style="margin-bottom: 4px">آخر تغييرات</h2>
+            <div class="li"><span class="fs13">٢٪ ← ٣٪ (التاني)</span><span class="fs12 muted">لسه</span></div>
+            <div class="li"><span class="fs13">٤٪ ← ٥٪ (الأول)</span><span class="fs12 muted">هشام · ١ سبتمبر</span></div>
+          </section>
+          <button type="button" class="btn p lg w">احفظ الخصومات</button>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

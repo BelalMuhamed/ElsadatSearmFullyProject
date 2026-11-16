@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><link rel="stylesheet" href="./assets/fonts.css">
+<meta charset="utf-8">
+<title>مصفوفة المخزون</title>
+
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"><style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+th{font-weight:600;text-align:right}
+td a{color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:1px}
+</style><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"><style>body{margin:0}</style><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"><style>body{margin:0}</style></head>
+<body>
+
+
+<div dir="rtl" style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <div style="display: contents;">
+
+<nav aria-label="القائمة الرئيسية" dir="rtl" style="font-family: 'IBM Plex Sans Arabic', sans-serif;width: 100%; min-height: 900px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; padding: 20px 14px; background: #100D09; color: #EDE5D6; border-left: 1px solid rgba(255,232,190,0.07);">
+  <div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px">
+    <img src="./assets/logo.svg" alt="" style="width: 36px; height: 28px; object-fit: contain">
+    <div style="display: flex; flex-direction: column; line-height: 1.3">
+      <span dir="ltr" style="font-size: 15px; font-weight: 700; color: #EDE5D6;">Sadat Searm</span>
+      <span style="font-size: 11.5px; color: #978C78;">الإدارة والتشغيل</span>
+    </div>
+  </div>
+  <div style="height: 1px; background: rgba(255,232,190,0.07); margin: 0 6px;"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 12px; flex: 1">
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg>
+          </span>
+          <span style="flex: 1">الرئيسية</span>
+          
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8zM4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"></path></svg>
+          </span>
+          <span style="flex: 1">مساحتي</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2zM9 8h6M9 12h6"></path></svg>
+          </span>
+          <span style="flex: 1">المبيعات</span>
+          
+            <span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: #F2994A; color: #1A1408; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">٣</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11h10.2L20 7H6.2M9 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM17 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"></path></svg>
+          </span>
+          <span style="flex: 1">المشتريات</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; background: rgba(224,180,58,0.10); color: #F6F1E7; font-weight: 700;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: #E0B43A; color: #1A1408;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5 12 12l9-4.5M12 12v9"></path></svg>
+          </span>
+          <span style="flex: 1">المخازن</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: rotate(180deg);"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+          <div style="display: flex; flex-direction: column; gap: 1px; padding: 4px 22px 8px 0; margin-right: 22px; border-right: 1px solid rgba(255,232,190,0.07);">
+            
+              <a href="#" aria-current="page" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 10px; text-decoration: none; font-size: 13px; background: rgba(224,180,58,0.12); color: #F0C850; font-weight: 700;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #F0C850;"></span>
+                <span style="flex: 1">المخزون</span>
+                
+              </a>
+            
+              <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 10px; text-decoration: none; font-size: 13px; color: #BDB29E; font-weight: 500;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: rgba(255,232,190,0.22);"></span>
+                <span style="flex: 1">المنتجات</span>
+                
+              </a>
+            
+              <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 10px; text-decoration: none; font-size: 13px; color: #BDB29E; font-weight: 500;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: rgba(255,232,190,0.22);"></span>
+                <span style="flex: 1">التحويلات</span>
+                
+              </a>
+            
+              <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 10px; text-decoration: none; font-size: 13px; color: #BDB29E; font-weight: 500;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: rgba(255,232,190,0.22);"></span>
+                <span style="flex: 1">الجرد</span>
+                
+              </a>
+            
+              <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border-radius: 10px; text-decoration: none; font-size: 13px; color: #BDB29E; font-weight: 500;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: rgba(255,232,190,0.22);"></span>
+                <span style="flex: 1">المخازن</span>
+                
+              </a>
+            
+          </div>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM8.5 14 7 21l5-3 5 3-1.5-7"></path></svg>
+          </span>
+          <span style="flex: 1">المعاينات والولاء</span>
+          
+            <span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: #F2994A; color: #1A1408; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">٧</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21zM12 7a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"></path></svg>
+          </span>
+          <span style="flex: 1">المناديب</span>
+          
+            <span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: #F2994A; color: #1A1408; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">٤</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2zM16 13.3a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"></path></svg>
+          </span>
+          <span style="flex: 1">الحسابات</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM2.5 20c0-3.5 2.9-5.5 6.5-5.5s6.5 2 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.9.7 3 2.4 3 5.2"></path></svg>
+          </span>
+          <span style="flex: 1">الموارد البشرية</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
+          </span>
+          <span style="flex: 1">التقارير</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+      <div style="display: flex; flex-direction: column">
+        <a href="#" aria-current="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 8px; border-radius: 12px; text-decoration: none; font-size: 13.5px; color: #BDB29E; font-weight: 500;">
+          <span style="width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: 0 0 30px; background: rgba(255,240,210,0.05); color: #BDB29E;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6zM9 12l2 2 4-4"></path></svg>
+          </span>
+          <span style="flex: 1">الإدارة</span>
+          
+          
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: #978C78; transform: none;"><path d="m6 9 6 6 6-6"></path></svg>
+          
+        </a>
+        
+      </div>
+    
+  </div>
+
+  <div style="height: 1px; background: rgba(255,232,190,0.07); margin: 0 6px;"></div>
+  <div style="display: flex; align-items: center; gap: 10px; padding: 14px 8px 4px">
+    <span style="width: 36px; height: 36px; border-radius: 11px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #F3D35A, #B8870F); color: #1A1408; font-size: 13px; font-weight: 700; flex: 0 0 36px;">هع</span>
+    <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.4">
+      <span style="font-size: 13.5px; font-weight: 700; color: #EDE5D6;">هشام عادل</span>
+      <span style="font-size: 11.5px; color: #978C78;">الإدارة · كل الصلاحيات</span>
+    </div>
+    <button type="button" aria-label="تصغير القائمة" title="تصغير القائمة" style="width: 34px; height: 34px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.07); background: transparent; color: #BDB29E; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM9 4v16M15 10l-2 2 2 2"></path></svg>
+    </button>
+  </div>
+</nav>
+</div>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <div style="display: contents;">
+
+<header dir="rtl" style="font-family: 'IBM Plex Sans Arabic', sans-serif;width: 100%; min-height: 68px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 28px; background: rgba(16,13,9,0.72); border-bottom: 1px solid rgba(255,232,190,0.07); color: #EDE5D6;">
+  <label style="position: relative; flex: 0 1 440px; min-width: 240px; height: 42px; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 0 14px; border-radius: 12px; background: rgba(255,240,210,0.04); border: 1px solid rgba(255,232,190,0.12); color: #BDB29E;">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM20 20l-3.5-3.5"></path></svg>
+    <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">بحث شامل</span>
+    <input type="search" placeholder="ابحث برقم فاتورة، عميل، منتج، سبّاك…" style="font-family: &quot;IBM Plex Sans Arabic&quot;, sans-serif; flex: 1 1 0%; min-width: 0px; border: 0px; background: transparent; outline: none; color: rgb(237, 229, 214); font-size: 13.5px;">
+    <kbd dir="ltr" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 3px 7px; border-radius: 6px; border: 1px solid rgba(255,232,190,0.12); color: #BDB29E;">Ctrl K</kbd>
+  </label>
+
+  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+    <a href="#approvals" style="font-family: 'IBM Plex Sans Arabic', sans-serif;height: 40px; display: inline-flex; align-items: center; gap: 8px; padding: 0 8px 0 14px; border-radius: 12px; text-decoration: none; font-size: 13px; font-weight: 600; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.35); color: #F5A862;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4H5v17h14V4h-2M9 3h6v3H9zM9 13l2 2 4-4"></path></svg>
+      <span>مستني موافقتك</span>
+      <span style="min-width: 24px; height: 24px; padding: 0 7px; box-sizing: border-box; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: #F2994A; color: #1A1408; font-weight: 700; font-size: 12px;">١٢</span>
+    </a>
+    <button type="button" aria-label="الرسايل، ٢ غير مقروءة" title="الرسايل" style="position: relative; width: 40px; height: 40px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.12); background: rgba(255,240,210,0.04); color: #EDE5D6; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>
+      <span style="font-family: 'IBM Plex Sans Arabic', sans-serif;position: absolute; top: -5px; left: -5px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #EF6461; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">٢</span>
+    </button>
+    <button type="button" aria-label="الإشعارات، ٣ جديدة" title="الإشعارات" style="position: relative; width: 40px; height: 40px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.12); background: rgba(255,240,210,0.04); color: #EDE5D6; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 1 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0"></path></svg>
+      <span style="font-family: 'IBM Plex Sans Arabic', sans-serif;position: absolute; top: -5px; left: -5px; min-width: 18px; height: 18px; box-sizing: border-box; padding: 0 5px; border-radius: 999px; background: #EF6461; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">٣</span>
+    </button>
+    <div role="group" aria-label="الثيم" style="display: flex; padding: 3px; border-radius: 11px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12);">
+      <button type="button" aria-pressed="true" style="font-family: 'IBM Plex Sans Arabic', sans-serif;height: 30px; min-width: 40px; padding: 0 12px; border: 0; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; background: #F6F1E7; color: #1A1408;">داكن</button>
+      <button type="button" aria-pressed="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;height: 30px; min-width: 40px; padding: 0 12px; border: 0; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; background: transparent; color: #BDB29E;">فاتح</button>
+    </div>
+    <div role="group" aria-label="اللغة" style="display: flex; padding: 3px; border-radius: 11px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12);">
+      <button type="button" aria-pressed="true" style="font-family: 'IBM Plex Sans Arabic', sans-serif;height: 30px; min-width: 40px; padding: 0 12px; border: 0; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; background: #F6F1E7; color: #1A1408;">ع</button>
+      <button type="button" aria-pressed="false" style="font-family: 'IBM Plex Sans Arabic', sans-serif;height: 30px; min-width: 40px; padding: 0 12px; border: 0; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; background: transparent; color: #BDB29E;">EN</button>
+    </div>
+  </div>
+</header>
+</div>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">المخازن › المخزون</nav>
+          <h1 style="margin: 0; font-size: 22px; font-weight: 700">المخزون في كل المخازن</h1>
+          <p style="margin: 0; font-size: 13px; color: #BDB29E">اللون محسوب على الحد الأدنى لكل منتج في كل مخزن · آخر تحديث ١١:٤٠</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button type="button" style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">تصدير</button>
+          <button type="button" style="height: 40px; padding: 0 18px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif">تحويل بين مخزنين</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+        <button type="button" aria-pressed="false" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">التصنيف: الكل ▾</button>
+        <button type="button" aria-pressed="false" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">المخزن: الكل ▾</button>
+        <label style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: #CFC5B2; cursor: pointer"><input type="checkbox" style="width: 16px; height: 16px; accent-color: rgb(224, 180, 58); margin: 0px;">تحت الحد الأدنى بس</label>
+        <span style="flex: 1"></span>
+        <span style="font-size: 12.5px; color: #978C78">٧ منتجات · ٤ مخازن · ١٢ خانة محتاجة نظرة</span>
+      </div>
+
+      <div style="border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9) 0%, rgba(22,19,14,0.85) 100%); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13.5px; min-width: 860px">
+            <thead>
+              <tr style="color: #978C78; font-size: 12px">
+                <th style="padding: 14px 20px 10px">المنتج</th>
+                <th style="padding: 14px 10px 10px">المصنع · السادات</th>
+                <th style="padding: 14px 10px 10px">القاهرة</th>
+                <th style="padding: 14px 10px 10px">طنطا</th>
+                <th style="padding: 14px 10px 10px">الإسكندرية</th>
+                <th style="padding: 14px 20px 10px 10px; min-width: 190px">الإجمالي <span style="font-weight: 500">· على مجموع الحدود</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">قاعدة تواليت «رويال» أبيض</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٤٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢٤٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٦٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>١٢</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٤٤</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٣٥٦</b><span style="font-size: 11.5px; color: #7DBBF4">سليم · الحد ١٦٠ · طنطا محتاجة تحويل</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">حوض حمام «لوتس» ٦٠ سم</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٣٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٨</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>١٤٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٢٢</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٣٤</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٢٠٤</b><span style="font-size: 11.5px; color: #7DBBF4">سليم · الحد ١٢٠ · وزّع على السادات وطنطا</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">خلاط حوض كروم «نايل»</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٢٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٣٢</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.22); border: 1px solid #EF6461"><b style="color: #F28683">٠</b><span style="font-size: 11.5px; color: #F28683; font-weight: 700">نفد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٦</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢٨</b></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(239,100,97,0.18); border: 1.5px solid #EF6461"><b style="font-size: 15px; color: #F28683">٦٦</b><span style="font-size: 11.5px; color: #F28683; font-weight: 700">حرج · الحد ٨٠ · محتاج شراء</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">سيفون مدفون «سلِم»</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ١٥</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٤٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>١٨</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٩</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><span style="display: flex; flex-direction: column; padding: 8px 10px; color: #6E6556"><b>—</b><span style="font-size: 11.5px">مش متخزّن هنا</span></span></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٦٧</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٤٥</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">بانيو أكريليك ١٧٠ سم</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٥</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢٦</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٨</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٣</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٦</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٤٣</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٢٠</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">حوض مطبخ ستانلس بعين واحدة</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٢٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>١١٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٤٥</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٣٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٢٢</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٢٠٧</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٨٠</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">شطّاف «أكوا»</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٥٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٣٢٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢١٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٩٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>١٢٠</b></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٧٤٠</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٢٠٠</span></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; gap: 18px; flex-wrap: wrap; align-items: center; padding: 14px 20px; border-top: 1px solid rgba(255,232,190,0.07); font-size: 12.5px; color: #CFC5B2">
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(60,201,138,0.18)"></i>سليم</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(242,153,74,0.2); border: 1px solid rgba(242,153,74,0.5)"></i>قرّب من الحد</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(239,100,97,0.2); border: 1px solid rgba(239,100,97,0.5)"></i>حرج · تحت الحد</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(239,100,97,0.35); border: 1px solid #EF6461"></i>نفد</span>
+          <span style="color: #978C78">الإجمالي بيتقاس على مجموع الحد الأدنى في المخازن اللي المنتج متخزّن فيها · السطر الأزرق تحته معناه «الكمية كفاية بس متوزعة غلط» · «—» يعني المنتج مش بيتخزن في المخزن ده أصلًا · اضغط أي خانة يفتح كارت الصنف</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+
+
+
+</body></html>

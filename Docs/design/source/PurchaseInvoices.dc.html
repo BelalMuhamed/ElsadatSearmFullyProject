@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>فواتير الشراء</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="purchases" item="pinvoices" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head">
+        <div class="stack"><nav aria-label="المسار" class="crumb">المشتريات › فواتير الشراء</nav><h1 class="h1">فواتير الشراء</h1></div>
+        <div class="row"><button type="button" class="btn">تصدير Excel / PDF</button><a href="PurchaseCreate.dc.html" class="btn p">+ فاتورة شراء جديدة</a></div>
+      </div>
+      <div class="kpis">
+        <button type="button" class="kpi" style="text-align: right; cursor: pointer; font-family: inherit"><span>مسودة · لسه متسكّنتش</span><b>٤ <small class="muted" style="font-size: 12.5px; font-weight: 500">· ٢١٨٬٤٠٠ ج.م</small></b></button>
+        <button type="button" class="kpi" style="text-align: right; cursor: pointer; font-family: inherit"><span class="ok">مؤكدة ومتسكّنة</span><b>٣١ <small class="muted" style="font-size: 12.5px; font-weight: 500">· ٨٤٢٬٠٠٠</small></b></button>
+        <button type="button" class="kpi" style="text-align: right; cursor: pointer; font-family: inherit"><span class="warn">طلب إلغاء</span><b>٠</b></button>
+        <button type="button" class="kpi" style="text-align: right; cursor: pointer; font-family: inherit"><span class="bad">ملغاة</span><b>١ <small class="muted" style="font-size: 12.5px; font-weight: 500">· الشهر ده</small></b></button>
+      </div>
+      <div class="row">
+        <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14zM20 20l-3.5-3.5"></path></svg><span class="sr-only">دوّر</span><input placeholder="رقمنا أو رقم فاتورة المورد"></label>
+        <button type="button" class="filter">الحالة: الكل ▾</button><button type="button" class="filter">المورد ▾</button><button type="button" class="filter">أكتوبر ٢٠٢٦ ▾</button>
+      </div>
+      <section class="card clip">
+        <div class="tbl-wrap">
+          <table class="tbl" style="min-width: 940px">
+            <thead><tr><th>الرقم</th><th>المورد</th><th>فاتورة المورد</th><th>التاريخ</th><th class="num">الصافي</th><th>اتسكّنت في</th><th>الحالة</th><th>آخر تعديل</th><th><span class="sr-only">إجراءات</span></th></tr></thead>
+            <tbody>
+              <tr><td><a href="#" style="text-decoration: none"><bdi dir="ltr" class="mono">PUR-0224</bdi></a></td><td class="sb">مصنع الشرق للخلاطات</td><td><bdi dir="ltr" class="mono dim">SH-88412</bdi></td><td class="dim">١٦ أكتوبر</td><td class="num b">١٠٤٬١٩٦</td><td class="faint">—</td><td><span class="chip c-neu">مسودة</span></td><td class="fs12 dim">منى · امبارح</td><td><div class="row" style="justify-content: flex-end"><a href="PurchaseConfirm.dc.html" class="btn sm p">أكّد واستلم</a><button type="button" class="ibtn" aria-label="إجراءات تانية">⋯</button></div></td></tr>
+              <tr><td><a href="#" style="text-decoration: none"><bdi dir="ltr" class="mono">PUR-0223</bdi></a></td><td class="sb">شركة النيل للخزف</td><td><bdi dir="ltr" class="mono dim">NC/2026/771</bdi></td><td class="dim">١٥ أكتوبر</td><td class="num b">٦٢٬٨٠٠</td><td class="faint">—</td><td><span class="chip c-neu">مسودة</span></td><td class="fs12 dim">منى · ١٥ أكتوبر</td><td><div class="row" style="justify-content: flex-end"><a href="PurchaseConfirm.dc.html" class="btn sm p">أكّد واستلم</a><button type="button" class="ibtn" aria-label="إجراءات تانية">⋯</button></div></td></tr>
+              <tr><td><a href="#" style="text-decoration: none"><bdi dir="ltr" class="mono">PUR-0219</bdi></a></td><td class="sb">مؤسسة الأمل للبلاستيك</td><td><bdi dir="ltr" class="mono dim">7731</bdi></td><td class="dim">١٢ أكتوبر</td><td class="num b">٢٤٬١٥٠</td><td>مخزن السادات</td><td><span class="chip c-ok">مؤكدة</span></td><td class="fs12 dim">هشام · ١٢ أكتوبر</td><td><div class="row" style="justify-content: flex-end"><button type="button" class="btn sm">إذن استلام</button><button type="button" class="ibtn" aria-label="إجراءات تانية">⋯</button></div></td></tr>
+              <tr><td><a href="#" style="text-decoration: none"><bdi dir="ltr" class="mono">PUR-0216</bdi></a></td><td class="sb">مصنع الشرق للخلاطات</td><td><bdi dir="ltr" class="mono dim">SH-88190</bdi></td><td class="dim">٧ أكتوبر</td><td class="num b">٨٨٬٤٠٠</td><td>مخزن القاهرة</td><td><span class="chip c-ok">مؤكدة</span></td><td class="fs12 dim">منى · ٧ أكتوبر</td><td><div class="row" style="justify-content: flex-end"><button type="button" class="btn sm">مرتجع</button><button type="button" class="ibtn" aria-label="إجراءات تانية">⋯</button></div></td></tr>
+              <tr><td><a href="#" style="text-decoration: none"><bdi dir="ltr" class="mono">PUR-0211</bdi></a></td><td class="sb">شركة النيل للخزف</td><td><bdi dir="ltr" class="mono dim">NC/2026/702</bdi></td><td class="dim">٢ أكتوبر</td><td class="num muted">١١٬٢٠٠</td><td class="faint">—</td><td><span class="chip c-bad">ملغاة</span></td><td class="fs12 dim">هشام · ٣ أكتوبر</td><td><div class="row" style="justify-content: flex-end"><button type="button" class="btn sm">السبب</button><button type="button" class="ibtn" aria-label="إجراءات تانية">⋯</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tfoot"><span>«تعديل» بيظهر للمسودة بس · المؤكدة ليها مرتجع أو طلب إلغاء</span><span>١–٥ من ٣٦</span></div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

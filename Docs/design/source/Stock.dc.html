@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>مصفوفة المخزون</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+button:focus-visible,a:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+th{font-weight:600;text-align:right}
+td a{color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:1px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(1000px 560px at 70% -10%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0E0B08 100%)">
+  <div style="flex: 1 1 264px; display: flex; background: #100D09">
+    <dc-import name="Sidebar" active="stores" item="stock" theme="dark" hint-size="264px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main style="padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <nav aria-label="المسار" style="font-size: 12.5px; color: #978C78">المخازن › المخزون</nav>
+          <h1 style="margin: 0; font-size: 22px; font-weight: 700">المخزون في كل المخازن</h1>
+          <p style="margin: 0; font-size: 13px; color: #BDB29E">اللون محسوب على الحد الأدنى لكل منتج في كل مخزن · آخر تحديث ١١:٤٠</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button type="button" style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.05); color: #EDE5D6; font: 600 13px 'IBM Plex Sans Arabic', sans-serif">تصدير</button>
+          <button type="button" style="height: 40px; padding: 0 18px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A, #E0B43A 45%, #C8961C); color: #1A1408; font: 700 13.5px 'IBM Plex Sans Arabic', sans-serif">تحويل بين مخزنين</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+        <button type="button" aria-pressed="false" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">التصنيف: الكل ▾</button>
+        <button type="button" aria-pressed="false" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); background: transparent; color: #CFC5B2; font: 600 12.5px 'IBM Plex Sans Arabic', sans-serif">المخزن: الكل ▾</button>
+        <label style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,232,190,0.14); display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: #CFC5B2; cursor: pointer"><input type="checkbox" style="width: 16px; height: 16px; accent-color: #E0B43A; margin: 0">تحت الحد الأدنى بس</label>
+        <span style="flex: 1"></span>
+        <span style="font-size: 12.5px; color: #978C78">٧ منتجات · ٤ مخازن · ١٢ خانة محتاجة نظرة</span>
+      </div>
+
+      <div style="border-radius: 20px; background: linear-gradient(127deg, rgba(42,35,25,0.9) 0%, rgba(22,19,14,0.85) 100%); border: 1px solid rgba(255,232,190,0.08); overflow: hidden">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13.5px; min-width: 860px">
+            <thead>
+              <tr style="color: #978C78; font-size: 12px">
+                <th style="padding: 14px 20px 10px">المنتج</th>
+                <th style="padding: 14px 10px 10px">المصنع · السادات</th>
+                <th style="padding: 14px 10px 10px">القاهرة</th>
+                <th style="padding: 14px 10px 10px">طنطا</th>
+                <th style="padding: 14px 10px 10px">الإسكندرية</th>
+                <th style="padding: 14px 20px 10px 10px; min-width: 190px">الإجمالي <span style="font-weight: 500">· على مجموع الحدود</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">قاعدة تواليت «رويال» أبيض</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٤٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢٤٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٦٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>١٢</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٤٤</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٣٥٦</b><span style="font-size: 11.5px; color: #7DBBF4">سليم · الحد ١٦٠ · طنطا محتاجة تحويل</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">حوض حمام «لوتس» ٦٠ سم</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٣٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٨</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>١٤٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٢٢</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٣٤</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٢٠٤</b><span style="font-size: 11.5px; color: #7DBBF4">سليم · الحد ١٢٠ · وزّع على السادات وطنطا</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">خلاط حوض كروم «نايل»</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٢٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٣٢</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.22); border: 1px solid #EF6461"><b style="color: #F28683">٠</b><span style="font-size: 11.5px; color: #F28683; font-weight: 700">نفد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٦</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢٨</b></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(239,100,97,0.18); border: 1.5px solid #EF6461"><b style="font-size: 15px; color: #F28683">٦٦</b><span style="font-size: 11.5px; color: #F28683; font-weight: 700">حرج · الحد ٨٠ · محتاج شراء</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">سيفون مدفون «سلِم»</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ١٥</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٤٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>١٨</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٩</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><span style="display: flex; flex-direction: column; padding: 8px 10px; color: #6E6556"><b>—</b><span style="font-size: 11.5px">مش متخزّن هنا</span></span></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٦٧</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٤٥</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">بانيو أكريليك ١٧٠ سم</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٥</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢٦</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٨</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(239,100,97,0.12); border: 1px solid rgba(239,100,97,0.35)"><b>٣</b><span style="font-size: 11.5px; color: #F28683">حرج · تحت الحد</span></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٦</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٤٣</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٢٠</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">حوض مطبخ ستانلس بعين واحدة</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٢٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>١١٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٤٥</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٣٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(242,153,74,0.10); border: 1px solid rgba(242,153,74,0.3)"><b>٢٢</b><span style="font-size: 11.5px; color: #F5A862">قرّب من الحد</span></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٢٠٧</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٨٠</span></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 20px; border-top: 1px solid rgba(255,232,190,0.07)"><div style="display: flex; flex-direction: column"><span style="font-weight: 600">شطّاف «أكوا»</span><span style="font-size: 11.5px; color: #978C78">الحد الأدنى ٥٠</span></div></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٣٢٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٢١٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>٩٠</b></a></td>
+                <td style="padding: 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 10px; border-radius: 10px; background: rgba(60,201,138,0.07)"><b>١٢٠</b></a></td>
+                <td style="padding: 6px 20px 6px 6px; border-top: 1px solid rgba(255,232,190,0.07)"><a href="#" style="padding: 8px 12px; border-radius: 10px; background: rgba(60,201,138,0.14); border: 1.5px solid rgba(60,201,138,0.5)"><b style="font-size: 15px">٧٤٠</b><span style="font-size: 11.5px; color: #5FD9A2">سليم · الحد ٢٠٠</span></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; gap: 18px; flex-wrap: wrap; align-items: center; padding: 14px 20px; border-top: 1px solid rgba(255,232,190,0.07); font-size: 12.5px; color: #CFC5B2">
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(60,201,138,0.18)"></i>سليم</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(242,153,74,0.2); border: 1px solid rgba(242,153,74,0.5)"></i>قرّب من الحد</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(239,100,97,0.2); border: 1px solid rgba(239,100,97,0.5)"></i>حرج · تحت الحد</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px"><i style="width: 14px; height: 14px; border-radius: 4px; background: rgba(239,100,97,0.35); border: 1px solid #EF6461"></i>نفد</span>
+          <span style="color: #978C78">الإجمالي بيتقاس على مجموع الحد الأدنى في المخازن اللي المنتج متخزّن فيها · السطر الأزرق تحته معناه «الكمية كفاية بس متوزعة غلط» · «—» يعني المنتج مش بيتخزن في المخزن ده أصلًا · اضغط أي خانة يفتح كارت الصنف</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تسجيل الدخول — Sadat Searm</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0F0C08}
+a{color:#F0C850}a:hover{color:#F3D35A}
+input::placeholder{color:#7E7464}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #F3D35A;outline-offset:2px}
+</style>
+</helmet>
+<div dir="rtl" style="min-height: 900px; box-sizing: border-box; padding: 28px; display: flex; flex-wrap: wrap; gap: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; color: #F6F1E7; background: radial-gradient(900px 600px at 80% 0%, rgba(224,180,58,0.08), transparent 60%), linear-gradient(160deg, #17130D 0%, #0D0B08 100%)">
+
+  <section aria-label="Sadat Searm" style="flex: 1 1 480px; min-height: 420px; position: relative; overflow: hidden; border-radius: 28px 0 0 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-top-left-radius: 0; border-bottom-left-radius: 0; background: radial-gradient(520px 420px at 50% 42%, rgba(224,180,58,0.20), transparent 70%), linear-gradient(170deg, #2A2318 0%, #16120C 100%); display: flex; flex-direction: column; justify-content: space-between; padding: 44px 48px; box-sizing: border-box">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <img src="/_blob/19bc09a635205694f89e681947df045d" alt="" style="width: 40px; height: 30px; object-fit: contain">
+        <div style="display: flex; flex-direction: column">
+          <span dir="ltr" style="font-size: 16px; font-weight: 700; letter-spacing: 0.2px">Sadat Searm</span>
+          <span style="font-size: 12px; color: #BDB29E">الويب الداخلي</span>
+        </div>
+      </div>
+      <span style="font-size: 12px; color: #978C78">الإصدار ٢٫٠</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 24px 0">
+      <div style="width: 236px; height: 236px; border-radius: 50%; border: 7px solid #D9AC32; box-shadow: 0 0 0 10px rgba(224,180,58,0.06), 0 0 80px rgba(224,180,58,0.25); display: flex; align-items: center; justify-content: center; box-sizing: border-box">
+        <div style="width: 196px; height: 196px; border-radius: 50%; border: 1.5px solid rgba(240,200,80,0.7); display: flex; align-items: center; justify-content: center">
+          <img src="/_blob/19bc09a635205694f89e681947df045d" alt="" style="width: 150px; height: 112px; object-fit: contain">
+        </div>
+      </div>
+      <div style="text-align: center; display: flex; flex-direction: column; gap: 10px; max-width: 380px">
+        <h1 style="margin: 0; font-size: 30px; line-height: 1.35; font-weight: 700">من المصنع لحد التركيب</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.8; color: #CFC5B2">كل فاتورة وكل حركة مخزن وكل نقطة سبّاك متسجلة في مكان واحد.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; font-size: 12.5px; color: #978C78">
+      <span>المبيعات</span><span aria-hidden="true">·</span><span>المخازن</span><span aria-hidden="true">·</span><span>المعاينات والولاء</span><span aria-hidden="true">·</span><span>الحسابات</span><span aria-hidden="true">·</span><span>الموارد البشرية</span>
+    </div>
+  </section>
+
+  <section style="flex: 1 1 420px; min-height: 420px; border-radius: 28px 0 0 28px; background: linear-gradient(180deg, #14110C 0%, #0E0C09 100%); border: 1px solid rgba(255,232,190,0.07); border-right: 0; display: flex; flex-direction: column; padding: 40px 56px; box-sizing: border-box">
+    <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+      <div role="group" aria-label="لغة الواجهة" style="display: flex; padding: 3px; border-radius: 12px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12)">
+        <sc-for list="{{langs}}" as="o" hint-placeholder-count="2">
+          <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button>
+        </sc-for>
+      </div>
+      <div role="group" aria-label="الثيم" style="display: flex; padding: 3px; border-radius: 12px; background: rgba(255,240,210,0.05); border: 1px solid rgba(255,232,190,0.12)">
+        <sc-for list="{{themes}}" as="o" hint-placeholder-count="2">
+          <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 420px; width: 100%; margin: 0 auto; padding: 40px 0; gap: 26px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h2 style="margin: 0; font-size: 26px; font-weight: 700">تسجيل الدخول</h2>
+        <p style="margin: 0; font-size: 14px; color: #BDB29E; line-height: 1.7">ادخل بالحساب اللي اداهولك مسؤول النظام.</p>
+      </div>
+
+      <form style="display: flex; flex-direction: column; gap: 18px">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="user" style="font-size: 12.5px; font-weight: 600; color: #CFC5B2">اسم المستخدم أو الموبايل</label>
+          <input id="user" type="text" value="hesham.adel" autocomplete="username" dir="ltr" style="height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid rgba(255,232,190,0.14); background: rgba(255,240,210,0.04); color: #F6F1E7; font: 500 15px 'IBM Plex Sans Arabic', sans-serif; padding: 0 16px; text-align: right">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline">
+            <label for="pw" style="font-size: 12.5px; font-weight: 600; color: #CFC5B2">كلمة المرور</label>
+            <a href="#forgot" style="font-size: 12.5px; font-weight: 600; text-decoration: none">نسيت كلمة المرور؟</a>
+          </div>
+          <div style="position: relative">
+            <input id="pw" type="{{pwType}}" value="Sadat@2026" autocomplete="current-password" dir="ltr" style="width: 100%; height: 48px; box-sizing: border-box; border-radius: 12px; border: 1px solid #E0B43A; box-shadow: 0 0 0 3px rgba(224,180,58,0.18); background: rgba(255,240,210,0.04); color: #F6F1E7; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 16px 0 52px; text-align: right">
+            <button type="button" onClick="{{togglePw}}" aria-label="{{pwLabel}}" title="{{pwLabel}}" style="position: absolute; left: 4px; top: 4px; width: 40px; height: 40px; border-radius: 10px; border: 0; background: transparent; color: #CFC5B2; display: flex; align-items: center; justify-content: center; cursor: pointer">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"></path></svg>
+            </button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: #F5A862">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 4 13h4v7h8v-7h4z"></path></svg>
+            <span>الـ Caps Lock شغّال</span>
+          </div>
+        </div>
+
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #CFC5B2; cursor: pointer">
+          <input type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: #E0B43A; margin: 0">
+          <span>افتكرني على الجهاز ده</span>
+        </label>
+
+        <button type="button" style="height: 50px; border-radius: 12px; border: 0; background: linear-gradient(135deg, #F3D35A 0%, #E0B43A 45%, #C8961C 100%); color: #1A1408; font: 700 16px 'IBM Plex Sans Arabic', sans-serif; cursor: pointer; box-shadow: 0 8px 24px rgba(224,180,58,0.25)">دخول</button>
+      </form>
+
+      <p style="margin: 0; font-size: 12.5px; line-height: 1.8; color: #978C78">بعد ٥ محاولات غلط الحساب بيتقفل ١٥ دقيقة. لو محتاج مساعدة، كلّم مسؤول النظام في شركتك.</p>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #7E7464">
+      <span>© ٢٠٢٦ Sadat Searm</span>
+      <span>الاتصال آمن</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { showPw: false, lang: 'ar', theme: 'dark' };
+  }
+  seg(on) {
+    return 'height: 34px; padding: 0 16px; border-radius: 9px; border: 0; cursor: pointer; font: 600 13px "IBM Plex Sans Arabic", sans-serif; ' +
+      (on ? 'background: #F6F1E7; color: #1A1408;' : 'background: transparent; color: #BDB29E;');
+  }
+  renderVals() {
+    const s = this.state;
+    const langs = [{ id: 'ar', label: 'العربية' }, { id: 'en', label: 'English' }].map((o) => ({
+      ...o, on: s.lang === o.id ? 'true' : 'false', style: this.seg(s.lang === o.id), pick: () => this.setState({ lang: o.id })
+    }));
+    const themes = [{ id: 'dark', label: 'داكن' }, { id: 'light', label: 'فاتح' }].map((o) => ({
+      ...o, on: s.theme === o.id ? 'true' : 'false', style: this.seg(s.theme === o.id), pick: () => this.setState({ theme: o.id })
+    }));
+    return {
+      langs, themes,
+      pwType: s.showPw ? 'text' : 'password',
+      pwLabel: s.showPw ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور',
+      togglePw: () => this.setState({ showPw: !s.showPw })
+    };
+  }
+}
+</script>
+</body>
+</html>

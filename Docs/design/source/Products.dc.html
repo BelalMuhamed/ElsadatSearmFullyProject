@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>المنتجات</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}</style>
+</helmet>
+<div class="sr" dir="rtl">
+  <div class="sr-side"><dc-import name="Sidebar" active="stores" item="products" theme="dark" hint-size="264px,900px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="head">
+        <div class="stack"><nav aria-label="المسار" class="crumb">المخازن › المنتجات</nav><h1 class="h1">المنتجات</h1></div>
+        <div class="row"><button type="button" class="btn">التصنيفات</button><button type="button" class="btn p">+ منتج جديد</button></div>
+      </div>
+      <section class="card clip">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>المنتج</th><th>الكود</th><th>التصنيف</th><th class="num">سعر البيع</th><th class="num">النقاط</th><th class="num">الرصيد</th><th>الحالة</th></tr></thead>
+            <tbody>
+              <tr><td><div class="row" style="gap: 10px"><span class="thumb" aria-hidden="true"></span><span class="sb">قاعدة تواليت «رويال» أبيض</span></div></td><td><bdi dir="ltr" class="mono">RY-110</bdi></td><td>قواعد</td><td class="num">١٬٤٥٠</td><td class="num pts">١٢</td><td class="num">٣٥٦</td><td class="ok">نشط</td></tr>
+              <tr><td><div class="row" style="gap: 10px"><span class="thumb" aria-hidden="true"></span><span class="sb">حوض حمام «لوتس» ٦٠ سم</span></div></td><td><bdi dir="ltr" class="mono">LT-060</bdi></td><td>أحواض</td><td class="num">٦٨٠</td><td class="num pts">٦</td><td class="num">٢٠٤</td><td class="ok">نشط</td></tr>
+              <tr><td><div class="row" style="gap: 10px"><span class="thumb" aria-hidden="true" style="background: linear-gradient(135deg, #E9EBEE, #9AA1AB)"></span><span class="sb">خلاط حوض كروم «نايل»</span></div></td><td><bdi dir="ltr" class="mono">NL-200</bdi></td><td>خلاطات</td><td class="num">٥٢٠</td><td class="num pts">٨</td><td class="num bad">٦٦</td><td class="ok">نشط</td></tr>
+              <tr><td><div class="row" style="gap: 10px"><span class="thumb" aria-hidden="true" style="background: none; border: 1px dashed rgba(255,232,190,.2)"></span><span class="sb">سيفون مدفون «سلِم»</span></div></td><td><bdi dir="ltr" class="mono">SF-300</bdi></td><td>سيفونات</td><td class="num">٩٥٠</td><td class="num pts">١٠</td><td class="num">٦٧</td><td class="ok">نشط</td></tr>
+              <tr><td><div class="row" style="gap: 10px"><span class="thumb" aria-hidden="true"></span><span class="sb">بانيو أكريليك ١٧٠ سم</span></div></td><td><bdi dir="ltr" class="mono">BT-170</bdi></td><td>بانيوهات</td><td class="num">٧٬٨٠٠</td><td class="num pts">١٢٠</td><td class="num">٤٣</td><td class="ok">نشط</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="overlay"></div>
+  <aside role="dialog" aria-modal="true" aria-labelledby="np-h" class="drawer" style="width: 500px">
+    <div class="drawer-h"><h2 id="np-h" class="h2" style="font-size: 18px">منتج جديد</h2><button type="button" class="ibtn" aria-label="اقفل">✕</button></div>
+    <form class="drawer-b">
+      <div class="row" style="gap: 14px; align-items: flex-start">
+        <button type="button" style="width: 96px; height: 96px; border-radius: 16px; border: 1.5px dashed rgba(240,200,80,.4); background: rgba(224,180,58,.04); color: #F0C850; font: 600 12px 'IBM Plex Sans Arabic', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; flex: 0 0 96px"><span aria-hidden="true" style="font-size: 20px">＋</span>صورة<span class="muted" style="font-weight: 500">اختياري</span></button>
+        <div class="stack g12" style="flex: 1">
+          <div class="field"><label for="np-ar" class="lbl">الاسم بالعربي <span class="req">*</span></label><input id="np-ar" class="inp focus" value="صفاية أرضية «نور» ١٠×١٠"></div>
+          <div class="field"><label for="np-en" class="lbl">الاسم بالإنجليزي</label><input id="np-en" class="inp" dir="ltr" placeholder="Noor Floor Drain 10×10" style="text-align: left"><span class="hint">لو فاضي، الواجهة الإنجليزي هتعرض الاسم العربي</span></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="np-code" class="lbl">الكود <span class="req">*</span></label><input id="np-code" class="inp ltr" value="NR-010"></div>
+        <div class="field"><label for="np-cat" class="lbl">التصنيف <span class="req">*</span></label><select id="np-cat" class="inp"><option>صفايات</option></select></div>
+        <div class="field"><label for="np-price" class="lbl">سعر البيع <span class="req">*</span></label><input id="np-price" class="inp" value="١٨٠"></div>
+        <div class="field"><label for="np-pts" class="lbl">النقاط للقطعة <span class="req">*</span></label><input id="np-pts" class="inp" value="٢"><span class="hint">٣٠ قطعة = كوبون</span></div>
+        <div class="field span2"><label for="np-min" class="lbl">الحد الأدنى للمخزون (لكل مخزن)</label><input id="np-min" class="inp" value="٢٥"><span class="hint">تحته الخانة بتحمر في مصفوفة المخزون ويوصل إشعار</span></div>
+      </div>
+      <div class="card pad stack g8" style="background: rgba(255,240,210,.03)">
+        <span class="lbl">هيظهر كده في الفاتورة والمعاينة والموبايل</span>
+        <div class="row" style="gap: 10px"><span class="thumb" aria-hidden="true" style="background: none; border: 1px dashed rgba(255,232,190,.2)"></span><div class="stack"><b class="fs13">صفاية أرضية «نور» ١٠×١٠</b><span class="fs12 muted"><bdi dir="ltr" class="mono">NR-010</bdi> · ١٨٠ ج.م · ٢ نقطة</span></div></div>
+      </div>
+    </form>
+    <div class="drawer-f"><button type="button" class="btn p" style="flex: 1; height: 46px">احفظ المنتج</button><button type="button" class="btn">احفظ وضيف تاني</button><button type="button" class="btn g">إلغاء</button></div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

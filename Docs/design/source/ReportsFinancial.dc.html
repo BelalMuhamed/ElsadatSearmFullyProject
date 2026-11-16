@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>قائمة الدخل</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}.rp{display:flex;gap:4px;flex-wrap:wrap}.rp a{height:34px;padding:0 12px;border-radius:10px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;text-decoration:none;color:#BDB29E;border:1px solid transparent}.rp a[aria-current=page]{color:#F6F1E7;background:rgba(224,180,58,.12);border-color:rgba(240,200,80,.35)}.rp .new{font-size:10.5px;color:#5ED3D0;margin-right:4px}</style>
+</helmet>
+<div class="sr" dir="rtl" style="min-height: 1000px">
+  <div class="sr-side"><dc-import name="Sidebar" active="reports" item="financial" theme="dark" hint-size="264px,1000px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <nav class="rp" aria-label="التقارير المالية"><a href="#">حركة الصندوق</a><a href="#">أرصدة العملاء والموردين</a><a href="#">أعمار الديون</a><a href="#">حركة المخازن</a><a href="#">ميزان المراجعة</a><a href="#" aria-current="page">قائمة الدخل</a><a href="#">الميزانية العمومية<span class="new">جديد</span></a><a href="#">كشف حساب<span class="new">جديد</span></a><a href="#">المصروفات حسب البند<span class="new">جديد</span></a></nav>
+      <div class="head">
+        <div class="stack"><h1 class="h1">قائمة الدخل</h1><p class="sub">كسبنا كام الشهر ده، والفلوس راحت فين؟</p></div>
+        <div class="row"><button type="button" class="btn">احفظ الفلاتر</button><button type="button" class="btn">اطبع</button><button type="button" class="btn p">تصدير ▾</button></div>
+      </div>
+      <div class="row card" style="padding: 10px 12px; border-radius: 16px"><button type="button" class="filter on">أكتوبر ٢٠٢٦ ▾</button><button type="button" class="filter">النهارده</button><button type="button" class="filter">الشهر اللي فات</button><button type="button" class="filter">السنة</button><label class="row fs13 soft" style="gap: 8px"><input type="checkbox" checked="" class="chk">قارن بسبتمبر</label></div>
+      <div class="kpis">
+        <a href="#" class="kpi"><span>صافي المبيعات</span><b>١٫٢٧ مليون</b><small class="ok">▲ ٧٫٩٪</small></a>
+        <a href="#" class="kpi"><span>مجمل الربح</span><b>٣٥٣٬٥٠٠</b><small>هامش ٢٧٫٩٪</small></a>
+        <a href="#" class="kpi"><span>المصروفات</span><b>١٣٨٬٩٠٠</b><small class="ok">▼ أقل بـ ٤٪</small></a>
+        <a href="#" class="kpi gold"><span>صافي الربح</span><b>٢١٤٬٦٠٠</b><small class="ok">▲ ٦٫٢٪ · هامش ١٦٫٩٪</small></a>
+      </div>
+      <section class="card pad stack g12" aria-labelledby="wf-h">
+        <div class="between"><h2 id="wf-h" class="h2">من المبيعات للربح</h2><span class="fs12 muted">اضغط أي عمود يفتح التفاصيل</span></div>
+        <div role="img" aria-label="المبيعات ١٬٢٨٠٬٠٠٠ ناقص مرتجعات ١٢٬٤٠٠ ناقص تكلفة البضاعة ٩١٤٬١٠٠ يساوي مجمل ربح ٣٥٣٬٥٠٠ ناقص مصروفات ١٣٨٬٩٠٠ يساوي صافي ربح ٢١٤٬٦٠٠" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; align-items: end; height: 260px; padding: 0 6px; border-bottom: 1px solid rgba(255,232,190,.12)">
+          <div class="stack" style="height: 100%; justify-content: flex-end; gap: 6px; text-align: center"><b class="fs13">١٫٢٨ م</b><div style="height: 220px; border-radius: 8px 8px 0 0; background: rgba(224,180,58,.6)"></div></div>
+          <div class="stack" style="height: 100%; justify-content: flex-start; gap: 6px; text-align: center"><div style="height: 2px"></div><div style="height: 3px; border-radius: 2px; background: #EF6461"></div><b class="fs13 bad">−١٢٬٤٠٠</b></div>
+          <div class="stack" style="height: 100%; justify-content: flex-start; gap: 6px; text-align: center; padding-top: 3px"><div style="height: 157px; border-radius: 0 0 8px 8px; background: rgba(239,100,97,.45)"></div><b class="fs13 bad">−٩١٤٬١٠٠</b></div>
+          <div class="stack" style="height: 100%; justify-content: flex-end; gap: 6px; text-align: center"><b class="fs13">٣٥٣٬٥٠٠</b><div style="height: 61px; border-radius: 8px 8px 0 0; background: rgba(224,180,58,.45)"></div></div>
+          <div class="stack" style="height: 100%; justify-content: flex-end; gap: 6px; text-align: center; padding-bottom: 37px"><b class="fs13 bad">−١٣٨٬٩٠٠</b><div style="height: 24px; border-radius: 0 0 8px 8px; background: rgba(239,100,97,.45)"></div></div>
+          <div class="stack" style="height: 100%; justify-content: flex-end; gap: 6px; text-align: center"><b class="fs13 gold">٢١٤٬٦٠٠</b><div style="height: 37px; border-radius: 8px 8px 0 0; background: #E0B43A"></div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; text-align: center; font-size: 12px; color: #BDB29E"><span>المبيعات</span><span>المرتجعات</span><span>تكلفة البضاعة</span><span>مجمل الربح</span><span>المصروفات</span><span>صافي الربح</span></div>
+      </section>
+      <section class="card clip">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>البند</th><th class="num">أكتوبر</th><th class="num">سبتمبر</th><th class="num">الفرق</th></tr></thead>
+            <tbody>
+              <tr><td><a href="#" style="text-decoration: none; color: #F6F1E7">المبيعات</a></td><td class="num">١٬٢٨٠٬٠٠٠</td><td class="num dim">١٬١٨٢٬٠٠٠</td><td class="num ok">+٩٨٬٠٠٠</td></tr>
+              <tr><td><a href="#" style="text-decoration: none; color: #F6F1E7">مرتجعات المبيعات</a></td><td class="num">−١٢٬٤٠٠</td><td class="num dim">−٦٬٨٠٠</td><td class="num bad">−٥٬٦٠٠</td></tr>
+              <tr><td><a href="#" style="text-decoration: none; color: #F6F1E7">تكلفة البضاعة المباعة</a></td><td class="num">−٩١٤٬١٠٠</td><td class="num dim">−٨٢٨٬٤٠٠</td><td class="num bad">−٨٥٬٧٠٠</td></tr>
+              <tr class="grp"><td>مجمل الربح</td><td class="num">٣٥٣٬٥٠٠</td><td class="num dim">٣٤٦٬٨٠٠</td><td class="num ok">+٦٬٧٠٠</td></tr>
+              <tr><td><a href="Expenses.dc.html" style="text-decoration: none; color: #F6F1E7">المصروفات</a></td><td class="num">−١٣٨٬٩٠٠</td><td class="num dim">−١٤٤٬٧٠٠</td><td class="num ok">+٥٬٨٠٠</td></tr>
+            </tbody>
+            <tfoot><tr><td>صافي الربح</td><td class="num gold" style="font-size: 16px">٢١٤٬٦٠٠</td><td class="num dim">٢٠٢٬١٠٠</td><td class="num ok">+١٢٬٥٠٠</td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

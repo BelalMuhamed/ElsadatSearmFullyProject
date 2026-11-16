@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>ملفي الشخصي وتفضيلاتي</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd2bf1bf3c0ed8ad754d251a5987e09b">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0F0C08}a{color:#F0C850}a:hover{color:#F3D35A}</style>
+</helmet>
+<div class="sr" dir="rtl" style="min-height: 960px">
+  <div class="sr-side"><dc-import name="Sidebar" active="me" item="profile" theme="dark" hint-size="264px,960px"></dc-import></div>
+  <div class="sr-col">
+    <dc-import name="Topbar" theme="dark" hint-size="100%,68px"></dc-import>
+    <main class="sr-main">
+      <div class="card pad between">
+        <div class="row" style="gap: 14px">
+          <span class="avatar lg gold" aria-hidden="true">هع</span>
+          <div class="stack"><h1 class="h1">هشام عادل</h1><span class="fs13 dim">الإدارة · <bdi dir="ltr" class="mono">hesham.adel</bdi> · آخر دخول النهارده ٨:٣١ ص</span></div>
+        </div>
+        <span class="chip c-gold">كل الصلاحيات</span>
+      </div>
+
+      <section class="card clip">
+        <div role="tablist" aria-label="ملفي" class="tabs">
+          <button role="tab" aria-selected="false" type="button" class="tab">البيانات</button>
+          <button role="tab" aria-selected="false" type="button" class="tab">كلمة المرور</button>
+          <button role="tab" aria-selected="true" type="button" class="tab">التفضيلات</button>
+        </div>
+        <div class="split" style="padding: 20px">
+          <div class="grow stack g16">
+            <div class="grid2">
+              <div class="field"><span id="up-lang" class="lbl">لغة الواجهة</span><div role="radiogroup" aria-labelledby="up-lang" class="seg"><button type="button" role="radio" aria-checked="true">العربية</button><button type="button" role="radio" aria-checked="false">English</button></div><span class="hint">بتتغير فورًا من غير reload</span></div>
+              <div class="field"><span id="up-theme" class="lbl">الثيم</span><div role="radiogroup" aria-labelledby="up-theme" class="seg"><button type="button" role="radio" aria-checked="true">داكن</button><button type="button" role="radio" aria-checked="false">فاتح</button><button type="button" role="radio" aria-checked="false">حسب الجهاز</button></div></div>
+              <div class="field"><span id="up-paper" class="lbl">ورق الطباعة الافتراضي</span><div role="radiogroup" aria-labelledby="up-paper" class="seg"><button type="button" role="radio" aria-checked="true">A4</button><button type="button" role="radio" aria-checked="false">A5</button></div><span class="hint">تقدر تغيّره وقت الطباعة، والسيستم بيفتكر آخر اختيار لكل نوع</span></div>
+              <div class="field"><span id="up-num" class="lbl">الأرقام</span><div role="radiogroup" aria-labelledby="up-num" class="seg"><button type="button" role="radio" aria-checked="true">٠١٢٣</button><button type="button" role="radio" aria-checked="false">0123</button></div><span class="hint">العربي بيستخدم الهندي افتراضيًا</span></div>
+            </div>
+
+            <div class="stack">
+              <h2 class="h2" style="margin-bottom: 6px">الإشعارات جوه السيستم</h2>
+              <div class="li"><div class="stack"><span class="sb">طلبات الموافقة</span><span class="fs12 muted">إلغاء فواتير، تحويل نقاط، تأكيد خزنة، إجازات</span></div><span class="row" style="gap: 8px"><span class="fs12 muted">مينفعش تتقفل</span><span class="switch on lock" role="switch" aria-checked="true" aria-disabled="true" aria-label="طلبات الموافقة"></span></span></div>
+              <div class="li"><div class="stack"><span class="sb">نقص المخزون</span><span class="fs12 muted">أي صنف ينزل تحت الحد الأدنى</span></div><span class="switch on" role="switch" aria-checked="true" aria-label="نقص المخزون" tabindex="0"></span></div>
+              <div class="li"><div class="stack"><span class="sb">فاتورة اتأكدت</span><span class="fs12 muted">كل فاتورة بيع أو شراء</span></div><span class="switch" role="switch" aria-checked="false" aria-label="فاتورة اتأكدت" tabindex="0"></span></div>
+              <div class="li"><div class="stack"><span class="sb">التصدير جاهز</span><span class="fs12 muted">لما ملف كبير يخلص في الخلفية</span></div><span class="switch on" role="switch" aria-checked="true" aria-label="التصدير جاهز" tabindex="0"></span></div>
+              <div class="li"><div class="stack"><span class="sb">الرسايل الداخلية</span><span class="fs12 muted">رسالة جديدة من زميل</span></div><span class="switch on" role="switch" aria-checked="true" aria-label="الرسايل الداخلية" tabindex="0"></span></div>
+              <div class="li"><div class="stack"><span class="sb">العروض</span><span class="fs12 muted">عروض جديدة من الإدارة</span></div><span class="switch" role="switch" aria-checked="false" aria-label="العروض" tabindex="0"></span></div>
+            </div>
+          </div>
+
+          <aside class="aside">
+            <div class="card hi pad stack g8">
+              <h2 class="h2">تغيير اسم المستخدم</h2>
+              <p class="sub" style="font-size: 12.5px">من تاب البيانات. بعد التغيير هتطلع من كل الأجهزة وتدخل تاني بالاسم الجديد.</p>
+            </div>
+            <div class="note neu">التفضيلات بتتحفظ على حسابك، فهتلاقيها هي هي على أي جهاز تدخل منه.</div>
+            <button type="button" class="btn p lg w">احفظ التفضيلات</button>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
