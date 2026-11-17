@@ -55,28 +55,46 @@
 
 ---
 
-### F0-S1 — الشغل المعلّق + C1 + C2 · متوقف (مستني قرارات)
+### F0-S1 — الشغل المعلّق + C1 + C2 · جاري (الكود خلص، مستني build وتجربة)
 
 **الـ business:**
-- **C1:** موظف الـ HR اللي عنده صلاحية «إضافة موظف» المفروض يضيف موظف وبس. النهارده يقدر يبعت في الطلب `RolesName = ["Admin"]` فيعمل حساب أدمن بكل الصلاحيات — من غير ما حد يعرف.
-- **C2:** كل عميل جديد (موزّع/تاجر/وكيل) بيتعمل بكلمة سر واحدة مكتوبة في الكود. أي حد يعرف رقم موبايل عميل يقدر يدخل بحسابه.
+- **C1:** موظف الـ HR اللي عنده صلاحية «إضافة موظف» كان يقدر يبعت `RolesName = ["Admin"]` ويعمل حساب أدمن بكل الصلاحيات.
+- **C2:** كل عميل جديد كان بيتعمل بكلمة سر واحدة مكتوبة في الكود (`12345678Ss+`)، فأي حد يعرف رقم عميل يدخل بحسابه.
+- **إلغاء كل الجلسات:** الأدمن (أو صاحب الصلاحية) يقدر يطلّع مستخدم من كل الأجهزة في لحظة — مثلًا لو موبايل موظف اتسرق.
 
-**الوضع الحالي:**
-- على جهازك فيه شغل «إلغاء كل جلسات مستخدم» لسه مش متعمله commit (٦ ملفات مختلفة عن الريبو: `EmployeePermissions.cs`، `ServiceManager.cs`، `AuthController.cs`، `UserSessionService.cs`، `IUserSessionService.cs`، `LocalizationResources.cs`)، وعليه ٤ ملاحظات من الـ review.
-- C1 أعقد من «شيل الـ role من الـ DTO»: نص الـ controllers لسه بتتحكم بالـ roles (`HR`، `Accountant`، `StockManager`، `Employee`…)، فالموظف لازم ياخد role علشان يشتغل لحد M1. والأدمن نفسه (`super_admin`) بيتحسب من role الـ `Admin`.
-- C1: `EmployeeService.cs` (~سطر 78–86 و478–496) و`RepresentativeService.cs` (~سطر 71–79 و225–231) بيعملوا `AddToRole(s)Async` بالاسم اللي جاي من الـ DTO.
-- C2: `DistributorsAndMerchantsService.cs` سطر 91.
+**القرارات (2026-11-17):** الشغل المعلّق يكمل · C1: الأدمن بس هو اللي يعمل أدمن · C2: كلمة السر = رقم التليفون + أول حرف من الاسم، وتغيير إجباري أول دخول · الـ roles هتتلغي خالص في M1 (D16).
 
-**التعديلات (المخطط):**
-- الشغل المعلّق: حسب قرارك (نكمّله ونصلّح ملاحظاته / نأجله لـ M1 / نمسحه).
-- C1: حسب قرارك — قايمة roles مسموحة من غير `Admin` (المقترح)، أو role ثابت لكل نوع مستخدم.
-- C2: حسب قرارك (العميل يتعمل من غير دخول لحد ما الأدمن يفعّله بكلمة سر مؤقتة، أو بديل تاني).
+**اللي اتعمل:**
 
-**القرارات المطلوبة:** هتتعرض عليك بتأثيرها قبل التنفيذ.
+1. **إلغاء كل الجلسات · commit `2e6a489`** — الشغل اللي كان على جهازك، بعد تصليح ملاحظات الـ review:
+   - `Domain/Common/EmployeePermissions.cs`: صلاحية جديدة `HR.Employees.RevokeSessions` (بتتضاف للداتابيز لوحدها وقت التشغيل). الـ namespace والـ XML doc رجعوا.
+   - `Infrastructure/Services/AuthServices/UserSessionService.cs`: بيلغي كل الـ refresh tokens ويغيّر الـ security stamp في transaction واحدة، ولو تغيير الـ stamp فشل بيرجّع كل حاجة زي ما كانت (`Auth.RevokeSessionsFailed`)، وبيسجّل في `AuthAuditLogs` مين عمل كده ومن أنهي IP.
+   - `AlSadat-Seram.Api/Controllers/AuthController.cs`: `POST api/auth/revoke-sessions/{targetUserId}` بالـ `CancellationToken`، والـ controller مبقاش بيعتمد على Infrastructure.
+   - `ServiceManager.cs` **ماتغيرش** — فضل بياخد الـ service من الـ DI (التعديل المحلي اللي كان بيعمل نسخة تانية اتلغى).
+2. **C1 · commit `9f08ad2`** — `Domain/Common/RoleAssignmentPolicy.cs` (جديد) و`ICurrentUserService.IsSuperAdmin` (جديد):
+   - إضافة أو تعديل موظف/مندوب بـ role الـ `Admin` محتاج إن اللي بيعمل الطلب يكون مدير نظام (`super_admin`).
+   - تعديل بيانات مستخدم هو أصلًا أدمن محتاج مدير نظام برضه.
+   - غير كده: `403` برسالة `Role.AdminAssignmentForbidden`.
+   - الملفات: `EmployeeService.cs` (Add + Update)، `RepresentativeService.cs` (Add + Update).
+3. **C2 · commit `fce72a0`:**
+   - `Domain/Common/InitialPasswordPolicy.cs` (جديد): كلمة السر الأولى = التليفون + أول حرف من الاسم زي ما هو مكتوب. مثال: `01012345678` و«محمود علي» ← `01012345678م`.
+   - `DistributorsAndMerchantsService.AddNewDistributorOrMerchant`: بيستخدمها بدل الـ `12345678Ss+`، وبيحط على الحساب علامة «لازم يغيّر كلمة السر» (user claim `must_change_password` — مؤقتًا لحد ما M1 يضيف عمود، علشان مانحتاجش migration دلوقتي).
+   - الدخول والـ refresh: الـ token فيه العلامة، والرد فيه `mustChangePassword: true`.
+   - `AlSadat-Seram.Api/Filters/PasswordChangeRequiredFilter.cs` (جديد): طول ما العلامة موجودة، أي طلب بيرجع `403` برسالة `Auth.PasswordChangeRequired`، ماعدا تغيير كلمة السر والخروج.
+   - `ProfileService.ChangePasswordAsync`: بعد التغيير العلامة بتتشال والـ security stamp بيتغير، فالعميل بيدخل تاني بكلمة سره الجديدة.
+   - التليفون كان أصلًا إجباري وعليه unique index على `AspNetUsers`، والدخول بيدوّر بالتليفون الأول.
 
-**إزاي تتأكد:** هيتكتب بعد التنفيذ.
+**ماتغيرش عمدًا:** الـ methods القديمة دي لسه رسايلها نص مش localization keys (الجزء الجديد بس اللي بالـ keys)، لأنها هتتبني من جديد في M5 وM9 وM11.
 
-### F0-S2 — C3 + C15 + C16 + Google · جاري
+**تنبيه أمني على C2:** كلمة السر الأولى ممكن تتخمّن لو حد يعرف تليفون العميل واسمه، لحد ما العميل يدخل أول مرة ويغيّرها. اللي بيقلل الخطر: قفل الحساب بعد ٥ محاولات غلط، وإن الحساب مايقدرش يعمل أي حاجة غير تغيير كلمة السر.
+
+**إزاي تتأكد:**
+1. `sync-and-build.ps1` ← `build.log` من غير errors و`test.log` كله ناجح.
+2. **إلغاء الجلسات:** ادخل بأدمن، و`POST /api/auth/revoke-sessions/{id}` لمستخدم داخل من جهاز تاني ← رد نجاح، و`refresh` من الجهاز التاني يرجّع 401.
+3. **C1:** ادخل بمستخدم HR مش أدمن، وابعت إضافة موظف بـ `"RolesName": ["Admin"]` ← `403`. نفس الطلب بأدمن ← نجاح.
+4. **C2:** اعمل عميل جديد بتليفون `01000000001` واسم «تجربة» ← ادخل بـ `01000000001` وكلمة سر `01000000001ت` ← الرد فيه `mustChangePassword: true` ← أي endpoint تاني (مثلًا `GET /api/Profile`) يرجّع `403` ← `PUT /api/Profile/change-password` ينجح ← ادخل بكلمة السر الجديدة ← `mustChangePassword: false` وكل حاجة شغالة.
+
+### F0-S2 — C3 + C15 + C16 + Google · جاري (الكود خلص، مستني build وتجربة)
 
 **الـ business:**
 - **C3:** رصيد العميل (نقاط، فلوس، مديونية) المفروض يتغير من الفواتير والسندات بس. النهارده شاشة تعديل بيانات العميل تقدر تكتب الرصيد بإيدها.
@@ -90,14 +108,10 @@
 2. **شيل Google · commit `70b1f24`** — اتمسحوا `GoogleAuthService.cs` و`IGoogleAuthService.cs` و`GoogleSignInVM.cs` (مكانوش متسجلين ولا حد بيناديهم)، والـ package `Google.Apis.Auth` من `Infrastructure.csproj`، و`using Google;` من `UnitOfWork.cs`، وسطر «Google token» من `ExceptionHandlingMiddleware.cs`.
    - **فاضل:** مفتاح الترجمة `Auth.InvalidGoogleToken` في `LocalizationResources.cs` — مسبتوش علشان الملف ده متعدّل عندك ومش متعمله commit؛ هيتشال مع قرار الشغل المعلّق.
 
-**فاضل في F0-S2:**
-- **C15:** مستني إجابتك: فيه سيرفر شغال من فولدر `publish/`؟ (شيله من الريبو هيمسحه من جهازك كمان مع الـ pull.)
-- **C16:** عمر الـ token بيتقري من `JwtSettings:DurationInMinutes` في الـ user secrets عندك (مش في الريبو). الأمر:
-  ```powershell
-  cd "C:\Users\b.zakaria\Desktop\SR\New folder (5)\AlSadat-Seram\AlSadat-Seram-Project\AlSadat-Seram"
-  dotnet user-secrets set "JwtSettings:DurationInMinutes" "15" --project AlSadat-Seram.Api
-  ```
+3. **C15 · commit `3867582`** — فولدر `publish/` اتشال من الريبو واتضاف لـ `.gitignore` الباك إند (إنت أكدت إن مفيش سيرفر شغال منه). الـ API بيقرا المفتاح من الـ user secrets. لما نرفع على Azure هنستخدم مفتاح جديد خالص.
+4. **C16** — إنت غيّرت `JwtSettings:DurationInMinutes` لـ ١٥ في الـ user secrets (2026-11-17). مفيش تغيير كود.
+5. مفتاح `Auth.InvalidGoogleToken` اتشال مع commit `2e6a489`.
 
 **إزاي تتأكد:**
-1. `dotnet build` يعدّي من غير errors (أهم حاجة: مفيش حاجة كانت معتمدة على Google).
+1. `dotnet build` يعدّي من غير errors (أهم حاجة: مفيش حاجة كانت معتمدة على Google)، وفولدر `publish/` اختفى بعد الـ pull.
 2. C3: سجّل دخول بأدمن أو محاسب، وابعت `PUT /api/DistAndMerch/edit/{userId}` بنفس بيانات العميل ومعاها `"PointsBalance": 999999, "cashBalance": 999999, "indebtedness": 999999`. الرد نجاح، و`GET /api/DistAndMerch/get/{userId}` يرجّع الأرصدة زي ما كانت.

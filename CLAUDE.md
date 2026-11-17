@@ -75,6 +75,8 @@ Secrets (JWT key, connection string `ConnectionStrings:con`, seed password) come
 - **D3** Permissions: token carries `userId` + `SecurityStamp` only. `PermissionAuthorizationHandler` reads {stamp, isActive, effective permissions} per request from `HybridCache` (memory L1 + Redis L2). Permission change → evict that user's entry (no logout). Stamp changes only on password change/reset, deactivate, lock, "logout all devices" → kills sessions. TTL 5 min safety net. Redis down → read DB, never allow-all. Access token 10–15 min. Frontend reads `GET /me/permissions`.
 - **D4** One `ApprovalRequests` table + one handler per request type.
 - **D9** Account codes stay dotted (`1.1.3`) with numeric sort. Use `SystemAccountCode` lookups, never magic ids (`8`, `10`).
+- **D16** Roles get removed entirely in M1 (system not in production yet). Until then only a super_admin may create or edit an Admin (`RoleAssignmentPolicy`).
+- **D17** Customer initial password = phone number + first letter of the full name (as written); phone is required, unique and the login id; the user must change it at first login (`must_change_password` claim + `PasswordChangeRequiredFilter`, column comes in M1).
 - **Hosting** Azure (Azure Managed Redis in prod). Dev: API + Redis on the same machine (Redis in Docker/WSL).
 
 ## Mandatory coding rules (every touched method complies — no grandfathering)

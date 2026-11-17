@@ -2,12 +2,12 @@
 _Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F0. F0-S1 paused (waiting for decisions); F0-S2 in progress.
-- **Done in this step:** [x] C3 — `DistributorsAndMerchantsService.EditDistributorOrMerchant` ignores balances (`71cf2bc`). [x] Google sign-in code + `Google.Apis.Auth` removed (`70b1f24`). Both pushed, **not built yet** (cloud can't reach nuget.org) — waiting for Belal's build.
-- **In progress / next part:** read `build.log` from Belal's PC when he builds; then F0-S2 C15 (after his answer) and C16 (he sets the user secret); then F0-S1 after his decisions.
-- **Uncommitted changes:** none in the cloud clone. On Belal's PC: revoke-sessions work in 6 files (the 5 known + `Infrastructure/Services/LocalizationServices/LocalizationResources.cs`). Don't touch those files until he decides.
-- **Decisions taken in this step:** —
-- **Open questions:** (1) revoke-sessions work: finish / park / drop? (2) C2: customers created without login (rec.) or one-time random password? (3) C1: allow-list of non-admin roles (rec.) or fixed role per user type? (4) C15: does any server run from `publish/`?
+- **Step:** F0 — all code for F0-S1 and F0-S2 pushed; waiting for Belal's build/test.
+- **Done in this step:** [x] revoke-sessions finished (`2e6a489`) [x] C1 admin-only (`9f08ad2`) [x] C2 initial password + must-change (`fce72a0`) [x] C3 (`71cf2bc`) [x] Google removed (`70b1f24`) [x] C15 publish/ removed (`3867582`) [x] C16 done by Belal (user secret = 15). None built yet.
+- **In progress / next part:** read `build.log` / `test.log` from Belal's PC (repo root) after he runs `sync-and-build.ps1`; fix errors; when green and he confirms the manual checks in README › F0-S1/F0-S2, mark both «خلص» and start F1-S1.
+- **Uncommitted changes:** none in the cloud. Belal must discard his local copies of the revoke-sessions files before pulling (they are now in `2e6a489`).
+- **Decisions taken in this step:** D16 roles removed entirely in M1 (until then only super_admin creates/edits admins); D17 customer initial password = phone + first letter of name, phone required/unique/login id, forced change at first login; D18 revoke-sessions work finished in F0-S1. (2026-11-17)
+- **Open questions:** —
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -80,6 +80,9 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-10-22 | **D4** One `ApprovalRequests` table + handler per type | reject-with-reason, bulk approve, notify written once | per-module statuses + SQL view |
 | 2026-10-22 | **D9** Dotted account codes (`1.1.3`) with numeric sort | matches stories | fixed-width numeric codes |
 | 2026-10-22 | Hosting on Azure; dev local | — | — |
+| 2026-11-17 | **D16** Roles removed entirely in M1; until then only super_admin creates/edits an Admin (C1) | system not in production | role allow-list; fixed role per user type |
+| 2026-11-17 | **D17** Customer initial password = phone + first letter of name; phone required + unique + login id; forced change at first login (claim `must_change_password` until M1 column) | no shared password | no login until activation; random one-time password |
+| 2026-11-17 | **D18** Finish the uncommitted revoke-sessions work in F0-S1 | needed for M1/D3 | park for M1; drop |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
@@ -98,6 +101,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 | Everything else | exists, to be refactored per plan | old UI, redesign pending | |
 
 ## Current work
+- 2026-11-17: the revoke-sessions work below is now committed (`2e6a489`) — the note is kept for history.
 - As of 2026-10-21 (uncommitted on `fix/backend`, **verify with `git status`**): admin "revoke all sessions" —
   `AuthController.RevokeSessions` (`POST api/auth/revoke-sessions/{targetUserId}`, policy
   `HR.Employees.RevokeSessions`), `IUserSessionService.AdminRevokeSessionsAsync`,
