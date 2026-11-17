@@ -146,15 +146,17 @@
 **إزاي تتأكد:** `sync-and-build.ps1` ← 0 errors ومن غير NU1903، والتستات ١٥/١٥. و`GET /api/Profile` لازم يرجّع نفس الـ JSON اللي كان بيرجع قبل كده.
 ✔ اتأكد عند بلال 2026-11-17: 0 errors، من غير NU1903، والتستات ١٥/١٥.
 
-#### الجزء التاني — net10.0 والـ packages (2026-11-17، مستني البيلد)
+#### الجزء التاني — net10.0 والـ packages ✔ (2026-11-17)
 - كل الـ `csproj` الخمسة (Api، Application، Domain، Infrastructure، UnitTests) ← `net10.0`.
 - packages مايكروسوفت ← **10.0.15**، ودي آخر نسخة 10.0.x على NuGet يوم 2026-11-17: EF Core، SqlServer، Design، Tools، Identity.EntityFrameworkCore (في Domain وInfrastructure)، JwtBearer، و`System.Drawing.Common`. و`dotnet-ef` في `AlSadat-Seram.Api/dotnet-tools.json` ← 10.0.15.
 - `System.IdentityModel.Tokens.Jwt` 8.14.0 ← 8.23.0، علشان نسخ مكتبات `Microsoft.IdentityModel.*` تفضل متطابقة مع JwtBearer 10.
 - التستات: `Microsoft.NET.Test.Sdk` 18.12.0، و`xunit` 2.9.3، و`xunit.runner.visualstudio` 4.0.1، و`coverlet.collector` 10.1.1.
 - **اتشال:** `Microsoft.AspNetCore.OpenApi` (مكانش مستخدم، الـ Swagger شغال بـ Swashbuckle)، و`FluentValidation` (مكانش مستخدم)، و`Microsoft.AspNetCore.Http.Features` 5.0.17 (اتحط مكانها `FrameworkReference Microsoft.AspNetCore.App` في `Application` علشان `IFormFile`).
 - `sync-and-build.ps1` ← اتشال منه `DOTNET_ROLL_FORWARD`، لأن الـ runtime بقى 10 خلاص.
+- أول بيلد على net10 طلع NU1903 على `System.Security.Cryptography.Xml` 10.0.0. الـ package دي بتيجي من EPPlus 8.4.1، والإصلاح بتاعها موجود من 10.0.10. علشان كده اتثبتت في `Infrastructure.csproj` على 10.0.15، ومعاها comment إنها تتشال لما EPPlus يطلب نسخة متصلّحة.
 - **فضل زي ما هو عن قصد:** `Swashbuckle.AspNetCore` 9.0.6. النسخة 10 بتستخدم `Microsoft.OpenApi` 2، ودي محتاجة تعديل في كود الـ Swagger في `Program.cs`، فهتبقى في جزء لوحدها بعدين.
 
-**إزاي تتأكد:** `sync-and-build.ps1` ← لازم البيلد يطلع 0 errors، والتستات ١٥/١٥ والسطر يقول `net10.0`. وبعدها شغّل الـ API من Visual Studio وافتح `/swagger` ← لازم يفتح ويعمل login بالتوكن عادي.
+✔ عند بلال 2026-11-17: 0 errors، والتستات ١٥/١٥ على `net10.0` (قبل تثبيت `Cryptography.Xml`).
+**إزاي تتأكد:** `sync-and-build.ps1` ← لازم البيلد يطلع 0 errors ومن غير أي NU1903، والتستات ١٥/١٥ والسطر يقول `net10.0`. وبعدها شغّل الـ API من Visual Studio وافتح `/swagger` ← لازم يفتح ويعمل login بالتوكن عادي.
 
 **إزاي تتأكد:** هيتكتب بعد التنفيذ.

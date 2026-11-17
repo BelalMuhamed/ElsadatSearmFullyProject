@@ -2,11 +2,11 @@
 _Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F1-S1 (.NET 10 upgrade) — part 1 ✔ (AutoMapper removed, built green on Belal's PC); part 2 pushed, waiting for Belal's build.
+- **Step:** F1-S1 (.NET 10 upgrade) — part 1 ✔ (AutoMapper removed, built green on Belal's PC); part 2 ✔ (net10.0: 0 errors, 15/15 on Belal's PC); fix-up pushed: pin `System.Security.Cryptography.Xml` 10.0.15 (NU1903 via EPPlus) — waiting for the build.
 - **Done in this step:**
   - [x] Part 1 — D19: AutoMapper removed (`0d0ce70`). Build 0 errors, no NU1903, 15/15 tests (2026-11-17).
   - [x] Part 2 (code done, build pending) — all 5 `csproj` → `net10.0`; Microsoft packages → 10.0.15; `dotnet-ef` → 10.0.15; `System.IdentityModel.Tokens.Jwt` → 8.23.0; tests: Test.Sdk 18.12.0, xunit 2.9.3, runner 4.0.1, coverlet 10.1.1; removed `Microsoft.AspNetCore.OpenApi` (unused), `FluentValidation` (unused), `Microsoft.AspNetCore.Http.Features` (→ `FrameworkReference` in `Application`); `sync-and-build.ps1` without `DOTNET_ROLL_FORWARD`.
-- **In progress / next part:** read Belal's `build.log`/`test.log` for part 2 and fix errors. When green → mark F1-S1 «خلص» in TRACKER and README, then F1-S2 (fresh baseline migration, D0). Swashbuckle 9.0.6 kept on purpose (10.x = Microsoft.OpenApi 2 → `Program.cs` Swagger changes) — separate small part.
+- **In progress / next part:** read Belal's `build.log`/`test.log` (expect 0 errors, no NU1903, 15/15). When green → mark F1-S1 «خلص» in TRACKER and README, then F1-S2 (fresh baseline migration, D0). Swashbuckle 9.0.6 kept on purpose (10.x = Microsoft.OpenApi 2 → `Program.cs` Swagger changes) — separate small part.
 - **Uncommitted changes:** none.
 - **Decisions taken in this step:** D19 (2026-11-17) → option 1: remove AutoMapper, hand-written mapping.
 - **Open questions:** — (FYI to Belal: .NET 11 (STS) was released 2026-11-10; D1 = .NET 10 LTS stands unless he reopens it.)
