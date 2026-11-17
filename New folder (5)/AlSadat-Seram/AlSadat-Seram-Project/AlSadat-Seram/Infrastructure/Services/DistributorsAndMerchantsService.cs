@@ -367,9 +367,9 @@ namespace Infrastructure.Services
 
                 // Distributor record
                 dist.Type = (DistributorOrMerchantOrAgent)dto.type!.Value;
-                dist.CashBalance = dto.cashBalance ?? dist.CashBalance;
-                dist.Balance = dto.PointsBalance ?? dist.Balance;
-                dist.Indebtedness = dto.indebtedness ?? dist.Indebtedness;
+                // Balances (points, cash, indebtedness) are never written from this
+                // endpoint: they change only through documents (invoices, vouchers,
+                // points transactions). Any balance values in the DTO are ignored. (C3)
                 dist.FirstSpecialDiscount = dto.firstSpecialDiscount;
                 dist.SecondSpecialDiscount = dto.secondSpecialDiscount;
                 dist.ThirdSpecialDiscount = dto.thirdSpecialDiscount;
