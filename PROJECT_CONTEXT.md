@@ -4,7 +4,7 @@ _Last updated: 2026-11-16 · Read this first in any new session · Update it wit
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
 - **Step:** F0 — all code for F0-S1 and F0-S2 pushed; waiting for Belal's build/test.
 - **Done in this step:** [x] revoke-sessions finished (`2e6a489`) [x] C1 admin-only (`9f08ad2`) [x] C2 initial password + must-change (`fce72a0`) [x] C3 (`71cf2bc`) [x] Google removed (`70b1f24`) [x] C15 publish/ removed (`3867582`) [x] C16 done by Belal (user secret = 15). None built yet.
-- **In progress / next part:** read `build.log` / `test.log` from Belal's PC (repo root) after he runs `sync-and-build.ps1`; fix errors; when green and he confirms the manual checks in README › F0-S1/F0-S2, mark both «خلص» and start F1-S1.
+- **In progress / next part:** first build on Belal's PC (2026-11-17) failed with 1 error: CS0246 `Newtonsoft` in `salesInvoiceService.cs` (came only through the removed Google package) — fixed in the next commit. Tests did not run: the PC has .NET 8 and 10 runtimes only, no .NET 9 — `sync-and-build.ps1` now sets `DOTNET_ROLL_FORWARD=Major` for tests. Next: Belal runs the script **twice** (the first run pulls the new script), then read `build.log` / `test.log` again; then he runs the README › F0-S1/F0-S2 manual checks (API also needs roll-forward or the .NET 9 runtime until F1).
 - **Uncommitted changes:** none in the cloud. Belal must discard his local copies of the revoke-sessions files before pulling (they are now in `2e6a489`).
 - **Decisions taken in this step:** D16 roles removed entirely in M1 (until then only super_admin creates/edits admins); D17 customer initial password = phone + first letter of name, phone required/unique/login id, forced change at first login; D18 revoke-sessions work finished in F0-S1. (2026-11-17)
 - **Open questions:** —
@@ -116,6 +116,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
   - `UserSessionService.AdminRevokeSessionsAsync`: `IdentityResult` of `UpdateSecurityStampAsync` ignored.
   - `AuthController.RevokeSessions`: no `CancellationToken`; `RemoteIpAddress` is the proxy IP unless forwarded headers are configured.
 - `PayrollDeductionService.cs` lines 84/96: CS8619 nullability warnings.
+- Build has ~108 warnings (mostly nullability) — not blocking; to be cleaned per module.
+- Belal's PC has no .NET 9 runtime (only 8 and 10) → run net9 builds with `DOTNET_ROLL_FORWARD=Major` until F1.
 - Full list of critical issues C1–C16 and where each is fixed: `Docs/docs/refactor/PLAN.md` ("مشاكل حرجة").
 - `Infrastructure/Services/GoogleAuthServices/GoogleAuthService.cs` still exists although Google login was removed — verify and delete (F0).
 

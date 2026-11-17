@@ -111,6 +111,7 @@
 3. **C15 · commit `3867582`** — فولدر `publish/` اتشال من الريبو واتضاف لـ `.gitignore` الباك إند (إنت أكدت إن مفيش سيرفر شغال منه). الـ API بيقرا المفتاح من الـ user secrets. لما نرفع على Azure هنستخدم مفتاح جديد خالص.
 4. **C16** — إنت غيّرت `JwtSettings:DurationInMinutes` لـ ١٥ في الـ user secrets (2026-11-17). مفيش تغيير كود.
 5. مفتاح `Auth.InvalidGoogleToken` اتشال مع commit `2e6a489`.
+6. **أول build عندك (2026-11-17)** طلّع error واحد: `Newtonsoft` في `salesInvoiceService.cs` — كان جاي من package جوجل اللي اتشالت، والـ `using` أصلًا مش مستخدم. اتشال في commit لوحده.
 
 **إزاي تتأكد:**
 1. `dotnet build` يعدّي من غير errors (أهم حاجة: مفيش حاجة كانت معتمدة على Google)، وفولدر `publish/` اختفى بعد الـ pull.
