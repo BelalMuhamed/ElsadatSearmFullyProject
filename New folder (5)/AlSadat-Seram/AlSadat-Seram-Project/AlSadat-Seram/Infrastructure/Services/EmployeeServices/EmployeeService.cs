@@ -41,6 +41,9 @@ internal class EmployeeService : IEmployeeService
         var userId = _CurrentUserService.UserId;
         if (userId is null)
             return Result<string>.Failure("Unauthorized User.", HttpStatusCode.Unauthorized);
+        // C1: only a system administrator may create an administrator.
+        if (!RoleAssignmentPolicy.CanAssign(DTo.RolesName, _CurrentUserService.IsSuperAdmin))
+            return Result<string>.FailureKey("Role.AdminAssignmentForbidden", HttpStatusCode.Forbidden);
         // Check if employee with the same Email already exists
         if (await _UserManager.Users.AnyAsync(u => u.Email == DTo.Email))
             return Result<string>.Failure("An Employee With The Same Email Already Exists.", HttpStatusCode.Conflict);
@@ -417,6 +420,9 @@ internal class EmployeeService : IEmployeeService
 
         if (DTo == null)
             return Result<string>.Failure("Invalid Emplyee Data");
+        // C1: only a system administrator may give the administrator role.
+        if (!RoleAssignmentPolicy.CanAssign(DTo.RolesName, _CurrentUserService.IsSuperAdmin))
+            return Result<string>.FailureKey("Role.AdminAssignmentForbidden", HttpStatusCode.Forbidden);
         await _UnitOfWork.BeginTransactionAsync();
         try
         {
@@ -430,6 +436,9 @@ internal class EmployeeService : IEmployeeService
             var user = employee.User;
             if (user == null)
                 return Result<string>.Failure("User not found for this employee.");
+            // C1: an administrator's account can be changed only by a system administrator.
+            if (!_CurrentUserService.IsSuperAdmin && await _UserManager.IsInRoleAsync(user, AppRoles.Admin))
+                return Result<string>.FailureKey("Role.AdminAssignmentForbidden", HttpStatusCode.Forbidden);
 
             //if(await _UserManager.Users.AnyAsync(u => u.Email == DTo.Email))
             //    return Result<string>.Failure("An Employee With The Same Email Already Exists.",HttpStatusCode.Conflict);

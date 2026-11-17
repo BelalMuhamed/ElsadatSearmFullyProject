@@ -61,6 +61,7 @@ namespace Infrastructure.Services.LocalizationServices
             ["Permission.NotDelegable"] =
     ("لا يمكن تفويض هذه الصلاحية",
      "This permission cannot be delegated"),
+            ["Role.AdminAssignmentForbidden"] = ("إنشاء مدير نظام أو تعديل بياناته متاح لمدير النظام فقط", "Only a system administrator can create or change an administrator"),
             ["Permission.SessionsRevoked"] = ("تم إنهاء جميع جلسات المستخدم", "All user sessions have been revoked"),
             ["Auth.RevokeSessionsFailed"] = ("تعذر إنهاء جلسات المستخدم. لم يتم تغيير أي شيء", "Could not revoke the user's sessions. Nothing was changed"),
             // ---- Example: Supplier module (add the rest as you migrate it) ----

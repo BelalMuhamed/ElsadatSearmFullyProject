@@ -41,6 +41,9 @@ internal class RepresentativeService:IRepresentativeService
         var userId = _CurrentUserService.UserId;
         if(userId is null)
             return Result<string>.Failure("الرجاء تسجيل الدخول اولا",HttpStatusCode.Unauthorized);
+        // C1: only a system administrator may create an administrator.
+        if (!RoleAssignmentPolicy.CanAssign(new[] { DTo.RoleName }, _CurrentUserService.IsSuperAdmin))
+            return Result<string>.FailureKey("Role.AdminAssignmentForbidden", HttpStatusCode.Forbidden);
         // Check if employee with the same Email already exists
         if(await _UserManager.Users.AnyAsync(u => u.Email == DTo.Email))
             return Result<string>.Failure("يوجد مندوب بنفس الايميل",HttpStatusCode.Conflict);
@@ -185,6 +188,9 @@ internal class RepresentativeService:IRepresentativeService
             return Result<string>.Failure("الرجاء تسجيل الدخول اولا",HttpStatusCode.Unauthorized);
         if(DTo == null)
             return Result<string>.Failure("يرجا مراجعه البيانات المدخله");
+        // C1: only a system administrator may give the administrator role.
+        if (!RoleAssignmentPolicy.CanAssign(new[] { DTo.RoleName }, _CurrentUserService.IsSuperAdmin))
+            return Result<string>.FailureKey("Role.AdminAssignmentForbidden", HttpStatusCode.Forbidden);
         await _UnitOfWork.BeginTransactionAsync();
         try
         {
@@ -199,6 +205,9 @@ internal class RepresentativeService:IRepresentativeService
             var user = representative.User;
             if(user == null)
                 return Result<string>.Failure("المستخدم المرتبط بهذا المندوب غير موجود",HttpStatusCode.NotFound);
+            // C1: an administrator's account can be changed only by a system administrator.
+            if (!_CurrentUserService.IsSuperAdmin && await _UserManager.IsInRoleAsync(user, AppRoles.Admin))
+                return Result<string>.FailureKey("Role.AdminAssignmentForbidden", HttpStatusCode.Forbidden);
 
             bool emailExists = await _UserManager.Users
                 .AnyAsync(u => u.Email == DTo.Email && u.Id != user.Id);

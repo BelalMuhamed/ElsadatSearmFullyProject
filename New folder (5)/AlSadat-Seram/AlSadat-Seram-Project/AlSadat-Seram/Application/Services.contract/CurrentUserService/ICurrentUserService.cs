@@ -23,6 +23,9 @@ public interface ICurrentUserService
     /// <summary>True when the current request carries an authenticated principal.</summary>
     bool IsAuthenticated { get; }
 
+    /// <summary>True when the token carries the <c>super_admin</c> claim (system administrator).</summary>
+    bool IsSuperAdmin { get; }
+
     /// <summary>
     /// Returns <see cref="UserId"/> or throws <see cref="System.InvalidOperationException"/>
     /// when it is null. For call sites where proceeding without an authenticated

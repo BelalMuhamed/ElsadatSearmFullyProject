@@ -74,6 +74,9 @@ public class CurrentUserService : ICurrentUserService
     public ClaimsPrincipal? UserPrincipal
         => _httpContextAccessor.HttpContext?.User;
 
+    public bool IsSuperAdmin
+        => _httpContextAccessor.HttpContext?.User?.HasClaim(Domain.Common.AppClaimTypes.SuperAdmin, "true") ?? false;
+
     public string RequireUserId()
         => UserId ?? throw new InvalidOperationException(
             "CurrentUserService.RequireUserId() was called without an authenticated user. " +
