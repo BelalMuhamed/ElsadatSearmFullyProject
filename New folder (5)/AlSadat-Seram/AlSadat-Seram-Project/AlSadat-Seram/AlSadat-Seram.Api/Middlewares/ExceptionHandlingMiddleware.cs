@@ -56,7 +56,6 @@ public class ExceptionHandlingMiddleware
     {
         BusinessException be => ((int)be.StatusCode, be.MessageKey),
         NotFoundException nf => (404, nf.MessageKey),
-        UnauthorizedAccessException uae when uae.Message.Contains("Google token") => (401, "Auth.InvalidGoogleToken"),
         UnauthorizedAccessException => (401, "Common.Unauthorized"),
         ArgumentException => (400, "Common.BadRequest"),
         DbUpdateConcurrencyException => (409, "Common.DataConflict"),
