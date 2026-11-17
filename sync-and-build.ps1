@@ -11,7 +11,11 @@ git pull origin fix/backend *> (Join-Path $root 'pull.log')
 
 Set-Location $backend
 dotnet build AlSadat-Seram.slnx *> (Join-Path $root 'build.log')
+# The projects target net9.0 until F1 moves them to .NET 10. If only the .NET 10
+# runtime is installed, let the test host roll forward to it.
+$env:DOTNET_ROLL_FORWARD = 'Major'
 dotnet test AlSadat-Seram.slnx --no-build *> (Join-Path $root 'test.log')
+Remove-Item Env:\DOTNET_ROLL_FORWARD
 
 Set-Location $root
 Write-Host 'Done. See pull.log, build.log, test.log'
