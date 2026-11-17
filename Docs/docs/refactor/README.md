@@ -55,7 +55,7 @@
 
 ---
 
-### F0-S1 — الشغل المعلّق + C1 + C2 · جاري (الكود خلص، مستني build وتجربة)
+### F0-S1 — الشغل المعلّق + C1 + C2 · خلص · 2026-11-17
 
 **الـ business:**
 - **C1:** موظف الـ HR اللي عنده صلاحية «إضافة موظف» كان يقدر يبعت `RolesName = ["Admin"]` ويعمل حساب أدمن بكل الصلاحيات.
@@ -94,7 +94,7 @@
 3. **C1:** ادخل بمستخدم HR مش أدمن، وابعت إضافة موظف بـ `"RolesName": ["Admin"]` ← `403`. نفس الطلب بأدمن ← نجاح.
 4. **C2:** اعمل عميل جديد بتليفون `01000000001` واسم «تجربة» ← ادخل بـ `01000000001` وكلمة سر `01000000001ت` ← الرد فيه `mustChangePassword: true` ← أي endpoint تاني (مثلًا `GET /api/Profile`) يرجّع `403` ← `PUT /api/Profile/change-password` ينجح ← ادخل بكلمة السر الجديدة ← `mustChangePassword: false` وكل حاجة شغالة.
 
-### F0-S2 — C3 + C15 + C16 + Google · جاري (الكود خلص، مستني build وتجربة)
+### F0-S2 — C3 + C15 + C16 + Google · خلص · 2026-11-17
 
 **الـ business:**
 - **C3:** رصيد العميل (نقاط، فلوس، مديونية) المفروض يتغير من الفواتير والسندات بس. النهارده شاشة تعديل بيانات العميل تقدر تكتب الرصيد بإيدها.
@@ -111,8 +111,30 @@
 3. **C15 · commit `3867582`** — فولدر `publish/` اتشال من الريبو واتضاف لـ `.gitignore` الباك إند (إنت أكدت إن مفيش سيرفر شغال منه). الـ API بيقرا المفتاح من الـ user secrets. لما نرفع على Azure هنستخدم مفتاح جديد خالص.
 4. **C16** — إنت غيّرت `JwtSettings:DurationInMinutes` لـ ١٥ في الـ user secrets (2026-11-17). مفيش تغيير كود.
 5. مفتاح `Auth.InvalidGoogleToken` اتشال مع commit `2e6a489`.
-6. **أول build عندك (2026-11-17)** طلّع error واحد: `Newtonsoft` في `salesInvoiceService.cs` — كان جاي من package جوجل اللي اتشالت، والـ `using` أصلًا مش مستخدم. اتشال في commit لوحده.
+6. **أول build عندك (2026-11-17)** طلّع error واحد: `Newtonsoft` في `salesInvoiceService.cs` — كان جاي من package جوجل اللي اتشالت، والـ `using` أصلًا مش مستخدم. اتشال في commit `809b555`.
+
+**النتيجة عندك (2026-11-17):** build ناجح (0 errors) و١٥ من ١٥ test ناجحين. التجربة اليدوية لسه (محتاجة الـ API يشتغل — أسهل بعد F1).
 
 **إزاي تتأكد:**
 1. `dotnet build` يعدّي من غير errors (أهم حاجة: مفيش حاجة كانت معتمدة على Google)، وفولدر `publish/` اختفى بعد الـ pull.
 2. C3: سجّل دخول بأدمن أو محاسب، وابعت `PUT /api/DistAndMerch/edit/{userId}` بنفس بيانات العميل ومعاها `"PointsBalance": 999999, "cashBalance": 999999, "indebtedness": 999999`. الرد نجاح، و`GET /api/DistAndMerch/get/{userId}` يرجّع الأرصدة زي ما كانت.
+
+---
+
+### F1-S1 — الترقية لـ .NET 10 · مخطط
+
+**الـ business:** مفيش حاجة المستخدم هيشوفها. ده تجديد للأساس: دعم .NET 9 بينتهي في ١٠ نوفمبر ٢٠٢٦ (يعني خلص)، وجهازك أصلًا مفيهوش .NET 9 — عليه 8 و10 بس — فده اللي مخلّي التستات والـ API محتاجين `DOTNET_ROLL_FORWARD`.
+
+**الوضع الحالي:** كل المشاريع `net9.0`، وEF Core و Identity و JwtBearer على 9.0.10، وفيه packages مش مستخدمة أو قديمة، و AutoMapper 12.0.1 عليه ثغرات معروفة (تحذير NU1903 في البيلد).
+
+**التعديلات (المخطط):**
+- كل الـ `csproj` ← `net10.0`، وكل packages مايكروسوفت (EF Core، Identity، JwtBearer، OpenApi، Design، Tools) ← آخر 10.0.x، و`dotnet-ef` في `dotnet-tools.json` ← 10.0.x.
+- packages التستات (Test SDK، xunit runner، coverlet) ← آخر نسخ ثابتة.
+- `Microsoft.AspNetCore.Http.Features` 5.0.17 (قديمة جدًا) ← تتشال، و`Application` ياخد `FrameworkReference` لـ `Microsoft.AspNetCore.App` (علشان `IFormFile`).
+- `FluentValidation` (مش مستخدمة) ← تتشال.
+- AutoMapper ← حسب القرار D19.
+- `sync-and-build.ps1` ← يتشال منه `DOTNET_ROLL_FORWARD`.
+
+**القرارات المطلوبة:** D19 (AutoMapper).
+
+**إزاي تتأكد:** هيتكتب بعد التنفيذ.

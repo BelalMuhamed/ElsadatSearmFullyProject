@@ -2,12 +2,12 @@
 _Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F0 — all code for F0-S1 and F0-S2 pushed; waiting for Belal's build/test.
-- **Done in this step:** [x] revoke-sessions finished (`2e6a489`) [x] C1 admin-only (`9f08ad2`) [x] C2 initial password + must-change (`fce72a0`) [x] C3 (`71cf2bc`) [x] Google removed (`70b1f24`) [x] C15 publish/ removed (`3867582`) [x] C16 done by Belal (user secret = 15). None built yet.
-- **In progress / next part:** first build on Belal's PC (2026-11-17) failed with 1 error: CS0246 `Newtonsoft` in `salesInvoiceService.cs` (came only through the removed Google package) — fixed in the next commit. Tests did not run: the PC has .NET 8 and 10 runtimes only, no .NET 9 — `sync-and-build.ps1` now sets `DOTNET_ROLL_FORWARD=Major` for tests. Next: Belal runs the script **twice** (the first run pulls the new script), then read `build.log` / `test.log` again; then he runs the README › F0-S1/F0-S2 manual checks (API also needs roll-forward or the .NET 9 runtime until F1).
-- **Uncommitted changes:** none in the cloud. Belal must discard his local copies of the revoke-sessions files before pulling (they are now in `2e6a489`).
-- **Decisions taken in this step:** D16 roles removed entirely in M1 (until then only super_admin creates/edits admins); D17 customer initial password = phone + first letter of name, phone required/unique/login id, forced change at first login; D18 revoke-sessions work finished in F0-S1. (2026-11-17)
-- **Open questions:** —
+- **Step:** F0 ✔ done (2026-11-17: build 0 errors, 15/15 tests on Belal's PC). Next: F1-S1.
+- **Done in this step:** —
+- **In progress / next part:** F1-S1 (.NET 10 upgrade) explained to Belal (README › F1-S1); waiting for his OK and decision D19 (AutoMapper). Manual checks of F0 (README › F0-S1/F0-S2) still to do — easier after F1 when the API runs on .NET 10.
+- **Uncommitted changes:** none. Belal has a stash `revoke-sessions-local` (old local copies, now committed in `2e6a489`) — safe to `git stash drop`.
+- **Decisions taken in this step:** —
+- **Open questions:** D19 — AutoMapper 12.0.1 has a high-severity DoS advisory (fixed only in commercial 15.1.1+/16.1.1): remove it and map by hand (rec., 3 maps) / upgrade to commercial / keep.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -91,8 +91,8 @@ D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage
 Detailed per-session status: `Docs/docs/refactor/TRACKER.xlsx` (111 sessions). Change explanations: `Docs/docs/refactor/README.md`.
 Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired per module; F16 throughout) → M1 → M2+M3 → M4+M5 → M6 → M7 → M8 → M9+M10 → M11 → M12 → M13+M14.
 - [x] Backend review + refactor plan + blocking decisions (claude.ai, 2026-10-21/22)
-- [ ] **F0 — security & critical fixes** ← next (brief: `Docs/docs/refactor/F0.md`)
-- [ ] F1 — .NET 10 + EF Core 10 upgrade, fresh baseline migration
+- [x] **F0 — security & critical fixes** (2026-11-17)
+- [ ] **F1 — .NET 10 + EF Core 10 upgrade, fresh baseline migration** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -126,4 +126,5 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-10-21/22 (claude.ai) — Full backend review vs new UI; refactor plan; decisions D0–D4, D9, hosting.
 - 2026-10-24 (claude.ai) — Claude Code kit placed: root `CLAUDE.md`, `.claude/commands/{start,handoff}.md`, `Docs/docs/{refactor,ui,requirements}`; merged the two context files into this one.
 - 2026-11-16 (claude.ai) — Work mode confirmed: one account at a time (no parallel work). Added to CLAUDE.md: checkpoint after every small part, explain business + changes before any part, impact analysis for every decision. Rough estimate: ~100–140 sessions total.
+- 2026-11-17 (claude.ai) — F0 done: revoke-sessions, C1, C2, C3, C15, C16, Google removed. Build 0 errors, 15/15 tests on Belal's PC.
 - 2026-11-16 (claude.ai) — Docs, CLAUDE.md, PROJECT_CONTEXT.md, .claude/commands pushed to `fix/backend`; added TRACKER.xlsx (111 sessions) + refactor README (change log). New workflow: Claude implements + pushes, Belal pulls + builds/tests (cloud can't reach nuget.org).
