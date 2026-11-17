@@ -161,4 +161,31 @@
 **الـ commits:** `0d0ce70`، `feeea02`، `d8bf24f`.
 **إزاي تتأكد:** `sync-and-build.ps1` ← لازم البيلد يطلع 0 errors ومن غير أي NU1903، والتستات ١٥/١٥ والسطر يقول `net10.0`. وبعدها شغّل الـ API من Visual Studio وافتح `/swagger` ← لازم يفتح ويعمل login بالتوكن عادي.
 
+---
+
+### F1-S2 — migration نظيفة واحدة (D0) · جاري · مخطط · 2026-11-17
+
+**الـ business:** مفيش حاجة المستخدم هيشوفها. الفايدة إن أي حد يعمل clone (أو بيئة Azure بعدين) يشغّل الـ API، فالداتابيز تتعمل من الصفر لوحدها والـ seed يملاها: المحافظات والمدن، والأدمنز، والصلاحيات، وشجرة الحسابات، والخصومات، وإعدادات الكوبونات. ومن هنا كل موديول بيضيف migration صغيرة فوق نقطة بداية نضيفة.
+
+**الوضع الحالي:**
+- فولدر `Infrastructure/Migrations` كان فيه 4 migrations (`nhbikhb`، `AddPreferredLanguageToApplicationUser`، `AddPermissionSystem`، `auth-refactor`) وملفات الـ Designer بتاعتهم والـ snapshot، يعني 9 ملفات. ده اللي كان مكتوب في الملاحظات القديمة على إنه «9 migrations».
+- مفيش أي `Sql` ولا `InsertData` جوه الـ migrations، فمفيش data logic بيضيع. الـ seed كله في `Infrastructure/Data/DbInitializer.cs`.
+- الـ API مكانش بيعمل `Migrate` خالص: الداتابيز بتتعمل يدوي بـ `dotnet ef database update`، وبعدين الـ seed بيشتغل مع كل startup.
+
+**القرارات (2026-11-17):**
+- التوليد: سكريبت `make-baseline.ps1` يتشغّل على جهاز بلال، وClaude يراجع الـ SQL ويعمل push (1-أ).
+- **D20:** الـ migrations بتتطبّق لوحدها مع تشغيل الـ API في كل البيئات (2-ج). EF Core 9 وما بعده بياخد lock على الداتابيز وقت الـ `Migrate`، فلو أكتر من نسخة قامت مع بعض مش هيحصل تضارب. الثمن إن يوزر الداتابيز بتاع الـ API محتاج صلاحية DDL في الإنتاج — هنرجعله وقت الـ pipeline على Azure.
+- الـ baseline بتطلع من الـ model زي ما هو، وكل جدول ملوش لازمة بيتشال في الموديول بتاعه (3-أ).
+- الداتابيز الجديدة باسم جديد `SadatSearmErp` بدل ما نمسح القديمة، فالقديمة بتفضل زي ما هي.
+- السكريبتات القديمة (`apply_phase1.py`، `apply_phase2.py`، `phase1-core.patch`) تتمسح.
+
+#### الجزء الأول — مسح القديم وتجهيز السكريبت ✔ (2026-11-17)
+- اتمسحت ملفات `Infrastructure/Migrations` التسعة، والسكريبتات القديمة التلاتة.
+- اتضاف `make-baseline.ps1` في أول الريبو (مؤقت، بيتمسح في آخر الـ session)، واتضاف `/_out/` و`/make-baseline.log` لـ `.gitignore`.
+
+#### الجزء التاني — توليد الـ migration ومراجعتها (المخطط)
+1. بلال يشغّل `make-baseline.ps1` بدل `sync-and-build.ps1` مرة واحدة. السكريبت بيعمل pull، ويغيّر اسم الداتابيز في الـ user secrets لـ `SadatSearmErp`، ويولّد `InitialCreate`، ويطلع ملف SQL، ويعمل الداتابيز الجديدة، ويحط الملفات المتولدة في `_out` علشان الـ working tree يفضل نضيف.
+2. Claude يقرا الملفات من جهاز بلال، ويراجع الـ SQL، ويحطها في `Infrastructure/Migrations`.
+3. `ApplicationBuilderExtensions` يعمل `MigrateAsync()` قبل الـ seed (D20).
+
 **إزاي تتأكد:** هيتكتب بعد التنفيذ.

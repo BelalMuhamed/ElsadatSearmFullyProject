@@ -77,6 +77,7 @@ Secrets (JWT key, connection string `ConnectionStrings:con`, seed password) come
 - **D9** Account codes stay dotted (`1.1.3`) with numeric sort. Use `SystemAccountCode` lookups, never magic ids (`8`, `10`).
 - **D16** Roles get removed entirely in M1 (system not in production yet). Until then only a super_admin may create or edit an Admin (`RoleAssignmentPolicy`).
 - **D17** Customer initial password = phone number + first letter of the full name (as written); phone is required, unique and the login id; the user must change it at first login (`must_change_password` claim + `PasswordChangeRequiredFilter`, column comes in M1).
+- **D20** Migrations are applied automatically at API startup in **every** environment (`MigrateAsync()` before the seed). EF Core 9+ takes an exclusive DB lock during `Migrate`, so several instances starting together are safe; the price is that the API's DB user needs DDL rights in prod (revisit when the Azure pipeline is set up).
 - **Hosting** Azure (Azure Managed Redis in prod). Dev: API + Redis on the same machine (Redis in Docker/WSL).
 
 ## Mandatory coding rules (every touched method complies — no grandfathering)

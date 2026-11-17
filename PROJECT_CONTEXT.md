@@ -1,13 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-17 · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-17 (F1-S2 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F1-S1 ✔ done (2026-11-17: net10.0, build 0 errors, no NU1903, 15/15 tests on Belal's PC). Next: F1-S2.
-- **Done in this step:** —
-- **In progress / next part:** F1-S2 — fresh baseline migration (D0): delete the 9 old migrations in `Infrastructure/Migrations`, create one `InitialCreate` with EF Core 10, check `DbInitializer` seeds a fresh DB. Per CLAUDE.md: first explain business/current state/changes to Belal and wait for OK (write README › F1-S2 as «مخطط»). Open with Belal: delete the 3 leftover scripts in `BACKEND` (`apply_phase1.py`, `apply_phase2.py`, `phase1-core.patch`)? Manual checks of F0/F1 (README) still to do once the API runs.
-- **Uncommitted changes:** none.
-- **Decisions taken in this step:** —
-- **Open questions:** leftover scripts (above). FYI: .NET 11 (STS) released 2026-11-10; D1 (.NET 10 LTS) stands unless Belal reopens it.
+- **Step:** F1-S2 — fresh baseline migration (D0). Part 1 done (old migrations deleted, `make-baseline.ps1` added); waiting for Belal to run the script.
+- **Done in this step:**
+  - [x] Part 1: deleted the 4 old migrations + their Designer files + snapshot (`Infrastructure/Migrations/*`, 9 files — that is the "9 migrations" in the old notes); deleted `apply_phase1.py`, `apply_phase2.py`, `phase1-core.patch`; added `make-baseline.ps1` (repo root, one-off) and `/_out/`, `/make-baseline.log` to `.gitignore`.
+- **In progress / next part:** Part 2 — Belal runs `make-baseline.ps1` (pulls, switches `ConnectionStrings:con` in user secrets to a new DB `SadatSearmErp`, `migrations add InitialCreate`, script → `_out/InitialCreate.sql`, `database update`, moves the generated files to `_out/Migrations`). Then Claude stages `make-baseline.log`, `_out/InitialCreate.sql`, `_out/Migrations/*` from the PC, reviews the SQL (types, decimal precision, cascades, indexes), copies the files to `Infrastructure/Migrations`, adds `await context.Database.MigrateAsync()` before the seed in `Infrastructure/Data/ApplicationBuilderExtensions.cs` (D20, rename to `MigrateAndSeedDatabaseAsync` + `Program.cs` line ~231), commits + pushes. Part 3 — Belal runs `sync-and-build.ps1` + starts the API once → seed fills the new DB; then delete `make-baseline.ps1`, finish README/TRACKER, `/handoff`.
+- **Uncommitted changes:** none (part 1 pushed). Build after part 1 not confirmed yet (no code referenced the migrations, so it should still compile).
+- **Decisions taken in this step (2026-11-17):** generation via `make-baseline.ps1`, Claude reviews + pushes (1-أ); **D20** auto-migrate at startup in every environment (2-ج); keep the model as-is in the baseline, unused tables leave in their own module (3-أ); new DB name instead of dropping the old one; leftover scripts deleted.
+- **Open questions:** none.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -84,6 +85,7 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-17 | **D17** Customer initial password = phone + first letter of name; phone required + unique + login id; forced change at first login (claim `must_change_password` until M1 column) | no shared password | no login until activation; random one-time password |
 | 2026-11-17 | **D18** Finish the uncommitted revoke-sessions work in F0-S1 | needed for M1/D3 | park for M1; drop |
 | 2026-11-17 | **D19** Remove AutoMapper; hand-written mapping in `Application/Mappings` | 12.0.1 has a high-severity DoS advisory; only 1 map really used | commercial v15/16; keep 12.0.1 |
+| 2026-11-17 | **D20** Migrations applied at API startup in every environment (`MigrateAsync()` before the seed) | one way everywhere; EF Core 9+ locks the DB during Migrate so parallel instances are safe | manual `database update`; auto in Development only + pipeline in prod |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
@@ -94,7 +96,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - [x] Backend review + refactor plan + blocking decisions (claude.ai, 2026-10-21/22)
 - [x] **F0 — security & critical fixes** (2026-11-17)
 - [x] **F1-S1 — .NET 10 + EF Core 10 upgrade** (2026-11-17)
-- [ ] **F1-S2 — fresh baseline migration (D0)** ← next
+- [ ] **F1-S2 — fresh baseline migration (D0)** ← in progress
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -123,7 +125,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - Swashbuckle stays 9.0.6 (Microsoft.OpenApi 1.x); moving to 10.x needs the Swagger setup in `Program.cs` rewritten for Microsoft.OpenApi 2.
 - Tests use xunit v2 (2.9.3), which is deprecated (security fixes only) → move to `xunit.v3` later.
 - `Application/Helper/BaseInvoicePdfDocument.cs` uses `System.Drawing` (Windows-only, CA1416 ×72 warnings) → will break on Azure Linux; replace before deployment.
-- Leftover scripts tracked in `BACKEND`: `apply_phase1.py`, `apply_phase2.py`, `phase1-core.patch` — ask Belal, then delete.
+- D20 (auto-migrate everywhere): in prod the API's DB user needs DDL rights — revisit when the Azure pipeline is set up (alternative: migration bundle in the pipeline).
 - Full list of critical issues C1–C16 and where each is fixed: `Docs/docs/refactor/PLAN.md` ("مشاكل حرجة").
 - `Infrastructure/Services/GoogleAuthServices/GoogleAuthService.cs` still exists although Google login was removed — verify and delete (F0).
 
