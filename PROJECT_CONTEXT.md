@@ -2,12 +2,12 @@
 _Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F0 — not started yet.
-- **Done in this step:** —
-- **In progress / next part:** F0-S1 (tracker) — explain F0-S1 to Belal (README › F0-S1), get his decision on the uncommitted revoke-sessions work and on C2, then implement.
-- **Uncommitted changes:** on Belal's PC (verified 2026-11-16 by comparing files): the revoke-sessions work in 5 files — `Domain/Common/EmployeePermissions.cs`, `Infrastructure/Services/ServiceManager.cs`, `AlSadat-Seram.Api/Controllers/AuthController.cs`, `Infrastructure/Services/AuthServices/UserSessionService.cs`, `Application/Services.contract/AuthService/IUserSessionService.cs` (maybe more, e.g. localization). Not on GitHub. Don't touch these files from the cloud until Belal decides.
+- **Step:** F0. F0-S1 paused (waiting for decisions); F0-S2 in progress.
+- **Done in this step:** [x] C3 — `DistributorsAndMerchantsService.EditDistributorOrMerchant` ignores balances (`71cf2bc`). [x] Google sign-in code + `Google.Apis.Auth` removed (`70b1f24`). Both pushed, **not built yet** (cloud can't reach nuget.org) — waiting for Belal's build.
+- **In progress / next part:** read `build.log` from Belal's PC when he builds; then F0-S2 C15 (after his answer) and C16 (he sets the user secret); then F0-S1 after his decisions.
+- **Uncommitted changes:** none in the cloud clone. On Belal's PC: revoke-sessions work in 6 files (the 5 known + `Infrastructure/Services/LocalizationServices/LocalizationResources.cs`). Don't touch those files until he decides.
 - **Decisions taken in this step:** —
-- **Open questions:** —
+- **Open questions:** (1) revoke-sessions work: finish / park / drop? (2) C2: customers created without login (rec.) or one-time random password? (3) C1: allow-list of non-admin roles (rec.) or fixed role per user type? (4) C15: does any server run from `publish/`?
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
