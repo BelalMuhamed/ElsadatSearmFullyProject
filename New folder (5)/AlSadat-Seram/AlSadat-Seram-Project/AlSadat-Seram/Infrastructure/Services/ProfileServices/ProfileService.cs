@@ -218,6 +218,15 @@ namespace Infrastructure.Services.ProfileServices
                     FirstError(result, "تعذر تغيير كلمة المرور"),
                     HttpStatusCode.BadRequest);
 
+            // The initial password is gone: drop the "must change" flag. ChangePasswordAsync
+            // already changed the security stamp, so the user signs in again and gets a
+            // token without the flag.
+            var mustChangeClaims = (await _userManager.GetClaimsAsync(user))
+                .Where(c => c.Type == AppClaimTypes.MustChangePassword)
+                .ToList();
+            if (mustChangeClaims.Count > 0)
+                await _userManager.RemoveClaimsAsync(user, mustChangeClaims);
+
             return Result<bool>.Success(true, "تم تغيير كلمة المرور بنجاح");
         }
 

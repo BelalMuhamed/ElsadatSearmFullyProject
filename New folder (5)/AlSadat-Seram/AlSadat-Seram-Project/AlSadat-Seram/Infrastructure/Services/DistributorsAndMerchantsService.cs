@@ -88,7 +88,8 @@ namespace Infrastructure.Services
                     
                 };
 
-                user.PasswordHash = passwordHasher.HashPassword(user, "12345678Ss+");
+                // C2: initial password = phone + first letter of the name; must be changed at first login.
+                user.PasswordHash = passwordHasher.HashPassword(user, InitialPasswordPolicy.Build(dto.phoneNumber, dto.fullName));
 
                 await userRepo.AddWithoutSaveAsync(user);
 
@@ -117,6 +118,14 @@ namespace Infrastructure.Services
                 {
                     await unitOfWork.RollbackAsync();
                     return Result<string>.Failure("فشل تعيين الدور للمستخدم", HttpStatusCode.BadRequest);
+                }
+
+                var mustChangeResult = await _userManager.AddClaimAsync(
+                    user, new System.Security.Claims.Claim(AppClaimTypes.MustChangePassword, "true"));
+                if (!mustChangeResult.Succeeded)
+                {
+                    await unitOfWork.RollbackAsync();
+                    return Result<string>.FailureKey("Auth.InitialPasswordSetupFailed", HttpStatusCode.InternalServerError);
                 }
                 // 5️⃣ NOW CREATE Distributor/Merchant using the generated user.Id
                 var distRepo = unitOfWork.GetRepository<Distributor_Merchant_Agent, string>();

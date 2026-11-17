@@ -59,10 +59,12 @@ public class AuthenticationService(
         var permissions = isSuperAdmin
             ? new List<string>()
             : await _userPermissionService.GetUserPermissionsAsync(user.Id);
+        var mustChangePassword = (await _userManager.GetClaimsAsync(user))
+            .Any(c => c.Type == AppClaimTypes.MustChangePassword);
 
         var accessToken = _jwtService.GenerateToken(new TokenGenerationRequest(
             user.Id, user.UserName ?? string.Empty, user.Email ?? string.Empty,
-            role, isSuperAdmin, permissions));
+            role, isSuperAdmin, permissions, mustChangePassword));
 
         var rawToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         var refreshToken = new RefreshToken
@@ -88,6 +90,7 @@ public class AuthenticationService(
             refreshToken = rawToken,
             role = role,
             permissions = permissions,
+            mustChangePassword = mustChangePassword,
             accessTokenExpiresAt = accessToken.ExpiresAtUtc
         };
 
@@ -194,10 +197,12 @@ public class AuthenticationService(
         var permissions = isSuperAdmin
             ? new List<string>()
             : await _userPermissionService.GetUserPermissionsAsync(user.Id);
+        var mustChangePassword = (await _userManager.GetClaimsAsync(user))
+            .Any(c => c.Type == AppClaimTypes.MustChangePassword);
 
         var accessToken = _jwtService.GenerateToken(new TokenGenerationRequest(
             user.Id, user.UserName ?? string.Empty, user.Email ?? string.Empty,
-            role, isSuperAdmin, permissions));
+            role, isSuperAdmin, permissions, mustChangePassword));
 
         var rawNewToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         var newRefreshToken = new RefreshToken
@@ -244,6 +249,7 @@ public class AuthenticationService(
             refreshToken = rawNewToken,
             role = role,
             permissions = permissions,
+            mustChangePassword = mustChangePassword,
             accessTokenExpiresAt = accessToken.ExpiresAtUtc
         };
 

@@ -17,5 +17,8 @@ namespace Application.DTOs.Authentcation
         public string role { get; set; } = string.Empty;
         public List<string> permissions { get; set; } = new();
         public DateTime accessTokenExpiresAt { get; set; }
+        /// <summary>True while the user must change the initial password; the frontend
+        /// sends the user to the change-password screen and every other endpoint returns 403.</summary>
+        public bool mustChangePassword { get; set; }
     }
 }

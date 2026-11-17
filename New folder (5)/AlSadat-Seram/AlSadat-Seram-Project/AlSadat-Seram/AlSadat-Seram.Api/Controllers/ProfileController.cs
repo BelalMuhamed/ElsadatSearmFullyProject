@@ -61,6 +61,7 @@ namespace AlSadat_Seram.Api.Controllers
         // 3) PUT /api/Profile/change-password  — change current user's password
         // -------------------------------------------------------------
         [HttpPut("change-password")]
+        [AlSadat_Seram.Api.Filters.AllowWhilePasswordChangeRequired]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

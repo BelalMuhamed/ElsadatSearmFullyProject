@@ -33,6 +33,9 @@ public class JwtService : IJwtService
         if (request.IsSuperAdmin)
             claims.Add(new Claim(AppClaimTypes.SuperAdmin, "true"));
 
+        if (request.MustChangePassword)
+            claims.Add(new Claim(AppClaimTypes.MustChangePassword, "true"));
+
         foreach (var permission in request.Permissions)
             claims.Add(new Claim(AppClaimTypes.Permission, permission));
 

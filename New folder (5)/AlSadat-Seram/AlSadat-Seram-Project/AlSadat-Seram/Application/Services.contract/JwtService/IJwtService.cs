@@ -8,7 +8,8 @@ public sealed record TokenGenerationRequest(
     string Email,
     string Role,
     bool IsSuperAdmin,
-    IReadOnlyCollection<string> Permissions);
+    IReadOnlyCollection<string> Permissions,
+    bool MustChangePassword = false);
 
 public sealed record AccessTokenResult(string Token, DateTime ExpiresAtUtc);
 

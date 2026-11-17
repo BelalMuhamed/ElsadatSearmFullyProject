@@ -61,6 +61,8 @@ namespace Infrastructure.Services.LocalizationServices
             ["Permission.NotDelegable"] =
     ("لا يمكن تفويض هذه الصلاحية",
      "This permission cannot be delegated"),
+            ["Auth.PasswordChangeRequired"] = ("يجب تغيير كلمة المرور الأولى قبل استخدام النظام", "You must change your initial password before using the system"),
+            ["Auth.InitialPasswordSetupFailed"] = ("تعذر تجهيز كلمة المرور الأولى. لم يتم إنشاء الحساب", "Could not set up the initial password. The account was not created"),
             ["Role.AdminAssignmentForbidden"] = ("إنشاء مدير نظام أو تعديل بياناته متاح لمدير النظام فقط", "Only a system administrator can create or change an administrator"),
             ["Permission.SessionsRevoked"] = ("تم إنهاء جميع جلسات المستخدم", "All user sessions have been revoked"),
             ["Auth.RevokeSessionsFailed"] = ("تعذر إنهاء جلسات المستخدم. لم يتم تغيير أي شيء", "Could not revoke the user's sessions. Nothing was changed"),

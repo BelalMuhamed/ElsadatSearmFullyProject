@@ -60,6 +60,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         [Authorize]
+        [AlSadat_Seram.Api.Filters.AllowWhilePasswordChangeRequired]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] RefreshTokenDto request)
         {
@@ -68,6 +69,7 @@ namespace AlSadat_Seram.Api.Controllers
         }
 
         [Authorize]
+        [AlSadat_Seram.Api.Filters.AllowWhilePasswordChangeRequired]
         [HttpPost("logout-all")]
         public async Task<IActionResult> LogoutAll()
         {

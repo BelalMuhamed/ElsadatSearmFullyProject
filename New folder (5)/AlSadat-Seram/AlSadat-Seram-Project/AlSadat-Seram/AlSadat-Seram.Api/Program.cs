@@ -86,6 +86,8 @@ internal class Program
                 new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build()));
+            // C2: a user who must change the initial password can only change it or log out.
+            options.Filters.Add<AlSadat_Seram.Api.Filters.PasswordChangeRequiredFilter>();
         })
         .AddControllersAsServices();
         #endregion
