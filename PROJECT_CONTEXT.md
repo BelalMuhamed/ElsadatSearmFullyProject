@@ -2,10 +2,10 @@
 _Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F1-S1 (.NET 10 upgrade) — part 1 of 2 done locally (AutoMapper removed); not committed, not built yet.
+- **Step:** F1-S1 (.NET 10 upgrade) — part 1 of 2 pushed (`0d0ce70`, AutoMapper removed); waiting for Belal's build.
 - **Done in this step:** [x] Part 1 — D19: `MappingProfile.cs` deleted → `Application/Mappings/ProfileMappings.cs` (`ToProfileDto`); `IMapper` removed from `ProfileService`, `NotificationService`, `ServiceManager`, `Program.cs`; AutoMapper packages removed from `Application.csproj` + `AlSadat-Seram.Api.csproj`.
-- **In progress / next part:** Belal reviews part 1 → commit/push → build on his PC. Then part 2: all `csproj` → `net10.0`; Microsoft packages → 10.0.x; `dotnet-ef` → 10.0.x; test packages → latest; remove `Microsoft.AspNetCore.Http.Features` 5.0.17 (+ `FrameworkReference Microsoft.AspNetCore.App` in `Application`) and `FluentValidation`; drop `DOTNET_ROLL_FORWARD` from `sync-and-build.ps1`.
-- **Uncommitted changes:** part 1 (8 code files + docs + TRACKER.xlsx), in Claude's clone only.
+- **In progress / next part:** Belal runs `sync-and-build.ps1` → Claude reads `build.log`/`test.log` (expect 0 errors, no NU1903, 15/15). Then part 2: all `csproj` → `net10.0`; Microsoft packages → 10.0.x; `dotnet-ef` → 10.0.x; test packages → latest; remove `Microsoft.AspNetCore.Http.Features` 5.0.17 (+ `FrameworkReference Microsoft.AspNetCore.App` in `Application`) and `FluentValidation`; drop `DOTNET_ROLL_FORWARD` from `sync-and-build.ps1`.
+- **Uncommitted changes:** none.
 - **Decisions taken in this step:** D19 (2026-11-17) → option 1: remove AutoMapper, hand-written mapping.
 - **Open questions:** —
 
