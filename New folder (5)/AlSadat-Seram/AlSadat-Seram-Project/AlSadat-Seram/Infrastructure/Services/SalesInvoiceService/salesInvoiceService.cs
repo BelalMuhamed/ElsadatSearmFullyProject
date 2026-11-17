@@ -16,7 +16,6 @@ using Domain.Enums;
 using Domain.UnitOfWork.Contract;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
