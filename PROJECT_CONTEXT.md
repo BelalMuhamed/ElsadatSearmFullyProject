@@ -1,15 +1,13 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-17 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F1-S1 (.NET 10 upgrade) — part 1 ✔ (AutoMapper removed, built green on Belal's PC); part 2 ✔ (net10.0: 0 errors, 15/15 on Belal's PC); fix-up pushed: pin `System.Security.Cryptography.Xml` 10.0.15 (NU1903 via EPPlus) — waiting for the build.
-- **Done in this step:**
-  - [x] Part 1 — D19: AutoMapper removed (`0d0ce70`). Build 0 errors, no NU1903, 15/15 tests (2026-11-17).
-  - [x] Part 2 (code done, build pending) — all 5 `csproj` → `net10.0`; Microsoft packages → 10.0.15; `dotnet-ef` → 10.0.15; `System.IdentityModel.Tokens.Jwt` → 8.23.0; tests: Test.Sdk 18.12.0, xunit 2.9.3, runner 4.0.1, coverlet 10.1.1; removed `Microsoft.AspNetCore.OpenApi` (unused), `FluentValidation` (unused), `Microsoft.AspNetCore.Http.Features` (→ `FrameworkReference` in `Application`); `sync-and-build.ps1` without `DOTNET_ROLL_FORWARD`.
-- **In progress / next part:** read Belal's `build.log`/`test.log` (expect 0 errors, no NU1903, 15/15). When green → mark F1-S1 «خلص» in TRACKER and README, then F1-S2 (fresh baseline migration, D0). Swashbuckle 9.0.6 kept on purpose (10.x = Microsoft.OpenApi 2 → `Program.cs` Swagger changes) — separate small part.
+- **Step:** F1-S1 ✔ done (2026-11-17: net10.0, build 0 errors, no NU1903, 15/15 tests on Belal's PC). Next: F1-S2.
+- **Done in this step:** —
+- **In progress / next part:** F1-S2 — fresh baseline migration (D0): delete the 9 old migrations in `Infrastructure/Migrations`, create one `InitialCreate` with EF Core 10, check `DbInitializer` seeds a fresh DB. Per CLAUDE.md: first explain business/current state/changes to Belal and wait for OK (write README › F1-S2 as «مخطط»). Open with Belal: delete the 3 leftover scripts in `BACKEND` (`apply_phase1.py`, `apply_phase2.py`, `phase1-core.patch`)? Manual checks of F0/F1 (README) still to do once the API runs.
 - **Uncommitted changes:** none.
-- **Decisions taken in this step:** D19 (2026-11-17) → option 1: remove AutoMapper, hand-written mapping.
-- **Open questions:** — (FYI to Belal: .NET 11 (STS) was released 2026-11-10; D1 = .NET 10 LTS stands unless he reopens it.)
+- **Decisions taken in this step:** —
+- **Open questions:** leftover scripts (above). FYI: .NET 11 (STS) released 2026-11-10; D1 (.NET 10 LTS) stands unless Belal reopens it.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -95,7 +93,8 @@ Detailed per-session status: `Docs/docs/refactor/TRACKER.xlsx` (111 sessions). C
 Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired per module; F16 throughout) → M1 → M2+M3 → M4+M5 → M6 → M7 → M8 → M9+M10 → M11 → M12 → M13+M14.
 - [x] Backend review + refactor plan + blocking decisions (claude.ai, 2026-10-21/22)
 - [x] **F0 — security & critical fixes** (2026-11-17)
-- [ ] **F1 — .NET 10 + EF Core 10 upgrade, fresh baseline migration** ← next
+- [x] **F1-S1 — .NET 10 + EF Core 10 upgrade** (2026-11-17)
+- [ ] **F1-S2 — fresh baseline migration (D0)** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -134,4 +133,5 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-10-24 (claude.ai) — Claude Code kit placed: root `CLAUDE.md`, `.claude/commands/{start,handoff}.md`, `Docs/docs/{refactor,ui,requirements}`; merged the two context files into this one.
 - 2026-11-16 (claude.ai) — Work mode confirmed: one account at a time (no parallel work). Added to CLAUDE.md: checkpoint after every small part, explain business + changes before any part, impact analysis for every decision. Rough estimate: ~100–140 sessions total.
 - 2026-11-17 (claude.ai) — F0 done: revoke-sessions, C1, C2, C3, C15, C16, Google removed. Build 0 errors, 15/15 tests on Belal's PC.
+- 2026-11-17 (claude.ai) — F1-S1 done: AutoMapper removed (D19), net10.0, Microsoft packages 10.0.15, unused packages removed, `System.Security.Cryptography.Xml` pinned (NU1903 via EPPlus). Build 0 errors, 15/15 on Belal's PC.
 - 2026-11-16 (claude.ai) — Docs, CLAUDE.md, PROJECT_CONTEXT.md, .claude/commands pushed to `fix/backend`; added TRACKER.xlsx (111 sessions) + refactor README (change log). New workflow: Claude implements + pushes, Belal pulls + builds/tests (cloud can't reach nuget.org).
