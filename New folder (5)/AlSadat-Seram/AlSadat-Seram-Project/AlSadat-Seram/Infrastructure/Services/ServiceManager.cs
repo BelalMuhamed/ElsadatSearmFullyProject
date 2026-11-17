@@ -26,7 +26,6 @@ using Application.Services.contract.PublicHolidayService;
 using Application.Services.contract.RepresentativeAttendanceService;
 using Application.Services.contract.RepresentativeService;
 using Application.Services.contract.SalesInvoiceService;
-using AutoMapper;
 using Domain.Common;
 using Domain.Entities.Invoices;
 using Domain.Entities.Users;
@@ -132,7 +131,6 @@ public class ServiceManager : IServiceManager
     IHttpContextAccessor HttpContextAccessor,
     IOptions<JwtSettings> jwtSettings,
     IOptions<AuthSessionOptions> sessionOptions,
-    IMapper Mapper,
     ILoggerFactory loggerFactory, IExcelReaderService ExcelReader, ICurrentUserService currentUserService, IJwtService jwtService, IAuthenticationService authService, IUserSessionService userSessionService, IUserPermissionService userPermissionService, IPermissionCatalogService   permissionCatalogService )
     {
         // new
@@ -145,10 +143,10 @@ public class ServiceManager : IServiceManager
             _AuthenticationService = new Lazy<IAuthenticationService>(() => authService);
             _UserSessionService = new Lazy<IUserSessionService>(() => userSessionService);
             _ChangeLogService = new Lazy<IChangeLogService>(() => new ChangeLogService(_CurrentUserService.Value));
-            _NotificationService = new Lazy<INotificationService>(() => new NotificationService(UnitOfWork, Mapper, _CurrentUserService.Value));
+            _NotificationService = new Lazy<INotificationService>(() => new NotificationService(UnitOfWork, _CurrentUserService.Value));
             _PayrollDeductionService = new Lazy<IPayrollDeductionService>(() => new PayrollDeductionService(UnitOfWork, _CurrentUserService.Value));
             //_NotificationDispatcher = new Lazy<INotificationDispatcher>(() => new NotificationDispatcher(UnitOfWork,Mapper,_CurrentUserService.Value));
-            _ProfileService = new Lazy<IProfileService>(() => new ProfileService(Mapper, UserManager, _CurrentUserService.Value));
+            _ProfileService = new Lazy<IProfileService>(() => new ProfileService(UserManager, _CurrentUserService.Value));
             _salesInvoiceService = new Lazy<IsalesInvoiceService>(() => new salesInvoiceService(UnitOfWork, _CurrentUserService.Value));
             _CopounService = new Lazy<ICopounService>(() => new CopounService(UnitOfWork));
             _BillDiscountService = new Lazy<IBillDiscount>(() => new BillsDiscountSr(UnitOfWork));

@@ -3,7 +3,6 @@ using Application.CommonPagination.Pagination;
 using Application.DTOs.Notification;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.NotificationService;
-using AutoMapper;
 using Domain.Common;
 using Domain.Entities.Users;
 using Domain.UnitOfWork.Contract;
@@ -17,7 +16,6 @@ using System.Threading.Tasks;
 namespace Infrastructure.Services.NotificationServices;
 public class NotificationService(
     IUnitOfWork _unitOfWork,
-    IMapper _mapper,
     ICurrentUserService _currentUserService
     )
     :INotificationService

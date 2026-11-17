@@ -1,7 +1,7 @@
 using Application.DTOs.Profile;
+using Application.Mappings;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.ProfileService;
-using AutoMapper;
 using Domain.Common;
 using Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
@@ -26,16 +26,13 @@ namespace Infrastructure.Services.ProfileServices
     /// </summary>
     public class ProfileService : IProfileService
     {
-        private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICurrentUserService _currentUserService;
 
         public ProfileService(
-            IMapper mapper,
             UserManager<ApplicationUser> userManager,
             ICurrentUserService currentUserService)
         {
-            _mapper = mapper;
             _userManager = userManager;
             _currentUserService = currentUserService;
         }
@@ -55,14 +52,7 @@ namespace Infrastructure.Services.ProfileServices
                 return Result<ProfileDto>.Failure(
                     "المستخدم غير موجود", HttpStatusCode.NotFound);
 
-            var dto = _mapper.Map<ProfileDto>(user);
-            // Map writes some fields conservatively; ensure Id is populated explicitly.
-            dto.id = user.Id;
-            dto.UserName = user.UserName ?? string.Empty;
-            dto.Email = user.Email ?? string.Empty;
-            dto.phoneNumber = user.PhoneNumber;
-
-            return Result<ProfileDto>.Success(dto);
+            return Result<ProfileDto>.Success(user.ToProfileDto());
         }
 
         // =======================================================================

@@ -1,5 +1,4 @@
 ﻿using AlSadat_Seram.Api.Middlewares;
-using Application.Mappings;
 using Application.Services.contract;
 using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
@@ -197,7 +196,6 @@ internal class Program
         QuestPDF.Settings.License = LicenseType.Community;
         builder.Services.AddEndpointsApiExplorer();
 
-        builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddMemoryCache();
         builder.Services.AddSignalR();

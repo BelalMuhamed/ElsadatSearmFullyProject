@@ -5,9 +5,9 @@ namespace Application.DTOs.Profile
     /// <para>
     /// Extended in Turn 3 to include <see cref="phoneNumber"/> and <see cref="id"/>
     /// — the Profile page needs these to pre-populate the edit form. The historical
-    /// fields (FirstName, LastName, DefaultCurrency) remain on the DTO so the
-    /// AutoMapper read mapping continues to work; they are display-only and not
-    /// editable through this controller.
+    /// fields (FirstName, LastName, DefaultCurrency) remain on the DTO so existing
+    /// consumers keep the same shape; they are display-only and not editable
+    /// through this controller. Built by <c>ProfileMappings.ToProfileDto</c>.
     /// </para>
     /// </summary>
     public class ProfileDto

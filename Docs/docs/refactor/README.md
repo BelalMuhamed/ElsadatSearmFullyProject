@@ -132,9 +132,17 @@
 - packages التستات (Test SDK، xunit runner، coverlet) ← آخر نسخ ثابتة.
 - `Microsoft.AspNetCore.Http.Features` 5.0.17 (قديمة جدًا) ← تتشال، و`Application` ياخد `FrameworkReference` لـ `Microsoft.AspNetCore.App` (علشان `IFormFile`).
 - `FluentValidation` (مش مستخدمة) ← تتشال.
-- AutoMapper ← حسب القرار D19.
+- AutoMapper ← **اتشال (D19 = 1)** — ✔ (الجزء الأول، شوف تحت).
 - `sync-and-build.ps1` ← يتشال منه `DOTNET_ROLL_FORWARD`.
 
-**القرارات المطلوبة:** D19 (AutoMapper).
+**القرارات:** D19 اتقرر 2026-11-17 → (1) نشيل AutoMapper ونكتب الـ mapping بإيدينا.
+
+#### الجزء الأول — شيل AutoMapper ✔ (2026-11-17)
+- `Application/Mappings/MappingProfile.cs` ← اتمسح. `Application/Mappings/ProfileMappings.cs` ← جديد (`ToProfileDto()`، بيرجّع نفس شكل الـ response بالظبط).
+- `ProfileService` و`NotificationService` و`ServiceManager` ← اتشال منهم `IMapper`. map الإشعارات مكانش حد بيستخدمه، لأن الكود اللي كان بيستخدمه متعلّق عليه.
+- `Program.cs` ← اتشال `AddAutoMapper`. `Application.csproj` و`AlSadat-Seram.Api.csproj` ← اتشالت packages الـ AutoMapper، وبكده التحذير NU1903 مش هيظهر تاني.
+- ملاحظة: رسايل `ProfileService` لسه نص ثابت، لأن `ProfileController` مش بيستخدم `HandleResult`. هتتصلح مع الكنترولر في F2.
+
+**إزاي تتأكد:** `sync-and-build.ps1` ← 0 errors ومن غير NU1903، والتستات ١٥/١٥. و`GET /api/Profile` لازم يرجّع نفس الـ JSON اللي كان بيرجع قبل كده.
 
 **إزاي تتأكد:** هيتكتب بعد التنفيذ.

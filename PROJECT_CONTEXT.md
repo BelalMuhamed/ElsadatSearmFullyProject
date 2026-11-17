@@ -2,12 +2,12 @@
 _Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F0 ✔ done (2026-11-17: build 0 errors, 15/15 tests on Belal's PC). Next: F1-S1.
-- **Done in this step:** —
-- **In progress / next part:** F1-S1 (.NET 10 upgrade) explained to Belal (README › F1-S1); waiting for his OK and decision D19 (AutoMapper). Manual checks of F0 (README › F0-S1/F0-S2) still to do — easier after F1 when the API runs on .NET 10.
-- **Uncommitted changes:** none. Belal has a stash `revoke-sessions-local` (old local copies, now committed in `2e6a489`) — safe to `git stash drop`.
-- **Decisions taken in this step:** —
-- **Open questions:** D19 — AutoMapper 12.0.1 has a high-severity DoS advisory (fixed only in commercial 15.1.1+/16.1.1): remove it and map by hand (rec., 3 maps) / upgrade to commercial / keep.
+- **Step:** F1-S1 (.NET 10 upgrade) — part 1 of 2 done locally (AutoMapper removed); not committed, not built yet.
+- **Done in this step:** [x] Part 1 — D19: `MappingProfile.cs` deleted → `Application/Mappings/ProfileMappings.cs` (`ToProfileDto`); `IMapper` removed from `ProfileService`, `NotificationService`, `ServiceManager`, `Program.cs`; AutoMapper packages removed from `Application.csproj` + `AlSadat-Seram.Api.csproj`.
+- **In progress / next part:** Belal reviews part 1 → commit/push → build on his PC. Then part 2: all `csproj` → `net10.0`; Microsoft packages → 10.0.x; `dotnet-ef` → 10.0.x; test packages → latest; remove `Microsoft.AspNetCore.Http.Features` 5.0.17 (+ `FrameworkReference Microsoft.AspNetCore.App` in `Application`) and `FluentValidation`; drop `DOTNET_ROLL_FORWARD` from `sync-and-build.ps1`.
+- **Uncommitted changes:** part 1 (8 code files + docs + TRACKER.xlsx), in Claude's clone only.
+- **Decisions taken in this step:** D19 (2026-11-17) → option 1: remove AutoMapper, hand-written mapping.
+- **Open questions:** —
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -18,7 +18,7 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 
 ## Stack
 - Backend: .NET 9 (`net9.0`, nullable on), ASP.NET Core, EF Core 9.0.10 code-first, SQL Server,
-  ASP.NET Identity + JWT bearer + refresh tokens, AutoMapper 12, FluentValidation 12 (unused), QuestPDF,
+  ASP.NET Identity + JWT bearer + refresh tokens, no AutoMapper (D19), FluentValidation 12 (unused), QuestPDF,
   ClosedXML/EPPlus/ExcelDataReader. Target after F1: **.NET 10 LTS**.
 - Frontend: Angular 17.3 (old, `New folder (6)/AlsadatUi`) — to be rebuilt per the redesign, module by module.
 - Infra: Azure (prod, decided 2026-10-22); Redis = Azure Managed Redis in prod, local Docker/WSL in dev. `publish/` folder in the backend is stale build output (see F0). No CI found yet.
@@ -83,6 +83,7 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-17 | **D16** Roles removed entirely in M1; until then only super_admin creates/edits an Admin (C1) | system not in production | role allow-list; fixed role per user type |
 | 2026-11-17 | **D17** Customer initial password = phone + first letter of name; phone required + unique + login id; forced change at first login (claim `must_change_password` until M1 column) | no shared password | no login until activation; random one-time password |
 | 2026-11-17 | **D18** Finish the uncommitted revoke-sessions work in F0-S1 | needed for M1/D3 | park for M1; drop |
+| 2026-11-17 | **D19** Remove AutoMapper; hand-written mapping in `Application/Mappings` | 12.0.1 has a high-severity DoS advisory; only 1 map really used | commercial v15/16; keep 12.0.1 |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
@@ -115,6 +116,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
   - `ServiceManager.cs`: `_UserSessionService` news up its own `UserSessionService` while the injected `userSessionService` ctor parameter is unused.
   - `UserSessionService.AdminRevokeSessionsAsync`: `IdentityResult` of `UpdateSecurityStampAsync` ignored.
   - `AuthController.RevokeSessions`: no `CancellationToken`; `RemoteIpAddress` is the proxy IP unless forwarded headers are configured.
+- `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in F2.
 - `PayrollDeductionService.cs` lines 84/96: CS8619 nullability warnings.
 - Build has ~108 warnings (mostly nullability) — not blocking; to be cleaned per module.
 - Belal's PC has no .NET 9 runtime (only 8 and 10) → run net9 builds with `DOTNET_ROLL_FORWARD=Major` until F1.
