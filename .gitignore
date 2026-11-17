@@ -1,3 +1,4 @@
-# local build/test logs that Claude reads from the PC (not committed)
+# local pull/build/test logs that Claude reads from the PC (not committed)
 /build.log
 /test.log
+/pull.log

@@ -23,7 +23,8 @@
    dotnet build AlSadat-Seram.slnx > "C:\Users\b.zakaria\Desktop\SR\build.log" 2>&1
    dotnet test AlSadat-Seram.slnx > "C:\Users\b.zakaria\Desktop\SR\test.log" 2>&1
    ```
-   لو فيه أخطاء، Claude يقدر يقرا `build.log` و`test.log` من فولدر `SR` على جهازك ويصلّح. (الملفين دول في `.gitignore` مش هيترفعوا.)
+   أو أسهل: شغّل `sync-and-build.ps1` اللي في أول الريبو (كليك يمين › Run with PowerShell) — بيعمل pull وbuild وtest ويكتب `pull.log` و`build.log` و`test.log`.
+   لو فيه أخطاء، Claude بيقرا الملفات دي من فولدر `SR` على جهازك ويصلّح. (الملفات دي في `.gitignore` مش هتترفع.)
 4. **بعد كل جزء:** Claude بيحدّث 3 حاجات: الـ Checkpoint في `PROJECT_CONTEXT.md`، حالة الـ session في `TRACKER.xlsx`، وشرح التعديل هنا تحت كود الـ session.
 
 ### حالات الـ session في الـ tracker
