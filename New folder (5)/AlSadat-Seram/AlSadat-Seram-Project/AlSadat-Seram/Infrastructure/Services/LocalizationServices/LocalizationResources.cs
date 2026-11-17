@@ -18,7 +18,6 @@ namespace Infrastructure.Services.LocalizationServices
             ["Common.BadRequest"] = ("طلب غير صالح", "Bad request"),
             ["Common.DataConflict"] = ("تعارض في البيانات", "Data conflict"),
             ["Common.ValidationFailed"] = ("البيانات المدخلة غير صالحة", "The submitted data is invalid"),
-            ["Auth.InvalidGoogleToken"] = ("رمز جوجل غير صالح", "Invalid Google token"),
             // add inside the Messages dictionary
             ["Common.PermissionDenied"] = ("ليس لديك الصلاحية للقيام بهذا الإجراء", "You do not have permission to perform this action"),
             ["Common.ModuleNotAssigned"] = ("ليس لديك صلاحية الوصول لهذا القسم", "You do not have access to this module"),
@@ -62,6 +61,8 @@ namespace Infrastructure.Services.LocalizationServices
             ["Permission.NotDelegable"] =
     ("لا يمكن تفويض هذه الصلاحية",
      "This permission cannot be delegated"),
+            ["Permission.SessionsRevoked"] = ("تم إنهاء جميع جلسات المستخدم", "All user sessions have been revoked"),
+            ["Auth.RevokeSessionsFailed"] = ("تعذر إنهاء جلسات المستخدم. لم يتم تغيير أي شيء", "Could not revoke the user's sessions. Nothing was changed"),
             // ---- Example: Supplier module (add the rest as you migrate it) ----
             // ["Supplier.DuplicatePhone"] = ("رقم الهاتف مستخدم بالفعل", "Phone number already in use"),
         };

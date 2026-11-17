@@ -17,10 +17,11 @@ public static class EmployeePermissions
     public const string Update = "HR.Employees.Update";
     public const string Delete = "HR.Employees.Delete";
     public const string AssignPermissions = "HR.Employees.AssignPermissions";
+    public const string RevokeSessions = "HR.Employees.RevokeSessions";
 
     public static readonly string[] All =
     {
-        View, Create, Update, Delete, AssignPermissions
+        View, Create, Update, Delete, AssignPermissions, RevokeSessions
     };
 
     public static readonly ModulePermissions Module = new()
@@ -35,6 +36,7 @@ public static class EmployeePermissions
             new(Update, "تعديل موظف", "تعديل بيانات موظف", IsBaseline: false),
             new(Delete, "حذف موظف", "حذف/استرجاع موظف", IsBaseline: false),
             new(AssignPermissions, "إدارة صلاحيات الموظفين", "منح وسحب صلاحيات المستخدمين", IsBaseline: false),
+            new(RevokeSessions, "إنهاء جلسات المستخدمين", "إنهاء كل الجلسات النشطة لمستخدم", IsBaseline: false),
         }
     };
 }

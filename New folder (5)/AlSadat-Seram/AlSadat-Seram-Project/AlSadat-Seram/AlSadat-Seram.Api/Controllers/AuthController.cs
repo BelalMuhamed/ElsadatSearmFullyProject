@@ -3,7 +3,6 @@ using Application.Services.contract.AuthService;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.LocalizationService;
 using Domain.Common;
-using Infrastructure.Services.AuthServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,14 +13,32 @@ namespace AlSadat_Seram.Api.Controllers
     public class AuthController : BaseApiController
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IUserSessionService _userSessionService;
 
         public AuthController(
             IAuthenticationService authenticationService,
+            IUserSessionService userSessionService,
             ILocalizationService localization,
             ICurrentUserService currentUser)
             : base(localization, currentUser)
         {
             _authenticationService = authenticationService;
+            _userSessionService = userSessionService;
+        }
+
+        /// <summary>
+        /// Ends every active session of a user (all devices) and changes their security stamp.
+        /// </summary>
+        [Authorize(Policy = EmployeePermissions.RevokeSessions)]
+        [HttpPost("revoke-sessions/{targetUserId}")]
+        public async Task<IActionResult> RevokeSessions(string targetUserId, CancellationToken ct)
+        {
+            // Behind a proxy (Azure), RemoteIpAddress is the proxy's IP until
+            // ForwardedHeaders is configured — tracked for the hosting step.
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var result = await _userSessionService.AdminRevokeSessionsAsync(
+                targetUserId, RequireCurrentUserId(), ipAddress, ct);
+            return HandleResult(result);
         }
 
         [AllowAnonymous]
