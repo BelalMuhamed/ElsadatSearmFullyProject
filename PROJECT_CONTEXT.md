@@ -2,12 +2,14 @@
 _Last updated: 2026-11-16 · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F1-S1 (.NET 10 upgrade) — part 1 of 2 pushed (`0d0ce70`, AutoMapper removed); waiting for Belal's build.
-- **Done in this step:** [x] Part 1 — D19: `MappingProfile.cs` deleted → `Application/Mappings/ProfileMappings.cs` (`ToProfileDto`); `IMapper` removed from `ProfileService`, `NotificationService`, `ServiceManager`, `Program.cs`; AutoMapper packages removed from `Application.csproj` + `AlSadat-Seram.Api.csproj`.
-- **In progress / next part:** Belal runs `sync-and-build.ps1` → Claude reads `build.log`/`test.log` (expect 0 errors, no NU1903, 15/15). Then part 2: all `csproj` → `net10.0`; Microsoft packages → 10.0.x; `dotnet-ef` → 10.0.x; test packages → latest; remove `Microsoft.AspNetCore.Http.Features` 5.0.17 (+ `FrameworkReference Microsoft.AspNetCore.App` in `Application`) and `FluentValidation`; drop `DOTNET_ROLL_FORWARD` from `sync-and-build.ps1`.
+- **Step:** F1-S1 (.NET 10 upgrade) — part 1 ✔ (AutoMapper removed, built green on Belal's PC); part 2 pushed, waiting for Belal's build.
+- **Done in this step:**
+  - [x] Part 1 — D19: AutoMapper removed (`0d0ce70`). Build 0 errors, no NU1903, 15/15 tests (2026-11-17).
+  - [x] Part 2 (code done, build pending) — all 5 `csproj` → `net10.0`; Microsoft packages → 10.0.15; `dotnet-ef` → 10.0.15; `System.IdentityModel.Tokens.Jwt` → 8.23.0; tests: Test.Sdk 18.12.0, xunit 2.9.3, runner 4.0.1, coverlet 10.1.1; removed `Microsoft.AspNetCore.OpenApi` (unused), `FluentValidation` (unused), `Microsoft.AspNetCore.Http.Features` (→ `FrameworkReference` in `Application`); `sync-and-build.ps1` without `DOTNET_ROLL_FORWARD`.
+- **In progress / next part:** read Belal's `build.log`/`test.log` for part 2 and fix errors. When green → mark F1-S1 «خلص» in TRACKER and README, then F1-S2 (fresh baseline migration, D0). Swashbuckle 9.0.6 kept on purpose (10.x = Microsoft.OpenApi 2 → `Program.cs` Swagger changes) — separate small part.
 - **Uncommitted changes:** none.
 - **Decisions taken in this step:** D19 (2026-11-17) → option 1: remove AutoMapper, hand-written mapping.
-- **Open questions:** —
+- **Open questions:** — (FYI to Belal: .NET 11 (STS) was released 2026-11-10; D1 = .NET 10 LTS stands unless he reopens it.)
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -17,8 +19,8 @@ Phase: **backend refactor to serve the new UI** (the new UI in `Docs/` is the so
 Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/BbH94DNQysKSDn5vQnkR6w).
 
 ## Stack
-- Backend: .NET 9 (`net9.0`, nullable on), ASP.NET Core, EF Core 9.0.10 code-first, SQL Server,
-  ASP.NET Identity + JWT bearer + refresh tokens, no AutoMapper (D19), FluentValidation 12 (unused), QuestPDF,
+- Backend: .NET 10 (`net10.0`, nullable on — since F1-S1), ASP.NET Core, EF Core 10.0.15 code-first, SQL Server,
+  ASP.NET Identity + JWT bearer + refresh tokens, no AutoMapper (D19), no FluentValidation (removed F1-S1), QuestPDF,
   ClosedXML/EPPlus/ExcelDataReader. Target after F1: **.NET 10 LTS**.
 - Frontend: Angular 17.3 (old, `New folder (6)/AlsadatUi`) — to be rebuilt per the redesign, module by module.
 - Infra: Azure (prod, decided 2026-10-22); Redis = Azure Managed Redis in prod, local Docker/WSL in dev. `publish/` folder in the backend is stale build output (see F0). No CI found yet.
@@ -119,7 +121,10 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in F2.
 - `PayrollDeductionService.cs` lines 84/96: CS8619 nullability warnings.
 - Build has ~108 warnings (mostly nullability) — not blocking; to be cleaned per module.
-- Belal's PC has no .NET 9 runtime (only 8 and 10) → run net9 builds with `DOTNET_ROLL_FORWARD=Major` until F1.
+- Swashbuckle stays 9.0.6 (Microsoft.OpenApi 1.x); moving to 10.x needs the Swagger setup in `Program.cs` rewritten for Microsoft.OpenApi 2.
+- Tests use xunit v2 (2.9.3), which is deprecated (security fixes only) → move to `xunit.v3` later.
+- `Application/Helper/BaseInvoicePdfDocument.cs` uses `System.Drawing` (Windows-only, CA1416 ×72 warnings) → will break on Azure Linux; replace before deployment.
+- Leftover scripts tracked in `BACKEND`: `apply_phase1.py`, `apply_phase2.py`, `phase1-core.patch` — ask Belal, then delete.
 - Full list of critical issues C1–C16 and where each is fixed: `Docs/docs/refactor/PLAN.md` ("مشاكل حرجة").
 - `Infrastructure/Services/GoogleAuthServices/GoogleAuthService.cs` still exists although Google login was removed — verify and delete (F0).
 

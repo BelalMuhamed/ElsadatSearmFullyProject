@@ -70,7 +70,7 @@ Secrets (JWT key, connection string `ConnectionStrings:con`, seed password) come
 
 ## Decisions already taken (do not reopen without Belal)
 - **D0** No live data → one fresh baseline migration; old migrations and unused tables get dropped.
-- **D1** Target **.NET 10 LTS** (upgrade in F1). Currently `net9.0`.
+- **D1** Target **.NET 10 LTS** — done in F1-S1 (all projects `net10.0`, Microsoft packages 10.0.x).
 - **D2** Keep **`ServiceManager` + `GenericRepository` + `UnitOfWork`**. No MediatR. **No AutoMapper** (removed in F1-S1, D19): map by hand with extension methods in `Application/Mappings`, prefer `.Select()` projections for reads.
 - **D3** Permissions: token carries `userId` + `SecurityStamp` only. `PermissionAuthorizationHandler` reads {stamp, isActive, effective permissions} per request from `HybridCache` (memory L1 + Redis L2). Permission change → evict that user's entry (no logout). Stamp changes only on password change/reset, deactivate, lock, "logout all devices" → kills sessions. TTL 5 min safety net. Redis down → read DB, never allow-all. Access token 10–15 min. Frontend reads `GET /me/permissions`.
 - **D4** One `ApprovalRequests` table + one handler per request type.
