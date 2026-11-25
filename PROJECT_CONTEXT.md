@@ -7,12 +7,12 @@ _Last updated: 2026-11-25 (F1-S2 in progress) · Read this first in any new sess
   - [x] Part 1: old migrations + leftover scripts deleted.
   - [x] Part 2: D21 in `Infrastructure/Data/AppDbContext.cs` (`DisableDatabaseCascades`); `Infrastructure/Migrations/20261125161145_InitialCreate` + snapshot; `MigrateAndSeedDatabaseAsync` in `Infrastructure/Data/ApplicationBuilderExtensions.cs` (D20) called from `Program.cs`.
   - [x] Part 3 (verification): build 0 errors, 15/15 tests; API started twice against `SadatSearmErp` (first start migrated + seeded, second changed nothing); columns (585), indexes (151) and FKs (78, 3 cascades) identical to `AlSadateSeram`. `make-baseline.ps1`, `_out` and their `.gitignore` lines removed.
-- **In progress / next part:** Belal answers the connection question and confirms; then mark F1-S2 «خلص» in the tracker, `/handoff`, next session from `python tools/tracker.py next`.
-- **State on Belal's PC:** `ConnectionStrings:con` is not in user secrets any more (removed 2026-11-25 18:05), so the API reads `appsettings.json` → `AlSadateSeram`, and startup stops with "There is already an object named 'Accounts'" (rolled back, nothing changes). It must point to `SadatSearmErp`.
+- **In progress / next part:** Belal tries the API and confirms; then mark F1-S2 «خلص» in the tracker, `/handoff`, next session from `python tools/tracker.py next`.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp` (set by Claude 2026-11-25, Belal's choice). Verified: the API starts with it in Development. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup (rolled back).
 - **Incident 2026-11-25:** Claude's first startup test hit `AlSadateSeram` because of that removed secret; the migration failed on its first statement and was rolled back. Checked: 57 tables, the same 4 history rows, no object created/modified.
 - **Uncommitted changes:** none.
 - **Decisions taken in this step:** 2026-11-17: `make-baseline.ps1` (1-أ), **D20** (2-ج), model as-is (3-أ), new DB name. 2026-11-25: **D21** delete behaviour (b); Claude runs the script; old Angular deletions committed; replies on `claude-reply/index.html`.
-- **Open questions:** none. Belal (2026-11-25) changes `Initial Catalog` to `SadatSearmErp` in his local `appsettings.json` himself, starts the API, then confirms.
+- **Open questions:** none. Waiting for Belal to start the API, try a login and confirm.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
