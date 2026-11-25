@@ -1,18 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-25 (F1-S2 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-25 (F1 done, F2-S1 next) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F1-S2 — fresh baseline migration (D0). Code finished and verified on Belal's PC by Claude; waiting for Belal's confirmation to mark it «خلص».
-- **Done in this step:**
-  - [x] Part 1: old migrations + leftover scripts deleted.
-  - [x] Part 2: D21 in `Infrastructure/Data/AppDbContext.cs` (`DisableDatabaseCascades`); `Infrastructure/Migrations/20261125161145_InitialCreate` + snapshot; `MigrateAndSeedDatabaseAsync` in `Infrastructure/Data/ApplicationBuilderExtensions.cs` (D20) called from `Program.cs`.
-  - [x] Part 3 (verification): build 0 errors, 15/15 tests; API started twice against `SadatSearmErp` (first start migrated + seeded, second changed nothing); columns (585), indexes (151) and FKs (78, 3 cascades) identical to `AlSadateSeram`. `make-baseline.ps1`, `_out` and their `.gitignore` lines removed.
-- **In progress / next part:** Belal tries the API and confirms; then mark F1-S2 «خلص» in the tracker, `/handoff`, next session from `python tools/tracker.py next`.
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp` (set by Claude 2026-11-25, Belal's choice). Verified: the API starts with it in Development. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup (rolled back).
-- **Incident 2026-11-25:** Claude's first startup test hit `AlSadateSeram` because of that removed secret; the migration failed on its first statement and was rolled back. Checked: 57 tables, the same 4 history rows, no object created/modified.
-- **Uncommitted changes:** none.
-- **Decisions taken in this step:** 2026-11-17: `make-baseline.ps1` (1-أ), **D20** (2-ج), model as-is (3-أ), new DB name. 2026-11-25: **D21** delete behaviour (b); Claude runs the script; old Angular deletions committed; replies on `claude-reply/index.html`.
-- **Open questions:** none. Waiting for Belal to start the API, try a login and confirm.
+- **Step:** F2-S1 — unified response (structure). Not started.
+- **Done in this step:** nothing yet.
+- **In progress / next part:** read `Result<T>`, `BaseApiController`, `ExceptionHandlingMiddleware`, `Program.cs` and the 4 paged-list shapes; write the «مخطط» section in `Docs/docs/refactor/README.md`; explain business + current state + changes + decisions to Belal (on `claude-reply/index.html`) and wait for his OK. Goal (tracker): one `PagedResult<T>`, framework errors (400/401/403/404/405/429/500) in the `Result<T>` shape, a stable code per error, no `ex.Message` to the client.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`).
+- **Uncommitted changes:** none. Build 0 errors, 15/15 tests (2026-11-25).
+- **Decisions taken in this step:** none.
+- **Open questions:** should `PendingModelChangesWarning` stay ignored in `AppDbContext.OnConfiguring`? (raise in F2-S1)
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -101,7 +97,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - [x] Backend review + refactor plan + blocking decisions (claude.ai, 2026-10-21/22)
 - [x] **F0 — security & critical fixes** (2026-11-17)
 - [x] **F1-S1 — .NET 10 + EF Core 10 upgrade** (2026-11-17)
-- [ ] **F1-S2 — fresh baseline migration (D0)** ← in progress
+- [x] **F1-S2 — fresh baseline migration (D0)** (2026-11-25)
+- [ ] **F2-S1 — unified response (structure)** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -145,3 +142,4 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-17 (claude.ai) — F1-S1 done: AutoMapper removed (D19), net10.0, Microsoft packages 10.0.15, unused packages removed, `System.Security.Cryptography.Xml` pinned (NU1903 via EPPlus). Build 0 errors, 15/15 on Belal's PC.
 - 2026-11-16 (claude.ai) — Docs, CLAUDE.md, PROJECT_CONTEXT.md, .claude/commands pushed to `fix/backend`; added TRACKER.xlsx (111 sessions) + refactor README (change log). New workflow: Claude implements + pushes, Belal pulls + builds/tests (cloud can't reach nuget.org).
 - 2026-11-25 (claude.ai) — Moved the main way of working to Claude Code on Belal's PC: `tools/tracker.py` (tracker updates keeping formulas/validation), `.claude/settings.json` (allowed build/test/git commands, no force-push), `/start` + `/handoff` rewritten, CLAUDE.md "Who does what" has both modes. F1-S2 unchanged: still waiting for `make-baseline.ps1`.
+- 2026-11-25 (Claude Code) — F1-S2 done: `InitialCreate` baseline, D20 auto-migrate, D21 no database cascades (`AppDbContext.cs`, `ApplicationBuilderExtensions.cs`, `Program.cs`, `Infrastructure/Migrations`); old Angular app removed; replies on `claude-reply/index.html`. First startup test hit the old DB (rolled back, nothing changed). Build 0 errors, 15/15, confirmed by Belal. Next: F2-S1.
