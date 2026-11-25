@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Domain.Common
 {
@@ -23,8 +24,16 @@ namespace Domain.Common
         /// Optional lookup key (e.g. "Supplier.DuplicatePhone") resolved against
         /// LocalizationResources based on the request's Accept-Language header.
         /// Leave null to keep using a literal Message — nothing breaks if you never set this.
+        /// Not serialized: a failure exposes it as <see cref="Code"/>.
         /// </summary>
+        [JsonIgnore]
         public string? MessageKey { get; set; }
+
+        /// <summary>
+        /// Stable error code for the client (D22): the message key, or the general code of the
+        /// status when the failure only has a literal message. Null on success.
+        /// </summary>
+        public string? Code => IsSuccess ? null : MessageKey ?? ErrorCodes.FromStatus(StatusCode);
 
         public HttpStatusCode StatusCode { get; set; }
         public T? Data { get; set; }
@@ -34,6 +43,11 @@ namespace Domain.Common
         /// Null for non-validation results.
         /// </summary>
         public IDictionary<string, string[]>? Errors { get; set; }
+
+        /// <summary>
+        /// Request trace id that finds the failure in the logs. Set at the API boundary, null on success.
+        /// </summary>
+        public string? TraceId { get; set; }
 
         public static Result<T> Success(T data, string? message = null, HttpStatusCode statusCode = HttpStatusCode.OK)
             => new() { IsSuccess = true, Data = data, Message = message, StatusCode = statusCode };
@@ -56,7 +70,7 @@ namespace Domain.Common
         public static Result<T> FailureKey(string messageKey, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
             => new() { IsSuccess = false, MessageKey = messageKey, StatusCode = statusCode };
 
-        public static Result<T> ValidationFailure(IDictionary<string, string[]> errors, string? messageKey = "Common.ValidationFailed")
+        public static Result<T> ValidationFailure(IDictionary<string, string[]> errors, string? messageKey = ErrorCodes.ValidationFailed)
             => new()
             {
                 IsSuccess = false,

@@ -2,6 +2,7 @@
 using Application.Services.contract.LocalizationService;
 using Domain.Common;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace AlSadat_Seram.Api.Controllers
 {
@@ -31,14 +32,22 @@ namespace AlSadat_Seram.Api.Controllers
         protected string RequireCurrentUserId() => _currentUser.RequireUserId();
 
         /// <summary>
-        /// Resolves MessageKey (if set) to localized text, then returns the result
-        /// with its own StatusCode — success and failure both flow through here,
+        /// Resolves MessageKey (if set) to localized text, stamps the trace id on a failure,
+        /// then returns the result with its own StatusCode — success and failure both flow through here,
         /// no branching needed at the call site.
         /// </summary>
         protected IActionResult HandleResult<T>(Result<T> result)
         {
             if (!string.IsNullOrWhiteSpace(result.MessageKey))
                 result.Message = Localization.Resolve(result.MessageKey);
+
+            if (!result.IsSuccess)
+            {
+                if (string.IsNullOrWhiteSpace(result.Message))
+                    result.Message = Localization.Resolve(result.Code!);
+
+                result.TraceId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            }
 
             return StatusCode((int)result.StatusCode, result);
         }

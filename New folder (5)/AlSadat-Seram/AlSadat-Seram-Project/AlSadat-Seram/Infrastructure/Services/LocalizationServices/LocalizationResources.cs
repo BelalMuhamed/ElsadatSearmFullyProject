@@ -18,6 +18,10 @@ namespace Infrastructure.Services.LocalizationServices
             ["Common.BadRequest"] = ("طلب غير صالح", "Bad request"),
             ["Common.DataConflict"] = ("تعارض في البيانات", "Data conflict"),
             ["Common.ValidationFailed"] = ("البيانات المدخلة غير صالحة", "The submitted data is invalid"),
+            ["Common.InvalidBody"] = ("صيغة البيانات المرسلة غير صحيحة", "The request data is malformed"),
+            ["Common.MethodNotAllowed"] = ("طريقة الطلب غير مسموحة", "This request method is not allowed"),
+            ["Common.UnsupportedMediaType"] = ("نوع البيانات المرسلة غير مدعوم", "This content type is not supported"),
+            ["Common.TooManyRequests"] = ("عدد الطلبات كبير. حاول مرة أخرى بعد قليل", "Too many requests. Please try again shortly."),
             // add inside the Messages dictionary
             ["Common.PermissionDenied"] = ("ليس لديك الصلاحية للقيام بهذا الإجراء", "You do not have permission to perform this action"),
             ["Common.ModuleNotAssigned"] = ("ليس لديك صلاحية الوصول لهذا القسم", "You do not have access to this module"),
