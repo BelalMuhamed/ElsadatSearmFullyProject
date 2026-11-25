@@ -7,11 +7,11 @@ _Last updated: 2026-11-25 (F1 done, F2-S1 next) · Read this first in any new se
   - [x] Part 1 (`66146b5`): `Domain/Common/ErrorCodes.cs`, `Result.Code`/`TraceId`, `BaseApiController`, localization keys.
   - [x] Part 2 (`0725cde`): `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs`, `ExceptionHandlingMiddleware`, `PasswordChangeRequiredFilter`, `Program.cs`; `Domain/Exceptions/CustomExceptions.cs` deleted.
   - [x] Part 3 (`2e14728`): `PagedResult`, `PageRequest`, `ToPagedResultAsync`, `PaginationParams` limits, `AppDbContext.OnConfiguring` removed (D25), 27 new tests.
-- **In progress / next part:** Belal confirms → F2-S1 «خلص» in the tracker, `/handoff`, then F2-S2 (the 30 controllers → `BaseApiController.HandleResult`, `PagedList`/`ApiResponse` → `PagedResult`, 26 `ex.Message` in controllers).
+- **In progress / next part:** Belal confirms F2-S1 → «خلص» in the tracker, `/handoff`. F2-S2 (bulk move of controllers) is cancelled (D26), so the next session is F3-S1 (audit + change log): explain it first.
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`). If Belal's API is running from Visual Studio the normal build is locked: build with `--artifacts-path`.
 - **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-25).
-- **Decisions taken in this step (2026-11-25):** **D22**, **D23**, **D24**, **D25** (see the Decisions table).
-- **Open questions:** none.
+- **Decisions taken in this step (2026-11-25):** **D22**, **D23**, **D24**, **D25**, **D26** (see the Decisions table).
+- **Open questions:** remove the F2-S2 row from `TRACKER.xlsx` (111 → 110 sessions) or keep it as «متوقف» with a note? (`tracker.py next` stops on it while it stays.)
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -41,7 +41,7 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 - Services return `Domain.Common.Result<T>`; no business exceptions.
 - Controllers inherit `BaseApiController` and return `HandleResult(result)`, which resolves
   `MessageKey` via `ILocalizationService` and returns `StatusCode((int)result.StatusCode, result)`.
-  (30 of 33 controllers don't follow this yet — fixed in F2.)
+  (30 of 33 controllers don't follow this yet — each one is rewritten in its module, D26.)
 - Messages are localization keys (`Result<T>.SuccessKey/FailureKey`) defined in
   `Infrastructure/Services/LocalizationServices/LocalizationResources.cs` as `(ar, en)` tuples.
 - Response shape (the `Result<T>` serialized as-is):
@@ -50,7 +50,7 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
   { "isSuccess": false, "message": "...", "messageKey": "Common.ValidationFailed", "statusCode": 400, "data": null,
     "errors": { "field": ["..."] } }
   ```
-  Paged-list shape: 4 different shapes today → one `PagedResult<T>` in F2. Framework 401/403/500 shape: verify in F2.
+  Paged-list shape: 4 different shapes today → `PagedResult<T>` (F2-S1), adopted module by module (D26). Framework errors: same envelope since F2-S1.
 - Services are reached through `IServiceManager` (lazy-constructed in
   `Infrastructure/Services/ServiceManager.cs`); some auth services are also DI-registered in
   `Program.cs` and injected directly into controllers. **Decision D2: keep this pattern.**
@@ -94,6 +94,7 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-25 | **D23** One `PagedResult<T>` (`items, page, pageSize, totalCount, totalPages`), query `page`/`pageSize`, max page size 100 | one shape for every table; exports go through F10 | keep `PagedList`; 500 / no limit |
 | 2026-11-25 | **D24** `ex.Message` in services is removed when each module rewrites its service | those services are rewritten anyway | rethrow now; generic message now |
 | 2026-11-25 | **D25** `PendingModelChangesWarning` is no longer ignored | a forgotten migration stops startup instead of failing later | keep ignoring it |
+| 2026-11-25 | **D26** F2-S2 cancelled: each module reviews its controllers and rewrites only what its screens need; the rest are deleted | a bulk move would touch code that is rewritten or deleted later | move all 30 controllers in F2-S2 |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
@@ -105,7 +106,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - [x] **F0 — security & critical fixes** (2026-11-17)
 - [x] **F1-S1 — .NET 10 + EF Core 10 upgrade** (2026-11-17)
 - [x] **F1-S2 — fresh baseline migration (D0)** (2026-11-25)
-- [ ] **F2-S1 — unified response (structure)** ← next
+- [ ] **F2-S1 — unified response (structure)** ← done, waiting for Belal
+- F2-S2 cancelled (D26): controllers move with their module
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -128,7 +130,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
   - `ServiceManager.cs`: `_UserSessionService` news up its own `UserSessionService` while the injected `userSessionService` ctor parameter is unused.
   - `UserSessionService.AdminRevokeSessionsAsync`: `IdentityResult` of `UpdateSecurityStampAsync` ignored.
   - `AuthController.RevokeSessions`: no `CancellationToken`; `RemoteIpAddress` is the proxy IP unless forwarded headers are configured.
-- `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in F2.
+- `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in M1 (D26).
 - `PayrollDeductionService.cs` lines 84/96: CS8619 nullability warnings.
 - Build has ~108 warnings (mostly nullability) — not blocking; to be cleaned per module.
 - Swashbuckle stays 9.0.6 (Microsoft.OpenApi 1.x); moving to 10.x needs the Swagger setup in `Program.cs` rewritten for Microsoft.OpenApi 2.
@@ -139,7 +141,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - Rate limiter (`Program.cs`) counts per `RemoteIpAddress`, 100/min: behind an Azure proxy all users may share one IP → needs forwarded headers / per-user partition before deployment.
 - `UnitOfWork.LogError` writes `Logs/errors.log` into a zip with a hardcoded password → replace with `ILogger`.
 - DataAnnotations messages in DTOs are still English literals (e.g. `LoginDto`): move them to localization keys in each module (`ApiErrorWriter` already resolves keys).
-- `SupplierService` has its own page-size limit (50): align with D23 in F2-S2.
+- `SupplierService` has its own page-size limit (50): align with D23 in M5 (D26).
 - D20 (auto-migrate everywhere): in prod the API's DB user needs DDL rights — revisit when the Azure pipeline is set up (alternative: migration bundle in the pipeline).
 - Full list of critical issues C1–C16 and where each is fixed: `Docs/docs/refactor/PLAN.md` ("مشاكل حرجة").
 - `Infrastructure/Services/GoogleAuthServices/GoogleAuthService.cs` still exists although Google login was removed — verify and delete (F0).

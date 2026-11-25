@@ -220,10 +220,10 @@
 - `ExceptionHandlingMiddleware`: الـ 409 للتعارض وتكرار القيم والـ FK بس، والباقي 500. الطلب اللي العميل قفله مبيتسجلش كخطأ.
 - `Program.cs`: `UseStatusCodePages`، و`Retry-After` في الـ 429، و`/api/...` الغلط مبيرجعش `index.html`. أحداث الـ JWT اليدوية اتشالت.
 - `PasswordChangeRequiredFilter` بيستخدم `ApiErrorWriter`.
-- **D23:** `PagedResult<T>` و`PageRequest` (`page`، `pageSize`، أقصى 100) و`ToPagedResultAsync`. لسه محدش بيستخدمهم؛ النقل في F2-S2. `PaginationParams` القديمة أخدت نفس الحدود.
+- **D23:** `PagedResult<T>` و`PageRequest` (`page`، `pageSize`، أقصى 100) و`ToPagedResultAsync`. لسه محدش بيستخدمهم؛ كل موديول ينقل قوايمه عليهم (D26). `PaginationParams` القديمة أخدت نفس الحدود.
 - **D25:** `AppDbContext.OnConfiguring` اتشالت، فنسيان migration بيوقّف التشغيل.
 - اتمسح `Domain/Exceptions/CustomExceptions.cs`.
-- **D24:** `ex.Message` في الـ services متأجل لكل موديول لما الـ service تتكتب من جديد، فهدف «مفيش ex.Message للعميل» متحقق في الـ framework والـ middleware بس. الـ 26 بتوع الـ controllers في F2-S2.
+- **D24:** `ex.Message` في الـ services متأجل لكل موديول لما الـ service تتكتب من جديد، فهدف «مفيش ex.Message للعميل» متحقق في الـ framework والـ middleware بس. والـ 26 بتوع الـ controllers كمان مع موديولاتهم (D26).
 
 **اتأكدنا من:** build بـ 0 errors و42/42 test (27 جداد). طلبات حقيقية على الـ API (400، 401، 404، 405، 415، 429)، و403 و409 و500 على host تجريبي بنفس الـ middleware. `ToPagedResultAsync` والـ login الناجح متجربوش.
 
@@ -233,3 +233,16 @@
 3. افتح `/api/xyz` → 404 بنفس الشكل.
 
 **ملاحظة:** GET على endpoint بتاع POST بيرجع 404 مش 405 (زي الأول)؛ باقي الـ methods بترجع 405.
+
+---
+
+### F2-S2 — نقل الـ controllers · اتلغت (D26) · 2026-11-25
+
+**القرار (بلال):** مفيش نقل للـ 30 controller مرة واحدة. كل موديول يراجع الـ controllers بتاعته، وينقل بس الـ endpoints اللي الشاشات محتاجاها بعد ما تتكتب بالشكل الصحيح، والباقي يتمسح.
+
+**التأثير:**
+- **الداتا:** مفيش.
+- **الكود:** الـ controllers القديمة تفضل بشكلها لحد موديولها. `PagedList` و`ApiResponse` و`PaginationParams` يتمسحوا مع آخر موديول بيستخدمهم.
+- **الـ UI:** مفيش، لأن الفرونت الجديد بيتبني موديول موديول على الـ endpoints الجديدة.
+- **الأمان:** الـ 26 `ex.Message` في الـ controllers والـ 73 في الـ services يفضلوا لحد موديولاتهم.
+- **الخطة:** «تعريف الخلاص» لأي موديول في `PLAN.md` بقى فيه بند صريح بالنقل ده، علشان مفيش controller يتنسي. F3-S1 وFE-S1 بيعتمدوا على F2 (الهيكل) فمش متأثرين.

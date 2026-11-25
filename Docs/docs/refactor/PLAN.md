@@ -63,7 +63,7 @@ Oct 21, 2026 · @Belal Basal · (نسخة مصدّرة من الـ doc يوم ٢
 | --- | --- | --- | --- | --- |
 | F0 | قفل C1 + C2 + C3 | أمان | الثغرات شغالة | الدور يتحدد من نوع المستخدم في الـ service مش من الـ DTO؛ العميل بيتعمل من غير password (يتفعّل بكلمة سر مؤقتة من المدير)؛ حقول الأرصدة تتشال من DTO التعديل |
 | F1 | الترقية لـ .NET 10 LTS + EF Core 10 | دعم .NET 9 بيخلص ١٠ نوفمبر | net9.0 | قرار D1 |
-| F2 | Response وأخطاء موحدة | كل الشاشات + حالات «ممنوع / خطأ / فاضي» (شاشة ١٤) | `Result<T>` موجود بس ٣٠ من ٣٣ controller مش ماشيين عليه، و٤ أشكال paging | كل controller يورث `BaseApiController.HandleResult`؛ شكل paging واحد `PagedResult<T>`؛ 400 الـ model validation و401/403/404/405/429 بنفس الـ envelope؛ `code` ثابت لكل خطأ (زي `ERR-503` في الشاشة)؛ مفيش `ex.Message` للعميل |
+| F2 | Response وأخطاء موحدة | كل الشاشات + حالات «ممنوع / خطأ / فاضي» (شاشة ١٤) | `Result<T>` موجود بس ٣٠ من ٣٣ controller مش ماشيين عليه، و٤ أشكال paging | الهيكل مرة واحدة في F2-S1؛ كل controller ينتقل لـ `BaseApiController.HandleResult` مع موديوله بعد المراجعة وإعادة الصياغة، مش مرة واحدة (D26)؛ شكل paging واحد `PagedResult<T>`؛ 400 الـ model validation و401/403/404/405/429 بنفس الـ envelope؛ `code` ثابت لكل خطأ (زي `ERR-503` في الشاشة)؛ مفيش `ex.Message` للعميل (كل موديول ينضّف بتاعه — D24، D26) |
 | F3 | Audit + سجل التغييرات | «سجل التغييرات» (٧٨)، الشريط الزمني في الفاتورة والمعاينة، «آخر تعديل» في القوايم | `ChangeLogService` مبيتندهش من أي حتة؛ الهوية جاية من الفرونت (C7) | `SaveChangesInterceptor` يملا `CreatedBy/At` و`UpdatedBy/At` من `ICurrentUserService`؛ جدول `AuditEntries` (مين، إمتى، الشاشة، الـ entity، قبل/بعد) للـ entities المعلّمة؛ append-only |
 | F4 | ترقيم المستندات | `INV-1038`، `PUR-0224`، `RC-0368`، `RET-0044`، `TR-0094`، `CNT-0013`، `INS-0412`، `W-2231`، `JE-4471` | `SO{Id}` و`PO{Id}` بعد save تاني | `DocumentSequences` (prefix، آخر رقم) بـ `UPDLOCK` جوه نفس الـ transaction |
 | F5 | Concurrency | تأكيد فاتورة وتحويل وجرد في نفس اللحظة | مفيش | `rowversion` على `Stock` والفواتير والمحافظ؛ تعارض = 409 برسالة واضحة |
@@ -446,4 +446,5 @@ Oct 21, 2026 · @Belal Basal · (نسخة مصدّرة من الـ doc يوم ٢
 - [ ] كل قايمة paged ومتصفّاة في SQL وعليها index، ومفيش تحميل جداول في الذاكرة.
 - [ ] كل عملية فيها فلوس أو مخزون أو نقاط جوه transaction واحدة، بقيد من المحرك وحركة من الدفتر، والـ tests بتاعتها شغالة.
 - [ ] الـ migration اتراجعت، ومفيش `[Authorize(Roles=…)]` فاضل في controllers الموديول.
+- [ ] كل controllers الموديول بتورث `BaseApiController` وبترجّع `HandleResult`، وقوايمها `PagedResult<T>`، ومفيش `ex.Message` فيها ولا في الـ services بتاعتها، والـ endpoints اللي الشاشات مش محتاجاها اتمسحت (D26).
 - [ ] الفرونت بتاعه شغال على الحالات الأربعة وبالصلاحيات.

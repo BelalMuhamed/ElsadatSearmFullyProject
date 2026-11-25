@@ -84,6 +84,7 @@ Secrets (JWT key, connection string `ConnectionStrings:con`, seed password) come
 - **D23** Paged reads return `PagedResult<T>` (`items, page, pageSize, totalCount, totalPages`); requests use `page`/`pageSize`, max 100.
 - **D24** `ex.Message` must not reach the client: a rewritten service rethrows (after rollback) so `ExceptionHandlingMiddleware` logs it and returns 500. Old services are cleaned in their module, not before.
 - **D25** `PendingModelChangesWarning` is not ignored: a model change needs its migration before the API starts.
+- **D26** No bulk move of old controllers. Each module reviews its own controllers and rewrites only the endpoints its screens need on `BaseApiController.HandleResult` + `PagedResult<T>`; the rest are deleted. `PagedList`, `ApiResponse` and `PaginationParams` are deleted with the last module that uses them.
 - **Hosting** Azure (Azure Managed Redis in prod). Dev: API + Redis on the same machine (Redis in Docker/WSL).
 
 ## Mandatory coding rules (every touched method complies — no grandfathering)
