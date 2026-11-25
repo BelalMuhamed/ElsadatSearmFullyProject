@@ -186,6 +186,8 @@
 - اتضاف `make-baseline.ps1` في أول الريبو (مؤقت، بيتمسح في آخر الـ session)، واتضاف `/_out/` و`/make-baseline.log` لـ `.gitignore`.
 
 #### الجزء التاني — توليد الـ migration ومراجعتها (المخطط)
+> **2026-11-25 — واقف على قرار:** Claude شغّل السكريبت على جهاز بلال (بعد تصليح قراية الـ connection string بـ `PSBase`). الـ `InitialCreate` اتولّدت، لكن `database update` وقع بـ SQL error 1785: جدول `PointTransactions` ليه FK-ين بـ cascade على `AspNetUsers`. السبب إن الـ migration القديمة `nhbikhb` كانت متعدّلة بالإيد (37 `Cascade` بقوا `NoAction`)، فالداتابيز القديمة فيها 3 cascades والـ model بيطلب 40. الاختيارات: (أ) نصلّح `PointTransactions` بس، (ب) `ClientCascade` لكل الـ cascades ما عدا الـ 3 بتوع الصلاحيات (الترشيح)، (ج) `Restrict` للكل.
+
 1. بلال يشغّل `make-baseline.ps1` بدل `sync-and-build.ps1` مرة واحدة. السكريبت بيعمل pull، ويغيّر اسم الداتابيز في الـ user secrets لـ `SadatSearmErp`، ويولّد `InitialCreate`، ويطلع ملف SQL، ويعمل الداتابيز الجديدة، ويحط الملفات المتولدة في `_out` علشان الـ working tree يفضل نضيف.
 2. Claude يقرا الملفات من جهاز بلال، ويراجع الـ SQL، ويحطها في `Infrastructure/Migrations`.
 3. `ApplicationBuilderExtensions` يعمل `MigrateAsync()` قبل الـ seed (D20).
