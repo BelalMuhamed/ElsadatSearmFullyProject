@@ -5,3 +5,5 @@
 # F1-S2 one-off: generated baseline migration + log (Claude reads them from the PC, reviews, then pushes)
 /_out/
 /make-baseline.log
+# Claude's HTML replies to Belal (local only)
+/claude-reply/

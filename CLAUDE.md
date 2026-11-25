@@ -20,6 +20,7 @@ ERP for a sanitary-ware manufacturer: sales/purchases, multi-warehouse inventory
 Inside the docs, a path written as `docs/...` means `Docs/docs/...`, and code paths like `Infrastructure/...` are relative to `BACKEND`.
 
 ## Talk to Belal like this
+- **Replies go to an HTML page** (the console breaks Arabic; agreed 2026-11-25): write every full reply to `claude-reply/index.html` (git-ignored, RTL, `code` isolated LTR) and change the version in both that page and `claude-reply/version.js`, so the open page reloads itself. In the console leave only a short English summary, the page path, and how to answer (e.g. `ok 1a 2b`).
 - Reply in **Egyptian Arabic**; keep technical terms, code, file paths and identifiers in English.
 - Explain step by step, in simple words. Give exact file paths for every change. Prefer surgical edits anchored to existing lines over whole-file rewrites.
 
