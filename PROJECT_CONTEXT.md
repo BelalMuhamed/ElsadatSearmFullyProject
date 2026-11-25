@@ -1,17 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-25 (F1 done, F2-S1 next) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-25 (F2 done, F3-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F2-S1 — unified response (structure). Code finished and verified; waiting for Belal's confirmation to mark it «خلص».
-- **Done in this step:**
-  - [x] Part 1 (`66146b5`): `Domain/Common/ErrorCodes.cs`, `Result.Code`/`TraceId`, `BaseApiController`, localization keys.
-  - [x] Part 2 (`0725cde`): `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs`, `ExceptionHandlingMiddleware`, `PasswordChangeRequiredFilter`, `Program.cs`; `Domain/Exceptions/CustomExceptions.cs` deleted.
-  - [x] Part 3 (`2e14728`): `PagedResult`, `PageRequest`, `ToPagedResultAsync`, `PaginationParams` limits, `AppDbContext.OnConfiguring` removed (D25), 27 new tests.
-- **In progress / next part:** Belal confirms F2-S1 → «خلص» in the tracker, `/handoff`. F2-S2 (bulk move of controllers) is cancelled (D26), so the next session is F3-S1 (audit + change log): explain it first.
+- **Step:** F3-S1 — audit + change log. Plan explained to Belal (page + README «مخطط»); no code yet.
+- **Done in this step:** [x] code and screen 78 read, plan and 4 decisions written.
+- **In progress / next part:** after Belal's answer, 4 parts (build + test + commit each): (1) `Infrastructure/Data/Interceptors/AuditFieldsInterceptor.cs` + `Domain/Common/IAuditedEntity.cs` + registration in `Program.cs`; (2) `Domain/Entities/Audit/AuditEntry.cs` + `AppDbContext` + migration `AddAuditEntries` (trigger if 4a, with `HasTrigger`); (3) `AuditEntriesInterceptor`, `[Audited]`/`[NotAudited]`, `IAuditTrail`, same transaction (added rows get their key after the first save); compare original/current values because `GenericRepository.UpdateAsync` marks every column Modified; (4) delete `ChangeLogService`, `IChangeLogService`, `IAuditableEntity` and their `ServiceManager` members. Verify on a throwaway DB `SadatSearmErp_AuditTest` (create + drop; approved with the plan).
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`). If Belal's API is running from Visual Studio the normal build is locked: build with `--artifacts-path`.
 - **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-25).
-- **Decisions taken in this step (2026-11-25):** **D22**, **D23**, **D24**, **D25**, **D26** (see the Decisions table).
-- **Open questions:** remove the F2-S2 row from `TRACKER.xlsx` (111 → 110 sessions) or keep it as «متوقف» with a note? (`tracker.py next` stops on it while it stays.)
+- **Decisions taken in this step:** none yet.
+- **Open questions:** (1) legacy audit columns, (2) `AuditEntries` shape, (3) entities audited now, (4) append-only enforcement. Recommended: a for all.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -100,14 +97,15 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
 
 ## Refactor status
-Detailed per-session status: `Docs/docs/refactor/TRACKER.xlsx` (111 sessions). Change explanations: `Docs/docs/refactor/README.md`.
+Detailed per-session status: `Docs/docs/refactor/TRACKER.xlsx` (110 sessions). Change explanations: `Docs/docs/refactor/README.md`.
 Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired per module; F16 throughout) → M1 → M2+M3 → M4+M5 → M6 → M7 → M8 → M9+M10 → M11 → M12 → M13+M14.
 - [x] Backend review + refactor plan + blocking decisions (claude.ai, 2026-10-21/22)
 - [x] **F0 — security & critical fixes** (2026-11-17)
 - [x] **F1-S1 — .NET 10 + EF Core 10 upgrade** (2026-11-17)
 - [x] **F1-S2 — fresh baseline migration (D0)** (2026-11-25)
-- [ ] **F2-S1 — unified response (structure)** ← done, waiting for Belal
+- [x] **F2-S1 — unified response (structure)** (2026-11-25)
 - F2-S2 cancelled (D26): controllers move with their module
+- [ ] **F3-S1 — audit + change log** ← in progress
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -153,6 +151,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-16 (claude.ai) — Work mode confirmed: one account at a time (no parallel work). Added to CLAUDE.md: checkpoint after every small part, explain business + changes before any part, impact analysis for every decision. Rough estimate: ~100–140 sessions total.
 - 2026-11-17 (claude.ai) — F0 done: revoke-sessions, C1, C2, C3, C15, C16, Google removed. Build 0 errors, 15/15 tests on Belal's PC.
 - 2026-11-17 (claude.ai) — F1-S1 done: AutoMapper removed (D19), net10.0, Microsoft packages 10.0.15, unused packages removed, `System.Security.Cryptography.Xml` pinned (NU1903 via EPPlus). Build 0 errors, 15/15 on Belal's PC.
-- 2026-11-16 (claude.ai) — Docs, CLAUDE.md, PROJECT_CONTEXT.md, .claude/commands pushed to `fix/backend`; added TRACKER.xlsx (111 sessions) + refactor README (change log). New workflow: Claude implements + pushes, Belal pulls + builds/tests (cloud can't reach nuget.org).
+- 2026-11-16 (claude.ai) — Docs, CLAUDE.md, PROJECT_CONTEXT.md, .claude/commands pushed to `fix/backend`; added TRACKER.xlsx (110 sessions) + refactor README (change log). New workflow: Claude implements + pushes, Belal pulls + builds/tests (cloud can't reach nuget.org).
 - 2026-11-25 (claude.ai) — Moved the main way of working to Claude Code on Belal's PC: `tools/tracker.py` (tracker updates keeping formulas/validation), `.claude/settings.json` (allowed build/test/git commands, no force-push), `/start` + `/handoff` rewritten, CLAUDE.md "Who does what" has both modes. F1-S2 unchanged: still waiting for `make-baseline.ps1`.
 - 2026-11-25 (Claude Code) — F1-S2 done: `InitialCreate` baseline, D20 auto-migrate, D21 no database cascades (`AppDbContext.cs`, `ApplicationBuilderExtensions.cs`, `Program.cs`, `Infrastructure/Migrations`); old Angular app removed; replies on `claude-reply/index.html`. First startup test hit the old DB (rolled back, nothing changed). Build 0 errors, 15/15, confirmed by Belal. Next: F2-S1.
+- 2026-11-25 (Claude Code) — F2-S1 done and confirmed: `code`/`traceId`, `ApiErrorWriter`, `PagedResult`, D22–D25; F2-S2 cancelled (D26) and its row removed with `tracker.py remove`. Next: F3-S1.

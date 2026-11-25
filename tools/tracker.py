@@ -8,6 +8,7 @@ Usage (run from the repo root; on Windows use `py -3` instead of `python3`):
   python3 tools/tracker.py show F1-S2
   python3 tools/tracker.py session F1-S2 --status جاري --start today
   python3 tools/tracker.py session F1-S2 --status خلص --end today --commit abc1234 --notes "build ناجح ..."
+  python3 tools/tracker.py remove F2-S2            # a cancelled session; keep its story in the README
   python3 tools/tracker.py decision D20 --status اتقرر --choice "(ج) ..." --date today --session F1-S2 --impact "Program.cs"
 
 Requires: pip install openpyxl
@@ -114,6 +115,19 @@ def cmd_session(wb, args) -> bool:
     return True
 
 
+def cmd_remove(wb, args) -> bool:
+    ws, row = find_session(wb, args.code)
+    if ws.cell(row, S_STATUS).value == "خلص":
+        sys.exit(f"{args.code} is «خلص»: finished sessions are not removed")
+    print_session(ws, row)
+    ws.delete_rows(row)
+    if ws.auto_filter.ref:  # the header row stays, the last row is one less
+        first, last = ws.auto_filter.ref.split(":")
+        column = "".join(ch for ch in last if ch.isalpha())
+        ws.auto_filter.ref = f"{first}:{column}{ws.max_row}"
+    return True
+
+
 def cmd_decision(wb, args) -> bool:
     ws = wb[DECISIONS_SHEET]
     target = next((r for r in range(2, ws.max_row + 1) if ws.cell(r, D_CODE).value == args.code), None)
@@ -151,6 +165,8 @@ def main() -> None:
     p.add_argument("--end", help="YYYY-MM-DD or today")
     p.add_argument("--commit", nargs="+", help="short hashes, appended (no duplicates)")
     p.add_argument("--notes", help="replaces the notes cell")
+    p = sub.add_parser("remove", help="remove a cancelled session row")
+    p.add_argument("code")
     p = sub.add_parser("decision", help="add or update a decision row")
     p.add_argument("code")
     p.add_argument("--title")
@@ -162,7 +178,8 @@ def main() -> None:
     args = parser.parse_args()
 
     wb = openpyxl.load_workbook(TRACKER)
-    changed = {"next": cmd_next, "show": cmd_show, "session": cmd_session, "decision": cmd_decision}[args.cmd](wb, args)
+    changed = {"next": cmd_next, "show": cmd_show, "session": cmd_session, "remove": cmd_remove,
+               "decision": cmd_decision}[args.cmd](wb, args)
     if changed:
         wb.save(TRACKER)
 
