@@ -11,7 +11,6 @@ using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection.Emit;
 
 
@@ -79,15 +78,6 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Auth.AuthAuditLog> AuthAuditLogs { get; set; }
 
         public DbSet<SalesInvoiceItemStoresQuantities> SalesInvoiceItemStoresQuantities { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-
-            optionsBuilder.ConfigureWarnings(warnings =>
-                warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-
-        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
