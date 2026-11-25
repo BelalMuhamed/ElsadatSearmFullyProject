@@ -15,6 +15,8 @@
 
 ## طريقة الشغل
 
+> **من 2026-11-25 الشغل الأساسي بقى على Claude Code على جهازك.** Claude بيشتغل جوه `C:\Users\b.zakaria\Desktop\SR` مباشرة، وبيعمل build وtest بنفسه ويقرا النتيجة، فمش محتاج `sync-and-build.ps1` ولا ملفات الـ log. ابدأ أي session بـ `/start` واقفلها بـ `/handoff`. الخطوات اللي تحت دي لسه شغالة لو اشتغلت من claude.ai.
+
 1. **قبل أي session:** Claude بيشرحلك الـ business والوضع الحالي والتعديلات والقرارات المطلوبة (بتأثير كل قرار)، ويستنى موافقتك.
 2. **التنفيذ:** Claude بيكتب الكود على نسخة الريبو اللي عنده، ويعمل commit و push على `fix/backend` بعد كل جزء صغير.
 3. **البيلد والتجربة عندك:** بيئة Claude مقفول عليها `api.nuget.org`، فمش بتقدر تعمل restore للـ packages ولا build. فإنت بتعمل `git pull` وتبني وتشغّل التستات في Visual Studio أو بالأوامر دي:
@@ -25,7 +27,7 @@
    ```
    أو أسهل: شغّل `sync-and-build.ps1` اللي في أول الريبو (كليك يمين › Run with PowerShell) — بيعمل pull وbuild وtest ويكتب `pull.log` و`build.log` و`test.log`.
    لو فيه أخطاء، Claude بيقرا الملفات دي من فولدر `SR` على جهازك ويصلّح. (الملفات دي في `.gitignore` مش هتترفع.)
-4. **بعد كل جزء:** Claude بيحدّث 3 حاجات: الـ Checkpoint في `PROJECT_CONTEXT.md`، حالة الـ session في `TRACKER.xlsx`، وشرح التعديل هنا تحت كود الـ session.
+4. **بعد كل جزء:** Claude بيحدّث 3 حاجات: الـ Checkpoint في `PROJECT_CONTEXT.md`، وحالة الـ session في `TRACKER.xlsx` (دايمًا بـ `tools/tracker.py`، علشان الـ formulas والتنسيق ما يبوظوش)، وشرح التعديل هنا تحت كود الـ session.
 
 ### حالات الـ session في الـ tracker
 | الحالة | معناها |

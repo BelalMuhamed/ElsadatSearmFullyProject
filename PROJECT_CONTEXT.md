@@ -10,6 +10,7 @@ _Last updated: 2026-11-17 (F1-S2 in progress) · Read this first in any new sess
 - **Uncommitted changes:** none (part 1 pushed). Build after part 1 not confirmed yet (no code referenced the migrations, so it should still compile).
 - **Decisions taken in this step (2026-11-17):** generation via `make-baseline.ps1`, Claude reviews + pushes (1-أ); **D20** auto-migrate at startup in every environment (2-ج); keep the model as-is in the baseline, unused tables leave in their own module (3-أ); new DB name instead of dropping the old one; leftover scripts deleted.
 - **Open questions:** none.
+- **Claude Code (from 2026-11-25):** in Claude Code on Belal's PC, Claude can run `make-baseline.ps1` itself (`powershell -ExecutionPolicy Bypass -File make-baseline.ps1`, after Belal's OK — needs his local SQL Server) and read `make-baseline.log`, `_out/InitialCreate.sql`, `_out/Migrations/*` directly; no staging. Tracker edits go through `tools/tracker.py`.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -138,3 +139,4 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-17 (claude.ai) — F0 done: revoke-sessions, C1, C2, C3, C15, C16, Google removed. Build 0 errors, 15/15 tests on Belal's PC.
 - 2026-11-17 (claude.ai) — F1-S1 done: AutoMapper removed (D19), net10.0, Microsoft packages 10.0.15, unused packages removed, `System.Security.Cryptography.Xml` pinned (NU1903 via EPPlus). Build 0 errors, 15/15 on Belal's PC.
 - 2026-11-16 (claude.ai) — Docs, CLAUDE.md, PROJECT_CONTEXT.md, .claude/commands pushed to `fix/backend`; added TRACKER.xlsx (111 sessions) + refactor README (change log). New workflow: Claude implements + pushes, Belal pulls + builds/tests (cloud can't reach nuget.org).
+- 2026-11-25 (claude.ai) — Moved the main way of working to Claude Code on Belal's PC: `tools/tracker.py` (tracker updates keeping formulas/validation), `.claude/settings.json` (allowed build/test/git commands, no force-push), `/start` + `/handoff` rewritten, CLAUDE.md "Who does what" has both modes. F1-S2 unchanged: still waiting for `make-baseline.ps1`.

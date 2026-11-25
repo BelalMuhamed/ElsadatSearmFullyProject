@@ -8,7 +8,7 @@ ERP for a sanitary-ware manufacturer: sales/purchases, multi-warehouse inventory
 | **Backend solution** (`BACKEND`) | `New folder (5)/AlSadat-Seram/AlSadat-Seram-Project/AlSadat-Seram/` (contains `AlSadat-Seram.slnx`) |
 | Handoff / status | `PROJECT_CONTEXT.md` (repo root) |
 | Refactor plan | `Docs/docs/refactor/PLAN.md` |
-| Current step brief | `Docs/docs/refactor/F0.md` (later: F1.md, M1.md …) |
+| Current step brief | the step's section in `Docs/docs/refactor/README.md` + `Docs/docs/refactor/PLAN.md` (`F0.md` is the only standalone brief) |
 | **Tracker** (sessions + status) | `Docs/docs/refactor/TRACKER.xlsx` — one sheet per plan part, one row per session (goal, outputs, status, dates, commit) + a decisions sheet |
 | **Change log** (explanation of every change) | `Docs/docs/refactor/README.md` — one section per session code |
 | UI contract (text) | `Docs/docs/ui/README.md`, `Docs/docs/ui/SCREENS.md`, `Docs/docs/ui/screens/<Name>.dc.html` |
@@ -40,7 +40,7 @@ Then give **your recommendation + what would change your mind**, and wait for hi
 ## Read before any work (in this order)
 1. `PROJECT_CONTEXT.md` — status, decisions, in-progress work, known issues. **Update it at the end of every session** (`/handoff`).
 2. `Docs/docs/refactor/PLAN.md` — critical issues C1–C16, foundation F0–F16, modules M1–M14, decisions D0–D15. The "القرارات" section is authoritative.
-3. The brief of the current step (`Docs/docs/refactor/F0.md` now).
+3. The current step: its section in `Docs/docs/refactor/README.md` and in `PLAN.md` (`python tools/tracker.py next` shows the session).
 4. For anything screen-related: `Docs/docs/ui/README.md` → grep `Docs/docs/ui/SCREENS.md` → open the `.dc.html` / screenshot.
 
 ## Source of truth
@@ -95,7 +95,10 @@ Secrets (JWT key, connection string `ConnectionStrings:con`, seed password) come
 ## Way of working
 - One step per session. For each step: `git status` → read the code it touches → **explain business + changes + decisions (above) and wait for OK** → implement in small parts → build + test → `/handoff`.
 - Quality over speed. Read the actual code before every recommendation; don't trust notes over code.
-- **Who does what (agreed 2026-11-16):** Claude implements on its own clone of the repo, then **commits and pushes to `fix/backend` after every finished part** (Belal approved this as the standard way of working). Belal pulls and builds/tests on his PC (Visual Studio or `dotnet build` / `dotnet test`). If the cloud environment can't restore NuGet packages (`api.nuget.org` is blocked there), Claude says so and relies on Belal's build: he saves the output to `build.log` / `test.log` in the repo root (git-ignored) and Claude reads them from the PC to fix errors. Never claim a build passed unless a real build output says so.
+- **Who does what — two modes, same rules.** Claude **commits and pushes to `fix/backend` after every finished part** (Belal approved this as the standard way of working). Never claim a build passed unless a real build output says so.
+  - **Claude Code on Belal's PC (main mode since 2026-11-25):** Claude works directly in `C:\Users\b.zakaria\Desktop\SR`. Start with `git status` + `git pull origin fix/backend` (stop and ask if there are local changes you didn't make). Claude runs `dotnet build` / `dotnet test` / `dotnet ef` itself, from `BACKEND`, and reads the output — no log files needed. Scripts meant for Belal (e.g. `make-baseline.ps1`) can be run by Claude with `powershell -ExecutionPolicy Bypass -File <script>` after Belal's OK. Commit and push with Belal's git (never force-push).
+  - **claude.ai / cloud session:** Claude works on its own clone. If NuGet is blocked there, Belal runs `sync-and-build.ps1` and Claude reads `pull.log` / `build.log` / `test.log` (UTF-16) from the PC.
+- **Tracker updates:** always through `tools/tracker.py` (it keeps the formatting, validation and summary formulas): `python tools/tracker.py next | show <code> | session <code> --status … --start today --end today --commit <hash> --notes "…" | decision <Dn> --status اتقرر --choice "…" --date today --session <code> --impact "…"`. On Windows use `py -3` if `python` is missing; it needs `pip install openpyxl` once. If Python isn't installed, ask Belal to install it (`winget install Python.Python.3.12`) — don't edit the xlsx another way.
 - Commit messages: `<session code>: <what changed>` (e.g. `F0-S1: stop accepting role names from employee DTOs`). Never force-push. Don't commit files outside the session's scope.
 - Never overwrite or commit Belal's uncommitted local work; if a part needs a file he has changed locally, stop and ask first.
 
@@ -108,7 +111,7 @@ Work in **small parts** (one issue, one entity, one endpoint, one screen — rou
 - **Decisions taken in this step:** decision + chosen option + date (also add lasting ones to the Decisions table and to this file).
 - **Open questions** waiting for Belal.
 **With every checkpoint also update:**
-- `Docs/docs/refactor/TRACKER.xlsx` — the session's row: الحالة (لم يبدأ / جاري / متوقف / خلص), dates, Commit, notes; the decisions sheet if a decision was taken. Edit with openpyxl keeping the sheet's existing formatting, validation and formulas; never retype the summary formulas.
+- `Docs/docs/refactor/TRACKER.xlsx` — via `tools/tracker.py`: the session's row: الحالة (لم يبدأ / جاري / متوقف / خلص), dates, Commit, notes; the decisions sheet if a decision was taken. Never retype the summary formulas.
 - `Docs/docs/refactor/README.md` — the session's section: before implementing write it as «مخطط» (business, current state, planned changes, decisions); after implementing rewrite it with what actually changed (files, behaviour, removed things), the commits, and **how Belal can verify it** (endpoint + request, or screen + steps). Add a section for any session that doesn't have one.
 - A session is «خلص» only when its goal in the tracker is met and Belal confirmed the build/tests pass on his side.
 Also checkpoint right after Belal answers a decision, and before any long operation (migration, package upgrade, big refactor).
