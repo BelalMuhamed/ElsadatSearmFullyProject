@@ -1,4 +1,4 @@
-using Application.Services.contract.LocalizationService;
+using AlSadat_Seram.Api.Responses;
 using Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,7 @@ public sealed class AllowWhilePasswordChangeRequiredAttribute : Attribute
 /// claim with 403 <c>Auth.PasswordChangeRequired</c>, except actions marked with
 /// <see cref="AllowWhilePasswordChangeRequiredAttribute"/> or <c>[AllowAnonymous]</c>.
 /// </summary>
-public sealed class PasswordChangeRequiredFilter(ILocalizationService localization) : IAuthorizationFilter
+public sealed class PasswordChangeRequiredFilter(ApiErrorWriter errorWriter) : IAuthorizationFilter
 {
     /// <inheritdoc />
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -36,8 +36,7 @@ public sealed class PasswordChangeRequiredFilter(ILocalizationService localizati
             metadata.OfType<IAllowAnonymous>().Any())
             return;
 
-        var result = Result<object>.FailureKey("Auth.PasswordChangeRequired", HttpStatusCode.Forbidden);
-        result.Message = localization.Resolve("Auth.PasswordChangeRequired");
+        var result = errorWriter.Create(context.HttpContext, HttpStatusCode.Forbidden, "Auth.PasswordChangeRequired");
         context.Result = new ObjectResult(result) { StatusCode = StatusCodes.Status403Forbidden };
     }
 }

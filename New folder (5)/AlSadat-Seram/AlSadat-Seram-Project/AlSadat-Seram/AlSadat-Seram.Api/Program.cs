@@ -1,4 +1,5 @@
 ﻿using AlSadat_Seram.Api.Middlewares;
+using AlSadat_Seram.Api.Responses;
 using Application.Services.contract;
 using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
@@ -18,14 +19,17 @@ using Infrastructure.Services.LocalizationServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuestPDF.Infrastructure;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.RateLimiting;
 internal class Program
 {
@@ -88,7 +92,22 @@ internal class Program
             // C2: a user who must change the initial password can only change it or log out.
             options.Filters.Add<AlSadat_Seram.Api.Filters.PasswordChangeRequiredFilter>();
         })
-        .AddControllersAsServices();
+        .AddControllersAsServices()
+        // Same encoder MVC uses by default, so Arabic is not escaped in errors written outside MVC either.
+        .AddJsonOptions(options =>
+            options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping)
+        .ConfigureApiBehaviorOptions(options =>
+        {
+            // Bare status results (415, NotFound()...) stay empty here and get the standard
+            // envelope from the status code pages below.
+            options.SuppressMapClientErrors = true;
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errorWriter = context.HttpContext.RequestServices.GetRequiredService<ApiErrorWriter>();
+                return new BadRequestObjectResult(
+                    errorWriter.CreateValidation(context.HttpContext, context.ModelState));
+            };
+        });
         #endregion
         #endregion
 
@@ -172,24 +191,6 @@ internal class Program
                 NameClaimType = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Name,
                 ClockSkew = TimeSpan.FromSeconds(30)
             };
-            options.Events = new JwtBearerEvents
-            {
-                OnChallenge = async context =>
-                {
-                    context.HandleResponse();
-                    context.Response.StatusCode = 401;
-                    context.Response.ContentType = "application/json";
-                    var result = Result<object>.Failure("Unauthorized", System.Net.HttpStatusCode.Unauthorized);
-                    await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result));
-                },
-                OnForbidden = async context =>
-                {
-                    context.Response.StatusCode = 403;
-                    context.Response.ContentType = "application/json";
-                    var result = Result<object>.Failure("Forbidden", System.Net.HttpStatusCode.Forbidden);
-                    await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result));
-                }
-            };
         });
         builder.Services.Configure<AuthSessionOptions>(builder.Configuration.GetSection("Auth"));
         #endregion
@@ -211,10 +212,17 @@ internal class Program
         builder.Services.AddScoped<IUserSessionService, UserSessionService>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<ILocalizationService, LocalizationService>();
+        builder.Services.AddScoped<ApiErrorWriter>();
         #region Global Rate Limiting
         builder.Services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.OnRejected = (context, _) =>
+            {
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                    context.HttpContext.Response.Headers.RetryAfter = ((int)retryAfter.TotalSeconds).ToString();
+                return ValueTask.CompletedTask;
+            };
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext,string>(httpContext =>
                 RateLimitPartition.GetFixedWindowLimiter(
 
@@ -262,6 +270,13 @@ internal class Program
         }
         #region Global Exception Handling Middleware
         app.UseMiddleware<ExceptionHandlingMiddleware>();
+        // Gives the standard envelope to every empty error response (401, 403, 404, 405, 415, 429).
+        app.UseStatusCodePages(context =>
+        {
+            var httpContext = context.HttpContext;
+            var errorWriter = httpContext.RequestServices.GetRequiredService<ApiErrorWriter>();
+            return errorWriter.WriteAsync(httpContext, (HttpStatusCode)httpContext.Response.StatusCode);
+        });
         //app.UseHttpsRedirection();
         app.UseResponseCompression(); 
         app.UseStaticFiles();
@@ -275,7 +290,9 @@ internal class Program
         app.UseRateLimiter();
 
         app.MapControllers();
-        app.MapFallbackToFile("index.html");
+        // An unknown /api route must stay a JSON 404/405, not the single-page app.
+        app.MapFallbackToFile("/", "index.html");
+        app.MapFallbackToFile("{*path:nonfile:regex(^(?!api(/|$)).*$)}", "index.html");
 
         //app.MapHub<NotificationHub>("/notificationHub");
         #endregion
