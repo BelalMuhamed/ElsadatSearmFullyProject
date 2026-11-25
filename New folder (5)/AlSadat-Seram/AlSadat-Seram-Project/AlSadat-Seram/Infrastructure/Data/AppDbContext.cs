@@ -435,6 +435,25 @@ namespace Infrastructure.Data
             builder.Entity<ChartOfAccounts>()
  .HasIndex(x => x.UserId)
  .HasDatabaseName("IX_ChartOfAccounts_UserId");
+
+            // Keep last: it must see every relationship configured above.
+            DisableDatabaseCascades(builder);
+        }
+
+        /// <summary>
+        /// Stops the database from cascading deletes (D21): EF only deletes the dependents it has loaded.
+        /// The permission links (UserPermission, Permission) keep their database cascade.
+        /// </summary>
+        private static void DisableDatabaseCascades(ModelBuilder builder)
+        {
+            var cascades = builder.Model.GetEntityTypes()
+                .Where(entity => entity.ClrType != typeof(UserPermission) && entity.ClrType != typeof(Permission))
+                .SelectMany(entity => entity.GetDeclaredForeignKeys())
+                .Where(foreignKey => foreignKey.DeleteBehavior == DeleteBehavior.Cascade)
+                .ToList();
+
+            foreach (var foreignKey in cascades)
+                foreignKey.DeleteBehavior = DeleteBehavior.ClientCascade;
         }
 
        

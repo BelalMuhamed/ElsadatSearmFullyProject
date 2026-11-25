@@ -228,7 +228,7 @@ internal class Program
         #endregion
 
         var app = builder.Build();
-        await app.SeedDatabaseAsync();
+        await app.MigrateAndSeedDatabaseAsync();
         app.Use(async (context, next) =>
         {
             if (context.Request.Path.StartsWithSegments("/api"))
