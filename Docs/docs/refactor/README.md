@@ -208,18 +208,28 @@
 
 ---
 
-### F2-S1 — الـ response الموحد (الهيكل) · مخطط · 2026-11-25
+### F2-S1 — الـ response الموحد (الهيكل) · مستني تأكيد بلال · 2026-11-25 · commits `66146b5`، `0725cde`، `2e14728`
 
 **الـ business:** كل الشاشات، وبالذات شاشة «الحالات» (14): الفرونت يلاقي أي خطأ بنفس الشكل، ويعرض للمستخدم كود يبعته لمسؤول النظام (`ERR-503 · الوقت`).
 
-**الوضع الحالي (متجرّب بطلبات حقيقية):** 400 و415 بيرجعوا `ProblemDetails`؛ 401 بيرجع PascalCase و«Unauthorized» (403 نفس الكود)؛ 404 و405 و429 رد فاضي؛ `ExceptionHandlingMiddleware` بيكتب PascalCase. 4 أشكال paging و`MaxPageSize` = 10,000,000. `ex.Message` واصل للعميل من 73 مكان في 12 service، و7 رسايل سطور، و26 مكان في الـ controllers. أي `DbUpdateException` بيطلع 409 وأي `ArgumentException` بيطلع 400. `BusinessException` و`NotFoundException` محدش بيرميهم.
+**قبل كده:** 400 و415 كانوا `ProblemDetails`؛ 401 بحروف كبيرة و«Unauthorized»؛ 404 و405 و429 رد فاضي؛ والـ middleware بيكتب PascalCase.
 
-**المخطط (من غير migrations):**
-1. `Domain/Common/Result.cs` + `BaseApiController` + `LocalizationResources`: `code` و`traceId`.
-2. `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs` + `ExceptionHandlingMiddleware` + `Program.cs`: كل أخطاء الـ framework بشكل `Result<T>`؛ مسح `Domain/Exceptions/CustomExceptions.cs`.
-3. `Application/CommonPagination/PagedResult.cs` + `ToPagedResultAsync` + tests + حد لـ `PaginationParams`. نقل الـ services في F2-S2.
-4. تنضيف `ex.Message` في الـ services.
+**اللي اتغيّر:**
+- **D22:** `Domain/Common/ErrorCodes.cs` (جديد) و`Result<T>`: كل failure فيه `code` و`traceId`. `messageKey` مبقاش يطلع في الـ JSON. الرسالة الحرفية القديمة بتاخد كود عام حسب الـ status.
+- `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs` (جديد): مكان واحد بيكتب 400 (model validation) و401 و403 و404 و405 و415 و429 و500 بالعربي والإنجليزي. أسامي الحقول camelCase، ونص الـ JSON parser مبيوصلش للعميل.
+- `ExceptionHandlingMiddleware`: الـ 409 للتعارض وتكرار القيم والـ FK بس، والباقي 500. الطلب اللي العميل قفله مبيتسجلش كخطأ.
+- `Program.cs`: `UseStatusCodePages`، و`Retry-After` في الـ 429، و`/api/...` الغلط مبيرجعش `index.html`. أحداث الـ JWT اليدوية اتشالت.
+- `PasswordChangeRequiredFilter` بيستخدم `ApiErrorWriter`.
+- **D23:** `PagedResult<T>` و`PageRequest` (`page`، `pageSize`، أقصى 100) و`ToPagedResultAsync`. لسه محدش بيستخدمهم؛ النقل في F2-S2. `PaginationParams` القديمة أخدت نفس الحدود.
+- **D25:** `AppDbContext.OnConfiguring` اتشالت، فنسيان migration بيوقّف التشغيل.
+- اتمسح `Domain/Exceptions/CustomExceptions.cs`.
+- **D24:** `ex.Message` في الـ services متأجل لكل موديول لما الـ service تتكتب من جديد، فهدف «مفيش ex.Message للعميل» متحقق في الـ framework والـ middleware بس. الـ 26 بتوع الـ controllers في F2-S2.
 
-**القرارات المطلوبة:** (1) كود الخطأ، (2) شكل `PagedResult`، (3) أكبر حجم صفحة، (4) طريقة تنضيف `ex.Message`، (5) `PendingModelChangesWarning`.
+**اتأكدنا من:** build بـ 0 errors و42/42 test (27 جداد). طلبات حقيقية على الـ API (400، 401، 404، 405، 415، 429)، و403 و409 و500 على host تجريبي بنفس الـ middleware. `ToPagedResultAsync` والـ login الناجح متجربوش.
 
-**إزاي تتأكد:** هيتكتب بعد التنفيذ.
+**إزاي تتأكد:**
+1. من Swagger: `POST /api/auth/login` بـ `{}` → 400 بـ `code: Common.ValidationFailed` و`errors`.
+2. `GET /api/Product` من غير token → 401 بـ `code: Common.Unauthorized`. جرّب `Accept-Language: en`.
+3. افتح `/api/xyz` → 404 بنفس الشكل.
+
+**ملاحظة:** GET على endpoint بتاع POST بيرجع 404 مش 405 (زي الأول)؛ باقي الـ methods بترجع 405.

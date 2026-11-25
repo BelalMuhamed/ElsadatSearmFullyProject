@@ -2,12 +2,15 @@
 _Last updated: 2026-11-25 (F1 done, F2-S1 next) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F2-S1 — unified response (structure). Approved; implementing.
-- **Done in this step:** [x] code read, real error responses recorded, plan and 5 decisions written.
-- **In progress / next part:** in 3 parts (build + test + commit each): (1) `Domain/Common/Result.cs`, `BaseApiController`, `LocalizationResources` (`code`, `traceId`); (2) new `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs`, `ExceptionHandlingMiddleware`, `Program.cs` (400 `InvalidModelStateResponseFactory`, 401/403 JwtBearerEvents, 404/405/415 status pages, 429 `OnRejected`, `/api` fallback 404; 409 only for concurrency/unique/FK), delete `Domain/Exceptions/CustomExceptions.cs`; (3) `Application/CommonPagination/PagedResult.cs` + `ToPagedResultAsync` + unit tests + `PaginationParams` limit (services move in F2-S2), and drop `AppDbContext.OnConfiguring` (D25). `ex.Message` in services is not part of F2 (D24).
+- **Step:** F2-S1 — unified response (structure). Code finished and verified; waiting for Belal's confirmation to mark it «خلص».
+- **Done in this step:**
+  - [x] Part 1 (`66146b5`): `Domain/Common/ErrorCodes.cs`, `Result.Code`/`TraceId`, `BaseApiController`, localization keys.
+  - [x] Part 2 (`0725cde`): `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs`, `ExceptionHandlingMiddleware`, `PasswordChangeRequiredFilter`, `Program.cs`; `Domain/Exceptions/CustomExceptions.cs` deleted.
+  - [x] Part 3 (`2e14728`): `PagedResult`, `PageRequest`, `ToPagedResultAsync`, `PaginationParams` limits, `AppDbContext.OnConfiguring` removed (D25), 27 new tests.
+- **In progress / next part:** Belal confirms → F2-S1 «خلص» in the tracker, `/handoff`, then F2-S2 (the 30 controllers → `BaseApiController.HandleResult`, `PagedList`/`ApiResponse` → `PagedResult`, 26 `ex.Message` in controllers).
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`). If Belal's API is running from Visual Studio the normal build is locked: build with `--artifacts-path`.
-- **Uncommitted changes:** none. Build 0 errors, 15/15 tests (2026-11-25).
-- **Decisions taken in this step (2026-11-25):** **D22** error code = message key + `traceId` (1a); **D23** `PagedResult` shape `items, page, pageSize, totalCount, totalPages`, query `page`/`pageSize`, max 100 (2a, 3a); **D24** `ex.Message` in services is cleaned in each module when its service is rewritten, not in F2 (4c); **D25** stop ignoring `PendingModelChangesWarning` (5a).
+- **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-25).
+- **Decisions taken in this step (2026-11-25):** **D22**, **D23**, **D24**, **D25** (see the Decisions table).
 - **Open questions:** none.
 
 ## Overview
@@ -135,6 +138,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - `ex.Message` reaches the client from 73 places in 12 services (+7 per-row messages): remove it in each module when its service is rewritten (D24).
 - Rate limiter (`Program.cs`) counts per `RemoteIpAddress`, 100/min: behind an Azure proxy all users may share one IP → needs forwarded headers / per-user partition before deployment.
 - `UnitOfWork.LogError` writes `Logs/errors.log` into a zip with a hardcoded password → replace with `ILogger`.
+- DataAnnotations messages in DTOs are still English literals (e.g. `LoginDto`): move them to localization keys in each module (`ApiErrorWriter` already resolves keys).
+- `SupplierService` has its own page-size limit (50): align with D23 in F2-S2.
 - D20 (auto-migrate everywhere): in prod the API's DB user needs DDL rights — revisit when the Azure pipeline is set up (alternative: migration bundle in the pipeline).
 - Full list of critical issues C1–C16 and where each is fixed: `Docs/docs/refactor/PLAN.md` ("مشاكل حرجة").
 - `Infrastructure/Services/GoogleAuthServices/GoogleAuthService.cs` still exists although Google login was removed — verify and delete (F0).
