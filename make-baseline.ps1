@@ -78,13 +78,13 @@ if (-not $current) {
 }
 
 $builder = New-Object System.Data.Common.DbConnectionStringBuilder
-$builder.ConnectionString = $current
+$builder.PSBase.ConnectionString = $current
 $key = @('Database', 'Initial Catalog') | Where-Object { $builder.ContainsKey($_) } | Select-Object -First 1
 if (-not $key) { Stop-Script 'the connection string has no Database / Initial Catalog.' }
 
 $oldName = $builder[$key]
 $builder[$key] = $NewDatabaseName
-dotnet user-secrets set 'ConnectionStrings:con' $builder.ConnectionString --project $api | Out-Null
+dotnet user-secrets set 'ConnectionStrings:con' $builder.PSBase.ConnectionString --project $api | Out-Null
 if ($LASTEXITCODE -ne 0) { Stop-Script 'could not write ConnectionStrings:con to user secrets.' }
 Write-Log "read from: $source"
 Write-Log "database: $oldName -> $NewDatabaseName (written to user secrets; the old database and appsettings.json are not touched)"
