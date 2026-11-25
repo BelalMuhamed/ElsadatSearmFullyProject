@@ -12,7 +12,7 @@ _Last updated: 2026-11-25 (F1-S2 in progress) · Read this first in any new sess
 - **Incident 2026-11-25:** Claude's first startup test hit `AlSadateSeram` because of that removed secret; the migration failed on its first statement and was rolled back. Checked: 57 tables, the same 4 history rows, no object created/modified.
 - **Uncommitted changes:** none.
 - **Decisions taken in this step:** 2026-11-17: `make-baseline.ps1` (1-أ), **D20** (2-ج), model as-is (3-أ), new DB name. 2026-11-25: **D21** delete behaviour (b); Claude runs the script; old Angular deletions committed; replies on `claude-reply/index.html`.
-- **Open questions:** point `ConnectionStrings:con` to `SadatSearmErp` through user secrets (Claude) or by Belal in `appsettings.json`?
+- **Open questions:** none. Belal (2026-11-25) changes `Initial Catalog` to `SadatSearmErp` in his local `appsettings.json` himself, starts the API, then confirms.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
