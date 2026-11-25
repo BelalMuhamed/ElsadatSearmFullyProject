@@ -205,3 +205,21 @@
 1. خلّي `ConnectionStrings:con` يشاور على `SadatSearmErp` (user secrets أو `appsettings.json`).
 2. شغّل الـ API، وبعدين في SSMS شغّل ده: `SELECT * FROM SadatSearmErp.dbo.__EFMigrationsHistory` — المفروض يطلع صف واحد `20261125161145_InitialCreate`.
 3. لو عايز تجرّب من الصفر، اكتب اسم داتابيز مش موجودة: الـ API هيعملها ويملاها لوحده.
+
+---
+
+### F2-S1 — الـ response الموحد (الهيكل) · مخطط · 2026-11-25
+
+**الـ business:** كل الشاشات، وبالذات شاشة «الحالات» (14): الفرونت يلاقي أي خطأ بنفس الشكل، ويعرض للمستخدم كود يبعته لمسؤول النظام (`ERR-503 · الوقت`).
+
+**الوضع الحالي (متجرّب بطلبات حقيقية):** 400 و415 بيرجعوا `ProblemDetails`؛ 401 بيرجع PascalCase و«Unauthorized» (403 نفس الكود)؛ 404 و405 و429 رد فاضي؛ `ExceptionHandlingMiddleware` بيكتب PascalCase. 4 أشكال paging و`MaxPageSize` = 10,000,000. `ex.Message` واصل للعميل من 73 مكان في 12 service، و7 رسايل سطور، و26 مكان في الـ controllers. أي `DbUpdateException` بيطلع 409 وأي `ArgumentException` بيطلع 400. `BusinessException` و`NotFoundException` محدش بيرميهم.
+
+**المخطط (من غير migrations):**
+1. `Domain/Common/Result.cs` + `BaseApiController` + `LocalizationResources`: `code` و`traceId`.
+2. `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs` + `ExceptionHandlingMiddleware` + `Program.cs`: كل أخطاء الـ framework بشكل `Result<T>`؛ مسح `Domain/Exceptions/CustomExceptions.cs`.
+3. `Application/CommonPagination/PagedResult.cs` + `ToPagedResultAsync` + tests + حد لـ `PaginationParams`. نقل الـ services في F2-S2.
+4. تنضيف `ex.Message` في الـ services.
+
+**القرارات المطلوبة:** (1) كود الخطأ، (2) شكل `PagedResult`، (3) أكبر حجم صفحة، (4) طريقة تنضيف `ex.Message`، (5) `PendingModelChangesWarning`.
+
+**إزاي تتأكد:** هيتكتب بعد التنفيذ.

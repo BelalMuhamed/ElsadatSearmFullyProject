@@ -2,13 +2,13 @@
 _Last updated: 2026-11-25 (F1 done, F2-S1 next) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F2-S1 — unified response (structure). Not started.
-- **Done in this step:** nothing yet.
-- **In progress / next part:** read `Result<T>`, `BaseApiController`, `ExceptionHandlingMiddleware`, `Program.cs` and the 4 paged-list shapes; write the «مخطط» section in `Docs/docs/refactor/README.md`; explain business + current state + changes + decisions to Belal (on `claude-reply/index.html`) and wait for his OK. Goal (tracker): one `PagedResult<T>`, framework errors (400/401/403/404/405/429/500) in the `Result<T>` shape, a stable code per error, no `ex.Message` to the client.
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`).
+- **Step:** F2-S1 — unified response (structure). Plan explained to Belal (page + README «مخطط»); no code yet.
+- **Done in this step:** [x] code read, real error responses recorded, plan and 5 decisions written.
+- **In progress / next part:** after Belal's answer, in 4 parts (build + test + commit each): (1) `Domain/Common/Result.cs`, `BaseApiController`, `LocalizationResources` (`code`, `traceId`); (2) new `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs`, `ExceptionHandlingMiddleware`, `Program.cs` (400 `InvalidModelStateResponseFactory`, 401/403 JwtBearerEvents, 404/405/415 status pages, 429 `OnRejected`, `/api` fallback 404; 409 only for concurrency/unique/FK), delete `Domain/Exceptions/CustomExceptions.cs`; (3) `Application/CommonPagination/PagedResult.cs` + `ToPagedResultAsync` + unit tests + `PaginationParams` limit (services move in F2-S2); (4) `ex.Message` in 12 services.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`). If Belal's API is running from Visual Studio the normal build is locked: build with `--artifacts-path`.
 - **Uncommitted changes:** none. Build 0 errors, 15/15 tests (2026-11-25).
-- **Decisions taken in this step:** none.
-- **Open questions:** should `PendingModelChangesWarning` stay ignored in `AppDbContext.OnConfiguring`? (raise in F2-S1)
+- **Decisions taken in this step:** none yet.
+- **Open questions:** (1) error code: message key / numbers / status; (2) `PagedResult` shape; (3) max page size 100/500/none; (4) `ex.Message` in services: rethrow / generic message / later; (5) stop ignoring `PendingModelChangesWarning`? Recommended: a for all.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -129,6 +129,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - `Application/Helper/BaseInvoicePdfDocument.cs` uses `System.Drawing` (Windows-only, CA1416 ×72 warnings) → will break on Azure Linux; replace before deployment.
 - Model warnings seen while generating the baseline (left as-is per 3-أ, fix in each module): 25 decimal properties without a precision → default `decimal(18,2)` (`Representatives.OvertimeRatePerHour` vs `decimal(18,4)` in `Employee`); shadow FKs `Previews.ApplicationUserId1/2`; `Payroll`↔`EmployeeLoanPayments` and `Previews`↔`WarrantCertificates` split into two relationships each.
 - `AppDbContext.OnConfiguring` ignores `PendingModelChangesWarning`, so a model change without a migration is silent at startup; with D20 it should probably be an error — decide in F2 or the next model change.
+- Rate limiter (`Program.cs`) counts per `RemoteIpAddress`, 100/min: behind an Azure proxy all users may share one IP → needs forwarded headers / per-user partition before deployment.
+- `UnitOfWork.LogError` writes `Logs/errors.log` into a zip with a hardcoded password → replace with `ILogger`.
 - D20 (auto-migrate everywhere): in prod the API's DB user needs DDL rights — revisit when the Azure pipeline is set up (alternative: migration bundle in the pipeline).
 - Full list of critical issues C1–C16 and where each is fixed: `Docs/docs/refactor/PLAN.md` ("مشاكل حرجة").
 - `Infrastructure/Services/GoogleAuthServices/GoogleAuthService.cs` still exists although Google login was removed — verify and delete (F0).
