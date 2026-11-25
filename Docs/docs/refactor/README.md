@@ -185,11 +185,23 @@
 - اتمسحت ملفات `Infrastructure/Migrations` التسعة، والسكريبتات القديمة التلاتة.
 - اتضاف `make-baseline.ps1` في أول الريبو (مؤقت، بيتمسح في آخر الـ session)، واتضاف `/_out/` و`/make-baseline.log` لـ `.gitignore`.
 
-#### الجزء التاني — توليد الـ migration ومراجعتها (المخطط)
-> **2026-11-25 — واقف على قرار:** Claude شغّل السكريبت على جهاز بلال (بعد تصليح قراية الـ connection string بـ `PSBase`). الـ `InitialCreate` اتولّدت، لكن `database update` وقع بـ SQL error 1785: جدول `PointTransactions` ليه FK-ين بـ cascade على `AspNetUsers`. السبب إن الـ migration القديمة `nhbikhb` كانت متعدّلة بالإيد (37 `Cascade` بقوا `NoAction`)، فالداتابيز القديمة فيها 3 cascades والـ model بيطلب 40. الاختيارات: (أ) نصلّح `PointTransactions` بس، (ب) `ClientCascade` لكل الـ cascades ما عدا الـ 3 بتوع الصلاحيات (الترشيح)، (ج) `Restrict` للكل.
+#### الجزء التاني — الـ migration والـ auto-migrate ✔ (2026-11-25)
 
-1. بلال يشغّل `make-baseline.ps1` بدل `sync-and-build.ps1` مرة واحدة. السكريبت بيعمل pull، ويغيّر اسم الداتابيز في الـ user secrets لـ `SadatSearmErp`، ويولّد `InitialCreate`، ويطلع ملف SQL، ويعمل الداتابيز الجديدة، ويحط الملفات المتولدة في `_out` علشان الـ working tree يفضل نضيف.
-2. Claude يقرا الملفات من جهاز بلال، ويراجع الـ SQL، ويحطها في `Infrastructure/Migrations`.
-3. `ApplicationBuilderExtensions` يعمل `MigrateAsync()` قبل الـ seed (D20).
+**المشكلة اللي ظهرت:** الـ `InitialCreate` من الـ model زي ما هو ما عدّتش على SQL Server (error 1785): جدول `PointTransactions` ليه FK-ين بـ cascade على `AspNetUsers`. السبب إن الـ migration القديمة `nhbikhb` كان فيها `NoAction` بدل `Cascade` في 37 FK (متعدّلة بالإيد)، فالداتابيز القديمة فيها 3 cascades والـ model بيطلب 40.
 
-**إزاي تتأكد:** هيتكتب بعد التنفيذ.
+**القرار D21 (اختيار b):** كل FK بـ `Cascade` بقى `ClientCascade`: الداتابيز بترفض مسح سجل ليه تابعين، وEF بيمسح التابعين بس لو الكود محمّلهم. المستثنى: `UserPermissions` (2) و`Permissions`→`Modules`. مفيش service اتغيّر.
+
+**اللي اتغيّر:**
+- `Infrastructure/Data/AppDbContext.cs`: ميثود `DisableDatabaseCascades`، وآخر سطر في `OnModelCreating` بيناديها.
+- `Infrastructure/Migrations/20261125161145_InitialCreate.cs` والـ Designer والـ snapshot: 57 جدول.
+- `Infrastructure/Data/ApplicationBuilderExtensions.cs`: `SeedDatabaseAsync` بقت `MigrateAndSeedDatabaseAsync` وبتعمل `MigrateAsync()` قبل الـ seed (D20). `Program.cs` بينادي الاسم الجديد.
+- اتمسح `make-baseline.ps1` وسطوره في `.gitignore`.
+
+**اتأكدنا من:** build بـ 0 errors، و15/15 tests. الـ API اشتغل مرتين على `SadatSearmErp`: الأولى عملت الجداول والـ seed (5 يوزرز، 14 حساب، 22 محافظة، 72 مدينة، 15 صلاحية)، والتانية ما غيّرتش حاجة. والأعمدة (585) والـ indexes (151) والـ FKs (78) زي الداتابيز القديمة بالظبط.
+
+**حاجة حصلت:** أول تجربة تشغيل راحت للداتابيز القديمة `AlSadateSeram`، لأن `ConnectionStrings:con` كان اتشال من الـ user secrets. الـ migration وقعت في أول جملة واترجعت (rollback)، واتأكدنا إن مفيش حاجة اتغيّرت فيها.
+
+**إزاي تتأكد:**
+1. خلّي `ConnectionStrings:con` يشاور على `SadatSearmErp` (user secrets أو `appsettings.json`).
+2. شغّل الـ API، وبعدين في SSMS شغّل ده: `SELECT * FROM SadatSearmErp.dbo.__EFMigrationsHistory` — المفروض يطلع صف واحد `20261125161145_InitialCreate`.
+3. لو عايز تجرّب من الصفر، اكتب اسم داتابيز مش موجودة: الـ API هيعملها ويملاها لوحده.

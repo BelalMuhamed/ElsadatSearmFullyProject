@@ -2,17 +2,17 @@
 _Last updated: 2026-11-25 (F1-S2 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F1-S2 — fresh baseline migration (D0). Part 1 done; part 2 stopped at `database update`, waiting for Belal's decision on delete behaviour.
+- **Step:** F1-S2 — fresh baseline migration (D0). Code finished and verified on Belal's PC by Claude; waiting for Belal's confirmation to mark it «خلص».
 - **Done in this step:**
-  - [x] Part 1: deleted the 4 old migrations + snapshot (9 files) and the leftover scripts; added `make-baseline.ps1`.
-  - [x] 2026-11-25: pulled; committed the deleted old Angular app (`9c9823c`); HTML-reply rule in `CLAUDE.md` + `/claude-reply/` in `.gitignore`.
-  - [x] `make-baseline.ps1` fixed (`$builder.PSBase.ConnectionString`: PowerShell treated the builder as a dictionary) and run: `InitialCreate` + `_out/InitialCreate.sql` generated, then `database update` failed with SQL error 1785.
-- **Finding:** `PointTransactions` has two cascading FKs to `AspNetUsers` (`SenderId`, `ReceverId`) → multiple cascade paths (the only conflict found by static analysis of the script). The old `nhbikhb` migration was hand-edited: 37 `Cascade` → `NoAction`, so the old DB has 3 cascades (`UserPermissions` ×2, `Permissions`→`Modules`) while the model asks for 40, e.g. `Accounts`→`journalEntriesDetails`, `Products`→`Stocks`, `AspNetUsers`→`SalesInvoices`, `City`→`Previews`.
-- **In progress / next part:** after the decision: change the delete behaviour in `Infrastructure/Data/AppDbContext.cs` (end of `OnModelCreating`), rerun `make-baseline.ps1` (`powershell -ExecutionPolicy Bypass -NonInteractive -File make-baseline.ps1`), review the SQL, copy `_out/Migrations/*` to `Infrastructure/Migrations`, add `MigrateAsync()` before the seed in `Infrastructure/Data/ApplicationBuilderExtensions.cs` (rename to `MigrateAndSeedDatabaseAsync`, `Program.cs` line 231), build + test, start the API once, delete `make-baseline.ps1`, finish README/TRACKER, `/handoff`.
-- **State on Belal's PC:** DB `SadatSearmErp` exists but has only `__EFMigrationsHistory`; user secrets `ConnectionStrings:con` already points to it, so the API does not start in Development until part 2 is finished. Generated (invalid) files are parked in `_out/Migrations` — not to be committed.
-- **Uncommitted changes:** none. `migrations add` compiled the solution ("Build succeeded"); tests not run yet.
-- **Decisions taken in this step:** 2026-11-17: generation via `make-baseline.ps1` (1-أ), **D20** (2-ج), model as-is in the baseline (3-أ), new DB name. 2026-11-25: Claude runs the script, old Angular deletions committed, replies on `claude-reply/index.html`.
-- **Open questions:** delete behaviour in the baseline: (a) fix `PointTransactions` only, (b) `Cascade` → `ClientCascade` everywhere except the 3 permission FKs — same as the old DB (recommended), (c) `Restrict` everywhere.
+  - [x] Part 1: old migrations + leftover scripts deleted.
+  - [x] Part 2: D21 in `Infrastructure/Data/AppDbContext.cs` (`DisableDatabaseCascades`); `Infrastructure/Migrations/20261125161145_InitialCreate` + snapshot; `MigrateAndSeedDatabaseAsync` in `Infrastructure/Data/ApplicationBuilderExtensions.cs` (D20) called from `Program.cs`.
+  - [x] Part 3 (verification): build 0 errors, 15/15 tests; API started twice against `SadatSearmErp` (first start migrated + seeded, second changed nothing); columns (585), indexes (151) and FKs (78, 3 cascades) identical to `AlSadateSeram`. `make-baseline.ps1`, `_out` and their `.gitignore` lines removed.
+- **In progress / next part:** Belal answers the connection question and confirms; then mark F1-S2 «خلص» in the tracker, `/handoff`, next session from `python tools/tracker.py next`.
+- **State on Belal's PC:** `ConnectionStrings:con` is not in user secrets any more (removed 2026-11-25 18:05), so the API reads `appsettings.json` → `AlSadateSeram`, and startup stops with "There is already an object named 'Accounts'" (rolled back, nothing changes). It must point to `SadatSearmErp`.
+- **Incident 2026-11-25:** Claude's first startup test hit `AlSadateSeram` because of that removed secret; the migration failed on its first statement and was rolled back. Checked: 57 tables, the same 4 history rows, no object created/modified.
+- **Uncommitted changes:** none.
+- **Decisions taken in this step:** 2026-11-17: `make-baseline.ps1` (1-أ), **D20** (2-ج), model as-is (3-أ), new DB name. 2026-11-25: **D21** delete behaviour (b); Claude runs the script; old Angular deletions committed; replies on `claude-reply/index.html`.
+- **Open questions:** point `ConnectionStrings:con` to `SadatSearmErp` through user secrets (Claude) or by Belal in `appsettings.json`?
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -90,6 +90,7 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-17 | **D18** Finish the uncommitted revoke-sessions work in F0-S1 | needed for M1/D3 | park for M1; drop |
 | 2026-11-17 | **D19** Remove AutoMapper; hand-written mapping in `Application/Mappings` | 12.0.1 has a high-severity DoS advisory; only 1 map really used | commercial v15/16; keep 12.0.1 |
 | 2026-11-17 | **D20** Migrations applied at API startup in every environment (`MigrateAsync()` before the seed) | one way everywhere; EF Core 9+ locks the DB during Migrate so parallel instances are safe | manual `database update`; auto in Development only + pipeline in prod |
+| 2026-11-25 | **D21** Database never cascades deletes: every `Cascade` FK becomes `ClientCascade` in `AppDbContext.DisableDatabaseCascades`, except `UserPermissions` ×2 and `Permissions`→`Modules` | same schema as the old DB (its migration was hand-edited to `NoAction`); no financial/stock rows deleted by accident; no service changes | fix `PointTransactions` only (38 cascades); `Restrict` everywhere (breaks journal-entry editing) |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
@@ -130,6 +131,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - Tests use xunit v2 (2.9.3), which is deprecated (security fixes only) → move to `xunit.v3` later.
 - `Application/Helper/BaseInvoicePdfDocument.cs` uses `System.Drawing` (Windows-only, CA1416 ×72 warnings) → will break on Azure Linux; replace before deployment.
 - Model warnings seen while generating the baseline (left as-is per 3-أ, fix in each module): 25 decimal properties without a precision → default `decimal(18,2)` (`Representatives.OvertimeRatePerHour` vs `decimal(18,4)` in `Employee`); shadow FKs `Previews.ApplicationUserId1/2`; `Payroll`↔`EmployeeLoanPayments` and `Previews`↔`WarrantCertificates` split into two relationships each.
+- `AppDbContext.OnConfiguring` ignores `PendingModelChangesWarning`, so a model change without a migration is silent at startup; with D20 it should probably be an error — decide in F2 or the next model change.
 - D20 (auto-migrate everywhere): in prod the API's DB user needs DDL rights — revisit when the Azure pipeline is set up (alternative: migration bundle in the pipeline).
 - Full list of critical issues C1–C16 and where each is fixed: `Docs/docs/refactor/PLAN.md` ("مشاكل حرجة").
 - `Infrastructure/Services/GoogleAuthServices/GoogleAuthService.cs` still exists although Google login was removed — verify and delete (F0).
