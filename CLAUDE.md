@@ -80,6 +80,10 @@ Secrets (JWT key, connection string `ConnectionStrings:con`, seed password) come
 - **D17** Customer initial password = phone number + first letter of the full name (as written); phone is required, unique and the login id; the user must change it at first login (`must_change_password` claim + `PasswordChangeRequiredFilter`, column comes in M1).
 - **D20** Migrations are applied automatically at API startup in **every** environment (`MigrateAsync()` before the seed). EF Core 9+ takes an exclusive DB lock during `Migrate`, so several instances starting together are safe; the price is that the API's DB user needs DDL rights in prod (revisit when the Azure pipeline is set up).
 - **D21** The database never cascades deletes: `AppDbContext.DisableDatabaseCascades` (last call in `OnModelCreating`) turns every `Cascade` FK into `ClientCascade`, except `UserPermissions` ×2 and `Permissions`→`Modules`. Don't add a database cascade to business data.
+- **D22** Every failure carries `code` (the message key; `ErrorCodes.FromStatus` when there is only a literal message) and `traceId`. `messageKey` is not serialized.
+- **D23** Paged reads return `PagedResult<T>` (`items, page, pageSize, totalCount, totalPages`); requests use `page`/`pageSize`, max 100.
+- **D24** `ex.Message` must not reach the client: a rewritten service rethrows (after rollback) so `ExceptionHandlingMiddleware` logs it and returns 500. Old services are cleaned in their module, not before.
+- **D25** `PendingModelChangesWarning` is not ignored: a model change needs its migration before the API starts.
 - **Hosting** Azure (Azure Managed Redis in prod). Dev: API + Redis on the same machine (Redis in Docker/WSL).
 
 ## Mandatory coding rules (every touched method complies — no grandfathering)

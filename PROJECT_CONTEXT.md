@@ -2,13 +2,13 @@
 _Last updated: 2026-11-25 (F1 done, F2-S1 next) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F2-S1 — unified response (structure). Plan explained to Belal (page + README «مخطط»); no code yet.
+- **Step:** F2-S1 — unified response (structure). Approved; implementing.
 - **Done in this step:** [x] code read, real error responses recorded, plan and 5 decisions written.
-- **In progress / next part:** after Belal's answer, in 4 parts (build + test + commit each): (1) `Domain/Common/Result.cs`, `BaseApiController`, `LocalizationResources` (`code`, `traceId`); (2) new `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs`, `ExceptionHandlingMiddleware`, `Program.cs` (400 `InvalidModelStateResponseFactory`, 401/403 JwtBearerEvents, 404/405/415 status pages, 429 `OnRejected`, `/api` fallback 404; 409 only for concurrency/unique/FK), delete `Domain/Exceptions/CustomExceptions.cs`; (3) `Application/CommonPagination/PagedResult.cs` + `ToPagedResultAsync` + unit tests + `PaginationParams` limit (services move in F2-S2); (4) `ex.Message` in 12 services.
+- **In progress / next part:** in 3 parts (build + test + commit each): (1) `Domain/Common/Result.cs`, `BaseApiController`, `LocalizationResources` (`code`, `traceId`); (2) new `AlSadat-Seram.Api/Responses/ApiErrorWriter.cs`, `ExceptionHandlingMiddleware`, `Program.cs` (400 `InvalidModelStateResponseFactory`, 401/403 JwtBearerEvents, 404/405/415 status pages, 429 `OnRejected`, `/api` fallback 404; 409 only for concurrency/unique/FK), delete `Domain/Exceptions/CustomExceptions.cs`; (3) `Application/CommonPagination/PagedResult.cs` + `ToPagedResultAsync` + unit tests + `PaginationParams` limit (services move in F2-S2), and drop `AppDbContext.OnConfiguring` (D25). `ex.Message` in services is not part of F2 (D24).
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`). If Belal's API is running from Visual Studio the normal build is locked: build with `--artifacts-path`.
 - **Uncommitted changes:** none. Build 0 errors, 15/15 tests (2026-11-25).
-- **Decisions taken in this step:** none yet.
-- **Open questions:** (1) error code: message key / numbers / status; (2) `PagedResult` shape; (3) max page size 100/500/none; (4) `ex.Message` in services: rethrow / generic message / later; (5) stop ignoring `PendingModelChangesWarning`? Recommended: a for all.
+- **Decisions taken in this step (2026-11-25):** **D22** error code = message key + `traceId` (1a); **D23** `PagedResult` shape `items, page, pageSize, totalCount, totalPages`, query `page`/`pageSize`, max 100 (2a, 3a); **D24** `ex.Message` in services is cleaned in each module when its service is rewritten, not in F2 (4c); **D25** stop ignoring `PendingModelChangesWarning` (5a).
+- **Open questions:** none.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -87,6 +87,10 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-17 | **D19** Remove AutoMapper; hand-written mapping in `Application/Mappings` | 12.0.1 has a high-severity DoS advisory; only 1 map really used | commercial v15/16; keep 12.0.1 |
 | 2026-11-17 | **D20** Migrations applied at API startup in every environment (`MigrateAsync()` before the seed) | one way everywhere; EF Core 9+ locks the DB during Migrate so parallel instances are safe | manual `database update`; auto in Development only + pipeline in prod |
 | 2026-11-25 | **D21** Database never cascades deletes: every `Cascade` FK becomes `ClientCascade` in `AppDbContext.DisableDatabaseCascades`, except `UserPermissions` ×2 and `Permissions`→`Modules` | same schema as the old DB (its migration was hand-edited to `NoAction`); no financial/stock rows deleted by accident; no service changes | fix `PointTransactions` only (38 cascades); `Restrict` everywhere (breaks journal-entry editing) |
+| 2026-11-25 | **D22** Failures carry `code` (= message key, or a general code per status) and `traceId` | no second catalog; the UI shows `ERR-<status>` + time | numbered codes; status only |
+| 2026-11-25 | **D23** One `PagedResult<T>` (`items, page, pageSize, totalCount, totalPages`), query `page`/`pageSize`, max page size 100 | one shape for every table; exports go through F10 | keep `PagedList`; 500 / no limit |
+| 2026-11-25 | **D24** `ex.Message` in services is removed when each module rewrites its service | those services are rewritten anyway | rethrow now; generic message now |
+| 2026-11-25 | **D25** `PendingModelChangesWarning` is no longer ignored | a forgotten migration stops startup instead of failing later | keep ignoring it |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
@@ -128,7 +132,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - Tests use xunit v2 (2.9.3), which is deprecated (security fixes only) → move to `xunit.v3` later.
 - `Application/Helper/BaseInvoicePdfDocument.cs` uses `System.Drawing` (Windows-only, CA1416 ×72 warnings) → will break on Azure Linux; replace before deployment.
 - Model warnings seen while generating the baseline (left as-is per 3-أ, fix in each module): 25 decimal properties without a precision → default `decimal(18,2)` (`Representatives.OvertimeRatePerHour` vs `decimal(18,4)` in `Employee`); shadow FKs `Previews.ApplicationUserId1/2`; `Payroll`↔`EmployeeLoanPayments` and `Previews`↔`WarrantCertificates` split into two relationships each.
-- `AppDbContext.OnConfiguring` ignores `PendingModelChangesWarning`, so a model change without a migration is silent at startup; with D20 it should probably be an error — decide in F2 or the next model change.
+- `ex.Message` reaches the client from 73 places in 12 services (+7 per-row messages): remove it in each module when its service is rewritten (D24).
 - Rate limiter (`Program.cs`) counts per `RemoteIpAddress`, 100/min: behind an Azure proxy all users may share one IP → needs forwarded headers / per-user partition before deployment.
 - `UnitOfWork.LogError` writes `Logs/errors.log` into a zip with a hardcoded password → replace with `ILogger`.
 - D20 (auto-migrate everywhere): in prod the API's DB user needs DDL rights — revisit when the Azure pipeline is set up (alternative: migration bundle in the pipeline).
