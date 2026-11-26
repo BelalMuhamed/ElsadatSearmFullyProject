@@ -1,13 +1,13 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-26 (F3-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-26 (F3-S1 done, next F4F5-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F3-S1 — audit + change log. All 4 parts done and pushed; waiting for Belal to confirm build/tests and the check in README › F3-S1 «إزاي تتأكد».
-- **Done in this step:** [x] D27–D30 recorded; [x] part 1 `AuditFieldsInterceptor` (`09d4faf`); [x] part 2 `AuditEntries` + migration `AddAuditEntries` + trigger (`f15202c`); [x] part 3 `AuditEntriesInterceptor`, `[Audited]`/`[NotAudited]`/`AuditAreas`, `IAuditTrail`, `Products` + `Supplier` marked (`9b63d50`); [x] part 4 deleted `ChangeLogService`/`IChangeLogService`/`IAuditableEntity`, README «اتنفذ». Verified on `SadatSearmErp_AuditTest` (dropped afterwards).
-- **In progress / next part:** tracker only — `TRACKER.xlsx` was open in Excel the whole session (PermissionError). Once closed run: `tracker.py decision D27..D30` (texts in the Decisions table below) and `tracker.py session F3-S1 --commit <last> --notes "…"`; mark «خلص» with `--end today` after Belal confirms. Then `/handoff`; next step from `tracker.py next`.
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`). If Belal's API is running from Visual Studio the normal build is locked: build with `--artifacts-path`. Next API start applies `AddAuditEntries` (D20).
+- **Step:** F4F5-S1 — document numbering (`DocumentSequences`, e.g. INV-1038, no duplicates under concurrency) + `rowversion` on Stock / invoices / wallets → 409. Not started.
+- **Done in this step:** nothing yet.
+- **In progress / next part:** `/start` → read the F4/F5 rows in `Docs/docs/refactor/PLAN.md` and the F4F5-S1 brief in `README.md` (write it as «مخطط» if missing), read the code that generates numbers today and the stock/invoice/wallet entities, then explain business + changes + decisions to Belal and wait for his OK.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Check the target DB before starting the API (`dotnet ef dbcontext info`). If the API runs from Visual Studio the normal build is locked: build with `--artifacts-path`. Throwaway-DB checks: a .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`) against `<name>_Test`, dropped afterwards.
 - **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-26).
-- **Decisions taken in this step (2026-11-26):** D27–D30, all «a» (see Decisions table).
+- **Decisions taken in this step:** none.
 - **Open questions:** none.
 
 ## Overview
@@ -109,7 +109,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - [x] **F1-S2 — fresh baseline migration (D0)** (2026-11-25)
 - [x] **F2-S1 — unified response (structure)** (2026-11-25)
 - F2-S2 cancelled (D26): controllers move with their module
-- [ ] **F3-S1 — audit + change log** ← in progress
+- [x] **F3-S1 — audit + change log** (2026-11-26)
+- [ ] **F4F5-S1 — document numbering + rowversion** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -161,3 +162,4 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-25 (claude.ai) — Moved the main way of working to Claude Code on Belal's PC: `tools/tracker.py` (tracker updates keeping formulas/validation), `.claude/settings.json` (allowed build/test/git commands, no force-push), `/start` + `/handoff` rewritten, CLAUDE.md "Who does what" has both modes. F1-S2 unchanged: still waiting for `make-baseline.ps1`.
 - 2026-11-25 (Claude Code) — F1-S2 done: `InitialCreate` baseline, D20 auto-migrate, D21 no database cascades (`AppDbContext.cs`, `ApplicationBuilderExtensions.cs`, `Program.cs`, `Infrastructure/Migrations`); old Angular app removed; replies on `claude-reply/index.html`. First startup test hit the old DB (rolled back, nothing changed). Build 0 errors, 15/15, confirmed by Belal. Next: F2-S1.
 - 2026-11-25 (Claude Code) — F2-S1 done and confirmed: `code`/`traceId`, `ApiErrorWriter`, `PagedResult`, D22–D25; F2-S2 cancelled (D26) and its row removed with `tracker.py remove`. Next: F3-S1.
+- 2026-11-26 (Claude Code) — F3-S1 done and confirmed: D27–D30; `AuditFieldsInterceptor` (who/when from the token, UTC), `AuditEntries` + migration `AddAuditEntries` + append-only trigger, `AuditEntriesInterceptor` + `[Audited]` on `Products`/`Supplier` + `IAuditTrail`, `ChangeLogService`/`IAuditableEntity` deleted (`Infrastructure/Data/Interceptors/*`, `Domain/Entities/Audit`, `Domain/Common`, `Program.cs`, `ServiceManager`). 37 checks on a throwaway DB; build 0 errors, 42/42. Left for modules: screen-78 endpoint (M2), marking other entities, field-name translations. Next: F4F5-S1.
