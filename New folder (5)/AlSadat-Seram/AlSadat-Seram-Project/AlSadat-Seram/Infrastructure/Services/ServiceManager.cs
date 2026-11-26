@@ -2,7 +2,6 @@
 using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
 using Application.Services.contract.BillDiscountsServiceContract;
-using Application.Services.contract.ChangeLogService;
 using Application.Services.contract.CollectionRepresentiveRateService;
 using Application.Services.contract.CoponCollectionRepresentiveRateService;
 using Application.Services.contract.CopounServiceContract;
@@ -33,7 +32,6 @@ using Domain.UnitOfWork.Contract;
 using Infrastructure.Data;
 using Infrastructure.Services.Authorization;
 using Infrastructure.Services.AuthServices;
-using Infrastructure.Services.ChangeLogServices;
 using Infrastructure.Services.CollectionRepresentiveRateServices;
 using Infrastructure.Services.CoponCollectionRepresentiveRateServices;
 using Infrastructure.Services.CopounServices;
@@ -74,7 +72,6 @@ public class ServiceManager : IServiceManager
     // It also helps to avoid unnecessary instantiation of services that may not be used.
     private readonly Lazy<IAuthenticationService> _AuthenticationService;
     private readonly Lazy<IUserSessionService> _UserSessionService;
-    private readonly Lazy<IChangeLogService> _ChangeLogService;
     private readonly Lazy<ICurrentUserService> _CurrentUserService;
     private readonly Lazy<IJwtService> _JwtService;
     private readonly Lazy<INotificationService> _NotificationService;
@@ -142,7 +139,6 @@ public class ServiceManager : IServiceManager
             _JwtService = new Lazy<IJwtService>(() => jwtService);
             _AuthenticationService = new Lazy<IAuthenticationService>(() => authService);
             _UserSessionService = new Lazy<IUserSessionService>(() => userSessionService);
-            _ChangeLogService = new Lazy<IChangeLogService>(() => new ChangeLogService(_CurrentUserService.Value));
             _NotificationService = new Lazy<INotificationService>(() => new NotificationService(UnitOfWork, _CurrentUserService.Value));
             _PayrollDeductionService = new Lazy<IPayrollDeductionService>(() => new PayrollDeductionService(UnitOfWork, _CurrentUserService.Value));
             //_NotificationDispatcher = new Lazy<INotificationDispatcher>(() => new NotificationDispatcher(UnitOfWork,Mapper,_CurrentUserService.Value));
@@ -193,7 +189,6 @@ public class ServiceManager : IServiceManager
     // Properties to access the services
     public IAuthenticationService AuthService => _AuthenticationService.Value;
     public IUserSessionService UserSessionService => _UserSessionService.Value;
-    public IChangeLogService ChangeLogService => _ChangeLogService.Value;
     public ICurrentUserService CurrentUserService => _CurrentUserService.Value;
     public IJwtService JwtService => _JwtService.Value;
     public INotificationService NotificationService => _NotificationService.Value;

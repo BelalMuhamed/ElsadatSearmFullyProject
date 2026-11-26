@@ -1,7 +1,6 @@
 ﻿using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
 using Application.Services.contract.BillDiscountsServiceContract;
-using Application.Services.contract.ChangeLogService;
 using Application.Services.contract.CollectionRepresentiveRateService;
 using Application.Services.contract.CoponCollectionRepresentiveRateService;
 using Application.Services.contract.CopounServiceContract;
@@ -33,7 +32,6 @@ namespace Application.Services.contract
         //  Define all the services that the service manager will provide
         public IAuthenticationService AuthService { get; }
         public IUserSessionService UserSessionService { get; }
-        public IChangeLogService ChangeLogService { get; }
         public ICurrentUserService CurrentUserService { get; }
         public IJwtService JwtService { get; }
         public INotificationService NotificationService { get; }

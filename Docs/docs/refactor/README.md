@@ -249,20 +249,43 @@
 
 ---
 
-### F3-S1 — Audit وسجل التغييرات · مخطط · 2026-11-25
+### F3-S1 — Audit وسجل التغييرات · اتنفذ · 2026-11-26
 
-**الـ business:** شاشة «سجل التغييرات» (78) والشريط الزمني و«آخر تعديل»: مين غيّر إيه وإمتى، قبل ← بعد، والسجل مبيتمسحش ولا يتعدل. ومحدش يعمل عملية باسم حد تاني (C7).
+**الـ business:** شاشة «سجل التغييرات» (78) والشريط الزمني و«آخر تعديل»: مين غيّر إيه وإمتى، قبل ← بعد، والسجل مبيتمسحش ولا يتعدل. ومحدش يقدر يعمل عملية باسم حد تاني (C7).
 
-**الوضع الحالي:** `ChangeLogService` محدش بينده عليها ومفيش entity بتطبّق `IAuditableEntity`؛ حوالي 11 مكان بيكتبوا الهوية من الـ DTO؛ القيم مخلوطة (`userId`، اسم، `"System"`)؛ 23 ملف entity بأعمدة مش موحدة؛ `GenericRepository.UpdateAsync` بيعلّم كل الأعمدة Modified.
+**القرارات (2026-11-26، كلها «a»):** D27 الأعمدة القديمة بتتملي بالاسم من الـ token؛ D28 سطر لكل تغيير + JSON قبل/بعد + أحداث من الـ service؛ D29 بالتعليم `[Audited]`، دلوقتي `Products` و`Supplier`؛ D30 الكود + trigger في الداتابيز.
 
-**المخطط:**
-1. `AuditFieldsInterceptor` + `IAuditedEntity`: مين وإمتى من الـ token وبـ UTC.
-2. `AuditEntry` + migration `AddAuditEntries`.
-3. `AuditEntriesInterceptor` + `[Audited]`/`[NotAudited]` + `IAuditTrail`، في نفس الـ transaction.
-4. مسح `ChangeLogService` و`IChangeLogService` و`IAuditableEntity`.
+**اللي اتعمل:**
+1. **مين وإمتى من الـ token (D27)** — `Infrastructure/Data/Interceptors/AuditFieldsInterceptor.cs`: مع كل `SaveChanges` أي entity فيها عمود `CreateBy`/`UpdateBy`/`DeleteBy` (أو أسامي `IAuditedEntity` الجديدة) بيتملي من `ICurrentUserService`، والوقت من `TimeProvider` بـ UTC.
+   - إضافة: `CreateBy` = المستخدم، و`UpdateBy`/`DeleteBy` بيتمسحوا (لو الفرونت بعتهم).
+   - تعديل: `CreateBy`/`CreateAt` مبيتكتبوش تاني. `UpdateBy`/`UpdateAt` من الـ token.
+   - `IsDeleted` من false لـ true: `DeleteBy`/`DeleteAt` بيتملوا. ومن true لـ false: بيتمسحوا. غير كده مبيتكتبوش.
+   - برّه أي request (الـ seed أو job): القيمة اللي الكود حطها بتفضل زي `"System"`.
+   - الـ entity اللي بتتعمل `State = Modified` من غير ما تتقري (detached): `EntityEntryOriginalValues.cs` بيقرا الصف من الداتابيز الأول علشان القيم القديمة تبقى صح.
+   - العقد الجديد للـ entities الجديدة: `Domain/Common/IAuditedEntity.cs`.
+2. **جدول `AuditEntries` (D28، D30)** — `Domain/Entities/Audit/AuditEntry.cs` + `AuditAction`، والإعدادات في `AppDbContext.ConfigureAuditEntries`: 5 `index` (الوقت، المستخدم، الشاشة، المستند، الـ reference)، و`FK` على المستخدمين من غير cascade. الـ migration هي `20261126161447_AddAuditEntries`، وفيها trigger `TR_AuditEntries_AppendOnly` بيرفض أي `UPDATE` أو `DELETE` حتى من SSMS (الخطأ 50030).
+3. **الالتقاط (D28، D29)** — `AuditEntriesInterceptor.cs`: أي entity عليها `[Audited(AuditAreas.X, ReferenceProperty = ...)]` بتكتب سطر لكل إضافة، وتعديل (الحقول اللي اتغيرت بس، قبل وبعد)، و`soft delete`، ورجوع، ومسح. الأعمدة بتاعة مين وإمتى مش بتظهر في القايمة، وكمان أي حقل عليه `[NotAudited]`.
+   - السطر فيه: `UserId` واسمه وقتها، والوقت، والـ IP، والـ `traceId`.
+   - نفس الـ transaction: لو العملية رجعت (rollback) السطر بيرجع معاها، ولو الحفظ فشل مفيش سطر بيفضل معلّق لحفظ بعده. الصف الجديد بياخد الـ id بتاعه بعد الحفظ، فسطره بيتكتب في حفظ تاني جوه نفس الـ transaction، ولو مفيش transaction مفتوحة الـ interceptor بيفتح واحدة حوالين الاتنين.
+   - التعديل أو المسح لسطر في السجل من EF بيترمي `InvalidOperationException`.
+   - الأحداث اللي الـ diff مش بيوصفها («وقف حساب»، «تأكيد فاتورة»): `IAuditTrail.Record(new AuditEvent(...))` في `Application/Services.contract/AuditTrail/`، والتنفيذ في `Infrastructure/Services/AuditServices/AuditTrail.cs`. الحدث بيتكتب مع الحفظ الجاي بتاع الـ service.
+   - التسجيل في `Program.cs`: `TimeProvider.System`، والـ interceptor بتاع الأعمدة الأول وبعده بتاع السجل، و`IAuditTrail`.
+4. **اتمسح:** `ChangeLogService` و`IChangeLogService` و`IAuditableEntity`، والـ members بتوعهم في `IServiceManager` و`ServiceManager` (محدش كان بيستخدمهم).
 
-**برّه الجلسة:** endpoint شاشة 78 (M2)، ترجمة أسامي الحقول، `DateTime.Now`، `ApprovedBy`/`MakeTransactionUser` (كل موديول).
+**برّه الجلسة:** endpoint شاشة 78 (M2)؛ ترجمة أسامي الحقول والشاشات (مع كل موديول)؛ تعليم باقي الـ entities بـ `[Audited]` (كل موديول بتاعه)؛ `ApprovedBy` و`MakeTransactionUser` و`DateTime.Now` (كل موديول). `ExecuteUpdate`/`ExecuteDelete` مبيعدّوش على الـ interceptors، فممنوع نستخدمهم على entity عليها `[Audited]`.
 
-**القرارات (اتقررت 2026-11-26، كلها «a»):** D27 الأعمدة القديمة بتتملي بالاسم من الـ token؛ D28 سطر لكل تغيير + JSON قبل/بعد + أحداث من الـ service؛ D29 بالتعليم `[Audited]`، دلوقتي `Products` و`Supplier`؛ D30 الكود + trigger في الداتابيز.
+**التجربة:** اتعملت على داتابيز مؤقتة `SadatSearmErp_AuditTest` بـ harness برّه الـ repo (14 + 4 + 19 حالة، كلها نجحت)، وبعدين الداتابيز اتمسحت. الـ build نضيف و42/42 test.
 
-**إزاي تتأكد:** هيتكتب بعد التنفيذ.
+**Commits:** `09d4faf` (الأعمدة)، `f15202c` (الجدول والـ trigger)، `9b63d50` (السجل)، وcommit المسح والـ README ده.
+
+**إزاي تتأكد:**
+1. شغّل الـ API، والـ migration `AddAuditEntries` هتتطبق لوحدها (D20).
+2. سجّل دخول وعدّل منتج من Swagger بـ `PUT /api/Product` (غيّر `sellingPrice`، وحط في `createBy` و`deleteBy` أي كلام).
+3. في SSMS شغّل ده:
+   ```sql
+   SELECT TOP 10 OccurredAt, UserName, Area, Action, EntityId, Reference, Changes
+   FROM SadatSearmErp.dbo.AuditEntries ORDER BY Id DESC;
+   SELECT Id, CreateBy, UpdateBy, UpdateAt, DeleteBy FROM SadatSearmErp.dbo.Products WHERE Id = <id>;
+   ```
+   المفروض تلاقي سطر `Action = 2` وفيه `[{"field":"SellingPrice","old":…,"new":…}]` باسمك، و`UpdateBy` هو الـ id بتاعك، و`CreateBy` زي ما هو، والكلام اللي بعته متكتبش.
+4. جرّب `DELETE FROM SadatSearmErp.dbo.AuditEntries;` — المفروض يترفض بالرسالة `AuditEntries is append-only`.
