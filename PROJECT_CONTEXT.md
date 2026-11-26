@@ -1,13 +1,13 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-26 (F4F5-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-26 (F4F5-S1 done, next F6-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F4F5-S1 — document numbering + rowversion. Belal approved the plan + D31–D34 (all «a») on 2026-11-26.
-- **Done in this step:** [x] D31–D34 recorded; [x] part 1 numbering (`4f36242`); [x] part 2 `RowVersion` on `Stock`/`SalesInvoices`/`PurchaseInvoice`, migration `AddRowVersions`, `ErrorCodes.ConcurrencyConflict` + ar/en, `ExceptionHandlingMiddleware.ToCode`; [x] harness 7/7 + 5/5 on `SadatSearmErp_SeqTest` (dropped); [x] README «اتنفذ».
-- **In progress / next part:** tracker only — `TRACKER.xlsx` was open in Excel (PermissionError). Once closed: `tracker.py decision D31..D34` (texts in the Decisions table) and `tracker.py session F4F5-S1 --status جاري --start 2026-11-26 --commit <last> --notes "…"`; «خلص» + `--end` after Belal confirms. Then `/handoff`.
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Check the target DB before starting the API (`dotnet ef dbcontext info`). If the API runs from Visual Studio the normal build is locked: build with `--artifacts-path`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`).
-- **Uncommitted changes:** none after the part-2 commit. Build 0 errors, 42/42 tests (2026-11-26).
-- **Decisions taken in this step (2026-11-26):** D31 gapless numbering, counter row updated inside the document's transaction (a); D32 one running counter per type, no yearly reset (a); D33 rowversion now on `Stock`, `SalesInvoices`, `PurchaseInvoice`, wallets with their tables in M5/M11 (a); D34 start at 1, 4 digits minimum (a).
+- **Step:** F6-S1 — journal posting engine (`IJournalPostingService`: balanced entry from `SystemAccountCode`, linked to its source `SourceType`/`SourceId`, system entries not editable by hand, reversal linked to the original, with tests). Not started.
+- **Done in this step:** nothing yet.
+- **In progress / next part:** `/start` → read F6 in `Docs/docs/refactor/PLAN.md` (row F6 + the M3 details) and write the F6-S1 «مخطط» section in `README.md`; read `Domain/Entities/Finance/JournalEntries.cs`, `JournalEntryDetails`, `ChartOfAccounts`, `Domain/Enums/SystemAccountCode.cs`, `Infrastructure/Services/FinanceService/*`, and how sales/purchase/payroll/loan services build entries today. Use `IDocumentNumberService.NextAsync(DocumentType.JournalEntry)` for `JE-` numbers (D31). Explain business + changes + decisions to Belal and wait for OK.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Check the target DB before starting the API (`dotnet ef dbcontext info`). If the API runs from Visual Studio the normal build is locked: build with `--artifacts-path`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes.
+- **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-26).
+- **Decisions taken in this step:** none.
 - **Open questions:** draft vs confirm numbering (UI gives drafts a number; PLAN M6/M7 says at confirm) — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
@@ -114,7 +114,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - [x] **F2-S1 — unified response (structure)** (2026-11-25)
 - F2-S2 cancelled (D26): controllers move with their module
 - [x] **F3-S1 — audit + change log** (2026-11-26)
-- [ ] **F4F5-S1 — document numbering + rowversion** ← next
+- [x] **F4F5-S1 — document numbering + rowversion** (2026-11-26)
+- [ ] **F6-S1 — journal posting engine** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -168,3 +169,4 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-25 (Claude Code) — F1-S2 done: `InitialCreate` baseline, D20 auto-migrate, D21 no database cascades (`AppDbContext.cs`, `ApplicationBuilderExtensions.cs`, `Program.cs`, `Infrastructure/Migrations`); old Angular app removed; replies on `claude-reply/index.html`. First startup test hit the old DB (rolled back, nothing changed). Build 0 errors, 15/15, confirmed by Belal. Next: F2-S1.
 - 2026-11-25 (Claude Code) — F2-S1 done and confirmed: `code`/`traceId`, `ApiErrorWriter`, `PagedResult`, D22–D25; F2-S2 cancelled (D26) and its row removed with `tracker.py remove`. Next: F3-S1.
 - 2026-11-26 (Claude Code) — F3-S1 done and confirmed: D27–D30; `AuditFieldsInterceptor` (who/when from the token, UTC), `AuditEntries` + migration `AddAuditEntries` + append-only trigger, `AuditEntriesInterceptor` + `[Audited]` on `Products`/`Supplier` + `IAuditTrail`, `ChangeLogService`/`IAuditableEntity` deleted (`Infrastructure/Data/Interceptors/*`, `Domain/Entities/Audit`, `Domain/Common`, `Program.cs`, `ServiceManager`). 37 checks on a throwaway DB; build 0 errors, 42/42. Left for modules: screen-78 endpoint (M2), marking other entities, field-name translations. Next: F4F5-S1.
+- 2026-11-26 (Claude Code) — F4F5-S1 done and confirmed: D31–D34; `DocumentSequences` + `IDocumentNumberService` (`Domain/Enums/DocumentType.cs`, `Domain/Entities/Numbering`, `Infrastructure/Services/NumberingServices`, migration `AddDocumentSequences`), `RowVersion` on `Stock`/`SalesInvoices`/`PurchaseInvoice` (migration `AddRowVersions`) + 409 `Common.ConcurrencyConflict` (`ErrorCodes`, `LocalizationResources`, `ExceptionHandlingMiddleware`). 12 checks on a throwaway DB; build 0 errors, 42/42. Left: `SO{Id}`/`PO{Id}`/`Random` replaced in M6/M7/F6. Next: F6-S1.
