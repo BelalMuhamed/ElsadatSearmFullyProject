@@ -3,10 +3,10 @@ _Last updated: 2026-11-26 (F4F5-S1 in progress) · Read this first in any new se
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
 - **Step:** F4F5-S1 — document numbering + rowversion. Belal approved the plan + D31–D34 (all «a») on 2026-11-26.
-- **Done in this step:** [x] plan and decisions recorded (here, CLAUDE.md, README «مخطط»); [x] part 1: `Domain/Enums/DocumentType.cs`, `Domain/Entities/Numbering/DocumentSequence.cs`, `AppDbContext.ConfigureDocumentSequences` (+ `HasData`), migration `AddDocumentSequences`, `IDocumentNumberService` + `DocumentNumberService`, `Program.cs`. Verified on `SadatSearmErp_SeqTest` (7/7, 50 parallel → INV-0001..0050). Tracker NOT updated: `TRACKER.xlsx` open in Excel (PermissionError) — pending: `session F4F5-S1 --status جاري --start 2026-11-25`… and `decision D31..D34` (texts in the Decisions table).
-- **In progress / next part:** (2) `[Timestamp] RowVersion` on `Domain/Entities/Stock.cs`, `Invoices/SalesInvoices.cs`, `Invoices/PurchaseInvoice.cs` + migration `AddRowVersions`; `ErrorCodes.ConcurrencyConflict` + ar/en key in `LocalizationResources`; `ExceptionHandlingMiddleware` passes that code for `DbUpdateConcurrencyException`. Then harness `part2` (two contexts update the same Stock → one fails), drop the test DB, docs + tracker.
+- **Done in this step:** [x] D31–D34 recorded; [x] part 1 numbering (`4f36242`); [x] part 2 `RowVersion` on `Stock`/`SalesInvoices`/`PurchaseInvoice`, migration `AddRowVersions`, `ErrorCodes.ConcurrencyConflict` + ar/en, `ExceptionHandlingMiddleware.ToCode`; [x] harness 7/7 + 5/5 on `SadatSearmErp_SeqTest` (dropped); [x] README «اتنفذ».
+- **In progress / next part:** tracker only — `TRACKER.xlsx` was open in Excel (PermissionError). Once closed: `tracker.py decision D31..D34` (texts in the Decisions table) and `tracker.py session F4F5-S1 --status جاري --start 2026-11-26 --commit <last> --notes "…"`; «خلص» + `--end` after Belal confirms. Then `/handoff`.
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Check the target DB before starting the API (`dotnet ef dbcontext info`). If the API runs from Visual Studio the normal build is locked: build with `--artifacts-path`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`).
-- **Uncommitted changes:** docs only. Build 0 errors (2026-11-26).
+- **Uncommitted changes:** none after the part-2 commit. Build 0 errors, 42/42 tests (2026-11-26).
 - **Decisions taken in this step (2026-11-26):** D31 gapless numbering, counter row updated inside the document's transaction (a); D32 one running counter per type, no yearly reset (a); D33 rowversion now on `Stock`, `SalesInvoices`, `PurchaseInvoice`, wallets with their tables in M5/M11 (a); D34 start at 1, 4 digits minimum (a).
 - **Open questions:** draft vs confirm numbering (UI gives drafts a number; PLAN M6/M7 says at confirm) — decide in M6/M7, recommended: follow the UI.
 
@@ -139,6 +139,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
   - `AuthController.RevokeSessions`: no `CancellationToken`; `RemoteIpAddress` is the proxy IP unless forwarded headers are configured.
 - `ExecuteUpdate`/`ExecuteDelete` bypass the audit interceptors (F3-S1): never use them on `[Audited]` entities or on entities with `CreateBy`/`UpdateBy` columns.
 - `ProductService.EditProduct`/`FromDto` still copy `deleteBy`/`deleteAt`/`createBy` from the DTO; the interceptor overwrites them (D27) — remove the copies in M4.
+- Sales/purchase numbers are still `SO{Id}`/`PO{Id}` and journal references `Random` (`EmployeePayrollService`, `EmployeeLoanService`): switch to `IDocumentNumberService` when M6/M7/F6 rewrite them; add a unique index on `InvoiceNumber` then. Decide there whether drafts get their number at save (UI) or at confirm (PLAN).
 - `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in M1 (D26).
 - `PayrollDeductionService.cs` lines 84/96: CS8619 nullability warnings.
 - Build has ~108 warnings (mostly nullability) — not blocking; to be cleaned per module.

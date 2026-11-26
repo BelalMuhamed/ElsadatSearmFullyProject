@@ -1330,6 +1330,12 @@ namespace Infrastructure.Migrations
                     b.Property<decimal?>("RivalValue")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int?>("SetteledStoreId")
                         .HasColumnType("int");
 
@@ -1523,6 +1529,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<int?>("ReverseJournalEntryId")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<int>("SalesInvoiceStatus")
                         .HasColumnType("int");
@@ -1946,6 +1958,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("StoreId", "ProductId");
 

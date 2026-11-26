@@ -15,6 +15,9 @@ public static class ErrorCodes
     public const string NotFound = "Common.NotFound";
     public const string MethodNotAllowed = "Common.MethodNotAllowed";
     public const string DataConflict = "Common.DataConflict";
+
+    /// <summary>Someone saved the same row first (optimistic concurrency, F5).</summary>
+    public const string ConcurrencyConflict = "Common.ConcurrencyConflict";
     public const string UnsupportedMediaType = "Common.UnsupportedMediaType";
     public const string TooManyRequests = "Common.TooManyRequests";
     public const string ServerError = "Common.ServerError";

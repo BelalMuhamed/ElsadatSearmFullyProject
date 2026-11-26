@@ -17,6 +17,7 @@ namespace Infrastructure.Services.LocalizationServices
             ["Common.Unauthorized"] = ("الرجاء تسجيل الدخول اولا", "Please log in first"),
             ["Common.BadRequest"] = ("طلب غير صالح", "Bad request"),
             ["Common.DataConflict"] = ("تعارض في البيانات", "Data conflict"),
+            ["Common.ConcurrencyConflict"] = ("حد تاني عدّل البيانات دي قبلك. حدّث الصفحة وحاول تاني", "Someone else changed this data first. Refresh the page and try again."),
             ["Common.ValidationFailed"] = ("البيانات المدخلة غير صالحة", "The submitted data is invalid"),
             ["Common.InvalidBody"] = ("صيغة البيانات المرسلة غير صحيحة", "The request data is malformed"),
             ["Common.MethodNotAllowed"] = ("طريقة الطلب غير مسموحة", "This request method is not allowed"),

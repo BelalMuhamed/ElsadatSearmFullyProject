@@ -1,4 +1,5 @@
-﻿using AlSadat_Seram.Api.Responses;
+﻿using Domain.Common;
+using AlSadat_Seram.Api.Responses;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -49,9 +50,16 @@ public class ExceptionHandlingMiddleware
                 throw;
 
             context.Response.Clear();
-            await errorWriter.WriteAsync(context, ToStatusCode(ex));
+            await errorWriter.WriteAsync(context, ToStatusCode(ex), ToCode(ex));
         }
     }
+
+    /// <summary>A specific code when the exception has one; otherwise the status decides (D22).</summary>
+    private static string? ToCode(Exception exception) => exception switch
+    {
+        DbUpdateConcurrencyException => ErrorCodes.ConcurrencyConflict,
+        _ => null
+    };
 
     private static HttpStatusCode ToStatusCode(Exception exception) => exception switch
     {

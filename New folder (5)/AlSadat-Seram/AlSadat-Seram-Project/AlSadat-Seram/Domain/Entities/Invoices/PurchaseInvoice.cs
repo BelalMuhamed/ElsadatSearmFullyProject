@@ -15,6 +15,10 @@ namespace Domain.Entities.Invoices
     {
         
         public string InvoiceNumber { get; set; } = string.Empty;
+
+        /// <summary>Optimistic concurrency (F5, D33): a save over a stale copy fails with 409.</summary>
+        [System.ComponentModel.DataAnnotations.Timestamp]
+        public byte[] RowVersion { get; set; } = [];
         [ForeignKey(nameof(supplier))]
         public int SupplierId { get; set; }
         public Supplier supplier { get; set; }

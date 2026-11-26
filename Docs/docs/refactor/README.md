@@ -292,17 +292,52 @@
 
 ---
 
-### F4F5-S1 — ترقيم المستندات والتعارض · مخطط · 2026-11-26
+### F4F5-S1 — ترقيم المستندات والتعارض · اتنفذ · 2026-11-26
 
-**الـ business:** كل مستند بياخد رقم الناس بتتكلم بيه (`INV-1038`، `PUR-0224`، `RC-0368`، `RET-0044`، `TR-0094`، `CNT-0013`، `INS-0412`، `W-2231`، `JE-4471`) من غير تكرار حتى لو اتنين أكّدوا في نفس الثانية. ولو اتنين عدّلوا نفس رصيد المخزن في نفس اللحظة، التاني ياخد 409 برسالة واضحة بدل ما يكتب فوق الأول.
+**الـ business:** كل مستند بياخد رقم الناس بتتكلم بيه (`INV-1038`، `PUR-0224`، `RC-0368`، `RET-0044`، `TR-0094`، `CNT-0013`، `INS-0412`، `W-2231`، `JE-4471`) من غير تكرار، حتى لو اتنين أكّدوا في نفس الثانية. ولو اتنين عدّلوا نفس رصيد المخزن في نفس اللحظة، التاني بيترفض بدل ما يكتب فوق الأول.
 
-**الوضع الحالي:** `SO{Id}` و`PO{Id}` بحفظ تاني (`salesInvoiceService.cs:264`، `PurchaseInvoiceService.cs:368`)؛ رقم القيد `Random` (`EmployeePayrollService.cs:285`)؛ مفيش `rowversion`؛ الـ 409 موجود برسالة عامة.
+**القرارات (2026-11-26، كلها «a»):** D31 ترقيم من غير فراغات جوه transaction المستند؛ D32 عداد واحد مستمر من غير تصفير سنوي؛ D33 `rowversion` على `Stock` و`SalesInvoices` و`PurchaseInvoice`، والمحافظ مع جداولها في M5 وM11؛ D34 الترقيم من 1 بـ 4 خانات على الأقل.
 
-**القرارات (2026-11-26، كلها «a»):** D31 ترقيم من غير فراغات جوه transaction المستند؛ D32 عداد واحد مستمر؛ D33 `rowversion` على `Stock` و`SalesInvoices` و`PurchaseInvoice`؛ D34 من 1 بـ 4 خانات.
+**اللي اتعمل:**
+1. **الترقيم (F4):**
+   - جداول وأنواع: `Domain/Enums/DocumentType.cs` فيه الـ 9 أنواع (`tinyint`، ومحدش يغيّر قيمة موجودة). و`Domain/Entities/Numbering/DocumentSequence.cs` فيه النوع كـ key، والبادئة، وآخر رقم، وأقل عدد خانات، والصفوف الافتراضية في `Defaults`.
+   - الإعداد في `AppDbContext.ConfigureDocumentSequences` بـ `HasData`، والـ migration هي `20261126170225_AddDocumentSequences` وفيها 9 صفوف كلها من صفر.
+   - الخدمة: `Application/Services.contract/Numbering/IDocumentNumberService.cs` و`Infrastructure/Services/NumberingServices/DocumentNumberService.cs`، ومتسجلة في `Program.cs`. بتعمل `UPDATE … OUTPUT` واحد: SQL Server بيقفل الصف لحد ما الـ transaction بتاعة الـ service تخلص، فالطلبات اللي في نفس اللحظة بتقف في طابور، وكل واحد بياخد الرقم اللي بعده. ولو العملية رجعت (rollback) الرقم بيرجع. ولو اتندهت من غير transaction بترمي `InvalidOperationException`.
+2. **التعارض (F5):**
+   - `[Timestamp] RowVersion` على `Stock` و`SalesInvoices` و`PurchaseInvoice`، والـ migration هي `20261126170501_AddRowVersions`.
+   - `ErrorCodes.ConcurrencyConflict` مع مفتاح `Common.ConcurrencyConflict` بالعربي («حد تاني عدّل البيانات دي قبلك. حدّث الصفحة وحاول تاني») والإنجليزي.
+   - `ExceptionHandlingMiddleware.ToCode`: أي `DbUpdateConcurrencyException` بيرجع 409 بالكود ده.
+   - كل الأماكن القديمة اللي بتعدّل `Stock` والفواتير بتقرا الصف الأول، فمفيش service اتلمست.
 
-**المخطط:**
-1. `DocumentType` + `DocumentSequence` + migration `AddDocumentSequences` + `IDocumentNumberService`.
-2. `RowVersion` على الـ 3 جداول + migration `AddRowVersions` + `Common.ConcurrencyConflict`.
-3. تجربة على داتابيز مؤقتة.
+**التجربة:** اتعملت على داتابيز مؤقتة `SadatSearmErp_SeqTest` بـ harness برّه الـ repo (7 + 5 حالات، كلها نجحت)، وبعدين اتمسحت:
+- 50 طلب في نفس اللحظة طلعوا `INV-0001` لحد `INV-0050` بالظبط.
+- الـ rollback رجّع الرقم.
+- الأنواع مستقلة عن بعض، وبعد `9999` الرقم بيبقى `PUR-10000`.
+- من غير transaction بيترمي خطأ.
+- سحبتين من نسخة قديمة لنفس الـ `Stock`: التانية اترفضت والرصيد فضل 70 مش 80.
+- طريقة الكود القديم (`State = Modified` بعد القراية) لسه شغالة.
 
-**برّه الجلسة:** استبدال `SO{Id}`/`PO{Id}`/`Random` بالخدمة (M6، M7، F6/M3)؛ `unique index` على رقم الفاتورة؛ قرار «الرقم مع المسودة ولا مع التأكيد» (M6/M7).
+الـ build نضيف و42/42 test. الـ 409 بالكود الجديد متجرّبش من HTTP، لأن مفيش endpoint النهارده بيسيب الـ exception يطلع (الـ services القديمة بتمسكه، D24)، بس هو نفس الـ mapping اللي اتجرّب في F2-S1.
+
+**برّه الجلسة (في الـ Known issues):**
+- `SO{Id}` و`PO{Id}` والرقم العشوائي للقيود بيتشالوا لما الـ services تتكتب من جديد (M6، M7، F6/M3).
+- الـ `unique index` على رقم الفاتورة.
+- قرار «الرقم مع المسودة ولا مع التأكيد» (M6/M7).
+
+**Commits:** `4f36242` (الترقيم)، والـ commit بتاع التعارض والـ README ده.
+
+**إزاي تتأكد:**
+1. شغّل الـ API، والـ migrations هتتطبق لوحدها.
+2. في SSMS شغّل ده:
+   ```sql
+   SELECT * FROM SadatSearmErp.dbo.DocumentSequences;   -- 9 صفوف، LastNumber = 0
+   SELECT TOP 1 RowVersion FROM SadatSearmErp.dbo.Stocks; -- عمود rowversion موجود
+   ```
+3. جرّب الترقيم:
+   ```sql
+   BEGIN TRAN;
+   UPDATE SadatSearmErp.dbo.DocumentSequences SET LastNumber = LastNumber + 1
+   OUTPUT inserted.Prefix, inserted.LastNumber WHERE DocumentType = 1;
+   ROLLBACK;
+   ```
+   المفروض يطلع `INV` و`1`، وبعد الـ `ROLLBACK` الـ `LastNumber` يرجع `0`.

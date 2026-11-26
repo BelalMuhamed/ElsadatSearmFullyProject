@@ -23,5 +23,9 @@ namespace Domain.Entities
 
         [Column(TypeName = "money")]
         public decimal AvgCost { get; set; }
+
+        /// <summary>Optimistic concurrency (F5, D33): a save over a stale copy fails with 409.</summary>
+        [System.ComponentModel.DataAnnotations.Timestamp]
+        public byte[] RowVersion { get; set; } = [];
     }
 }
