@@ -289,3 +289,20 @@
    ```
    المفروض تلاقي سطر `Action = 2` وفيه `[{"field":"SellingPrice","old":…,"new":…}]` باسمك، و`UpdateBy` هو الـ id بتاعك، و`CreateBy` زي ما هو، والكلام اللي بعته متكتبش.
 4. جرّب `DELETE FROM SadatSearmErp.dbo.AuditEntries;` — المفروض يترفض بالرسالة `AuditEntries is append-only`.
+
+---
+
+### F4F5-S1 — ترقيم المستندات والتعارض · مخطط · 2026-11-26
+
+**الـ business:** كل مستند بياخد رقم الناس بتتكلم بيه (`INV-1038`، `PUR-0224`، `RC-0368`، `RET-0044`، `TR-0094`، `CNT-0013`، `INS-0412`، `W-2231`، `JE-4471`) من غير تكرار حتى لو اتنين أكّدوا في نفس الثانية. ولو اتنين عدّلوا نفس رصيد المخزن في نفس اللحظة، التاني ياخد 409 برسالة واضحة بدل ما يكتب فوق الأول.
+
+**الوضع الحالي:** `SO{Id}` و`PO{Id}` بحفظ تاني (`salesInvoiceService.cs:264`، `PurchaseInvoiceService.cs:368`)؛ رقم القيد `Random` (`EmployeePayrollService.cs:285`)؛ مفيش `rowversion`؛ الـ 409 موجود برسالة عامة.
+
+**القرارات (2026-11-26، كلها «a»):** D31 ترقيم من غير فراغات جوه transaction المستند؛ D32 عداد واحد مستمر؛ D33 `rowversion` على `Stock` و`SalesInvoices` و`PurchaseInvoice`؛ D34 من 1 بـ 4 خانات.
+
+**المخطط:**
+1. `DocumentType` + `DocumentSequence` + migration `AddDocumentSequences` + `IDocumentNumberService`.
+2. `RowVersion` على الـ 3 جداول + migration `AddRowVersions` + `Common.ConcurrencyConflict`.
+3. تجربة على داتابيز مؤقتة.
+
+**برّه الجلسة:** استبدال `SO{Id}`/`PO{Id}`/`Random` بالخدمة (M6، M7، F6/M3)؛ `unique index` على رقم الفاتورة؛ قرار «الرقم مع المسودة ولا مع التأكيد» (M6/M7).

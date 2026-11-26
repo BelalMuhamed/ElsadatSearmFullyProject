@@ -1565,6 +1565,92 @@ namespace Infrastructure.Migrations
                     b.ToTable("SalesInvoices");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Numbering.DocumentSequence", b =>
+                {
+                    b.Property<byte>("DocumentType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("LastNumber")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("MinDigits")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.HasKey("DocumentType");
+
+                    b.ToTable("DocumentSequences", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            DocumentType = (byte)1,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "INV"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)2,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "PUR"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)3,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "RC"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)4,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "RET"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)5,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "TR"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)6,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "CNT"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)7,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "INS"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)8,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "W"
+                        },
+                        new
+                        {
+                            DocumentType = (byte)9,
+                            LastNumber = 0,
+                            MinDigits = (byte)4,
+                            Prefix = "JE"
+                        });
+                });
+
             modelBuilder.Entity("Domain.Entities.Plumber", b =>
                 {
                     b.Property<int>("Id")

@@ -5,6 +5,7 @@ using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
 using Application.Services.contract.AuditTrail;
 using Application.Services.contract.CurrentUserService;
+using Application.Services.contract.Numbering;
 using Application.Services.contract.JwtService;
 using Application.Services.contract.LocalizationService;
 using Domain.Common;
@@ -19,6 +20,7 @@ using Infrastructure.Services.AuthServices;
 using Infrastructure.Services.CurrentUserServices;
 using Infrastructure.Services.JwtServices;
 using Infrastructure.Services.LocalizationServices;
+using Infrastructure.Services.NumberingServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +57,7 @@ internal class Program
                      serviceProvider.GetRequiredService<AuditFieldsInterceptor>(),
                      serviceProvider.GetRequiredService<AuditEntriesInterceptor>()));
         builder.Services.AddScoped<IAuditTrail, AuditTrail>();
+        builder.Services.AddScoped<IDocumentNumberService, DocumentNumberService>();
 
 
         builder.Services.AddCors(options =>

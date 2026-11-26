@@ -4,6 +4,7 @@ using Domain.Entities.Audit;
 using Domain.Entities.Authorization;
 using Domain.Entities.copounModel;
 using Domain.Entities.Finance;
+using Domain.Entities.Numbering;
 using Domain.Entities.HR;
 using Domain.Entities.Invoices;
 using Domain.Entities.Transactions;
@@ -78,6 +79,7 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Authorization.UserPermission> UserPermissions { get; set; }
         public DbSet<Domain.Entities.Auth.AuthAuditLog> AuthAuditLogs { get; set; }
         public DbSet<AuditEntry> AuditEntries { get; set; }
+        public DbSet<DocumentSequence> DocumentSequences { get; set; }
 
         public DbSet<SalesInvoiceItemStoresQuantities> SalesInvoiceItemStoresQuantities { get; set; }
 
@@ -429,9 +431,27 @@ namespace Infrastructure.Data
  .HasDatabaseName("IX_ChartOfAccounts_UserId");
 
             ConfigureAuditEntries(builder);
+            ConfigureDocumentSequences(builder);
 
             // Keep last: it must see every relationship configured above.
             DisableDatabaseCascades(builder);
+        }
+
+        /// <summary>
+        /// Document number counters (F4, D31–D34): the type is the key (no identity), one seeded row per
+        /// <see cref="DocumentType"/>. <c>DocumentNumberService</c> updates the row with raw SQL, so the
+        /// table and column names are fixed here.
+        /// </summary>
+        private static void ConfigureDocumentSequences(ModelBuilder builder)
+        {
+            builder.Entity<DocumentSequence>(sequence =>
+            {
+                sequence.ToTable("DocumentSequences");
+                sequence.HasKey(s => s.DocumentType);
+                sequence.Property(s => s.DocumentType).ValueGeneratedNever();
+                sequence.Property(s => s.Prefix).HasMaxLength(DocumentSequence.PrefixMaxLength);
+                sequence.HasData(DocumentSequence.Defaults);
+            });
         }
 
         /// <summary>

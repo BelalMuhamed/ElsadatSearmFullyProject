@@ -1,14 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-26 (F3-S1 done, next F4F5-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-26 (F4F5-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F4F5-S1 — document numbering (`DocumentSequences`, e.g. INV-1038, no duplicates under concurrency) + `rowversion` on Stock / invoices / wallets → 409. Not started.
-- **Done in this step:** nothing yet.
-- **In progress / next part:** `/start` → read the F4/F5 rows in `Docs/docs/refactor/PLAN.md` and the F4F5-S1 brief in `README.md` (write it as «مخطط» if missing), read the code that generates numbers today and the stock/invoice/wallet entities, then explain business + changes + decisions to Belal and wait for his OK.
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Check the target DB before starting the API (`dotnet ef dbcontext info`). If the API runs from Visual Studio the normal build is locked: build with `--artifacts-path`. Throwaway-DB checks: a .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`) against `<name>_Test`, dropped afterwards.
-- **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-26).
-- **Decisions taken in this step:** none.
-- **Open questions:** none.
+- **Step:** F4F5-S1 — document numbering + rowversion. Belal approved the plan + D31–D34 (all «a») on 2026-11-26.
+- **Done in this step:** [x] plan and decisions recorded (here, CLAUDE.md, README «مخطط»); [x] part 1: `Domain/Enums/DocumentType.cs`, `Domain/Entities/Numbering/DocumentSequence.cs`, `AppDbContext.ConfigureDocumentSequences` (+ `HasData`), migration `AddDocumentSequences`, `IDocumentNumberService` + `DocumentNumberService`, `Program.cs`. Verified on `SadatSearmErp_SeqTest` (7/7, 50 parallel → INV-0001..0050). Tracker NOT updated: `TRACKER.xlsx` open in Excel (PermissionError) — pending: `session F4F5-S1 --status جاري --start 2026-11-25`… and `decision D31..D34` (texts in the Decisions table).
+- **In progress / next part:** (2) `[Timestamp] RowVersion` on `Domain/Entities/Stock.cs`, `Invoices/SalesInvoices.cs`, `Invoices/PurchaseInvoice.cs` + migration `AddRowVersions`; `ErrorCodes.ConcurrencyConflict` + ar/en key in `LocalizationResources`; `ExceptionHandlingMiddleware` passes that code for `DbUpdateConcurrencyException`. Then harness `part2` (two contexts update the same Stock → one fails), drop the test DB, docs + tracker.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Check the target DB before starting the API (`dotnet ef dbcontext info`). If the API runs from Visual Studio the normal build is locked: build with `--artifacts-path`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`).
+- **Uncommitted changes:** docs only. Build 0 errors (2026-11-26).
+- **Decisions taken in this step (2026-11-26):** D31 gapless numbering, counter row updated inside the document's transaction (a); D32 one running counter per type, no yearly reset (a); D33 rowversion now on `Stock`, `SalesInvoices`, `PurchaseInvoice`, wallets with their tables in M5/M11 (a); D34 start at 1, 4 digits minimum (a).
+- **Open questions:** draft vs confirm numbering (UI gives drafts a number; PLAN M6/M7 says at confirm) — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -96,6 +96,10 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-26 | **D28** `AuditEntries`: one row per change (user id + name at the time, UTC time, area, action, entity, reference, JSON before/after) + optional service events via `IAuditTrail` | matches screen 78 (field before → after and sentences) | one row per field; manual events only |
 | 2026-11-26 | **D29** Auditing is opt-in with `[Audited]`; F3-S1 marks `Products` and `Supplier`, each module marks its own | no tokens/salaries in the log | everything automatic; none yet |
 | 2026-11-26 | **D30** `AuditEntries` is append-only: interceptor guard + SQL trigger rejecting `UPDATE`/`DELETE` | screen 78 promises it can't be edited | code guard only |
+| 2026-11-26 | **D31** Document numbers are gapless: one `DocumentSequences` row per type, incremented with `UPDATE … OUTPUT` inside the document's own transaction (rollback gives the number back) | auditors see no missing numbers; low concurrency | SQL `SEQUENCE` (no waiting, gaps on failure) |
+| 2026-11-26 | **D32** One running counter per type, no yearly reset (`INV-1038`) | matches the UI | yearly `INV-2026-0001` |
+| 2026-11-26 | **D33** `rowversion` now on `Stock`, `SalesInvoices`, `PurchaseInvoice`; wallets get it with their new tables (M5/M11) | protects stock today without touching services | also the old balance columns; none now |
+| 2026-11-26 | **D34** Numbering starts at 1 with at least 4 digits (`INV-0001`), grows past 9999 | no paper numbers to continue | start numbers from the old books |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
