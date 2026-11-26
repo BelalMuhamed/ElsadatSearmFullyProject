@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities;
+using Domain.Entities.Audit;
 using Domain.Entities.Authorization;
 using Domain.Entities.copounModel;
 using Domain.Entities.Finance;
@@ -76,6 +77,7 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Authorization.Permission> Permissions { get; set; }
         public DbSet<Domain.Entities.Authorization.UserPermission> UserPermissions { get; set; }
         public DbSet<Domain.Entities.Auth.AuthAuditLog> AuthAuditLogs { get; set; }
+        public DbSet<AuditEntry> AuditEntries { get; set; }
 
         public DbSet<SalesInvoiceItemStoresQuantities> SalesInvoiceItemStoresQuantities { get; set; }
 
@@ -426,8 +428,43 @@ namespace Infrastructure.Data
  .HasIndex(x => x.UserId)
  .HasDatabaseName("IX_ChartOfAccounts_UserId");
 
+            ConfigureAuditEntries(builder);
+
             // Keep last: it must see every relationship configured above.
             DisableDatabaseCascades(builder);
+        }
+
+        /// <summary>
+        /// The change log (D28–D30): indexes for screen 78's filters (time, user, area, document) and
+        /// the append-only trigger, declared so EF Core doesn't use an OUTPUT clause on that table.
+        /// </summary>
+        private static void ConfigureAuditEntries(ModelBuilder builder)
+        {
+            builder.Entity<AuditEntry>(entry =>
+            {
+                entry.ToTable(table => table.HasTrigger(AuditEntry.AppendOnlyTrigger));
+
+                entry.Property(a => a.UserName).HasMaxLength(AuditEntry.UserNameMaxLength);
+                entry.Property(a => a.Area).HasMaxLength(AuditEntry.AreaMaxLength);
+                entry.Property(a => a.EventKey).HasMaxLength(AuditEntry.EventKeyMaxLength);
+                entry.Property(a => a.EntityType).HasMaxLength(AuditEntry.EntityTypeMaxLength);
+                entry.Property(a => a.EntityId).HasMaxLength(AuditEntry.EntityIdMaxLength);
+                entry.Property(a => a.Reference).HasMaxLength(AuditEntry.ReferenceMaxLength);
+                entry.Property(a => a.Note).HasMaxLength(AuditEntry.NoteMaxLength);
+                entry.Property(a => a.IpAddress).HasMaxLength(AuditEntry.IpAddressMaxLength);
+                entry.Property(a => a.TraceId).HasMaxLength(AuditEntry.TraceIdMaxLength);
+
+                entry.HasOne<ApplicationUser>()
+                    .WithMany()
+                    .HasForeignKey(a => a.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entry.HasIndex(a => a.OccurredAt);
+                entry.HasIndex(a => new { a.UserId, a.OccurredAt });
+                entry.HasIndex(a => new { a.Area, a.OccurredAt });
+                entry.HasIndex(a => new { a.EntityType, a.EntityId });
+                entry.HasIndex(a => a.Reference);
+            });
         }
 
         /// <summary>
