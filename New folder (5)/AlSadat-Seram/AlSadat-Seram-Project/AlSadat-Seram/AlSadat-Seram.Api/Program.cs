@@ -10,6 +10,7 @@ using Domain.Common;
 using Domain.Entities.Users;
 using Domain.UnitOfWork.Contract;
 using Infrastructure.Data;
+using Infrastructure.Data.Interceptors;
 using Infrastructure.Services;
 using Infrastructure.Services.Authorization;
 using Infrastructure.Services.AuthServices;
@@ -42,8 +43,11 @@ internal class Program
 
         // Add services to the container.
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
-          options.UseSqlServer(builder.Configuration.GetConnectionString("con")));
+        builder.Services.AddSingleton(TimeProvider.System);
+        builder.Services.AddScoped<AuditFieldsInterceptor>();
+        builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+          options.UseSqlServer(builder.Configuration.GetConnectionString("con"))
+                 .AddInterceptors(serviceProvider.GetRequiredService<AuditFieldsInterceptor>()));
 
 
         builder.Services.AddCors(options =>

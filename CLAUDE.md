@@ -85,6 +85,8 @@ Secrets (JWT key, connection string `ConnectionStrings:con`, seed password) come
 - **D24** `ex.Message` must not reach the client: a rewritten service rethrows (after rollback) so `ExceptionHandlingMiddleware` logs it and returns 500. Old services are cleaned in their module, not before.
 - **D25** `PendingModelChangesWarning` is not ignored: a model change needs its migration before the API starts.
 - **D26** No bulk move of old controllers. Each module reviews its own controllers and rewrites only the endpoints its screens need on `BaseApiController.HandleResult` + `PagedResult<T>`; the rest are deleted. `PagedList`, `ApiResponse` and `PaginationParams` are deleted with the last module that uses them.
+- **D27** Legacy `CreateBy`/`UpdateBy`/`DeleteBy` and their dates are filled by name from the token (`AuditFieldsInterceptor`); the client can't set them. New entities implement `IAuditedEntity`. Each module unifies the names when it is rewritten.
+- **D28–D30** Change log = `AuditEntries`: one row per change with JSON before/after, plus service events through `IAuditTrail`; opt-in with `[Audited]` (each module marks its entities, never tokens/passwords/salaries); append-only (interceptor guard + DB trigger).
 - **Hosting** Azure (Azure Managed Redis in prod). Dev: API + Redis on the same machine (Redis in Docker/WSL).
 
 ## Mandatory coding rules (every touched method complies — no grandfathering)

@@ -1,14 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-25 (F2 done, F3-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-26 (F3-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F3-S1 — audit + change log. Plan explained to Belal (page + README «مخطط»); no code yet.
-- **Done in this step:** [x] code and screen 78 read, plan and 4 decisions written.
-- **In progress / next part:** after Belal's answer, 4 parts (build + test + commit each): (1) `Infrastructure/Data/Interceptors/AuditFieldsInterceptor.cs` + `Domain/Common/IAuditedEntity.cs` + registration in `Program.cs`; (2) `Domain/Entities/Audit/AuditEntry.cs` + `AppDbContext` + migration `AddAuditEntries` (trigger if 4a, with `HasTrigger`); (3) `AuditEntriesInterceptor`, `[Audited]`/`[NotAudited]`, `IAuditTrail`, same transaction (added rows get their key after the first save); compare original/current values because `GenericRepository.UpdateAsync` marks every column Modified; (4) delete `ChangeLogService`, `IChangeLogService`, `IAuditableEntity` and their `ServiceManager` members. Verify on a throwaway DB `SadatSearmErp_AuditTest` (create + drop; approved with the plan).
+- **Step:** F3-S1 — audit + change log. Belal approved the plan + D27–D30 (all «a») on 2026-11-26. Now coding part 1.
+- **Done in this step:** [x] plan + D27–D30 recorded (tracker still pending: `TRACKER.xlsx` was open in Excel — run `tracker.py decision D27..D30` + session notes once closed); [x] part 1: `Domain/Common/IAuditedEntity.cs`, `Infrastructure/Data/Interceptors/AuditFieldsInterceptor.cs`, `Infrastructure/Data/Interceptors/EntityEntryOriginalValues.cs`, `Program.cs` (`TimeProvider.System`, scoped interceptor, `AddDbContext((sp, o) => …AddInterceptors)`). Verified on `SadatSearmErp_AuditTest` with a scratchpad harness (14/14).
+- **In progress / next part:** (2) `Domain/Entities/Audit/AuditEntry.cs` (+ `AuditAction` enum) + `DbSet` + config in `AppDbContext` + migration `AddAuditEntries` with a trigger rejecting UPDATE/DELETE (`HasTrigger` so EF knows). Then (3) `AuditEntriesInterceptor` (own transaction when Added audited rows and none active; second save for their keys; uses `EnsureOriginalValuesAsync`), `[Audited]`/`[NotAudited]` on `Products` + `Supplier`, `IAuditTrail`; (4) delete `ChangeLogService`/`IChangeLogService`/`IAuditableEntity`. Drop the test DB at the end (`dotnet run audit.cs -- drop`).
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Before starting the API, check the target DB (`dotnet ef dbcontext info`). If Belal's API is running from Visual Studio the normal build is locked: build with `--artifacts-path`.
-- **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-25).
-- **Decisions taken in this step:** none yet.
-- **Open questions:** (1) legacy audit columns, (2) `AuditEntries` shape, (3) entities audited now, (4) append-only enforcement. Recommended: a for all.
+- **Uncommitted changes:** none after the part-1 commit. Build 0 errors, 42/42 tests (2026-11-26).
+- **Decisions taken in this step (2026-11-26):** D27 legacy audit columns filled by name from the token (a); D28 one `AuditEntries` row per change with JSON before/after + optional service events (a); D29 opt-in `[Audited]`, now `Products` + `Supplier` (a); D30 append-only: interceptor guard + DB trigger (a).
+- **Open questions:** none.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -92,6 +92,10 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-25 | **D24** `ex.Message` in services is removed when each module rewrites its service | those services are rewritten anyway | rethrow now; generic message now |
 | 2026-11-25 | **D25** `PendingModelChangesWarning` is no longer ignored | a forgotten migration stops startup instead of failing later | keep ignoring it |
 | 2026-11-25 | **D26** F2-S2 cancelled: each module reviews its controllers and rewrites only what its screens need; the rest are deleted | a bulk move would touch code that is rewritten or deleted later | move all 30 controllers in F2-S2 |
+| 2026-11-26 | **D27** Legacy `CreateBy`/`UpdateBy`/`DeleteBy` (+ dates) are filled by name from the token in `AuditFieldsInterceptor`, the client can't set them; new entities use `IAuditedEntity`; names are unified per module | closes C7 now without touching 18 services | rename all 23 entities now; new entities only |
+| 2026-11-26 | **D28** `AuditEntries`: one row per change (user id + name at the time, UTC time, area, action, entity, reference, JSON before/after) + optional service events via `IAuditTrail` | matches screen 78 (field before → after and sentences) | one row per field; manual events only |
+| 2026-11-26 | **D29** Auditing is opt-in with `[Audited]`; F3-S1 marks `Products` and `Supplier`, each module marks its own | no tokens/salaries in the log | everything automatic; none yet |
+| 2026-11-26 | **D30** `AuditEntries` is append-only: interceptor guard + SQL trigger rejecting `UPDATE`/`DELETE` | screen 78 promises it can't be edited | code guard only |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
