@@ -3,6 +3,7 @@ using AlSadat_Seram.Api.Responses;
 using Application.Services.contract;
 using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
+using Application.Services.contract.AuditTrail;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.JwtService;
 using Application.Services.contract.LocalizationService;
@@ -11,6 +12,7 @@ using Domain.Entities.Users;
 using Domain.UnitOfWork.Contract;
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
+using Infrastructure.Services.AuditServices;
 using Infrastructure.Services;
 using Infrastructure.Services.Authorization;
 using Infrastructure.Services.AuthServices;
@@ -45,9 +47,14 @@ internal class Program
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddScoped<AuditFieldsInterceptor>();
+        builder.Services.AddScoped<AuditEntriesInterceptor>();
+        // Order matters: the audit columns are stamped before the change log diffs the entity.
         builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
           options.UseSqlServer(builder.Configuration.GetConnectionString("con"))
-                 .AddInterceptors(serviceProvider.GetRequiredService<AuditFieldsInterceptor>()));
+                 .AddInterceptors(
+                     serviceProvider.GetRequiredService<AuditFieldsInterceptor>(),
+                     serviceProvider.GetRequiredService<AuditEntriesInterceptor>()));
+        builder.Services.AddScoped<IAuditTrail, AuditTrail>();
 
 
         builder.Services.AddCors(options =>

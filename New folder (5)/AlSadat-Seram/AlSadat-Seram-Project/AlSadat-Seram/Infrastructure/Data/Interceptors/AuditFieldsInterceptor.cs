@@ -1,5 +1,4 @@
 using Application.Services.contract.CurrentUserService;
-using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -14,7 +13,7 @@ namespace Infrastructure.Data.Interceptors;
 /// service copied from a DTO into these columns is overwritten or not written.
 /// <para>
 /// Applies to every entity that maps a "by" column, matched by name so the old spellings
-/// (<c>CreateBy</c>, <c>CreateAt</c>, <c>UpdateBy</c>, …) and <see cref="IAuditedEntity"/> both work.
+/// (<c>CreateBy</c>, <c>CreateAt</c>, …) and <c>IAuditedEntity</c> both work (<see cref="AuditColumnNames"/>).
 /// Outside an HTTP request (seed, background job) the "by" values the code set are kept.
 /// </para>
 /// <para>
@@ -24,14 +23,6 @@ namespace Infrastructure.Data.Interceptors;
 public sealed class AuditFieldsInterceptor(ICurrentUserService currentUser, TimeProvider clock)
     : SaveChangesInterceptor
 {
-    private static readonly string[] CreatedByNames = [nameof(IAuditedEntity.CreatedBy), "CreateBy"];
-    private static readonly string[] CreatedAtNames = [nameof(IAuditedEntity.CreatedAt), "CreateAt"];
-    private static readonly string[] UpdatedByNames = [nameof(IAuditedEntity.UpdatedBy), "UpdateBy"];
-    private static readonly string[] UpdatedAtNames = [nameof(IAuditedEntity.UpdatedAt), "UpdateAt"];
-    private static readonly string[] DeletedByNames = ["DeletedBy", "DeleteBy"];
-    private static readonly string[] DeletedAtNames = ["DeletedAt", "DeleteAt"];
-    private const string IsDeletedName = "IsDeleted";
-
     private static readonly ConcurrentDictionary<IEntityType, AuditColumns?> ColumnsByType = new();
 
     /// <inheritdoc />
@@ -203,13 +194,13 @@ public sealed class AuditFieldsInterceptor(ICurrentUserService currentUser, Time
         public static AuditColumns? Find(IEntityType entityType)
         {
             var columns = new AuditColumns(
-                Map(entityType, CreatedByNames),
-                Map(entityType, CreatedAtNames),
-                Map(entityType, UpdatedByNames),
-                Map(entityType, UpdatedAtNames),
-                Map(entityType, DeletedByNames),
-                Map(entityType, DeletedAtNames),
-                entityType.FindProperty(IsDeletedName));
+                Map(entityType, AuditColumnNames.CreatedBy),
+                Map(entityType, AuditColumnNames.CreatedAt),
+                Map(entityType, AuditColumnNames.UpdatedBy),
+                Map(entityType, AuditColumnNames.UpdatedAt),
+                Map(entityType, AuditColumnNames.DeletedBy),
+                Map(entityType, AuditColumnNames.DeletedAt),
+                entityType.FindProperty(AuditColumnNames.IsDeleted));
 
             var hasBy = columns.CreatedBy.Count + columns.UpdatedBy.Count + columns.DeletedBy.Count > 0;
             return hasBy ? columns : null;

@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Commonitems;
+﻿using Domain.Common;
+using Domain.Entities.Commonitems;
 using Domain.Entities.Invoices;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
+    [Audited(AuditAreas.Products, ReferenceProperty = nameof(Name))]
     public class Products : BaseEntity
     {
         public string Name { get; set; } = string.Empty;

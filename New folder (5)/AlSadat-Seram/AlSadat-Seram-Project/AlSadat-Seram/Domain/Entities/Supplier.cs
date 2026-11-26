@@ -1,8 +1,10 @@
-﻿using Domain.Entities.Commonitems;
+﻿using Domain.Common;
+using Domain.Entities.Commonitems;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
+    [Audited(AuditAreas.Suppliers, ReferenceProperty = nameof(Name))]
     public class Supplier : BaseEntity
     {
         public string Name { get; set; } = string.Empty;
