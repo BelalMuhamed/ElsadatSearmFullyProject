@@ -1,20 +1,13 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-27 (F8-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-27 (F8-S1 done; next F10-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F8-S1 — notifications. All parts done; waiting for Belal to confirm, then `/handoff` (tracker «خلص» + commit list).
-- **Done in this step:**
-  - [x] plan + D5, D43, D44 (`a849e30`)
-  - [x] part 1 `NotificationType`/`NotificationCategory`/`NotificationTypes`, `Notification` + `NotificationMute`, `NotificationLinks`, `ConfigureNotifications`, old empty service/dispatcher/DTO deleted (`3aa68e6` + `f979d85`)
-  - [x] part 2 publisher, after-commit `NotificationPushInterceptor` + queue + worker, `NotificationService`, `DecidableAsync`, keys, 11 tests, migration `RebuildNotifications` regenerated (`872e0dd`)
-  - [x] part 3 `NotificationsHub` `/hubs/notifications`, JWT `access_token` on that path only, worker hosted (`49fde96`)
-  - [x] part 4 `NotificationsController` (`e589ef6`)
-  - [x] part 5 F7 wiring: submit → deciders, approve/reject → requester (`353cf01`)
-  - [x] part 6 33 in-process checks + 14 end-to-end checks (real API host + SignalR client) + F7's 40 re-run; test DBs dropped; README rewritten
-- **In progress / next part:** Belal verifies (README › F8-S1 › إزاي تتأكد; restart the API so `AddApprovalRequests` + `RebuildNotifications` apply). Then `/handoff`: tracker F8-S1 «خلص» with commits, Session log line, checkpoint → next session (`py -3 tools/tracker.py next`).
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`, run with `dotnet run -c Release` so referenced projects build in Release), dropped afterwards; test users need `PhoneNumber` and must exist (AuditEntries FK). End-to-end: `WebApplicationFactory<NotificationsHub>` + env `ConnectionStrings__con`, `ASPNETCORE_TEST_CONTENTROOT_ALSADAT-SERAM_API`, a startup filter giving requests a loopback IP. Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/Debug` → build/ef with `-c Release`.
-- **Uncommitted changes:** none after the docs commit. Release build 0 errors, 75/75 tests (2026-11-27).
-- **Decisions taken in this step (2026-11-27):** D5 (a) SignalR; D43 (a) push `{ id, unreadCount }` then GET; D44 (a) muted type not created, approvals and permission changes can't be muted.
+- **Step:** F10-S1 — shared structures (F10–F14): `IExportService` (Excel/PDF), `IFileStorage` (local) + `Attachments`, QuestPDF print base, `NameAr`/`NameEn` pattern. Open decisions: D7 (ClosedXML only, recommended), D8 (`IFileStorage` local dev / Azure Blob prod, recommended). Not started.
+- **Done in this step:** nothing yet.
+- **In progress / next part:** `/start` → read PLAN.md rows F10–F14 and the decisions D6/D7/D8; read the current Excel code (3 libraries: ClosedXML, EPPlus 8, ExcelDataReader — `IExcelReaderService`, the 4 imports), the QuestPDF documents (`SalesInvoicePdfDocument`, `ConfirmedSalesInvoicePdfDocument`, logo file), and how images/files are stored today. Large exports notify through `INotificationPublisher` (`NotificationType.ExportReady`, F8). Explain business + changes + D7/D8 and wait for OK.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`, run with `dotnet run -c Release`), dropped afterwards; test users need `PhoneNumber` and must exist (AuditEntries FK). End-to-end through the real host: `WebApplicationFactory<NotificationsHub>` + env `ConnectionStrings__con` + `ASPNETCORE_TEST_CONTENTROOT_ALSADAT-SERAM_API`. Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/Debug` → build/ef with `-c Release`; restart the API to apply `AddApprovalRequests` + `RebuildNotifications`.
+- **Uncommitted changes:** none after the handoff commit. Release build 0 errors, 75/75 tests (2026-11-27).
+- **Decisions taken in this step:** none yet.
 - **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
@@ -135,7 +128,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - [x] **F4F5-S1 — document numbering + rowversion** (2026-11-26)
 - [x] **F6-S1 — journal posting engine** (2026-11-27)
 - [x] **F7-S1 — approvals engine** (2026-11-27)
-- [ ] **F8-S1 — notifications** ← next
+- [x] **F8-S1 — notifications** (2026-11-27)
+- [ ] **F10-S1 — shared structures (export, files, print, NameAr/NameEn)** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -162,7 +156,6 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - F6-S1 (D35/D36): `PostedJournalGuardInterceptor` blocks modifying/deleting posted entries and their lines, but not **adding** a line to a posted entry (old writers save the header, then the lines) — close it in M3. Old `DeletePurchaseInvoice` on an invoice with a posted entry now fails with 500 instead of deleting the ledger (C10) until M6. Old writers still use code strings / `Random` refs and leave `EntryNumber`/`SourceType` null until M6/M7/M9 move them to `IJournalPostingService`; `ExecuteUpdate` on journal tables bypasses the guard. Screen testing of posting/reversal deferred to M3 (manual-entry screen), Belal's call 2026-11-27.
 - F7-S1 (D39–D42): approvals engine has no real request type yet, so the center is empty until M1; per-type permission is read from JWT claims (`ApprovalService.AllowedTypes`) until M1 moves it to the cache (D3); the rejection reason is stored but no notification is sent until F8. The approve race check passes, but which guard catches it (status check or `RowVersion`) depends on timing.
 - F8-S1: no module sends notifications yet except approvals (F7); others come with their modules. One API instance only: a second one needs a SignalR backplane (Azure SignalR Service or Redis). Old notifications are never deleted until F14. Frontend: SignalR client with `withCredentials: false` (CORS has no `AllowCredentials`).
-- Pre-existing (found in F8-S1 testing): the global rate limiter in `Program.cs` partitions on `httpContext.Connection.RemoteIpAddress!.ToString()` → 500 on any request without a remote IP (TestServer, some proxies). One-line fix (`?.ToString() ?? "unknown"`) — waiting for Belal's OK.
 - `ProductService.EditProduct`/`FromDto` still copy `deleteBy`/`deleteAt`/`createBy` from the DTO; the interceptor overwrites them (D27) — remove the copies in M4.
 - Sales/purchase numbers are still `SO{Id}`/`PO{Id}` and journal references `Random` (`EmployeePayrollService`, `EmployeeLoanService`): switch to `IDocumentNumberService` when M6/M7/F6 rewrite them; add a unique index on `InvoiceNumber` then. Decide there whether drafts get their number at save (UI) or at confirm (PLAN).
 - `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in M1 (D26).
@@ -196,3 +189,4 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-26 (Claude Code) — F4F5-S1 done and confirmed: D31–D34; `DocumentSequences` + `IDocumentNumberService` (`Domain/Enums/DocumentType.cs`, `Domain/Entities/Numbering`, `Infrastructure/Services/NumberingServices`, migration `AddDocumentSequences`), `RowVersion` on `Stock`/`SalesInvoices`/`PurchaseInvoice` (migration `AddRowVersions`) + 409 `Common.ConcurrencyConflict` (`ErrorCodes`, `LocalizationResources`, `ExceptionHandlingMiddleware`). 12 checks on a throwaway DB; build 0 errors, 42/42. Left: `SO{Id}`/`PO{Id}`/`Random` replaced in M6/M7/F6. Next: F6-S1.
 - 2026-11-27 (Claude Code) — F6-S1 done and confirmed: D35–D38; `JournalSourceType`, journal entry number/source/reversal link/line note + `IAuditedEntity`/`[Audited(Accounting)]` (migration `AddJournalPosting`), `JournalDraft` + `JournalDraftRules` (11 tests), `IJournalPostingService`/`JournalPostingService` (`PostAsync`/`ReverseAsync`, `JournalErrorCodes`, `Journal.*` keys), `PostedJournalGuardInterceptor` (`Program.cs`). 32 checks on a throwaway DB; build 0 errors, 53/53. `tools/tracker.py --commit` now splits commas and dedupes. Left: engine has no caller yet (M3 manual entry, M6/M7/M9 move old writers), guard misses added lines (M3), screen testing in M3. Next: F7-S1.
 - 2026-11-27 (Claude Code) — F7-S1 done and confirmed: D39–D42; `ApprovalRequests` (`Domain/Enums/ApprovalType.cs`, `Domain/Entities/Approvals/ApprovalRequest.cs`, migration `AddApprovalRequests`), `IApprovalHandler`/`IApprovalService` + `ApprovalDtos` + `ApprovalRules` (11 tests), `ApprovalService` (claim → handler → one transaction, 409s, bulk per item), `ApprovalErrorCodes` + `Approval.*` keys, `ApprovalsController`. 40 checks on a throwaway DB; Release build 0 errors, 64/64. Left: real types per module (M1 first), reject notification in F8, permission check moves to the cache in M1. Next: F8-S1.
+- 2026-11-27 (Claude Code) — F8-S1 done and confirmed: D5, D43, D44; `Notification` rebuilt + `NotificationMute` (`Domain/Enums/NotificationType.cs`, `Domain/Entities/Notifications`, migration `RebuildNotifications`), old empty notification service/dispatcher/DTO deleted, `INotificationPublisher` + after-commit `NotificationPushInterceptor`/queue/worker, `NotificationService` + `NotificationsController`, `NotificationsHub` `/hubs/notifications` (JWT `access_token` there only), approvals notify deciders/requester; also fixed the global rate limiter on requests without an IP (`Program.cs`). 33 in-process + 14 end-to-end (real host + SignalR client) checks, F7's 40 re-run; Release build 0 errors, 75/75. Note: `3aa68e6` was pushed with deletions only (broken build) and completed by `f979d85`. Left: modules send their own types; backplane if scaled out; cleanup job in F14. Next: F10-S1.

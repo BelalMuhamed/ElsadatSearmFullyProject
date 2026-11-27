@@ -562,7 +562,7 @@
 **التأكيد:** بلال أكّد يوم 2026-11-27.
 
 ---
-### F8-S1 — الإشعارات · مستني تأكيدك · 2026-11-27
+### F8-S1 — الإشعارات · خلص · 2026-11-27
 
 **الـ business:** الإشعارات بتظهر في جرس التوب بار ومعاه عداد غير المقروء، وفي لوحة الإشعارات، وفي «كل الإشعارات» (شاشة 66). أمثلة:
 - طلب إلغاء `INV-1038` بيوصل لكل اللي يقدروا يقرروا فيه في نفس اللحظة.
@@ -700,7 +700,7 @@
 - **لقيتها وأنا بجرّب، ودي من قبل F8:**
   - الـ global rate limiter في `Program.cs` بيستعمل `RemoteIpAddress!`.
   - فأي request مفيهوش IP بيرجع 500 (زي TestServer أو بعض الـ proxies).
-  - الحل سطر واحد (`?.ToString() ?? "unknown"`)، ومتسجلة في الـ Known issues.
+  - اتصلحت بعد موافقتك في commit `3354d52`: الـ request اللي مفيهوش IP بقى بياخد bucket مشترك بدل الـ 500. واتأكدت بالـ end-to-end harness من غير أي تحايل.
 
 **إزاي تتأكد:**
 1. اقفل الـ API وشغّله تاني، والـ migrations `AddApprovalRequests` و`RebuildNotifications` هتتطبق لوحدها.
@@ -723,3 +723,5 @@
 - الـ SignalR client بياخد `withCredentials: false`، لأن الـ token جاي من `accessTokenFactory` والـ CORS مفيهوش `AllowCredentials`.
 - بعد كل push، اعمل `GET /api/notifications/{id}`.
 - لما الاتصال يرجع بعد ما يقع، اعمل `GET unread-count`.
+
+**التأكيد:** بلال أكّد يوم 2026-11-27، ووافق على تصليح الـ rate limiter.
