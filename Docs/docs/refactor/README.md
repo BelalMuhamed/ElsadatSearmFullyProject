@@ -447,14 +447,12 @@
 **التأكيد:** بلال أكّد يوم 2026-11-27 إن الـ tests نجحت عنده (53/53). والتجربة من الشاشة (الترحيل والعكس) اتأجلت لـ M3، لما شاشة القيد اليدوي تبقى جاهزة. وفي الـ session دي كمان اتصلّح `tools/tracker.py`: الـ `--commit` بقى بيقبل hashes مفصولة بفاصلة، ومبيكررش حاجة موجودة.
 
 ---
-### F7-S1 — محرك الموافقات · مخطط · 2026-11-27
+### F7-S1 — محرك الموافقات · مستني تأكيدك · 2026-11-27
 
 **الـ business:** شاشة «مركز الموافقات» (شاشة 9) فيها كل حاجة مستنية قرار في مكان واحد، والأقدم بيظهر الأول. أمثلة:
 - طلب إلغاء `INV-1038`، ومعاه اللي هيحصل لو اتوافق عليه.
 - تحويل نقاط، والموافقة بتبقى مقفولة لو رصيد التاجر مش كفاية.
-- تأكيد خزنة.
-- إجازة، أو قرض.
-- طلب صلاحية.
+- تأكيد خزنة، أو إجازة، أو قرض، أو طلب صلاحية.
 
 الرفض لازم يبقى معاه سبب، والسبب بيوصل لصاحب الطلب. والموافقة الجماعية بتظهر لما تفتح تاب نوع واحد. والزرار «مستني موافقتك» في التوب بار بيعرض العدد.
 
@@ -469,48 +467,94 @@
 - **D41 (أ):** الموافقة الجماعية بتعمل transaction لكل طلب، وبترجع نتيجة كل واحد.
 - **D42 (أ):** المحرك بس، وبيتجرّب بـ handler تجريبي. والأنواع الحقيقية بتيجي مع موديولاتها.
 
-**المخطط:**
-1. **الجدول:**
-   - `ApprovalType` و`ApprovalStatus` (مستني، اتوافق، اترفض، اتسحب).
-   - `ApprovalRequest`، وفيه:
-     - النوع.
-     - `SubjectId`.
-     - `Payload` (JSON صغير).
-     - السبب.
-     - الحالة.
+**اللي اتعمل:**
+1. **الجدول** (commit `0a669af`):
+   - `Domain/Enums/ApprovalType.cs`، وفيه:
+     - `ApprovalType`: إلغاء بيع، وإلغاء شراء، وتحويل نقاط، وتأكيد خزنة، وإجازة، وقرض، وطلب صلاحية، ونسيت كلمة السر. كل نوع ليه رقم ثابت.
+     - `ApprovalGroup`: التابات الخمسة.
+     - `ApprovalStatus`: مستني، واتوافق، واترفض، واتسحب.
+     - `ApprovalTypes.GroupOf`: بيحدد كل نوع في أنهي تاب.
+   - `Domain/Entities/Approvals/ApprovalRequest.cs`، وفيه:
+     - النوع، و`SubjectId`، و`Payload` (لحد 2000 حرف)، والسبب (إجباري ولحد 500 حرف)، والحالة.
      - مين قرر وإمتى وسببه.
      - `RowVersion`.
-     - `IAuditedEntity`.
+     - مين طلب وإمتى من `IAuditedEntity`، يعني من الـ token.
      - `[Audited(Approvals)]`.
-   - الـ indexes:
-     - index للقايمة.
-     - unique filtered على (النوع، `SubjectId`) للطلبات المستنية.
-   - الـ migration: `AddApprovalRequests`.
-2. **العقد والقواعد:**
-   - `IApprovalHandler`، وفيه `Type` و`DecidePermission` و`DescribeAsync` و`ApproveAsync` و`OnRejectedAsync`.
-   - `IApprovalService.SubmitAsync`، والموديولات بتستعمله عشان تعمل الطلب.
-   - `ApprovalRules`، ومعاها unit tests.
-3. **الـ service:**
-   - القايمة بالصلاحية.
-   - الموافقة في transaction واحدة مع الـ handler.
-   - الموافقة المتزامنة بترجع 409.
-   - الرفض بسبب.
-   - السحب.
-   - الموافقة الجماعية.
-   - المفاتيح `Approval.*`.
-4. **الـ endpoints:** `ApprovalsController`:
-   - القايمة.
-   - `summary`.
-   - التفاصيل.
-   - `approve`.
-   - `reject`.
-   - `approve-bulk`.
-   - `withdraw`.
-5. **التجربة:** harness على DB مؤقتة بـ handler تجريبي.
+   - الإعدادات في `AppDbContext.ConfigureApprovals`:
+     - index على (الحالة، النوع، وقت الطلب) للقايمة.
+     - index على (مين طلب، الحالة).
+     - **unique filtered** على (النوع، `SubjectId`) للطلبات المستنية بس.
+   - الـ migration: `20261127181225_AddApprovalRequests`، وبتعمل جدول جديد بس.
+2. **العقد والقواعد** (commit `ca6440b`):
+   - `Application/Services.contract/Approvals/IApprovalHandler.cs`: كل موديول بيسجّل handler لكل نوع عنده. فيه:
+     - `Type`.
+     - `DecidePermission`.
+     - `ValidateSubmitAsync`.
+     - `DescribeAsync`، ودي بتاخد دفعة طلبات مرة واحدة.
+     - `ApproveAsync`، ودي بتشتغل جوه transaction المحرك.
+     - `ReleaseAsync`، ودي بتشتغل لما الطلب يترفض أو يتسحب.
+   - `IApprovalService.cs`.
+   - الـ DTOs في `Application/DTOs/Approvals/ApprovalDtos.cs`.
+   - `Application/Common/ApprovalRules.cs`:
+     - مين يقدر يقرر (D40).
+     - الطلب بيتأخر بعد 24 ساعة.
+     - السبب.
+     - أقصى عدد في الموافقة الجماعية 100.
+   - 11 test في `Tests/Application.UnitTests/Common/ApprovalRulesTests.cs`.
+3. **الـ service** (commit `e21ca43`):
+   - `Infrastructure/Services/ApprovalServices/ApprovalService.cs`، ومتسجل في `Program.cs`.
+   - **الطلب** (`SubmitAsync`):
+     - الموديول بينده عليه من الـ endpoint بتاعه.
+     - السبب الفاضي بيرجع `Approval.ReasonRequired`.
+     - الطلب التاني لنفس الحاجة بيرجع 409 `Approval.AlreadyPending`، حتى لو الاتنين جم في نفس اللحظة، لأن الـ index بيمسكها.
+     - النوع اللي ملوش handler بيرمي exception.
+   - **القايمة والأرقام:**
+     - بتظهر بس الأنواع اللي عندك صلاحيتها، والـ `super_admin` بيشوف كله.
+     - الطلبات بتاعتك مش بتظهر عندك، إلا لو انت `super_admin`.
+     - الأقدم الأول.
+     - كل نوع بياخد query واحدة للكروت.
+   - **القرار:** transaction واحدة لكل طلب:
+     - الطلب بيتحجز الأول، بحالته الجديدة والـ `RowVersion`.
+     - بعدين الـ handler بيشتغل.
+     - بعدين الاتنين بيتحفظوا مع بعض.
+     - لو الـ handler فشل، كله بيرجع والطلب بيفضل مستني.
+     - لو اتنين قرروا في نفس اللحظة، التاني بياخد 409 `Approval.AlreadyDecided`.
+   - **الرفض** لازم يبقى معاه سبب. و**السحب** لصاحب الطلب بس.
+   - **الموافقة الجماعية:** كل طلب لوحده، والرد فيه نتيجة كل واحد ورسالته.
+   - المفاتيح في `Domain/Common/ApprovalErrorCodes.cs`، والنص بالعربي والإنجليزي في `LocalizationResources.cs`.
+4. **الـ endpoints** (commit `9914418`):
+   - `AlSadat-Seram.Api/Controllers/ApprovalsController.cs`، على `BaseApiController.HandleResult`.
+   - عليه `[Authorize]` بس، لأن صلاحية كل نوع بتتشيك جوه الـ service.
+
+**التجربة:** اتعملت على DB مؤقتة `SadatSearmErp_ApprovalTest` بـ harness برّه الـ repo. استعملت handler تجريبي لنوعين و5 يوزرز: اللي بيطلب، ومدير، ويوزر من غير صلاحية، ويوزر عنده صلاحية القروض بس، و`super_admin`. الـ 40 حالة نجحت، وبعدين الـ DB اتمسحت. الحالات شملت:
+- الطلب، والطلب المكرر، وطلبين في نفس اللحظة.
+- القايمة والفلترة والـ paging والأرقام لكل يوزر.
+- الموافقة، والموافقة على طلبك، والموافقة اللي الـ handler رفضها وإن مفيش حاجة اتحفظت، وموافقتين في نفس اللحظة والـ handler اشتغل مرة واحدة.
+- الرفض والسحب والتفاصيل.
+- الموافقة الجماعية بخمس حالات.
+- الـ index نفسه.
+
+الـ build نضيف (Release)، و64/64 test.
 
 **برّه الجلسة:**
 - إشعار الرفض في F8.
-- الأنواع الحقيقية مع موديولاتها.
-- `DeleteStatus` القديم في M6/M7.
-- أكواد الصلاحيات لكل نوع مع موديوله.
+- الأنواع الحقيقية مع موديولاتها: M1 (طلب صلاحية، ونسيت كلمة السر)، وM5 (النقاط)، وM6 (إلغاء البيع)، وM7 (إلغاء الشراء)، وM9 (الإجازات والقروض)، وM11 (الخزنة).
+- `DeleteStatus` القديم بيتشال في M6/M7.
+- صلاحية كل نوع بتتقري من الـ JWT لحد ما M1 يحوّلها للـ cache (D3).
 - ضم العداد لـ `/me/badges` في M1.
+
+**إزاي تتأكد:**
+1. اقفل الـ API وشغّله تاني، والـ migration `AddApprovalRequests` هتتطبق لوحدها.
+2. من Swagger، بعد الـ login:
+   - `GET /api/approvals/summary` لازم يرجع `{ "total": 0, "overdue": 0, "byType": [] }`.
+   - `GET /api/approvals` لازم يرجع قايمة فاضية بشكل `PagedResult`.
+   - مفيش أنواع حقيقية لسه، وده حسب D42.
+3. جرّب `POST /api/approvals/1/approve`، والمفروض يرجع 404 ومعاه `Approval.NotFound`.
+4. جرّب `POST /api/approvals/1/reject` بـ body فاضي `{}`، والمفروض يرجع 400 من الـ validation.
+5. في SSMS:
+   ```sql
+   SELECT name, is_unique, filter_definition FROM SadatSearmErp.sys.indexes
+   WHERE object_id = OBJECT_ID('SadatSearmErp.dbo.ApprovalRequests');
+   ```
+   لازم تلاقي `IX_ApprovalRequests_Type_SubjectId` وهو unique ومعاه `([Status]=(1) AND [SubjectId] IS NOT NULL)`.
+6. شغّل `dotnet test`، ولازم يطلع 64/64.

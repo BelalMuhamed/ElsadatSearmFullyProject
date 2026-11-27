@@ -2,12 +2,17 @@
 _Last updated: 2026-11-27 (F7-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F7-S1 — approvals engine (D4). Decisions taken; README plan written; implementation starting.
+- **Step:** F7-S1 — approvals engine (D4). All parts done; waiting for Belal to confirm, then `/handoff` (tracker «خلص» + commit list).
 - **Done in this step:**
-  - [x] plan + D39–D42 (README › F7-S1 «مخطط», tracker)
-- **In progress / next part:** part 1 — `Domain/Enums/ApprovalType.cs` + `ApprovalStatus.cs`, `Domain/Entities/Approvals/ApprovalRequest.cs` (IAuditedEntity, `[Audited(Approvals)]`, RowVersion), `AuditAreas.Approvals`, `AppDbContext.ConfigureApprovals` (indexes: (Status, Type, CreatedAt); unique filtered (Type, SubjectId) where Pending), migration `AddApprovalRequests`. Then part 2 contracts + `ApprovalRules` + tests, part 3 `ApprovalService`, part 4 `ApprovalsController`, part 5 harness.
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/` → build errors MSB3021; build to a temp `-o` folder or stop the API.
-- **Uncommitted changes:** docs only (this checkpoint, README plan, tracker, CLAUDE.md).
+  - [x] plan + D39–D42 (`37f3811`)
+  - [x] part 1 `ApprovalType`/`ApprovalGroup`/`ApprovalStatus`/`ApprovalTypes.GroupOf`, `ApprovalRequest`, `AuditAreas.Approvals`, `ConfigureApprovals`, migration `AddApprovalRequests` (`0a669af`)
+  - [x] part 2 `IApprovalHandler`, `IApprovalService`, `ApprovalDtos`, `ApprovalRules` + 11 tests (`ca6440b`)
+  - [x] part 3 `ApprovalErrorCodes`, `Approval.*` keys, `ApprovalService`, DI (`e21ca43`)
+  - [x] part 4 `ApprovalsController` (`9914418`)
+  - [x] part 5 40 checks on throwaway DB `SadatSearmErp_ApprovalTest` (dropped), README rewritten
+- **In progress / next part:** Belal verifies (README › F7-S1 › إزاي تتأكد; restart the API so `AddApprovalRequests` applies). Then `/handoff`: tracker F7-S1 «خلص» with commits, Session log line, checkpoint → next session (`py -3 tools/tracker.py next`, expected F8-S1).
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false` + `#:property Configuration=Release`), dropped afterwards; test users need `PhoneNumber` and must exist (AuditEntries FK). Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/Debug` → build/ef with `-c Release`.
+- **Uncommitted changes:** none after the docs commit. Release build 0 errors, 64/64 tests (2026-11-27).
 - **Decisions taken in this step (2026-11-27):** D39 (a) card built live by the handler; D40 nobody decides their own request except `super_admin`; D41 (a) bulk = one transaction per request + per-item result; D42 (a) engine only, real types with their modules.
 - **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
@@ -150,6 +155,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
   - `AuthController.RevokeSessions`: no `CancellationToken`; `RemoteIpAddress` is the proxy IP unless forwarded headers are configured.
 - `ExecuteUpdate`/`ExecuteDelete` bypass the audit interceptors (F3-S1): never use them on `[Audited]` entities or on entities with `CreateBy`/`UpdateBy` columns.
 - F6-S1 (D35/D36): `PostedJournalGuardInterceptor` blocks modifying/deleting posted entries and their lines, but not **adding** a line to a posted entry (old writers save the header, then the lines) — close it in M3. Old `DeletePurchaseInvoice` on an invoice with a posted entry now fails with 500 instead of deleting the ledger (C10) until M6. Old writers still use code strings / `Random` refs and leave `EntryNumber`/`SourceType` null until M6/M7/M9 move them to `IJournalPostingService`; `ExecuteUpdate` on journal tables bypasses the guard. Screen testing of posting/reversal deferred to M3 (manual-entry screen), Belal's call 2026-11-27.
+- F7-S1 (D39–D42): approvals engine has no real request type yet, so the center is empty until M1; per-type permission is read from JWT claims (`ApprovalService.AllowedTypes`) until M1 moves it to the cache (D3); the rejection reason is stored but no notification is sent until F8. The approve race check passes, but which guard catches it (status check or `RowVersion`) depends on timing.
 - `ProductService.EditProduct`/`FromDto` still copy `deleteBy`/`deleteAt`/`createBy` from the DTO; the interceptor overwrites them (D27) — remove the copies in M4.
 - Sales/purchase numbers are still `SO{Id}`/`PO{Id}` and journal references `Random` (`EmployeePayrollService`, `EmployeeLoanService`): switch to `IDocumentNumberService` when M6/M7/F6 rewrite them; add a unique index on `InvoiceNumber` then. Decide there whether drafts get their number at save (UI) or at confirm (PLAN).
 - `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in M1 (D26).
