@@ -1,13 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-27 (F6-S1 done; next F7-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-27 (F7-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F7-S1 — approvals engine (D4). Not started.
-- **Done in this step:** nothing yet.
-- **In progress / next part:** `/start` → read PLAN.md F7 row (line ~71: `ApprovalRequests` table — type, subject, requester, reason, status, decider + reason; one handler per type; reject needs a reason; bulk approve per type; top-bar counter) and README › F7-S1; read how `DeleteStatus` works today in `PurchaseInvoiceService`/`salesInvoiceService`; explain business + changes + decisions to Belal and wait for OK.
+- **Step:** F7-S1 — approvals engine (D4). Decisions taken; README plan written; implementation starting.
+- **Done in this step:**
+  - [x] plan + D39–D42 (README › F7-S1 «مخطط», tracker)
+- **In progress / next part:** part 1 — `Domain/Enums/ApprovalType.cs` + `ApprovalStatus.cs`, `Domain/Entities/Approvals/ApprovalRequest.cs` (IAuditedEntity, `[Audited(Approvals)]`, RowVersion), `AuditAreas.Approvals`, `AppDbContext.ConfigureApprovals` (indexes: (Status, Type, CreatedAt); unique filtered (Type, SubjectId) where Pending), migration `AddApprovalRequests`. Then part 2 contracts + `ApprovalRules` + tests, part 3 `ApprovalService`, part 4 `ApprovalsController`, part 5 harness.
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/` → build errors MSB3021; build to a temp `-o` folder or stop the API.
-- **Uncommitted changes:** none after the handoff commit. Build 0 errors, 53/53 tests (2026-11-27).
-- **Decisions taken in this step:** none yet.
+- **Uncommitted changes:** docs only (this checkpoint, README plan, tracker, CLAUDE.md).
+- **Decisions taken in this step (2026-11-27):** D39 (a) card built live by the handler; D40 nobody decides their own request except `super_admin`; D41 (a) bulk = one transaction per request + per-item result; D42 (a) engine only, real types with their modules.
 - **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
@@ -104,6 +105,10 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-27 | **D36** Posted journal entries and their lines are never modified or deleted: guard in `SaveChanges` (`PostedJournalGuardInterceptor`); old purchase-invoice delete with a posted entry now fails (500) until M6 | protects the ledger from every code path | engine-only checks; + DB trigger |
 | 2026-11-27 | **D37** A reversal entry is dated on the day of the reversal (caller passes it) | closed months don't change | same date as the original |
 | 2026-11-27 | **D38** Engine tests: pure unit tests for the rules + a throwaway-DB harness for the SQL parts; an integration test project comes with CI | no new packages now | integration project now |
+| 2026-11-27 | **D39** The approvals card (title, details, why approve is blocked) is built by the type's `IApprovalHandler` when the list is read, one batch per type | balances on the card are always current | snapshot text at submit time |
+| 2026-11-27 | **D40** Nobody decides their own approval request (403 `Approval.OwnRequest`), except `super_admin` | separation of duties; the owner can still act | allow everyone |
+| 2026-11-27 | **D41** Bulk approve: each request in its own transaction, the reply lists each result | one blocked request doesn't stop the rest | all or nothing |
+| 2026-11-27 | **D42** F7-S1 builds the engine only (tested with a throwaway handler); every real request type comes with its module (M1, M5, M6, M7, M9, M11) | no work done twice | move purchase `DeleteStatus` now |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
