@@ -76,6 +76,20 @@ namespace Infrastructure.Services.LocalizationServices
             ["Journal.NotPosted"] = ("القيد لسه مترحّلش، فمينفعش يتعكس", "The entry isn't posted yet, so it can't be reversed"),
             ["Journal.AlreadyReversed"] = ("القيد ده اتعكس قبل كده", "This entry has already been reversed"),
             ["Journal.CannotReverseReversal"] = ("ده قيد عكسي، ومينفعش يتعكس تاني", "This is a reversal entry and can't be reversed"),
+
+            // Approvals (F7)
+            ["Approval.NotFound"] = ("الطلب ده مش موجود", "Approval request not found"),
+            ["Approval.AlreadyDecided"] = ("الطلب ده اتاخد فيه قرار خلاص", "This request has already been decided"),
+            ["Approval.OwnRequest"] = ("مينفعش توافق أو ترفض طلب انت اللي طلبته", "You can't decide your own request"),
+            ["Approval.NotAllowed"] = ("معندكش صلاحية تقرر في النوع ده من الطلبات", "You aren't allowed to decide this type of request"),
+            ["Approval.ReasonRequired"] = ("لازم تكتب السبب، ولحد 500 حرف", "A reason is required, up to 500 characters"),
+            ["Approval.AlreadyPending"] = ("فيه طلب لنفس الحاجة لسه مستني قرار", "A request for this is already waiting for a decision"),
+            ["Approval.NotRequester"] = ("اللي طلب الطلب بس هو اللي يقدر يسحبه", "Only the requester can withdraw this request"),
+            ["Approval.TypeMismatch"] = ("الطلب ده من نوع تاني", "This request is of a different type"),
+            ["Approval.Submitted"] = ("الطلب اتبعت لمركز الموافقات", "The request was sent to the approvals center"),
+            ["Approval.Approved"] = ("اتوافق على الطلب", "The request was approved"),
+            ["Approval.Rejected"] = ("الطلب اترفض", "The request was rejected"),
+            ["Approval.Withdrawn"] = ("الطلب اتسحب", "The request was withdrawn"),
             // ---- Example: Supplier module (add the rest as you migrate it) ----
             // ["Supplier.DuplicatePhone"] = ("رقم الهاتف مستخدم بالفعل", "Phone number already in use"),
         };

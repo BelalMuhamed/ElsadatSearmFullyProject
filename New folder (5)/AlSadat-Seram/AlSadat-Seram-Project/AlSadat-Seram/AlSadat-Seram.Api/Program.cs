@@ -5,6 +5,7 @@ using Application.Services.contract.Authorization;
 using Application.Services.contract.AuthService;
 using Application.Services.contract.AuditTrail;
 using Application.Services.contract.CurrentUserService;
+using Application.Services.contract.Approvals;
 using Application.Services.contract.Finance;
 using Application.Services.contract.Numbering;
 using Application.Services.contract.JwtService;
@@ -21,6 +22,7 @@ using Infrastructure.Services.AuthServices;
 using Infrastructure.Services.CurrentUserServices;
 using Infrastructure.Services.JwtServices;
 using Infrastructure.Services.LocalizationServices;
+using Infrastructure.Services.ApprovalServices;
 using Infrastructure.Services.FinanceService;
 using Infrastructure.Services.NumberingServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -64,6 +66,7 @@ internal class Program
         builder.Services.AddScoped<IAuditTrail, AuditTrail>();
         builder.Services.AddScoped<IDocumentNumberService, DocumentNumberService>();
         builder.Services.AddScoped<IJournalPostingService, JournalPostingService>();
+        builder.Services.AddScoped<IApprovalService, ApprovalService>();
 
 
         builder.Services.AddCors(options =>
