@@ -17,6 +17,11 @@ namespace Domain.Entities.Finance
         public int AccountId { get; set; }
         public decimal Debit { get; set; }
         public decimal Credit { get; set; }
+
+        /// <summary>The line's own note (البيان); optional.</summary>
+        public string? Description { get; set; }
+
+        public const int DescriptionMaxLength = 250;
         public virtual ChartOfAccounts Account { get; set; }
         public virtual JournalEntries JournalEntry { get; set; }
     }

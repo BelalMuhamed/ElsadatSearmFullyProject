@@ -432,6 +432,7 @@ namespace Infrastructure.Data
 
             ConfigureAuditEntries(builder);
             ConfigureDocumentSequences(builder);
+            ConfigureJournalPosting(builder);
 
             // Keep last: it must see every relationship configured above.
             DisableDatabaseCascades(builder);
@@ -452,6 +453,36 @@ namespace Infrastructure.Data
                 sequence.Property(s => s.Prefix).HasMaxLength(DocumentSequence.PrefixMaxLength);
                 sequence.HasData(DocumentSequence.Defaults);
             });
+        }
+
+        /// <summary>
+        /// Journal entries written by the posting engine (F6, D35–D38): the human number, the source
+        /// document, and the reversal link. A filtered unique index on <c>ReversalOfEntryId</c> makes
+        /// a second reversal of the same entry impossible even when two requests race.
+        /// </summary>
+        private static void ConfigureJournalPosting(ModelBuilder builder)
+        {
+            builder.Entity<JournalEntries>(entry =>
+            {
+                entry.Property(e => e.Desc).HasMaxLength(JournalEntries.DescriptionMaxLength);
+                entry.Property(e => e.EntryNumber).HasMaxLength(JournalEntries.EntryNumberMaxLength);
+                entry.Property(e => e.SourceType).HasConversion<byte?>();
+                entry.Property(e => e.CreatedBy).HasMaxLength(450);
+                entry.Property(e => e.UpdatedBy).HasMaxLength(450);
+
+                entry.HasIndex(e => e.EntryNumber).IsUnique().HasFilter("[EntryNumber] IS NOT NULL");
+                entry.HasIndex(e => new { e.SourceType, e.SourceId });
+                entry.HasIndex(e => e.ReversalOfEntryId).IsUnique().HasFilter("[ReversalOfEntryId] IS NOT NULL");
+
+                entry.HasOne(e => e.ReversalOf)
+                    .WithMany()
+                    .HasForeignKey(e => e.ReversalOfEntryId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<JournalEntryDetails>()
+                .Property(d => d.Description)
+                .HasMaxLength(JournalEntryDetails.DescriptionMaxLength);
         }
 
         /// <summary>

@@ -9,4 +9,5 @@ public static class AuditAreas
 {
     public const string Products = "Products";
     public const string Suppliers = "Suppliers";
+    public const string Accounting = "Accounting";
 }

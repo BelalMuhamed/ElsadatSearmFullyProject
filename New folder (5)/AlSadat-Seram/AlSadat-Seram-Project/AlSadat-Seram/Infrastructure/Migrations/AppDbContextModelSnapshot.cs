@@ -353,17 +353,32 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Desc")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("EntryDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EntryNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool?>("IsPosted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsSystemGenerated")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("PostedDate")
                         .HasColumnType("datetime2");
@@ -371,13 +386,39 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ReferenceNo")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("ReversalOfEntryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SourceId")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("SourceType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("referenceType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EntryNumber")
+                        .IsUnique()
+                        .HasFilter("[EntryNumber] IS NOT NULL");
+
                     b.HasIndex("ReferenceNo")
                         .HasDatabaseName("IX_JournalEntries_ReferenceNo");
+
+                    b.HasIndex("ReversalOfEntryId")
+                        .IsUnique()
+                        .HasFilter("[ReversalOfEntryId] IS NOT NULL");
+
+                    b.HasIndex("SourceType", "SourceId");
 
                     b.ToTable("journalEntries");
                 });
@@ -398,6 +439,10 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("Debit")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("JournalEntryId")
                         .HasColumnType("int");
@@ -2855,6 +2900,16 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Governrate");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.JournalEntries", b =>
+                {
+                    b.HasOne("Domain.Entities.Finance.JournalEntries", "ReversalOf")
+                        .WithMany()
+                        .HasForeignKey("ReversalOfEntryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ReversalOf");
                 });
 
             modelBuilder.Entity("Domain.Entities.Finance.JournalEntryDetails", b =>
