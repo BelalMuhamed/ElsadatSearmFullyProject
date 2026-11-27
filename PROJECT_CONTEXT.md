@@ -1,14 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-26 (F4F5-S1 done, next F6-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-27 (F6-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F6-S1 — journal posting engine (`IJournalPostingService`: balanced entry from `SystemAccountCode`, linked to its source `SourceType`/`SourceId`, system entries not editable by hand, reversal linked to the original, with tests). Not started.
-- **Done in this step:** nothing yet.
-- **In progress / next part:** `/start` → read F6 in `Docs/docs/refactor/PLAN.md` (row F6 + the M3 details) and write the F6-S1 «مخطط» section in `README.md`; read `Domain/Entities/Finance/JournalEntries.cs`, `JournalEntryDetails`, `ChartOfAccounts`, `Domain/Enums/SystemAccountCode.cs`, `Infrastructure/Services/FinanceService/*`, and how sales/purchase/payroll/loan services build entries today. Use `IDocumentNumberService.NextAsync(DocumentType.JournalEntry)` for `JE-` numbers (D31). Explain business + changes + decisions to Belal and wait for OK.
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. `appsettings.json` still names `AlSadateSeram`, so a non-Development run stops at startup. Check the target DB before starting the API (`dotnet ef dbcontext info`). If the API runs from Visual Studio the normal build is locked: build with `--artifacts-path`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes.
-- **Uncommitted changes:** none. Build 0 errors, 42/42 tests (2026-11-26).
-- **Decisions taken in this step:** none.
-- **Open questions:** draft vs confirm numbering (UI gives drafts a number; PLAN M6/M7 says at confirm) — decide in M6/M7, recommended: follow the UI.
+- **Step:** F6-S1 — journal posting engine. Decisions taken; implementing.
+- **Done in this step:** [x] plan explained, D35–D38 decided (all «a»), tracker (F6-S1 جاري + D35–D38), README «مخطط».
+- **In progress / next part:** part 1 — `Domain/Enums/JournalSourceType.cs` (byte: Manual=1, SalesInvoice, SalesReturn, PurchaseInvoice, PurchaseReturn, Receipt, Payment, Expense, Payroll, EmployeeLoan, Custody, StockCount, Gifts); `JournalEntries` + `EntryNumber` (nullable, unique filtered), `SourceType?`/`SourceId?` (index), `IsSystemGenerated`, `ReversalOfEntryId?` (self FK NoAction, unique filtered), `IAuditedEntity`, `[Audited(AuditAreas.Accounting, ReferenceProperty = EntryNumber)]`; `JournalEntryDetails.Description` (250); migration `AddJournalPosting`. Then part 2 `Application/Common/JournalDraftRules.cs` + tests, part 3 `JournalPostingService`, part 4 `PostedJournalGuardInterceptor`, part 5 harness + README.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes.
+- **Uncommitted changes:** docs only (this checkpoint, README, tracker). Build 0 errors (2026-11-27).
+- **Decisions taken in this step (2026-11-27):** D35 (a) old writers untouched, each module moves to the engine, new columns nullable until then; D36 (a) `SaveChanges` guard: posted entries and their lines are never modified or deleted; D37 (a) a reversal is dated on its own day; D38 (a) pure unit tests + throwaway-DB harness, integration project with CI.
+- **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
 ERP for Sadat Searm (sanitary-ware / plumbing products manufacturer & distributor): sales/purchase invoices, stock & warehouses,
@@ -100,6 +100,10 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-26 | **D32** One running counter per type, no yearly reset (`INV-1038`) | matches the UI | yearly `INV-2026-0001` |
 | 2026-11-26 | **D33** `rowversion` now on `Stock`, `SalesInvoices`, `PurchaseInvoice`; wallets get it with their new tables (M5/M11) | protects stock today without touching services | also the old balance columns; none now |
 | 2026-11-26 | **D34** Numbering starts at 1 with at least 4 digits (`INV-0001`), grows past 9999 | no paper numbers to continue | start numbers from the old books |
+| 2026-11-27 | **D35** Old services that write journal entries (sales, purchases, payroll, loans) stay as they are; each module moves them to `IJournalPostingService`; `EntryNumber`/`SourceType` stay nullable until the last one moves (M3 makes them required) | those services are rewritten in M6/M7/M9 anyway | move all of them now |
+| 2026-11-27 | **D36** Posted journal entries and their lines are never modified or deleted: guard in `SaveChanges` (`PostedJournalGuardInterceptor`); old purchase-invoice delete with a posted entry now fails (500) until M6 | protects the ledger from every code path | engine-only checks; + DB trigger |
+| 2026-11-27 | **D37** A reversal entry is dated on the day of the reversal (caller passes it) | closed months don't change | same date as the original |
+| 2026-11-27 | **D38** Engine tests: pure unit tests for the rules + a throwaway-DB harness for the SQL parts; an integration test project comes with CI | no new packages now | integration project now |
 
 ## Pending decisions (decide when their module comes)
 D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
