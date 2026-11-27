@@ -4,6 +4,8 @@ using Application.DTOs.Approvals;
 using Application.Services.contract.Approvals;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.LocalizationService;
+using Application.DTOs.Notifications;
+using Application.Services.contract.Notifications;
 using Domain.Common;
 using Domain.Entities.Approvals;
 using Domain.Enums;
@@ -17,7 +19,8 @@ namespace Infrastructure.Services.ApprovalServices;
 /// <summary>
 /// The approvals engine (F7, D4, D39–D42). Every decision runs in its own transaction: the request
 /// is claimed first (its <c>RowVersion</c> makes a second decider fail with 409), then the type's
-/// handler does its work, and both commit together or not at all.
+/// handler does its work, and both commit together or not at all. Notifications (F8) go out in the
+/// same transaction: a new request to whoever can decide it, a decision to the requester.
 /// </summary>
 public sealed class ApprovalService : IApprovalService
 {
@@ -28,6 +31,7 @@ public sealed class ApprovalService : IApprovalService
     private readonly ICurrentUserService _currentUser;
     private readonly ILocalizationService _localization;
     private readonly TimeProvider _clock;
+    private readonly INotificationPublisher _notifications;
     private readonly IReadOnlyDictionary<ApprovalType, IApprovalHandler> _handlers;
 
     public ApprovalService(
@@ -35,12 +39,14 @@ public sealed class ApprovalService : IApprovalService
         IEnumerable<IApprovalHandler> handlers,
         ICurrentUserService currentUser,
         ILocalizationService localization,
-        TimeProvider clock)
+        TimeProvider clock,
+        INotificationPublisher notifications)
     {
         _context = context;
         _currentUser = currentUser;
         _localization = localization;
         _clock = clock;
+        _notifications = notifications;
 
         var byType = new Dictionary<ApprovalType, IApprovalHandler>();
         foreach (var handler in handlers)
@@ -83,15 +89,35 @@ public sealed class ApprovalService : IApprovalService
         };
         _context.ApprovalRequests.Add(request);
 
+        // The request and its notifications are saved together: inside the module's transaction when
+        // it has one, otherwise in one of our own.
+        await using var ownTransaction = _context.Database.CurrentTransaction is null
+            ? await _context.Database.BeginTransactionAsync(cancellationToken)
+            : null;
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+            {
+                // Two requests for the same subject at the same moment: the index keeps one.
+                _context.Entry(request).State = EntityState.Detached;
+                if (ownTransaction is not null)
+                    await ownTransaction.RollbackAsync(CancellationToken.None);
+                return Result<ApprovalDecisionDto>.FailureKey(ApprovalErrorCodes.AlreadyPending, HttpStatusCode.Conflict);
+            }
+
+            await NotifyDecidersAsync(request, handler, cancellationToken);
+            if (ownTransaction is not null)
+                await ownTransaction.CommitAsync(cancellationToken);
         }
-        catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+        catch
         {
-            // Two requests for the same subject at the same moment: the index keeps one.
-            _context.Entry(request).State = EntityState.Detached;
-            return Result<ApprovalDecisionDto>.FailureKey(ApprovalErrorCodes.AlreadyPending, HttpStatusCode.Conflict);
+            if (ownTransaction is not null)
+                await ownTransaction.RollbackAsync(CancellationToken.None);
+            throw;
         }
 
         return Result<ApprovalDecisionDto>.SuccessKey(
@@ -286,6 +312,7 @@ public sealed class ApprovalService : IApprovalService
                 await handler.ReleaseAsync(subject, outcome, cancellationToken);
             }
 
+            await NotifyRequesterAsync(request, userId, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
         }
@@ -338,6 +365,49 @@ public sealed class ApprovalService : IApprovalService
         return request.Status == ApprovalStatus.Pending
             ? null
             : Result<ApprovalDecisionDto>.FailureKey(ApprovalErrorCodes.AlreadyDecided, HttpStatusCode.Conflict);
+    }
+
+    /// <summary>A new request reaches everyone who can decide its type, except the requester (F8).</summary>
+    private async Task NotifyDecidersAsync(ApprovalRequest request, IApprovalHandler handler, CancellationToken cancellationToken)
+    {
+        var requester = await NameArgAsync(request.CreatedBy, cancellationToken);
+        var message = new NotificationMessage(
+            NotificationType.ApprovalRequested,
+            NotificationErrorCodes.ApprovalRequested,
+            [requester, NotificationArg.Localized(NotificationErrorCodes.ApprovalTypeKey(request.Type))],
+            NotificationLinks.ApprovalRequest,
+            request.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            request.Id);
+
+        await _notifications.PublishToPermissionAsync(
+            message, handler.DecidePermission, request.CreatedBy is { } requesterId ? [requesterId] : null, cancellationToken);
+    }
+
+    /// <summary>The requester hears the decision, with the rejection reason; withdrawing or deciding your own request sends nothing.</summary>
+    private async Task NotifyRequesterAsync(ApprovalRequest request, string deciderId, CancellationToken cancellationToken)
+    {
+        if (request.CreatedBy is not { } requesterId || requesterId == deciderId || request.Status == ApprovalStatus.Withdrawn)
+            return;
+
+        var decider = await NameArgAsync(deciderId, cancellationToken);
+        var type = NotificationArg.Localized(NotificationErrorCodes.ApprovalTypeKey(request.Type));
+        var message = request.Status == ApprovalStatus.Approved
+            ? new NotificationMessage(NotificationType.ApprovalDecided, NotificationErrorCodes.ApprovalApproved, [decider, type],
+                NotificationLinks.ApprovalRequest, request.Id.ToString(System.Globalization.CultureInfo.InvariantCulture))
+            : new NotificationMessage(NotificationType.ApprovalDecided, NotificationErrorCodes.ApprovalRejected,
+                [decider, type, NotificationArg.Of(request.DecisionReason ?? string.Empty)],
+                NotificationLinks.ApprovalRequest, request.Id.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+        await _notifications.PublishAsync(message, [requesterId], cancellationToken);
+    }
+
+    /// <summary>A user's name as a notification argument, or «حد» when there is none.</summary>
+    private async Task<NotificationArg> NameArgAsync(string? userId, CancellationToken cancellationToken)
+    {
+        var name = userId is null
+            ? null
+            : await _context.Users.Where(u => u.Id == userId).Select(u => u.FullName).FirstOrDefaultAsync(cancellationToken);
+        return name is null ? NotificationArg.Localized(NotificationErrorCodes.Someone) : NotificationArg.Of(name);
     }
 
     /// <summary>Rolls back and forgets every tracked change, so the next request in a bulk starts clean.</summary>
