@@ -16,7 +16,6 @@ using Application.Services.contract.EmployeeService;
 using Application.Services.contract.Finance;
 using Application.Services.contract.JwtService;
 using Application.Services.contract.LeaveType;
-using Application.Services.contract.NotificationService;
 using Application.Services.contract.PayrollDeduction;
 using Application.Services.contract.ProfileService;
 using Application.Services.contract.PublicHolidayService;
@@ -34,8 +33,6 @@ namespace Application.Services.contract
         public IUserSessionService UserSessionService { get; }
         public ICurrentUserService CurrentUserService { get; }
         public IJwtService JwtService { get; }
-        public INotificationService NotificationService { get; }
-        //public INotificationDispatcher NotificationDispatcher { get; }
         public IProfileService ProfileService { get; }
         public ICoponCollectionRepresentiveRateService CoponCollectionRepresentiveRateService { get; }
         public IsalesInvoiceService SalesInvoiceService { get; }

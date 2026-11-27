@@ -1692,6 +1692,78 @@ namespace Infrastructure.Migrations
                     b.ToTable("SalesInvoices");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Notifications.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ApprovalRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Args")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LinkId")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("LinkKind")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("MessageKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovalRequestId");
+
+                    b.HasIndex("RecipientId")
+                        .HasDatabaseName("IX_Notifications_RecipientId_Unread")
+                        .HasFilter("[ReadAt] IS NULL");
+
+                    b.HasIndex("RecipientId", "CreatedAt");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Notifications.NotificationMute", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("MutedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "Type");
+
+                    b.ToTable("NotificationMutes");
+                });
+
             modelBuilder.Entity("Domain.Entities.Numbering.DocumentSequence", b =>
                 {
                     b.Property<byte>("DocumentType")
@@ -2540,42 +2612,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Employee");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Users.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RelatedEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("Domain.Entities.Users.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -3225,6 +3261,29 @@ namespace Infrastructure.Migrations
                     b.Navigation("journalEntry");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Notifications.Notification", b =>
+                {
+                    b.HasOne("Domain.Entities.Approvals.ApprovalRequest", null)
+                        .WithMany()
+                        .HasForeignKey("ApprovalRequestId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Domain.Entities.Users.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Notifications.NotificationMute", b =>
+                {
+                    b.HasOne("Domain.Entities.Users.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entities.Plumber", b =>
                 {
                     b.HasOne("Domain.Entities.City", "city")
@@ -3470,17 +3529,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Manager");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Users.Notification", b =>
-                {
-                    b.HasOne("Domain.Entities.Users.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });

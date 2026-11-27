@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Entities;
 using Domain.Entities.Approvals;
+using Domain.Entities.Notifications;
 using Domain.Entities.Audit;
 using Domain.Entities.Authorization;
 using Domain.Entities.copounModel;
@@ -55,6 +56,7 @@ namespace Infrastructure.Data
         public DbSet<Representatives> Representatives { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationMute> NotificationMutes { get; set; }
         #endregion
        
         public DbSet<City> City { get; set; }
@@ -436,6 +438,7 @@ namespace Infrastructure.Data
             ConfigureDocumentSequences(builder);
             ConfigureJournalPosting(builder);
             ConfigureApprovals(builder);
+            ConfigureNotifications(builder);
 
             // Keep last: it must see every relationship configured above.
             DisableDatabaseCascades(builder);
@@ -463,6 +466,48 @@ namespace Infrastructure.Data
         /// document, and the reversal link. A filtered unique index on <c>ReversalOfEntryId</c> makes
         /// a second reversal of the same entry impossible even when two requests race.
         /// </summary>
+        /// <summary>
+        /// Notifications (F8, D5, D43, D44): the bell reads a user's newest first and counts the unread
+        /// ones (filtered index); a mute is one row per (user, type).
+        /// </summary>
+        private static void ConfigureNotifications(ModelBuilder builder)
+        {
+            builder.Entity<Notification>(notification =>
+            {
+                notification.Property(n => n.Type).HasConversion<byte>();
+                notification.Property(n => n.RecipientId).HasMaxLength(450).IsRequired();
+                notification.Property(n => n.MessageKey).HasMaxLength(Notification.MessageKeyMaxLength).IsRequired();
+                notification.Property(n => n.Args).HasMaxLength(Notification.ArgsMaxLength);
+                notification.Property(n => n.LinkKind).HasMaxLength(Notification.LinkKindMaxLength);
+                notification.Property(n => n.LinkId).HasMaxLength(Notification.LinkIdMaxLength);
+
+                notification.HasOne<ApplicationUser>()
+                    .WithMany()
+                    .HasForeignKey(n => n.RecipientId)
+                    .OnDelete(DeleteBehavior.NoAction);
+                notification.HasOne<ApprovalRequest>()
+                    .WithMany()
+                    .HasForeignKey(n => n.ApprovalRequestId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                notification.HasIndex(n => new { n.RecipientId, n.CreatedAt });
+                notification.HasIndex(n => n.RecipientId)
+                    .HasFilter("[ReadAt] IS NULL")
+                    .HasDatabaseName("IX_Notifications_RecipientId_Unread");
+            });
+
+            builder.Entity<NotificationMute>(mute =>
+            {
+                mute.HasKey(m => new { m.UserId, m.Type });
+                mute.Property(m => m.Type).HasConversion<byte>();
+                mute.Property(m => m.UserId).HasMaxLength(450);
+                mute.HasOne<ApplicationUser>()
+                    .WithMany()
+                    .HasForeignKey(m => m.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+        }
+
         /// <summary>
         /// The approvals center (F7, D39–D42): the pending list reads by (Status, Type, CreatedAt), and a
         /// filtered unique index allows one pending request per (Type, SubjectId) even in a race.
