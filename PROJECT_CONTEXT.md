@@ -1,19 +1,13 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-27 (F7-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-27 (F7-S1 done; next F8-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F7-S1 — approvals engine (D4). All parts done; waiting for Belal to confirm, then `/handoff` (tracker «خلص» + commit list).
-- **Done in this step:**
-  - [x] plan + D39–D42 (`37f3811`)
-  - [x] part 1 `ApprovalType`/`ApprovalGroup`/`ApprovalStatus`/`ApprovalTypes.GroupOf`, `ApprovalRequest`, `AuditAreas.Approvals`, `ConfigureApprovals`, migration `AddApprovalRequests` (`0a669af`)
-  - [x] part 2 `IApprovalHandler`, `IApprovalService`, `ApprovalDtos`, `ApprovalRules` + 11 tests (`ca6440b`)
-  - [x] part 3 `ApprovalErrorCodes`, `Approval.*` keys, `ApprovalService`, DI (`e21ca43`)
-  - [x] part 4 `ApprovalsController` (`9914418`)
-  - [x] part 5 40 checks on throwaway DB `SadatSearmErp_ApprovalTest` (dropped), README rewritten
-- **In progress / next part:** Belal verifies (README › F7-S1 › إزاي تتأكد; restart the API so `AddApprovalRequests` applies). Then `/handoff`: tracker F7-S1 «خلص» with commits, Session log line, checkpoint → next session (`py -3 tools/tracker.py next`, expected F8-S1).
+- **Step:** F8-S1 — notifications (D5 open: SignalR vs polling, recommended SignalR). Not started.
+- **Done in this step:** nothing yet.
+- **In progress / next part:** `/start` → read PLAN.md F8 row (`Notifications`: type, message key + args for translation, link, recipient, read; `INotificationPublisher` modules call; SignalR hub; per-type preferences, approvals can't be turned off) and PLAN lines on screens 65/66 + `/me/badges`; read `Domain/Entities/Users/Notification.cs`, `Infrastructure/Services/NotificationServices/NotificationService.cs`, `AddSignalR` in `Program.cs`. F7 hook to wire: notify the requester on reject (`ApprovalService.DecideAsync`) and the deciders on submit. Explain business + changes + D5 and wait for OK.
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false` + `#:property Configuration=Release`), dropped afterwards; test users need `PhoneNumber` and must exist (AuditEntries FK). Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/Debug` → build/ef with `-c Release`.
-- **Uncommitted changes:** none after the docs commit. Release build 0 errors, 64/64 tests (2026-11-27).
-- **Decisions taken in this step (2026-11-27):** D39 (a) card built live by the handler; D40 nobody decides their own request except `super_admin`; D41 (a) bulk = one transaction per request + per-item result; D42 (a) engine only, real types with their modules.
+- **Uncommitted changes:** none after the handoff commit. Release build 0 errors, 64/64 tests (2026-11-27).
+- **Decisions taken in this step:** none yet.
 - **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
@@ -130,7 +124,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - [x] **F3-S1 — audit + change log** (2026-11-26)
 - [x] **F4F5-S1 — document numbering + rowversion** (2026-11-26)
 - [x] **F6-S1 — journal posting engine** (2026-11-27)
-- [ ] **F7-S1 — approvals engine** ← next
+- [x] **F7-S1 — approvals engine** (2026-11-27)
+- [ ] **F8-S1 — notifications** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -188,3 +183,4 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-26 (Claude Code) — F3-S1 done and confirmed: D27–D30; `AuditFieldsInterceptor` (who/when from the token, UTC), `AuditEntries` + migration `AddAuditEntries` + append-only trigger, `AuditEntriesInterceptor` + `[Audited]` on `Products`/`Supplier` + `IAuditTrail`, `ChangeLogService`/`IAuditableEntity` deleted (`Infrastructure/Data/Interceptors/*`, `Domain/Entities/Audit`, `Domain/Common`, `Program.cs`, `ServiceManager`). 37 checks on a throwaway DB; build 0 errors, 42/42. Left for modules: screen-78 endpoint (M2), marking other entities, field-name translations. Next: F4F5-S1.
 - 2026-11-26 (Claude Code) — F4F5-S1 done and confirmed: D31–D34; `DocumentSequences` + `IDocumentNumberService` (`Domain/Enums/DocumentType.cs`, `Domain/Entities/Numbering`, `Infrastructure/Services/NumberingServices`, migration `AddDocumentSequences`), `RowVersion` on `Stock`/`SalesInvoices`/`PurchaseInvoice` (migration `AddRowVersions`) + 409 `Common.ConcurrencyConflict` (`ErrorCodes`, `LocalizationResources`, `ExceptionHandlingMiddleware`). 12 checks on a throwaway DB; build 0 errors, 42/42. Left: `SO{Id}`/`PO{Id}`/`Random` replaced in M6/M7/F6. Next: F6-S1.
 - 2026-11-27 (Claude Code) — F6-S1 done and confirmed: D35–D38; `JournalSourceType`, journal entry number/source/reversal link/line note + `IAuditedEntity`/`[Audited(Accounting)]` (migration `AddJournalPosting`), `JournalDraft` + `JournalDraftRules` (11 tests), `IJournalPostingService`/`JournalPostingService` (`PostAsync`/`ReverseAsync`, `JournalErrorCodes`, `Journal.*` keys), `PostedJournalGuardInterceptor` (`Program.cs`). 32 checks on a throwaway DB; build 0 errors, 53/53. `tools/tracker.py --commit` now splits commas and dedupes. Left: engine has no caller yet (M3 manual entry, M6/M7/M9 move old writers), guard misses added lines (M3), screen testing in M3. Next: F7-S1.
+- 2026-11-27 (Claude Code) — F7-S1 done and confirmed: D39–D42; `ApprovalRequests` (`Domain/Enums/ApprovalType.cs`, `Domain/Entities/Approvals/ApprovalRequest.cs`, migration `AddApprovalRequests`), `IApprovalHandler`/`IApprovalService` + `ApprovalDtos` + `ApprovalRules` (11 tests), `ApprovalService` (claim → handler → one transaction, 409s, bulk per item), `ApprovalErrorCodes` + `Approval.*` keys, `ApprovalsController`. 40 checks on a throwaway DB; Release build 0 errors, 64/64. Left: real types per module (M1 first), reject notification in F8, permission check moves to the cache in M1. Next: F8-S1.
