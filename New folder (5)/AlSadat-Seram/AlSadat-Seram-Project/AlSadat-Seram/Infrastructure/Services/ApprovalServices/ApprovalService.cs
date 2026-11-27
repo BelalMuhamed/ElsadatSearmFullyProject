@@ -230,6 +230,22 @@ public sealed class ApprovalService : IApprovalService
         return Result<IReadOnlyList<BulkApproveItemResult>>.Success(results);
     }
 
+    /// <inheritdoc />
+    public async Task<IReadOnlySet<int>> DecidableAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(ids);
+        var types = AllowedTypes();
+        if (ids.Count == 0 || types.Count == 0)
+            return new HashSet<int>();
+
+        var wanted = ids.Distinct().ToList();
+        var decidable = await PendingFor(types)
+            .Where(r => wanted.Contains(r.Id))
+            .Select(r => r.Id)
+            .ToListAsync(cancellationToken);
+        return decidable.ToHashSet();
+    }
+
     /// <summary>
     /// Approves, rejects or withdraws one request in its own transaction. The request is saved
     /// first, so a second decider fails on its <c>RowVersion</c> before any handler work runs twice.

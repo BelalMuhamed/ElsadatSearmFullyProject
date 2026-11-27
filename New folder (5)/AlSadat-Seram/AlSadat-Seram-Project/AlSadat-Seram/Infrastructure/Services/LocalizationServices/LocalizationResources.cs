@@ -90,6 +90,24 @@ namespace Infrastructure.Services.LocalizationServices
             ["Approval.Approved"] = ("اتوافق على الطلب", "The request was approved"),
             ["Approval.Rejected"] = ("الطلب اترفض", "The request was rejected"),
             ["Approval.Withdrawn"] = ("الطلب اتسحب", "The request was withdrawn"),
+
+            // Approval type labels (F7), used inside notifications
+            ["ApprovalType.SalesInvoiceCancel"] = ("إلغاء فاتورة بيع", "Sales invoice cancellation"),
+            ["ApprovalType.PurchaseInvoiceCancel"] = ("إلغاء فاتورة شراء", "Purchase invoice cancellation"),
+            ["ApprovalType.PointsToPlumber"] = ("تحويل نقاط لسبّاك", "Points transfer to a plumber"),
+            ["ApprovalType.TreasuryConfirmation"] = ("تأكيد خزنة", "Treasury confirmation"),
+            ["ApprovalType.Leave"] = ("إجازة", "Leave"),
+            ["ApprovalType.Loan"] = ("قرض", "Loan"),
+            ["ApprovalType.PermissionRequest"] = ("طلب صلاحية", "Permission request"),
+            ["ApprovalType.PasswordReset"] = ("نسيت كلمة السر", "Password reset"),
+
+            // Notifications (F8)
+            ["Notification.NotFound"] = ("الإشعار ده مش موجود", "Notification not found"),
+            ["Notification.CannotMute"] = ("طلبات الموافقة وتغيير الصلاحيات مينفعش تتقفل", "Approval requests and permission changes can't be turned off"),
+            ["Notification.ApprovalRequested"] = ("{0} بعت طلب: {1}", "{0} sent a request: {1}"),
+            ["Notification.ApprovalApproved"] = ("{0} وافق على طلبك: {1}", "{0} approved your request: {1}"),
+            ["Notification.ApprovalRejected"] = ("{0} رفض طلبك: {1} · السبب: {2}", "{0} rejected your request: {1} · Reason: {2}"),
+            ["Notification.Someone"] = ("حد", "Someone"),
             // ---- Example: Supplier module (add the rest as you migrate it) ----
             // ["Supplier.DuplicatePhone"] = ("رقم الهاتف مستخدم بالفعل", "Phone number already in use"),
         };

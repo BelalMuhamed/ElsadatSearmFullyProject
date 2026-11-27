@@ -51,8 +51,8 @@ namespace Infrastructure.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Args",
                 table: "Notifications",
-                type: "nvarchar(1000)",
-                maxLength: 1000,
+                type: "nvarchar(2000)",
+                maxLength: 2000,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(

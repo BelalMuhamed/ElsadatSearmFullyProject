@@ -11,7 +11,7 @@ namespace Domain.Entities.Notifications;
 public class Notification : BaseEntity
 {
     public const int MessageKeyMaxLength = 100;
-    public const int ArgsMaxLength = 1000;
+    public const int ArgsMaxLength = 2000;
     public const int LinkKindMaxLength = 40;
     public const int LinkIdMaxLength = 64;
 

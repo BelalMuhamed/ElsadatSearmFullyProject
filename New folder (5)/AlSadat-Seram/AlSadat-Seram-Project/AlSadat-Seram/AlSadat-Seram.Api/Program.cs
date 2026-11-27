@@ -6,6 +6,7 @@ using Application.Services.contract.AuthService;
 using Application.Services.contract.AuditTrail;
 using Application.Services.contract.CurrentUserService;
 using Application.Services.contract.Approvals;
+using Application.Services.contract.Notifications;
 using Application.Services.contract.Finance;
 using Application.Services.contract.Numbering;
 using Application.Services.contract.JwtService;
@@ -23,6 +24,7 @@ using Infrastructure.Services.CurrentUserServices;
 using Infrastructure.Services.JwtServices;
 using Infrastructure.Services.LocalizationServices;
 using Infrastructure.Services.ApprovalServices;
+using Infrastructure.Services.NotificationServices;
 using Infrastructure.Services.FinanceService;
 using Infrastructure.Services.NumberingServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,6 +56,8 @@ internal class Program
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddScoped<AuditFieldsInterceptor>();
         builder.Services.AddScoped<AuditEntriesInterceptor>();
+        builder.Services.AddScoped<NotificationPushInterceptor>();
+        builder.Services.AddSingleton<NotificationPushQueue>();
         builder.Services.AddSingleton<PostedJournalGuardInterceptor>();
         // Order matters: the posted-entry guard rejects the save first (D36), then the audit columns
         // are stamped before the change log diffs the entity.
@@ -62,11 +66,14 @@ internal class Program
                  .AddInterceptors(
                      serviceProvider.GetRequiredService<PostedJournalGuardInterceptor>(),
                      serviceProvider.GetRequiredService<AuditFieldsInterceptor>(),
-                     serviceProvider.GetRequiredService<AuditEntriesInterceptor>()));
+                     serviceProvider.GetRequiredService<AuditEntriesInterceptor>(),
+                     serviceProvider.GetRequiredService<NotificationPushInterceptor>()));
         builder.Services.AddScoped<IAuditTrail, AuditTrail>();
         builder.Services.AddScoped<IDocumentNumberService, DocumentNumberService>();
         builder.Services.AddScoped<IJournalPostingService, JournalPostingService>();
         builder.Services.AddScoped<IApprovalService, ApprovalService>();
+        builder.Services.AddScoped<INotificationPublisher, NotificationPublisher>();
+        builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
         builder.Services.AddCors(options =>

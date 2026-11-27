@@ -43,4 +43,10 @@ public interface IApprovalService
     /// </summary>
     Task<Result<IReadOnlyList<BulkApproveItemResult>>> ApproveBulkAsync(
         ApprovalType type, IReadOnlyList<int> ids, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Which of these requests the current user can decide right now (pending, their type allowed, not
+    /// their own unless super_admin) — the inline button of a notification (F8).
+    /// </summary>
+    Task<IReadOnlySet<int>> DecidableAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken = default);
 }
