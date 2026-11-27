@@ -1,4 +1,6 @@
-﻿using AlSadat_Seram.Api.Middlewares;
+﻿using AlSadat_Seram.Api.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using AlSadat_Seram.Api.Middlewares;
 using AlSadat_Seram.Api.Responses;
 using Application.Services.contract;
 using Application.Services.contract.Authorization;
@@ -221,6 +223,18 @@ internal class Program
                 NameClaimType = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Name,
                 ClockSkew = TimeSpan.FromSeconds(30)
             };
+            // SignalR can't send headers on WebSockets: the hub's client sends the token as
+            // access_token (D5). Read it there only, never on the API routes.
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var token = context.Request.Query["access_token"];
+                    if (!string.IsNullOrEmpty(token) && context.HttpContext.Request.Path.StartsWithSegments(NotificationsHub.Path))
+                        context.Token = token;
+                    return Task.CompletedTask;
+                }
+            };
         });
         builder.Services.Configure<AuthSessionOptions>(builder.Configuration.GetSection("Auth"));
         #endregion
@@ -230,6 +244,9 @@ internal class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddMemoryCache();
         builder.Services.AddSignalR();
+        builder.Services.AddSingleton<IUserIdProvider, TokenUserIdProvider>();
+        builder.Services.AddSingleton<INotificationPushSender, SignalRNotificationPushSender>();
+        builder.Services.AddHostedService<NotificationPushWorker>();
         builder.Services.AddScoped(typeof(IUnitOfWork),typeof(Infrastructure.UnitOfWork.UnitOfWork));
         builder.Services.AddScoped(typeof(IExcelReaderService), typeof(ExcelReaderService));
 
@@ -320,11 +337,11 @@ internal class Program
         app.UseRateLimiter();
 
         app.MapControllers();
+        app.MapHub<NotificationsHub>(NotificationsHub.Path);
         // An unknown /api route must stay a JSON 404/405, not the single-page app.
         app.MapFallbackToFile("/", "index.html");
         app.MapFallbackToFile("{*path:nonfile:regex(^(?!api(/|$)).*$)}", "index.html");
 
-        //app.MapHub<NotificationHub>("/notificationHub");
         #endregion
 
         app.Run();
