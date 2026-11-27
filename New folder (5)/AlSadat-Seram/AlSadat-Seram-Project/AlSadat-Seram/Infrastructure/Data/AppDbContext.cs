@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities;
+using Domain.Entities.Approvals;
 using Domain.Entities.Audit;
 using Domain.Entities.Authorization;
 using Domain.Entities.copounModel;
@@ -79,6 +80,7 @@ namespace Infrastructure.Data
         public DbSet<Domain.Entities.Authorization.UserPermission> UserPermissions { get; set; }
         public DbSet<Domain.Entities.Auth.AuthAuditLog> AuthAuditLogs { get; set; }
         public DbSet<AuditEntry> AuditEntries { get; set; }
+        public DbSet<ApprovalRequest> ApprovalRequests { get; set; }
         public DbSet<DocumentSequence> DocumentSequences { get; set; }
 
         public DbSet<SalesInvoiceItemStoresQuantities> SalesInvoiceItemStoresQuantities { get; set; }
@@ -433,6 +435,7 @@ namespace Infrastructure.Data
             ConfigureAuditEntries(builder);
             ConfigureDocumentSequences(builder);
             ConfigureJournalPosting(builder);
+            ConfigureApprovals(builder);
 
             // Keep last: it must see every relationship configured above.
             DisableDatabaseCascades(builder);
@@ -460,6 +463,31 @@ namespace Infrastructure.Data
         /// document, and the reversal link. A filtered unique index on <c>ReversalOfEntryId</c> makes
         /// a second reversal of the same entry impossible even when two requests race.
         /// </summary>
+        /// <summary>
+        /// The approvals center (F7, D39–D42): the pending list reads by (Status, Type, CreatedAt), and a
+        /// filtered unique index allows one pending request per (Type, SubjectId) even in a race.
+        /// </summary>
+        private static void ConfigureApprovals(ModelBuilder builder)
+        {
+            builder.Entity<ApprovalRequest>(request =>
+            {
+                request.Property(r => r.Type).HasConversion<byte>();
+                request.Property(r => r.Status).HasConversion<byte>();
+                request.Property(r => r.Reason).HasMaxLength(ApprovalRequest.ReasonMaxLength).IsRequired();
+                request.Property(r => r.DecisionReason).HasMaxLength(ApprovalRequest.ReasonMaxLength);
+                request.Property(r => r.Payload).HasMaxLength(ApprovalRequest.PayloadMaxLength);
+                request.Property(r => r.DecidedBy).HasMaxLength(450);
+                request.Property(r => r.CreatedBy).HasMaxLength(450);
+                request.Property(r => r.UpdatedBy).HasMaxLength(450);
+
+                request.HasIndex(r => new { r.Status, r.Type, r.CreatedAt });
+                request.HasIndex(r => new { r.Type, r.SubjectId })
+                    .IsUnique()
+                    .HasFilter($"[Status] = {(byte)ApprovalStatus.Pending} AND [SubjectId] IS NOT NULL");
+                request.HasIndex(r => new { r.CreatedBy, r.Status });
+            });
+        }
+
         private static void ConfigureJournalPosting(ModelBuilder builder)
         {
             builder.Entity<JournalEntries>(entry =>
