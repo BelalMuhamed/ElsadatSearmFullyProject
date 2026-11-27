@@ -71,6 +71,11 @@ namespace Infrastructure.Services.LocalizationServices
             ["Role.AdminAssignmentForbidden"] = ("إنشاء مدير نظام أو تعديل بياناته متاح لمدير النظام فقط", "Only a system administrator can create or change an administrator"),
             ["Permission.SessionsRevoked"] = ("تم إنهاء جميع جلسات المستخدم", "All user sessions have been revoked"),
             ["Auth.RevokeSessionsFailed"] = ("تعذر إنهاء جلسات المستخدم. لم يتم تغيير أي شيء", "Could not revoke the user's sessions. Nothing was changed"),
+            ["Journal.AccountNotPostable"] = ("فيه حساب في القيد مقفول أو حساب أب، ومينفعش يتقيد عليه", "A line hits an inactive or parent account, which can't take entries"),
+            ["Journal.EntryNotFound"] = ("القيد ده مش موجود", "Journal entry not found"),
+            ["Journal.NotPosted"] = ("القيد لسه مترحّلش، فمينفعش يتعكس", "The entry isn't posted yet, so it can't be reversed"),
+            ["Journal.AlreadyReversed"] = ("القيد ده اتعكس قبل كده", "This entry has already been reversed"),
+            ["Journal.CannotReverseReversal"] = ("ده قيد عكسي، ومينفعش يتعكس تاني", "This is a reversal entry and can't be reversed"),
             // ---- Example: Supplier module (add the rest as you migrate it) ----
             // ["Supplier.DuplicatePhone"] = ("رقم الهاتف مستخدم بالفعل", "Phone number already in use"),
         };
