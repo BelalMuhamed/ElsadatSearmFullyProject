@@ -1,13 +1,14 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-27 (F7-S1 done; next F8-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-27 (F8-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F8-S1 — notifications (D5 open: SignalR vs polling, recommended SignalR). Not started.
-- **Done in this step:** nothing yet.
-- **In progress / next part:** `/start` → read PLAN.md F8 row (`Notifications`: type, message key + args for translation, link, recipient, read; `INotificationPublisher` modules call; SignalR hub; per-type preferences, approvals can't be turned off) and PLAN lines on screens 65/66 + `/me/badges`; read `Domain/Entities/Users/Notification.cs`, `Infrastructure/Services/NotificationServices/NotificationService.cs`, `AddSignalR` in `Program.cs`. F7 hook to wire: notify the requester on reject (`ApprovalService.DecideAsync`) and the deciders on submit. Explain business + changes + D5 and wait for OK.
+- **Step:** F8-S1 — notifications. Decisions taken; README plan written; implementation starting.
+- **Done in this step:**
+  - [x] plan + D5, D43, D44 (README › F8-S1 «مخطط», tracker)
+- **In progress / next part:** part 1 — `Domain/Enums/NotificationType.cs` (+ `NotificationCategory`, `NotificationTypes.CategoryOf/CanMute`), move/rewrite `Notification` to `Domain/Entities/Notifications/` (RecipientId, Type, MessageKey, Args JSON, LinkKind, LinkId, ApprovalRequestId, CreatedAt, ReadAt), `NotificationMute` (UserId, Type), `AppDbContext.ConfigureNotifications`, migration `RebuildNotifications`; delete `INotificationService`/`NotificationService`/`NotificationDto` + `ServiceManager` line. Then part 2 publisher + push interceptor, part 3 hub + JWT query token, part 4 controller, part 5 F7 wiring, part 6 harness.
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false` + `#:property Configuration=Release`), dropped afterwards; test users need `PhoneNumber` and must exist (AuditEntries FK). Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/Debug` → build/ef with `-c Release`.
-- **Uncommitted changes:** none after the handoff commit. Release build 0 errors, 64/64 tests (2026-11-27).
-- **Decisions taken in this step:** none yet.
+- **Uncommitted changes:** docs only (this checkpoint, README plan, tracker, CLAUDE.md).
+- **Decisions taken in this step (2026-11-27):** D5 (a) SignalR; D43 (a) push `{ id, unreadCount }` then GET; D44 (a) muted type not created, approvals can't be muted.
 - **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
@@ -108,9 +109,12 @@ Plan: `Docs/docs/refactor/PLAN.md` (online original: https://claude.ai/artifact/
 | 2026-11-27 | **D40** Nobody decides their own approval request (403 `Approval.OwnRequest`), except `super_admin` | separation of duties; the owner can still act | allow everyone |
 | 2026-11-27 | **D41** Bulk approve: each request in its own transaction, the reply lists each result | one blocked request doesn't stop the rest | all or nothing |
 | 2026-11-27 | **D42** F7-S1 builds the engine only (tested with a throwaway handler); every real request type comes with its module (M1, M5, M6, M7, M9, M11) | no work done twice | move purchase `DeleteStatus` now |
+| 2026-11-27 | **D5** Live notifications with SignalR from the start: one hub `/hubs/notifications`, JWT read from `access_token` on that path only | M13 messages need it anyway | polling every 30 s |
+| 2026-11-27 | **D43** The push carries only `{ id, unreadCount }`; the client reads the notification with `GET /api/notifications/{id}` (text in the request's language, `canAct` computed then) | one place renders text | full translated item in the push |
+| 2026-11-27 | **D44** A type the user turned off is not created at all; approval requests can't be turned off | matches screen 7 «جوه السيستم / لأ» | saved without push/badge |
 
 ## Pending decisions (decide when their module comes)
-D5 SignalR · D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
+D6 BackgroundService jobs · D7 ClosedXML only · D8 `IFileStorage` (local dev / Azure Blob prod — recommended) · D10 tax · D11 wallet+ledger · D12 HR questions · D13 loyalty cash expense account · D14 warranty duration · D15 purchases before sales.
 
 ## Refactor status
 Detailed per-session status: `Docs/docs/refactor/TRACKER.xlsx` (110 sessions). Change explanations: `Docs/docs/refactor/README.md`.
