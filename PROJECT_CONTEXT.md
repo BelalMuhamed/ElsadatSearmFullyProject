@@ -2,11 +2,17 @@
 _Last updated: 2026-11-27 (F6-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F6-S1 — journal posting engine. Decisions taken; implementing.
-- **Done in this step:** [x] plan explained, D35–D38 decided (all «a»), tracker (F6-S1 جاري + D35–D38), README «مخطط».
-- **In progress / next part:** part 1 — `Domain/Enums/JournalSourceType.cs` (byte: Manual=1, SalesInvoice, SalesReturn, PurchaseInvoice, PurchaseReturn, Receipt, Payment, Expense, Payroll, EmployeeLoan, Custody, StockCount, Gifts); `JournalEntries` + `EntryNumber` (nullable, unique filtered), `SourceType?`/`SourceId?` (index), `IsSystemGenerated`, `ReversalOfEntryId?` (self FK NoAction, unique filtered), `IAuditedEntity`, `[Audited(AuditAreas.Accounting, ReferenceProperty = EntryNumber)]`; `JournalEntryDetails.Description` (250); migration `AddJournalPosting`. Then part 2 `Application/Common/JournalDraftRules.cs` + tests, part 3 `JournalPostingService`, part 4 `PostedJournalGuardInterceptor`, part 5 harness + README.
+- **Step:** F6-S1 — journal posting engine. All parts done; waiting for Belal to confirm, then `/handoff` (tracker «خلص» + commit list).
+- **Done in this step:**
+  - [x] plan + D35–D38 (`ef165ac`)
+  - [x] part 1 entry number/source/reversal link/line note + migration `AddJournalPosting` (`159ffeb`)
+  - [x] part 2 `JournalDraft` + `JournalDraftRules` + 11 unit tests (`0a786ee`)
+  - [x] part 3 `IJournalPostingService`/`JournalPostingService`, `JournalErrorCodes`, `Journal.*` keys, DI (`ec8a25b`)
+  - [x] part 4 `PostedJournalGuardInterceptor`, registered first (`ab0e147`)
+  - [x] part 5 32 checks on throwaway DB `SadatSearmErp_JournalTest` (dropped), README rewritten
+- **In progress / next part:** Belal verifies (README › F6-S1 › إزاي تتأكد). Then `/handoff`: tracker F6-S1 «خلص» with commits, Session log line, checkpoint → next session (`py -3 tools/tracker.py next`).
 - **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes.
-- **Uncommitted changes:** docs only (this checkpoint, README, tracker). Build 0 errors (2026-11-27).
+- **Uncommitted changes:** none after the docs commit. Build 0 errors, 53/53 tests (2026-11-27).
 - **Decisions taken in this step (2026-11-27):** D35 (a) old writers untouched, each module moves to the engine, new columns nullable until then; D36 (a) `SaveChanges` guard: posted entries and their lines are never modified or deleted; D37 (a) a reversal is dated on its own day; D38 (a) pure unit tests + throwaway-DB harness, integration project with CI.
 - **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
@@ -143,6 +149,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
   - `UserSessionService.AdminRevokeSessionsAsync`: `IdentityResult` of `UpdateSecurityStampAsync` ignored.
   - `AuthController.RevokeSessions`: no `CancellationToken`; `RemoteIpAddress` is the proxy IP unless forwarded headers are configured.
 - `ExecuteUpdate`/`ExecuteDelete` bypass the audit interceptors (F3-S1): never use them on `[Audited]` entities or on entities with `CreateBy`/`UpdateBy` columns.
+- F6-S1 (D35/D36): `PostedJournalGuardInterceptor` blocks modifying/deleting posted entries and their lines, but not **adding** a line to a posted entry (old writers save the header, then the lines) — close it in M3. Old `DeletePurchaseInvoice` on an invoice with a posted entry now fails with 500 instead of deleting the ledger (C10) until M6. Old writers still use code strings / `Random` refs and leave `EntryNumber`/`SourceType` null until M6/M7/M9 move them to `IJournalPostingService`; `ExecuteUpdate` on journal tables bypasses the guard.
 - `ProductService.EditProduct`/`FromDto` still copy `deleteBy`/`deleteAt`/`createBy` from the DTO; the interceptor overwrites them (D27) — remove the copies in M4.
 - Sales/purchase numbers are still `SO{Id}`/`PO{Id}` and journal references `Random` (`EmployeePayrollService`, `EmployeeLoanService`): switch to `IDocumentNumberService` when M6/M7/F6 rewrite them; add a unique index on `InvoiceNumber` then. Decide there whether drafts get their number at save (UI) or at confirm (PLAN).
 - `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in M1 (D26).

@@ -342,35 +342,104 @@
    ```
    المفروض يطلع `INV` و`1`، وبعد الـ `ROLLBACK` الـ `LastNumber` يرجع `0`.
 
-### F6-S1 — محرك الترحيل المحاسبي · جاري · 2026-11-27
+### F6-S1 — محرك الترحيل المحاسبي · مستني تأكيدك · 2026-11-27
 
-**الـ business:** أي عملية فيها فلوس (تأكيد بيع، استلام شراء، سند، مصروف، رواتب، جرد) بتكتب قيدها من مكان واحد بس: `IJournalPostingService`. مثال: تأكيد `INV-0040` بيبعت للمحرك «مدين العميل، دائن المبيعات، مدين تكلفة البضاعة، دائن المخزون، المصدر فاتورة بيع 40»، فيطلع `JE-0001` مرحّل جوه transaction التأكيد. ولو الفاتورة اتلغت، `ReverseAsync` بيعمل `JE-0002` بالعكس ومربوط بالأصلي، ومينفعش يتعكس مرتين.
+**الـ business:** أي عملية فيها فلوس (تأكيد بيع، استلام شراء، سند، مصروف، رواتب، جرد) هتكتب قيدها من مكان واحد بس: `IJournalPostingService`.
+
+مثال: تأكيد `INV-0040` بيبعت للمحرك:
+- مدين العميل.
+- دائن المبيعات.
+- مدين تكلفة البضاعة.
+- دائن المخزون.
+- المصدر: فاتورة بيع 40.
+
+فيطلع `JE-0001` مرحّل جوه transaction التأكيد. ولو الفاتورة اتلغت، `ReverseAsync` بيعمل `JE-0002` بالعكس ومربوط بالأصلي، ومينفعش يتعكس مرتين. والقيد المرحّل مبيتعدلش ولا يتمسح من أي مكان في الكود.
 
 **الوضع قبلها:**
-- كل service بتبني قيدها بإيدها بأكواد نصية: `"1.1.3"` و`"4.1"` و`"5.2"`.
-- الرواتب والقروض بيدوّروا على أكواد مش موجودة (C9).
-- القيد مفيهوش رقم ولا مصدر صريح ولا علامة إنه نظامي ولا ربط بالعكسي.
-- العكسي بتاع البيع ممكن يتعمل مرتين (C6)، وحذف فاتورة الشراء بيمسح قيدها المرحّل (C10).
+- كل service بتبني قيدها بإيدها بأكواد نصية زي `"1.1.3"` و`"4.1"` و`"5.2"`.
+- القيد مكانش فيه رقم، ولا مصدر صريح، ولا علامة إنه نظامي، ولا ربط بالقيد العكسي.
+- العكسي بتاع البيع ممكن يتعمل مرتين (C6)، وحذف فاتورة الشراء كان بيمسح قيدها المرحّل (C10).
 
 **القرارات (2026-11-27، كلها «a»):**
-- D35: الـ services القديمة بتفضل زي ما هي، وكل موديول يحوّلها للمحرك. لحد كده `EntryNumber` و`SourceType` بيفضلوا nullable.
-- D36: حارس في `SaveChanges` بيمنع تعديل أو مسح القيد المرحّل أو سطوره.
-- D37: القيد العكسي بياخد تاريخ العكس نفسه.
-- D38: unit tests للقواعد، وharness على DB مؤقتة للجزء اللي محتاج SQL.
+- **D35:** الـ services القديمة فضلت زي ما هي، وكل موديول هيحوّلها للمحرك. لحد كده `EntryNumber` و`SourceType` nullable.
+- **D36:** حارس في `SaveChanges` على القيد المرحّل.
+- **D37:** القيد العكسي بياخد تاريخ العكس نفسه.
+- **D38:** unit tests للقواعد، وharness على DB مؤقتة.
 
-**المخطط:**
-1. **الـ Domain:**
-   - `JournalSourceType` جديد.
-   - `JournalEntries`: `EntryNumber`، و`SourceType`/`SourceId`، و`IsSystemGenerated`، و`ReversalOfEntryId` (unique)، و`IAuditedEntity`، و`[Audited(Accounting)]`.
-   - `JournalEntryDetails.Description`.
-   - migration `AddJournalPosting`.
-2. **القواعد:** `Application/Common/JournalDraftRules.cs` فيها التوازن، وإن المبلغ أكبر من صفر، ورقمين عشريين بالكتير، وسطرين على الأقل، وجنب واحد لكل سطر. ومعاها unit tests.
-3. **المحرك:**
-   - `IJournalPostingService` و`JournalPostingService`.
-   - الحسابات النظامية بتتجاب في query واحدة، وكل حساب لازم يكون leaf ونشط.
-   - الرقم `JE-` من `IDocumentNumberService`.
-   - مفاتيح `Journal.*` بالعربي والإنجليزي.
-4. **الحارس:** `PostedJournalGuardInterceptor`.
-5. **التجربة:** harness على DB مؤقتة.
+**اللي اتعمل:**
+1. **الجدول** (commit `159ffeb`):
+   - `Domain/Enums/JournalSourceType.cs` فيه 13 مصدر بنوع `tinyint`: يدوي، وفاتورة بيع، ومرتجع بيع، وفاتورة شراء، ومرتجع شراء، وسند قبض، وسند صرف، ومصروف، ورواتب، وقرض، وعهدة، وجرد، وهدايا.
+   - `Domain/Entities/Finance/JournalEntries.cs` اتضاف له:
+     - `EntryNumber`، وعليه unique.
+     - `SourceType` و`SourceId`، وعليهم index.
+     - `IsSystemGenerated`.
+     - `ReversalOfEntryId`: FK على نفس الجدول، وعليه unique filtered index، فالقيد ميتعكسش مرتين حتى لو طلبين جم في نفس اللحظة.
+     - `IAuditedEntity`، فبيتسجل مين سجّل القيد وإمتى.
+     - `[Audited(Accounting)]`، ومرجعه رقم القيد.
+     - `Desc` بقى طوله لحد 500 حرف.
+   - `JournalEntryDetails.Description`: بيان السطر، لحد 250 حرف.
+   - الإعدادات في `AppDbContext.ConfigureJournalPosting`، والـ migration هي `20261127122501_AddJournalPosting`.
+2. **القواعد** (commit `0a786ee`):
+   - الـ DTOs في `Application/DTOs/FinanceDtos/Posting/JournalDraft.cs`، وفيها `JournalDraft` و`JournalDraftLine` (`DebitTo` و`CreditTo` بـ `SystemAccountCode` أو بـ id) و`PostedJournalEntry`.
+   - `Application/Common/JournalDraftRules.cs` فيه القواعد دي:
+     - سطرين على الأقل.
+     - كل سطر على حساب واحد، وجنب واحد بس، والمبلغ أكبر من صفر.
+     - المبلغ رقمين عشريين بالكتير.
+     - المدين يساوي الدائن.
+     - التاريخ والبيان موجودين.
+     - القيد النظامي لازم يكون له `SourceId`، واليدوي ملوش.
+     - `Reversed` بيقلب السطور.
+   - 11 test جديد في `Tests/Application.UnitTests/Common/JournalDraftRulesTests.cs`.
+3. **المحرك** (commit `ec8a25b`):
+   - الـ interface في `Application/Services.contract/Finance/IJournalPostingService.cs`، والتنفيذ في `Infrastructure/Services/FinanceService/JournalPostingService.cs`، ومتسجل في `Program.cs`.
+   - **`PostAsync`:**
+     - بيتأكد من القواعد.
+     - بيرفض الشغل لو مفيش transaction.
+     - بيجيب كل الحسابات في query واحدة.
+     - الحساب النظامي الناقص بيرمي exception.
+     - الحساب المقفول أو الأب بيرجع `Journal.AccountNotPostable`.
+     - بياخد رقم `JE-` ويحفظ الرأس والسطور في save واحد، والقيد بيبقى مرحّل.
+   - **`ReverseAsync`:**
+     - القيد اللي مش موجود بيرجع `Journal.EntryNotFound` (404).
+     - القيد اللي مش مرحّل بيرجع `Journal.NotPosted` (409).
+     - القيد العكسي بيرجع `Journal.CannotReverseReversal` (409).
+     - القيد اللي اتعكس قبل كده بيرجع `Journal.AlreadyReversed` (409).
+     - التاريخ اللي قبل الأصل بيرمي exception.
+     - العكس بيشتغل حتى لو حساب العميل اتقفل بعد البيع.
+     - القيد القديم اللي ملوش مصدر بيتعكس كقيد يدوي مربوط بالأصلي.
+   - المفاتيح في `Domain/Common/JournalErrorCodes.cs`، والنص بالعربي والإنجليزي في `LocalizationResources.cs`.
+4. **الحارس** (commit `ab0e147`):
+   - `Infrastructure/Data/Interceptors/PostedJournalGuardInterceptor.cs`، ومتسجل أول واحد قبل الـ audit.
+   - أي تعديل أو حذف لقيد مرحّل أو لسطر من سطوره بيرمي exception، فالطلب بيرجع 500. حالة «مرحّل» بتتقري من الـ DB، فالـ attach و`State = Modified` والحذف بالـ id بيتمسكوا كلهم.
+   - المسودة بتتعدّل وتترحّل عادي، وبعد الترحيل بتتقفل.
 
-**برّه الجلسة (M3):** حسابات النظام الجديدة، وشاشة القيد اليدوي، وكشف الحساب، و`IsPosted` → `Status`، وتحويل البيع والشراء والرواتب والقروض للمحرك (M6 وM7 وM9).
+**التجربة:** اتعملت على DB مؤقتة `SadatSearmErp_JournalTest` بـ harness برّه الـ repo. الـ 32 حالة نجحت، وبعدين الـ DB اتمسحت. الحالات شملت:
+- الترحيل والرقم.
+- الأخطاء: من غير transaction، وقيد مش متوازن، وحساب نظامي ناقص، وحساب مقفول أو أب.
+- الـ rollback بيرجّع الرقم.
+- العكس وكل رفضه.
+- طلبين عكس في نفس اللحظة: واحد بس اتسجل.
+- الحارس في 4 طرق تعديل وحذف.
+- المسودة بتتعدّل وتترحّل.
+- الطريقة القديمة (الرأس الأول وبعده السطور) لسه شغالة، والقيد القديم بيتعكس.
+
+الـ build نضيف، و53/53 test.
+
+**برّه الجلسة:**
+- حسابات النظام الجديدة (الضريبة، والخزنة، والقروض، والرواتب المستحقة…) في M3.
+- شاشة القيد اليدوي وكشف الحساب، و`IsPosted` → `Status`، في M3.
+- تحويل البيع والشراء والرواتب والقروض للمحرك في M6 وM7 وM9، وبعدها `EntryNumber` و`SourceType` يبقوا required.
+- الحارس لسه مبيمنعش **إضافة** سطر لقيد مرحّل، لأن الـ services القديمة بتحفظ الرأس الأول وبعده السطور. ده بيتقفل في M3.
+- حذف فاتورة شراء عليها قيد مرحّل بقى بيرجع 500 بدل ما يمسح القيد، لحد ما M6 يحوّله لإلغاء.
+
+**إزاي تتأكد:**
+1. شغّل الـ API، والـ migration هتتطبق لوحدها.
+2. في SSMS:
+   ```sql
+   SELECT TOP 5 Id, EntryNumber, SourceType, SourceId, IsSystemGenerated, ReversalOfEntryId, CreatedAt
+   FROM SadatSearmErp.dbo.journalEntries ORDER BY Id DESC;   -- الأعمدة الجديدة موجودة
+   SELECT name, is_unique, filter_definition FROM SadatSearmErp.sys.indexes
+   WHERE object_id = OBJECT_ID('SadatSearmErp.dbo.journalEntries');  -- EntryNumber و ReversalOfEntryId unique
+   ```
+3. من Swagger اعمل قيد يدوي ورحّله (`JournalEntry` → add ثم post)، وبعدين جرّب تعدّله بـ update: هيرجع رفض زي الأول. ولو في أي مكان تاني عدّلت قيد مرحّل، الطلب هيرجع 500 والـ log هيقول `D36`.
+4. شغّل `dotnet test`: لازم يطلع 53/53.
