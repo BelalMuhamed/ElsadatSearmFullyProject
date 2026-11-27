@@ -273,7 +273,8 @@ internal class Program
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext,string>(httpContext =>
                 RateLimitPartition.GetFixedWindowLimiter(
 
-                    partitionKey: httpContext.Connection.RemoteIpAddress!.ToString(),
+                    // No remote IP (in-memory test server, some proxies): one shared bucket instead of a 500.
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                     factory: partition => new FixedWindowRateLimiterOptions
                     {
                         PermitLimit = 100,
