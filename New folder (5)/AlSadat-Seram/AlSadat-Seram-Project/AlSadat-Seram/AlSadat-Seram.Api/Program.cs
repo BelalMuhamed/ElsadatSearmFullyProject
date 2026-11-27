@@ -52,10 +52,13 @@ internal class Program
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddScoped<AuditFieldsInterceptor>();
         builder.Services.AddScoped<AuditEntriesInterceptor>();
-        // Order matters: the audit columns are stamped before the change log diffs the entity.
+        builder.Services.AddSingleton<PostedJournalGuardInterceptor>();
+        // Order matters: the posted-entry guard rejects the save first (D36), then the audit columns
+        // are stamped before the change log diffs the entity.
         builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
           options.UseSqlServer(builder.Configuration.GetConnectionString("con"))
                  .AddInterceptors(
+                     serviceProvider.GetRequiredService<PostedJournalGuardInterceptor>(),
                      serviceProvider.GetRequiredService<AuditFieldsInterceptor>(),
                      serviceProvider.GetRequiredService<AuditEntriesInterceptor>()));
         builder.Services.AddScoped<IAuditTrail, AuditTrail>();
