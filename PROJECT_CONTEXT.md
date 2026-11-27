@@ -1,19 +1,13 @@
 # Sadat Searm ERP — Project Context
-_Last updated: 2026-11-27 (F6-S1 in progress) · Read this first in any new session · Update it with `/handoff` at the end of every session._
+_Last updated: 2026-11-27 (F6-S1 done; next F7-S1) · Read this first in any new session · Update it with `/handoff` at the end of every session._
 
 ## Checkpoint (overwrite after every small part — see "Checkpoints" in CLAUDE.md)
-- **Step:** F6-S1 — journal posting engine. All parts done; waiting for Belal to confirm, then `/handoff` (tracker «خلص» + commit list).
-- **Done in this step:**
-  - [x] plan + D35–D38 (`ef165ac`)
-  - [x] part 1 entry number/source/reversal link/line note + migration `AddJournalPosting` (`159ffeb`)
-  - [x] part 2 `JournalDraft` + `JournalDraftRules` + 11 unit tests (`0a786ee`)
-  - [x] part 3 `IJournalPostingService`/`JournalPostingService`, `JournalErrorCodes`, `Journal.*` keys, DI (`ec8a25b`)
-  - [x] part 4 `PostedJournalGuardInterceptor`, registered first (`ab0e147`)
-  - [x] part 5 32 checks on throwaway DB `SadatSearmErp_JournalTest` (dropped), README rewritten
-- **In progress / next part:** Belal verifies (README › F6-S1 › إزاي تتأكد). Then `/handoff`: tracker F6-S1 «خلص» with commits, Session log line, checkpoint → next session (`py -3 tools/tracker.py next`).
-- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes.
-- **Uncommitted changes:** none after the docs commit. Build 0 errors, 53/53 tests (2026-11-27).
-- **Decisions taken in this step (2026-11-27):** D35 (a) old writers untouched, each module moves to the engine, new columns nullable until then; D36 (a) `SaveChanges` guard: posted entries and their lines are never modified or deleted; D37 (a) a reversal is dated on its own day; D38 (a) pure unit tests + throwaway-DB harness, integration project with CI.
+- **Step:** F7-S1 — approvals engine (D4). Not started.
+- **Done in this step:** nothing yet.
+- **In progress / next part:** `/start` → read PLAN.md F7 row (line ~71: `ApprovalRequests` table — type, subject, requester, reason, status, decider + reason; one handler per type; reject needs a reason; bulk approve per type; top-bar counter) and README › F7-S1; read how `DeleteStatus` works today in `PurchaseInvoiceService`/`salesInvoiceService`; explain business + changes + decisions to Belal and wait for OK.
+- **State on Belal's PC:** user secrets `ConnectionStrings:con` → `SadatSearmErp`. Throwaway-DB checks: .NET 10 file-based harness (`#:project` + `#:property PublishAot=false`), dropped afterwards. Close `TRACKER.xlsx` in Excel before `tracker.py` writes. A running API locks `bin/` → build errors MSB3021; build to a temp `-o` folder or stop the API.
+- **Uncommitted changes:** none after the handoff commit. Build 0 errors, 53/53 tests (2026-11-27).
+- **Decisions taken in this step:** none yet.
 - **Open questions:** draft vs confirm numbering — decide in M6/M7, recommended: follow the UI.
 
 ## Overview
@@ -125,7 +119,8 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - F2-S2 cancelled (D26): controllers move with their module
 - [x] **F3-S1 — audit + change log** (2026-11-26)
 - [x] **F4F5-S1 — document numbering + rowversion** (2026-11-26)
-- [ ] **F6-S1 — journal posting engine** ← next
+- [x] **F6-S1 — journal posting engine** (2026-11-27)
+- [ ] **F7-S1 — approvals engine** ← next
 
 ## Modules / features status
 | Module | Backend | Frontend | Notes |
@@ -149,7 +144,7 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
   - `UserSessionService.AdminRevokeSessionsAsync`: `IdentityResult` of `UpdateSecurityStampAsync` ignored.
   - `AuthController.RevokeSessions`: no `CancellationToken`; `RemoteIpAddress` is the proxy IP unless forwarded headers are configured.
 - `ExecuteUpdate`/`ExecuteDelete` bypass the audit interceptors (F3-S1): never use them on `[Audited]` entities or on entities with `CreateBy`/`UpdateBy` columns.
-- F6-S1 (D35/D36): `PostedJournalGuardInterceptor` blocks modifying/deleting posted entries and their lines, but not **adding** a line to a posted entry (old writers save the header, then the lines) — close it in M3. Old `DeletePurchaseInvoice` on an invoice with a posted entry now fails with 500 instead of deleting the ledger (C10) until M6. Old writers still use code strings / `Random` refs and leave `EntryNumber`/`SourceType` null until M6/M7/M9 move them to `IJournalPostingService`; `ExecuteUpdate` on journal tables bypasses the guard.
+- F6-S1 (D35/D36): `PostedJournalGuardInterceptor` blocks modifying/deleting posted entries and their lines, but not **adding** a line to a posted entry (old writers save the header, then the lines) — close it in M3. Old `DeletePurchaseInvoice` on an invoice with a posted entry now fails with 500 instead of deleting the ledger (C10) until M6. Old writers still use code strings / `Random` refs and leave `EntryNumber`/`SourceType` null until M6/M7/M9 move them to `IJournalPostingService`; `ExecuteUpdate` on journal tables bypasses the guard. Screen testing of posting/reversal deferred to M3 (manual-entry screen), Belal's call 2026-11-27.
 - `ProductService.EditProduct`/`FromDto` still copy `deleteBy`/`deleteAt`/`createBy` from the DTO; the interceptor overwrites them (D27) — remove the copies in M4.
 - Sales/purchase numbers are still `SO{Id}`/`PO{Id}` and journal references `Random` (`EmployeePayrollService`, `EmployeeLoanService`): switch to `IDocumentNumberService` when M6/M7/F6 rewrite them; add a unique index on `InvoiceNumber` then. Decide there whether drafts get their number at save (UI) or at confirm (PLAN).
 - `ProfileService` returns hardcoded Arabic messages — `ProfileController` doesn't use `HandleResult`; switch both together in M1 (D26).
@@ -181,3 +176,4 @@ Order: F0 → F1 → F2+F3 → F4+F5+F6 → F7+F8 → (F9 in M1; F10–F15 wired
 - 2026-11-25 (Claude Code) — F2-S1 done and confirmed: `code`/`traceId`, `ApiErrorWriter`, `PagedResult`, D22–D25; F2-S2 cancelled (D26) and its row removed with `tracker.py remove`. Next: F3-S1.
 - 2026-11-26 (Claude Code) — F3-S1 done and confirmed: D27–D30; `AuditFieldsInterceptor` (who/when from the token, UTC), `AuditEntries` + migration `AddAuditEntries` + append-only trigger, `AuditEntriesInterceptor` + `[Audited]` on `Products`/`Supplier` + `IAuditTrail`, `ChangeLogService`/`IAuditableEntity` deleted (`Infrastructure/Data/Interceptors/*`, `Domain/Entities/Audit`, `Domain/Common`, `Program.cs`, `ServiceManager`). 37 checks on a throwaway DB; build 0 errors, 42/42. Left for modules: screen-78 endpoint (M2), marking other entities, field-name translations. Next: F4F5-S1.
 - 2026-11-26 (Claude Code) — F4F5-S1 done and confirmed: D31–D34; `DocumentSequences` + `IDocumentNumberService` (`Domain/Enums/DocumentType.cs`, `Domain/Entities/Numbering`, `Infrastructure/Services/NumberingServices`, migration `AddDocumentSequences`), `RowVersion` on `Stock`/`SalesInvoices`/`PurchaseInvoice` (migration `AddRowVersions`) + 409 `Common.ConcurrencyConflict` (`ErrorCodes`, `LocalizationResources`, `ExceptionHandlingMiddleware`). 12 checks on a throwaway DB; build 0 errors, 42/42. Left: `SO{Id}`/`PO{Id}`/`Random` replaced in M6/M7/F6. Next: F6-S1.
+- 2026-11-27 (Claude Code) — F6-S1 done and confirmed: D35–D38; `JournalSourceType`, journal entry number/source/reversal link/line note + `IAuditedEntity`/`[Audited(Accounting)]` (migration `AddJournalPosting`), `JournalDraft` + `JournalDraftRules` (11 tests), `IJournalPostingService`/`JournalPostingService` (`PostAsync`/`ReverseAsync`, `JournalErrorCodes`, `Journal.*` keys), `PostedJournalGuardInterceptor` (`Program.cs`). 32 checks on a throwaway DB; build 0 errors, 53/53. `tools/tracker.py --commit` now splits commas and dedupes. Left: engine has no caller yet (M3 manual entry, M6/M7/M9 move old writers), guard misses added lines (M3), screen testing in M3. Next: F7-S1.

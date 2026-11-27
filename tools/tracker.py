@@ -104,9 +104,10 @@ def cmd_session(wb, args) -> bool:
         set_date(ws, row, S_END, parse_date(args.end))
     if args.commit:
         current = ws.cell(row, S_COMMIT).value
-        commits = [c.strip() for c in str(current).split(",")] if current else []
-        for c in args.commit:
-            if c not in commits:
+        commits = []
+        given = [c.strip() for arg in args.commit for c in arg.split(",")]
+        for c in ([c.strip() for c in str(current).split(",")] if current else []) + given:
+            if c and c not in commits:
                 commits.append(c)
         ws.cell(row, S_COMMIT).value = ", ".join(commits)
     if args.notes is not None:
@@ -163,7 +164,7 @@ def main() -> None:
     p.add_argument("--status", help=" / ".join(SESSION_STATUSES))
     p.add_argument("--start", help="YYYY-MM-DD or today")
     p.add_argument("--end", help="YYYY-MM-DD or today")
-    p.add_argument("--commit", nargs="+", help="short hashes, appended (no duplicates)")
+    p.add_argument("--commit", nargs="+", help="short hashes (space- or comma-separated), appended (no duplicates)")
     p.add_argument("--notes", help="replaces the notes cell")
     p = sub.add_parser("remove", help="remove a cancelled session row")
     p.add_argument("code")
