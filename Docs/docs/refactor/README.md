@@ -562,7 +562,7 @@
 **التأكيد:** بلال أكّد يوم 2026-11-27.
 
 ---
-### F8-S1 — الإشعارات · مخطط · 2026-11-27
+### F8-S1 — الإشعارات · مستني تأكيدك · 2026-11-27
 
 **الـ business:** الإشعارات بتظهر في جرس التوب بار ومعاه عداد غير المقروء، وفي لوحة الإشعارات، وفي «كل الإشعارات» (شاشة 66). أمثلة:
 - طلب إلغاء `INV-1038` بيوصل لكل اللي يقدروا يقرروا فيه في نفس اللحظة.
@@ -572,7 +572,7 @@
 
 **الوضع قبلها:**
 - `Notification` فيه نص ثابت ونوع نص.
-- `NotificationService` فاضي ومعمول له comment.
+- `NotificationService` و`INotificationDispatcher` فاضيين ومعمول لهم comment.
 - `AddSignalR` موجود، بس مفيش hub.
 - مفيش تفضيلات.
 - F7 مبيبعتش أي إشعار.
@@ -580,41 +580,146 @@
 **القرارات (2026-11-27):**
 - **D5 (أ):** SignalR من الأول.
 - **D43 (أ):** الـ push فيه `{ id, unreadCount }` بس، والفرونت بيجيب الإشعار بالـ GET.
-- **D44 (أ):** النوع المقفول مبيتعملش خالص، والموافقات مبتتقفلش.
+- **D44 (أ):** النوع المقفول مبيتعملش خالص، والموافقات وتغيير الصلاحيات مبيتقفلوش.
 
-**المخطط:**
-1. **الجدول:**
-   - `NotificationType` و`NotificationCategory`.
-   - `Notification` الجديد، وفيه:
+**اللي اتعمل:**
+1. **الجدول** (commits `3aa68e6` + `f979d85`، والـ migration اتعملت تاني في `872e0dd`):
+   - `Domain/Enums/NotificationType.cs`، وفيه:
+     - 9 أنواع للإشعارات.
+     - `NotificationCategory`، وهي تابات شاشة 66.
+     - `NotificationTypes.CategoryOf`، و`NotificationTypes.CanMute`.
+   - `Domain/Entities/Notifications/Notification.cs`، وفيه:
      - المستلم.
      - النوع.
-     - المفتاح والـ args.
-     - اللينك.
+     - `MessageKey`.
+     - `Args`، وده JSON لحد 2000 حرف، والعربي بيتخزن زي ما هو.
+     - `LinkKind`/`LinkId`.
      - `ApprovalRequestId`.
-     - `ReadAt`.
-   - `NotificationMutes`.
+     - `CreatedAt`/`ReadAt`.
+   - `NotificationMute`، وده سطر لكل (يوزر، نوع) مقفول.
+   - `Domain/Common/NotificationLinks.cs`.
+   - الإعدادات في `AppDbContext.ConfigureNotifications`:
+     - index على (المستلم، الوقت).
+     - index بفلتر غير المقروء.
+     - FKs بـ `NoAction`.
    - الـ migration: `RebuildNotifications`.
-   - شيل `NotificationService` و`INotificationService` و`NotificationDto` الفاضيين.
-2. **الـ publisher:**
-   - `INotificationPublisher`، بيبعت لناس بالاسم أو لكل اللي عندهم صلاحية.
-   - الحفظ جوه transaction العملية.
-   - `NotificationPushInterceptor` بيعمل الـ push بعد الـ commit بس.
-3. **الـ hub:**
-   - `/hubs/notifications`.
-   - الـ JWT من `access_token` للـ path ده بس.
-4. **الـ endpoints:**
-   - القايمة.
-   - العداد.
-   - إشعار واحد.
-   - مقروء، والكل مقروء.
-   - التفضيلات.
-5. **ربط F7:**
-   - طلب جديد ← إشعار للي يقدروا يقرروا.
-   - قرار ← إشعار لصاحب الطلب.
-6. **التجربة:** harness على DB مؤقتة، ومعاه client SignalR.
+     - بتمسح أي سطور قديمة الأول، حسب D0.
+     - بتشيل `Message`/`Type` نص/`IsRead`/`UserId`.
+   - اتشالوا:
+     - `INotificationService` القديم، و`NotificationService` القديم الفاضي.
+     - `INotificationDispatcher`.
+     - `NotificationDto` القديم.
+     - السطور بتاعتهم في `ServiceManager`/`IServiceManager`.
+2. **الـ publisher والـ push** (commit `872e0dd`):
+   - `Application/Services.contract/Notifications/INotificationPublisher.cs`:
+     - `PublishAsync(message, users)`.
+     - `PublishToPermissionAsync(message, permission, except)`، وده لكل اللي عندهم الصلاحية والـ Admin، والمحذوفين مستثنيين.
+     - `INotificationPushSender`.
+   - `NotificationPublisher`:
+     - بيحفظ في نفس الـ `DbContext`، يعني جوه transaction العملية.
+     - بيشيل اللي قافلين النوع.
+   - `Infrastructure/Data/Interceptors/NotificationPushInterceptor.cs`:
+     - بيحط الإشعار في الطابور بعد الـ commit بس.
+     - ولو مفيش transaction، بيحطه بعد الـ save على طول.
+     - والـ rollback معناه مفيش push.
+   - `NotificationPushQueue`، وهو Channel.
+   - `NotificationPushWorker`، وهو `BackgroundService`:
+     - بيعد غير المقروء لكل مستلم في query واحدة.
+     - بيبعت `{ id, unreadCount }`.
+     - لو فشل، بيكتب log بس.
+   - `NotificationService`، وده بتاع القراية:
+     - النص بيتترجم بلغة الـ request، والـ arg ممكن يبقى مفتاح ترجمة هو كمان.
+     - `canAct` بييجي من `IApprovalService.DecidableAsync`.
+     - مقروء، والكل مقروء.
+     - التفضيلات.
+   - المفاتيح:
+     - `Notification.*`، و`ApprovalType.*` (أسامي الأنواع)، بالعربي والإنجليزي.
+     - `Domain/Common/NotificationErrorCodes.cs`.
+   - 11 test في `NotificationTypesTests.cs`.
+3. **الـ hub** (commit `49fde96`):
+   - `AlSadat-Seram.Api/Hubs/NotificationsHub.cs`، وفيه:
+     - الـ hub على `/hubs/notifications`، ومعاه `[Authorize]`.
+     - الـ method `notification`.
+     - `SignalRNotificationPushSender`.
+     - `TokenUserIdProvider`.
+   - في `Program.cs`:
+     - `OnMessageReceived` بيقرا `access_token` للـ path ده بس.
+     - `AddHostedService<NotificationPushWorker>`.
+     - `MapHub`.
+4. **الـ endpoints** (commit `e589ef6`): `NotificationsController`، وفيه:
+   - `GET /api/notifications?category=&unreadOnly=&from=&page=&pageSize=`.
+   - `GET unread-count`.
+   - `GET {id}`.
+   - `POST {id}/read`.
+   - `POST read-all`.
+   - `GET`/`PUT preferences`.
+5. **ربط F7** (commit `353cf01`) في `ApprovalService`:
+   - **الطلب الجديد:**
+     - بيوصل لكل اللي يقدروا يقرروا فيه، ما عدا اللي طلبه.
+     - الطلب وإشعاراته في transaction واحدة.
+   - **الموافقة أو الرفض:**
+     - بيوصل لصاحب الطلب، ومع الرفض بيوصل السبب.
+     - بيتبعت جوه transaction القرار.
+     - لو الـ handler فشل، مفيش إشعار.
+   - **السحب، أو قرار الـ super_admin في طلبه هو:** مفيش إشعار.
+
+**التجربة:**
+- **harness جوه نفس البروسيس** على DB مؤقتة `SadatSearmErp_NotificationTest`:
+  - 33 حالة نجحت، وبعدين الـ DB اتمسحت.
+  - الحالات:
+    - الـ push بعد الـ commit، ومفيش push بعد الـ rollback.
+    - القفل.
+    - إن الموافقات مبتتقفلش.
+    - حاملين الصلاحية والـ Admin، من غير المحذوف.
+    - إشعارات F7 بالعربي والإنجليزي.
+    - `canAct`.
+    - القايمة والفلاتر والعداد والمقروء.
+    - إشعار يوزر تاني بيرجع 404.
+    - التفضيلات.
+    - الـ worker.
+- **harness end-to-end:**
+  - شغّل الـ API الحقيقي (`Program.cs`) بـ `WebApplicationFactory` على DB مؤقتة `SadatSearmErp_HubTest`، ووصّل client SignalR حقيقي.
+  - 14 حالة نجحت، وبعدين الـ DB اتمسحت.
+  - الحالات:
+    - الـ migrations اتطبقت.
+    - الـ hub من غير token بيرجع 401، وبـ `access_token` بيرجع 200.
+    - `access_token` على `/api` بيرجع 401.
+    - الـ push وصل للي يخصه بس، وشكله `{ id, unreadCount }`.
+    - الـ rollback ملوش push.
+    - الـ GET بالإنجليزي.
+    - التفضيلات بترجع 400 مع `traceId`.
+- **harness الموافقات بتاع F7:** اتشغّل تاني، والـ 40 حالة نجحوا.
+
+الـ build نضيف (Release)، و75/75 test.
 
 **برّه الجلسة:**
-- الأنواع بتتبعت من موديولاتها.
+- الأنواع نفسها بتتبعت من موديولاتها: المخزون في M4، والفواتير في M6/M7، والتصدير في F10، والرسايل والعروض في M13، والصلاحيات في M1.
 - `/me/badges` في M1.
-- مسح القديم في F14.
-- الـ backplane لو بقى فيه أكتر من سيرفر.
+- مسح الإشعارات القديمة في F14.
+- backplane (Azure SignalR أو Redis) لو بقى فيه أكتر من سيرفر.
+- **لقيتها وأنا بجرّب، ودي من قبل F8:**
+  - الـ global rate limiter في `Program.cs` بيستعمل `RemoteIpAddress!`.
+  - فأي request مفيهوش IP بيرجع 500 (زي TestServer أو بعض الـ proxies).
+  - الحل سطر واحد (`?.ToString() ?? "unknown"`)، ومتسجلة في الـ Known issues.
+
+**إزاي تتأكد:**
+1. اقفل الـ API وشغّله تاني، والـ migrations `AddApprovalRequests` و`RebuildNotifications` هتتطبق لوحدها.
+2. من Swagger، بعد الـ login:
+   - `GET /api/notifications/unread-count`، ولازم يرجع `{ "count": 0 }`.
+   - `GET /api/notifications/preferences`، ولازم يرجع 9 أنواع، و`canMute: false` لـ 1 و2 و3.
+   - `PUT /api/notifications/preferences` بـ `{"items":[{"type":1,"enabled":false}]}`، ولازم يرجع 400 ومعاه `Notification.CannotMute`.
+   - `PUT` بـ `{"items":[{"type":4,"enabled":false}]}`، ولازم يرجع 200، ونقص المخزون يبقى `enabled: false`.
+3. الـ hub من الـ browser console، بعد ما تحمّل `@microsoft/signalr`:
+   ```js
+   const c = new signalR.HubConnectionBuilder()
+     .withUrl("/hubs/notifications", { accessTokenFactory: () => "<token>", withCredentials: false })
+     .build();
+   c.on("notification", p => console.log(p)); await c.start();
+   ```
+   لازم الاتصال ينجح. والـ push نفسه هيبان لما أول موديول يبعت إشعار.
+4. شغّل `dotnet test`، ولازم يطلع 75/75.
+
+**ملحوظة للفرونت:**
+- الـ SignalR client بياخد `withCredentials: false`، لأن الـ token جاي من `accessTokenFactory` والـ CORS مفيهوش `AllowCredentials`.
+- بعد كل push، اعمل `GET /api/notifications/{id}`.
+- لما الاتصال يرجع بعد ما يقع، اعمل `GET unread-count`.
